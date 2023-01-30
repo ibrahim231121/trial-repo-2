@@ -1,109 +1,63 @@
-
-
-.indefinite_checkBox_ui {
-    margin-left: 4px;
-    label {
-        font-size: 14px;
-        margin-left: 4px;
-        span {
-            font-size: 20px;
-            color: black;
-            font-weight: 700;
-            margin-left: 4px;
-            margin-right: 20px;
+.create_form_fields_form {
+    .CRXContent {
+        padding-bottom: 26px;
+        .create_category_form_field_content{
+            .cc_form_label{
+                font-size: 14px;
+                color: var(--color-333333);
+                font-family: var(--base-font-family);
+                span{
+                    font-size: 18px;
+                    position: relative;
+                    font-weight: var(--Font-style-bold);
+                    top: -5px;
+                    &.error_staric{
+                        color: var(--color-aa1d1d);
+                    }
+                }
+            }
+            .controle_type_select {
+                width: 100%;
+            }
+            .crx_form_group_row {
+                padding-bottom: 28px;
+                .crx_formik_field {
+                    width: 100%;
+                    border:1px solid var(--color-d1d2d4);
+                    outline: 2px solid transparent;
+                    height: 30px;
+                    border-radius: 0px;
+                    text-indent: 12px;
+                    color: var(--color-333333);
+                    font-family:  var(--base-font-family);
+                    &:hover {
+                        border-color: var(--color-888787);
+                    }
+                    &:focus {
+                        outline: 2px solid var(--color-888787);
+                        border:1px solid var(--color-888787);
+                    }
+                }
+                .errorTenantStyle {
+                    color: var(--color-aa1d1d);
+                    font-size: 14px;
+                    font-weight: var(--Font-style-normal);
+                    font-family: var(--Arial-font-family);
+                    position: relative;
+                    left: 0px;
+                    top: 6px;
+                    i{
+                        margin-right: 4px;
+                    }
+                }
+            }
+        }
+        .create_form_modal_footer {
+            padding-top: 26px;
+            border-top: 1px solid #dedede;
+            .save_button_cc{
+                margin-right: 30px;
+            }
         }
     }
-    span {
-        margin-left: 16px;
-    }
 }
-
-.CrxRetentionPoliciesTable .dataTableColumnShoHide{
-    display: none;
-}
-
-.settingsContent 
-{
-    margin-top: 30px;
-
-    .text-field .gridFilterTextBox{
-        margin: 25px 0px;
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        padding: 0 0px;
-    label{
-        flex-grow: 1;
-    }
-    h6{
-        flex-grow: 1;
-        width: 0px;
-    }
-    span.gridFilterSpanUi.Crx_defaultText {
-        flex-grow: 1;
-    }
-    }
-}
-.retention-type{
-    display: flex;
-    h6{
-        width: 146px;
-    font-size: 14px;
-    line-height: 37px
-    }
-    .days-hours{
-        display: flex;
-        flex-direction: row;
-        margin-top: 50px;
-        align-items: flex-end;
-    }
-
-    .days-hours .gridFilterTextBox {
-        display: flex !important;
-        align-items: inherit;
-        h6{
-            width: 200px;
-        }
-    }
-    
-}
-.retention-type-btns{
-    padding-top: 30px;
-    .secondary{
-        margin-left: 25px;
-    }
-}
-.retentionPoliciesConfirm {
-    .crxConfirmFooterModal {
-      button {
-        &.primary {
-          min-width: 90px;
-          height: 30px;
-          margin-right: 23px;
-        }
-      }
-    }
-    .confirmMessage {
-      font-size: 14px;
-      font-weight: var(--Font-style-normal);
-      line-height: 18px;
-      padding: 13px 13px 0px 2px;
-      color: var(--color-333333);
-      padding-top: 13px;
-      font-family:var(--base-font-family);
-  
-      &.__crx__Please__confirm__modal {
-        margin-bottom: 40px;
-        .__crx__please_confirm_ {
-          display: flex;
-        }
-      }
-      strong {
-        font-weight: var(--Font-style-bold);
-      }
-      .confirmMessageBottom {
-        padding-top: 34px;
-        padding-bottom: 40px;
-      }
-    }
-  }

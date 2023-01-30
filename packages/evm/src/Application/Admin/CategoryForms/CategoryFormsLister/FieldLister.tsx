@@ -225,7 +225,7 @@ useEffect(() => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-            width = {245} 
+            width = {357} 
             option={options} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -234,6 +234,8 @@ useEffect(() => {
             multiple={true}
             isduplicate={true}
             selectAllLabel="All"
+            className="add_ex_multifield_select"
+            poperZindex={13000}
           />
       );
     }
@@ -297,9 +299,7 @@ useEffect(() => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
-      minWidth: "300",
-      width: "150",
-      maxWidth: "800",
+      minWidth: "357",
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
@@ -374,8 +374,8 @@ useEffect(() => {
       <div className="categories">
         <CRXModalDialog
           maxWidth="gl"
-          title={title}
-          className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__ ___CRXCreateRetentionPolicyFieldLister__ '}
+          title="Add exisiting form fields"
+          className="add_exisiting_form_modal"
           modelOpen={openModal}
           onClose={closeDialog}
           defaultButton={false}
@@ -400,7 +400,7 @@ useEffect(() => {
           )}
 
           <ClickAwayListener onClickAway={handleBlur}>
-            <div className="userDataTableParent " onKeyDown={handleKeyDown}>
+            <div className="add_ex_datatable" onKeyDown={handleKeyDown}>
               {rows && (
                 <CRXDataTable
                   id="group-userDataTable"
@@ -415,7 +415,7 @@ useEffect(() => {
                   searchHeader={true}
                   columnVisibilityBar={true}
                   allowDragableToList={false}
-                  className="ManageAssetDataTable usersGroupDataTable"
+                  className="add_ex_datatable_inner"
                   onClearAll={clearAll}
                   getSelectedItems={(v: FormFieldsTemplate[]) => setSelectedItems(v)}
                   onResizeRow={resizeRowUserTab}
@@ -444,25 +444,24 @@ useEffect(() => {
             </div>
           </ClickAwayListener>
 
-          <div className="tab-bottom-buttons retention-type-btns">
-            <div className="save-cancel-button-box">
+          <div className="add_exisiting_field_modal_footer">
+           
               <CRXButton
                 variant="contained"
-                className="groupInfoTabButtons"
+                className="primary save_button_addEx"
                 onClick={() => onSave()}
                 disabled={disable}
               >
                 {t("Save")}
               </CRXButton>
               <CRXButton
-                className="groupInfoTabButtons secondary"
+                className="secondary"
                 color="secondary"
                 variant="outlined"
                 onClick={handleClose}
               >
                 {t("Cancel")}
               </CRXButton>
-            </div>
 
           </div>
         </CRXModalDialog>

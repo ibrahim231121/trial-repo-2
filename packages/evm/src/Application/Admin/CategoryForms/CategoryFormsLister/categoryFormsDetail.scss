@@ -1,8 +1,14 @@
 .create_category_view {
+    padding-top: 96px !important;
     .create_category_form_area {
         .formDetailInfo {
-            padding-bottom: 25px;
-            padding-top: 12px;
+            // padding-bottom: 25px;
+            //padding-top: 12px;
+            position: relative;
+            top: 58px;
+            width: calc(100% - 535px);
+            margin: 0 auto;
+            z-index: 9;
             .category_create_form_fields {
                 display: flex;
                 flex-direction: row;
@@ -10,30 +16,107 @@
                 flex-basis: inherit;
                 place-items: center;
                 justify-content: space-evenly;
+                .text-field {
+                    display: flex;
+                    align-items: center;
+                   
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    label {
+                        font-size: 14px;
+                        color: #333;
+                        padding-right: 20px;
+                        display: flex;
+                        width: 85px;
+                        span{
+                            padding-left: 8px;
+                            font-size: 18px;
+                            font-weight: bold;
+                            position: relative;
+                            top: -5px;
+                            &.staric-error {
+                                color:  var(--color-aa1d1d);
+                            }
+                        }
+                    }
+                    .CBX-input {
+                        display: flex;
+                        width: 310px;
+                        .name-field{
+                            border: 0px;
+                            width: 100%;
+                        }
+                    }
+                    .errorTenantStyle {
+                        color: var(--color-aa1d1d);
+                        font-size: 14px;
+                        font-weight: var(--Font-style-normal);
+                        font-family: var(--Arial-font-family);
+                        position: relative;
+                        left: 84px;
+                        top: 6px;
+                        white-space: nowrap;
+                        i{
+                            margin-right: 4px;
+                        }
+                    }
+                }
             }
         }
         .formFieldBtn {
-            .add_exist_button {
-                margin-bottom: 15px;
-            }
+            padding-bottom: 25px;
+            padding-top: 25px;
+            position: sticky;
+            top: 123px;
+            background-color: #fff;
+            z-index: 8;
+        
             .create_form_field_button{
                 float: right;
             }
         }
         .create_category_Content{
-            .create_category_column{
-                background: #333;
-                padding: 10px;
-                color: var(--color-d1d2d4);
-                font-size: 14px;
-                border-right: 1px solid #d1d2d4;
-                text-align: center;
+            position: sticky;
+            top: 208px;
+            .create_category_rows{
+                  .create_category_column{
+                    background: #333;
+                    padding: 10px;
+                    color: var(--color-d1d2d4);
+                    font-size: 14px;
+                    border-right: 1px solid #d1d2d4;
+                    text-align: center;
+                }
             }
+          
         }
         .formFieldFooterButton {
             display: flex;
             margin-top: 35px;
             justify-content: space-between;
+            .submit_cancel_btn {
+                .button_save {
+                    margin-right: 30px;
+                }
+                
+            }
+        }
+        .crx_add_ex_from_rows {
+            border-left: 1px solid var(--color-ccc);
+            border-right: 1px solid var(--color-ccc);
+            .crx-fields-col{
+                border-bottom: 1px solid var(--color-ccc);
+                .fieldsCol {
+                    border-right: 1px solid var(--color-ccc);
+                    padding: 11px;
+                    color: var(--color-333333);
+                    font-family: var();
+                    font-size: 14px;
+                }
+                .crx-fieldsCol-btn {
+                    padding-left: 11px;
+                }
+            }
         }
     }
 }

@@ -79,7 +79,7 @@ const CategoryFormsAndFields = () => {
   }, [messages]);
 
   return (
-    <div className="App crxTabsPermission switchLeftComponents category_ui_forms" style={{}}>
+    <div className="switchLeftComponents category_ui_forms" style={{}}>
       {showSuccess && showSuccess ? <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}
@@ -97,7 +97,7 @@ const CategoryFormsAndFields = () => {
           className={`${showMessageError} ${alertType == "inline" ? "" : "errorGroupInfo"
             }`}
         >
-          <CategoryFormsList></CategoryFormsList>
+          <CategoryFormsList/>
         </div>
       </CrxTabPanel>
 

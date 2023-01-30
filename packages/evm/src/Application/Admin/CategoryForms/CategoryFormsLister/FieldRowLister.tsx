@@ -13,7 +13,7 @@ type infoProps = {
 const FieldRowLister: React.FC<infoProps> = ({ selectedFields, setSelectedFields, setFieldValue }) => {
     return (
         <>
-            <div className="crxPermissionPageScroll">
+            <div className="crx_add_ex_from_rows">
                 <div>
                     {
                         selectedFields?.map((fieldRow, i) => {
