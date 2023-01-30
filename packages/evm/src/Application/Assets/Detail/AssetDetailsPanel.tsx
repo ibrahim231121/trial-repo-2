@@ -25,6 +25,7 @@ type propsObject = {
   openMap: boolean
   setOnMarkerClickTimeData: any
   toasterMsgRef: any
+  isGuestView: boolean
 }
 type Timeline = {
   recording_start_point: number;
@@ -46,7 +47,7 @@ type Timeline = {
   timeOffset: number,
 }
 
-const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, toasterMsgRef }: propsObject) => {
+const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, isGuestView, toasterMsgRef }: propsObject) => {
   const { t } = useTranslation<string>();
   const [selectDropDown, setSelectDropDown] = React.useState(openMap ? "Map" : "Bookmarks");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -88,11 +89,11 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
     }
   }, [timelinedetail]);
 
-  const [options, setOptions] = React.useState([
+  const [options, setOptions] = React.useState(!isGuestView ? [
     { value: "Transcription", displayText: "Transcription" },
     { value: "Notes", displayText: "Notes" },
     { value: "Bookmarks", displayText: "Bookmarks" }
-  ]);
+  ] : []);
 
   React.useEffect(() => {
     if (openMap) {

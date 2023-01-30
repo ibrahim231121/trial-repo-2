@@ -86,6 +86,7 @@ export const resources = {
         "in":"hr-in",
         "No_Templates":"hr-No Templates",
         "Hours.":"hr-Hours.",
+        "Upload_Status":"hr-Upload Status",
         "Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in":"hr-Please be aware that by removing this category, you are reducing the assets lifetime and the asset will expire in",
         "Unclassified_retention_policy_of_station_will_be_applied_on_this_evidence_group.":"hr-Unclassified retention policy of station will be applied on this evidence group.",
         "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator":"hr-We 're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator",
@@ -191,6 +192,9 @@ export const resources = {
         "Export":"hr-Export",
         "Asset_Assignees_updated":"hr-Asset Assignees updated",
         "The_asset_is_already_locked":"hr-The asset is already locked.",
+        "Download_link":"hr-Download Link",
+        "Asset_name":"hr-Asset Name",
+        "Unit_name":"hr-Unit Name",
         "Download_asset(s)":"hr-Download asset(s)",
         "Download_metadata_info":"hr-Download metadata info",
         "Download_audit_trail":"hr-Download audit trail",
@@ -819,6 +823,12 @@ export const resources = {
           "Unit_Default_Templates":"Default Unit Templates",
           "Manage_Default_Unit_Templates": "Manage Default Unit Templates",
 
+          //---------- Sensors and Triggers -------------------
+          "Settings" : "SETTINGS",
+          "Device_Parameters" : "DEVICE PARAMETERS",
+          "Sensors_and_triggers_name" : "Sensor & Trigger Name",
+          "Email alert" : "Email Alert",
+          "Add_device_parameters":"+ Add device parameters",
       }
     }
   };

@@ -16,24 +16,23 @@ const CRXLefNavigation = () => {
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
-    
+
     let pathBody = document.querySelector("body");
-    if(path !== "/assetdetail") {
+
+    if(path !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
         pathBody?.classList.remove("pathAssetDetail");
-      }
-      
-      urlList.map((items : any, i : number) => {
-        const footerRemove : any = document.getElementsByClassName("footerDiv");
-        if(items.type == "form") {
-          
+      urlList.map((items: any, i: number) => {
+        const footerRemove: any = document.getElementsByClassName("footerDiv");
+        if (items.type == "form") {
+
           footerRemove[0].style.display = "none"
         }
       })
-      window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-  const items = [
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+  }
+    const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+    const items = [
     {
       moduleId: 0,
       label: t("Home"),
@@ -46,14 +45,17 @@ const CRXLefNavigation = () => {
       command: () => {
         navigateToPage(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
       },
-     
+
       disabled: false,
-      
+
     },
     {
       moduleId: 0,
       label: t("Cases"),
       icon: "fas fa-briefcase NaveIcon",
+      // command: () => {
+      //   navigateToPage(urlList.filter((item: any) => item.name === urlNames.cases)[0].url);
+      // },
       // items: [
       //   {
       //     moduleIds:0,
@@ -91,13 +93,13 @@ const CRXLefNavigation = () => {
       moduleId: 13,
       label: t('Units_&_Devices'),
       icon: 'fas fa-laptop-code NaveIcon',
-     
+
       command: () => {
         navigateToPage(urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url);
       },
     },
     {
-      moduleId:57,
+      moduleId: 57,
       label: "Live Video",
       icon: "fas fa-video NaveIcon",
       classes: "liveVideoTab",
@@ -105,9 +107,9 @@ const CRXLefNavigation = () => {
       target: "_blank"
     },
     {
-      moduleId:57,
+      moduleId: 57,
       label: "AVL Map",
-      icon:"icon icon-compass5 NaveIcon", 
+      icon: "icon icon-compass5 NaveIcon",
       classes: "mapsTab",
       url: urlList.filter((item: any) => item.name === urlNames.avlMap)[0].url,
       target: "_blank"
@@ -216,12 +218,12 @@ const CRXLefNavigation = () => {
           },
         },
         {
-          moduleIds: 0,
+          moduleIds: 61,
           label: t('Retention_Policies'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.retentionPolicies)[0].url) },
         },
         {
-          moduleIds: 0,
+          moduleIds: 61,
           label: t('Upload_Policies'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.uploadPolicies)[0].url) },
         },
@@ -249,7 +251,7 @@ const CRXLefNavigation = () => {
     }
   })
 
-  return <CRXNestedMenu  className="CRXLeftMenu" model={SubModulePermission} />;
+  return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
 };
 
 export default CRXLefNavigation;

@@ -62,6 +62,7 @@ export const resources = {
         "File_Status":"File Status",
         "Asset_Duration":"Asset Duration",
         "Asset_Size":"Asset Size",
+        "Upload_Status":"Upload Status",
         "Select_All":"Select all",
         "Grouped_Assets":"Grouped Assets",
         "Link_to_this_group":"Link to this group",
@@ -133,8 +134,8 @@ export const resources = {
         "Form_Fields":"Form Fields",
         "Category_Forms_And_Fields":"Category Forms & Fields",
         "Create_Category_Forms":"Create Category Forms",
-        "Create_Form_Fields":"Create Form Fields",
-        "Edit_Form_Fields":"Edit form field",
+        "Create_Form_Fields":"Create Form Field",
+        "Edit_Form_Fields":"Edit Form Field",
         "Delete_Form_Fields":"Delete form field",
         "Edit_Category_Forms":"Edit category form",
         "Delete_Category_Forms":"Delete category form",
@@ -142,7 +143,7 @@ export const resources = {
         "Category_form":"Category form",
         "Edit_category":"Edit category",
         "Field_Display_Name":"Field Display Name",
-        "Default_Field_Value":"Default Field Value",
+        "Field_Values":"Field Values",
         "Field_Name":"Field Name",
         "Field_Type":"Field Type",
         "Field_List":"Field List",
@@ -243,6 +244,9 @@ export const resources = {
         "Asset_Assignees_updated":"Asset Assignees updated",
         "The_asset_is_already_locked":"The asset is already locked.",
         "Download_asset(s)":"Download asset(s)",
+        "Download_link":"Download Link",
+        "Asset_name":"Asset Name",
+        "Unit_name":"Unit Name",
         "Download_metadata_info":"Download metadata info",
         "Download_audit_trail":"Download audit trail",
         "Select_to_show_a_column_Drag_and_drop_to_recorder.":"Select to show a column. Drag and drop to recorder.",
@@ -883,6 +887,8 @@ export const resources = {
         "Asset_Upload_Priority":"Asset Upload Priority",
         "Asset_Upload_Connection":"Asset Upload Connection",
         "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",
+        "Success_You_have_saved_the_Category_Forms":"You have saved the Category Forms Successfully",
+        "Success_You_have_edited_the_Category_Forms":"You have edited the Category Forms Successfully",
         "Success_You_have_updated_the_Upload_Policy":"You have updated the Upload Policy Successfully",        
         "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
         "Unable_to_process_your_request,_Policy" : "Unable to process your request, Policy ",
@@ -896,7 +902,32 @@ export const resources = {
         "Policies" : "Policies ",
         "Policy" : "Policy",
         "Are_you_sure_you_would_like_to_delete_upload_policy?" : "Are you sure you would like to delete upload policy?",
-        "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully"
+        "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully",
+
+        //---------- Sensors and Triggers -------------------
+        "Settings" : "SETTINGS",
+        "Device_Parameters" : "DEVICE PARAMETERS",
+        "Sensors_and_triggers_name" : "Sensor & Trigger Name",
+        "Email alert" : "Email Alert",
+        "Add_device_parameters":"+ Add device parameters",
+      
+            //----------  Cases  ---------       
+          "Create_Case" :"Create Case",
+          "Case_Summary":"Case Summary",
+          "Prosecutor":"Prosecutor",
+          "Lead_Officer":"Lead Officer",
+          "Created_On":"Created On",
+          "State":"State",
+          
+
+          "Case_deleted":"Case deleted",
+          "Delete_case":"Delete case",
+          "Edit_case":"Edit case",
+
+          "Case":"Case",
+          
+          "Title":"Title",
+          "You_have_saved_the_Case_successfully":"You have saved the Case successfully",
       }
     }
   };

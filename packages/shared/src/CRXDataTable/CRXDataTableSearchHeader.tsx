@@ -18,7 +18,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   container,
   actionComponent,
   getRowOnActionClick,
-  offsetY,
   searchHeaderPosition,
   showCheckBoxesCol,
   showActionCol,
@@ -50,43 +49,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
 
   },[page,checkAllPageWise])
 
-  const [windScrollValue, setWindScrollValue] = React.useState<any>(0)
-  
-  function createScrollStopListener(element : any, callback : any, timeout : number) {
-    let handle: any = null;
-    const tbl : any = document.getElementsByClassName('tableScrollValue')[0]
-    const onScroll = function() {
-        
-        if (handle) {
-            clearTimeout(handle);
-        }
-        
-        handle = setTimeout(callback, timeout || 100); // default 200 ms
-        
-        tbl && ( tbl.style.display = "table")
-        setWindScrollValue(searchHeaderPosition);
-    };
-
-    element.addEventListener('scroll', onScroll);
-    return function() {
-        element.removeEventListener('scroll', onScroll);
-    };
-  }
-  
-  useEffect(() => {
-    const tblBlock : any = document.getElementsByClassName('tableScrollValue')[0] as HTMLElement;
-    let minSticky : any =  offsetY && (offsetY - 3)
-    
-    createScrollStopListener(window, function() {
-      tblBlock && (tblBlock.style.display = "block")
-      setWindScrollValue(window.pageYOffset - minSticky)
-    
-    },100);
-
-  },[])
-  
   return (
-    <TableHead style={{"top" : windScrollValue + "px", zIndex : 999}}>
+    <TableHead style={{"top" : searchHeaderPosition + "px", zIndex : 999}}>
       <TableRow>
         {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell
@@ -101,9 +65,9 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
           <TableCell
             padding="checkbox"
-            className={classes.searchHeaderStickness + " TableSearchAbleHead"}
+            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadFirstCol"}
             style={{
-            left: "0px", 
+            left: "90px", 
                     position: "sticky", 
                     zIndex: 30 }}
           >
@@ -122,11 +86,11 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         }
         {(showActionCol || showActionCol === undefined) ? 
           <TableCell
-            className={classes.searchHeaderStickness + " TableSearchAbleHead"}
+            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadsecondCol"}
             style={{
             width: "80px",
             minWidth : "80px",
-            left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "60px" : "0px"}`,
+            left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "150px" : "89px"}`,
                     position: "sticky", 
                     zIndex: 4 }}
           >

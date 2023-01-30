@@ -160,7 +160,19 @@ export interface UnitInfo {
 
 export interface QueuedAssets {
     filename: string;
-    status: string;
+    fileState: string;
+    totalsize: number;
+    status: number;
+    statusData: StatusData;
+    queued: string;
+    started: string;
+    updated: string;
+}
+export interface StatusData
+{
+    fileState: string;
+    totalsize: number;
+    status: number;
 }
 
 export interface DefaultUnitTemplate {

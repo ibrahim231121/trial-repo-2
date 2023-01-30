@@ -26,17 +26,14 @@ const FormFieldRowValue: React.FC<infoProps> = ({ selectedFields, setSelectedFie
         <>
             <div className="crx-fields-col">
                 <CRXRows container="container" spacing={0}>
-                    <CRXColumn className="fieldsCol" container="container" item="item" xs={3} spacing={0}>
+                    <CRXColumn className="fieldsCol" container="container" item="item" xs={4} spacing={0}>
                         <label>{rowField?.displayName}</label>
                     </CRXColumn>
-                    <CRXColumn className="fieldsCol" container="container" item="item" xs={3} spacing={0}>
+                    <CRXColumn className="fieldsCol" container="container" item="item" xs={4} spacing={0}>
                         <label>{rowField?.name}</label>
                     </CRXColumn>
                     <CRXColumn className="fieldsCol" container="container" item="item" xs={3} spacing={0}>
                         <label>{rowField?.controlType}</label>
-                    </CRXColumn>
-                    <CRXColumn className="fieldsCol" container="container" item="item" xs={2} spacing={0}>
-                        <label>{rowField?.width}</label>
                     </CRXColumn>
                     <CRXColumn className="crx-fieldsCol-btn" container="container" item="item" xs={1} spacing={0} >
                         <button

@@ -174,8 +174,9 @@ const UnitCreate = (props: historyProps) => {
     });
 
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response: UnitTemplateConfigurationInfo[]) => {
+
       setConfigTemplateList(response)
-      var result = response.map((x: any) => { return { displayText: x.name, value: x.stationId } })
+      var result = response.map((x: any) => { return { displayText: x.name, value: x.id, stationId: x.stationId } })
       setAllconfigTemplateList(result)
     });
     dispatch(getStationsInfoAllAsync());
@@ -489,7 +490,7 @@ const UnitCreate = (props: historyProps) => {
                   <div className="crx-menu-list">{t("View_Live_Video")}</div>
                 </div>
               </Restricted>
-              </MenuItem>
+            </MenuItem>
           </Menu>
         </div>
         <CBXLink children="Exit" onClick={() => history.goBack()} />
@@ -735,7 +736,7 @@ const UnitCreate = (props: historyProps) => {
           </CrxTabPanel>
         ) : null}
 
-        <div className="tab-bottom-buttons stickyFooter_Tab">
+        <div className="tab-bottom-buttons stickyFooter_Tab pd-b-50">
           <div className="save-cancel-unitDevice">
             <CRXButton
               variant="contained"

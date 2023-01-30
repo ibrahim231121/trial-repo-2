@@ -144,14 +144,13 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     else{
       setIsformUpdated(false)
     }
-
   }, [formpayload]);
 
   React.useEffect(() => {
     let checkSubmitType: any = uploadAssetBucket.filter(
       (x: any) => {
         if (x.evidence) {
-          if (x.evidence.masterAsset.assetName === formpayload.masterAsset) {
+          if (x.evidence.masterAsset.assetName === formpayload.masterAsset && x.id!=undefined) {
             return x;
           }
         }
@@ -166,7 +165,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       checkSubmitType
         .filter(
           (x: any) =>
-            x.evidence.masterAsset.assetName === formpayload.masterAsset
+            x.evidence.masterAsset.assetName === formpayload.masterAsset 
         )
         .forEach((x: any) => {
           assetName = x.assetName;
@@ -297,8 +296,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       };
       return j;
     });
-
-    let assetBucket = uploadAssetBucket.map((x: any) => {
+    let assetBucket = uploadAssetBucket.filter((x:any)=>x.id!=undefined).map((x: any) => {
       var j: MasterAssetBucket = {
         id: x.assetId,
         value: x.assetName,
@@ -866,8 +864,28 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       if (res != null && res != undefined) {
         let bucketAssets: any = [];
         res.asset.map((x: any) => {
-          bucketAssets.push({
+
+          let asset={
+            "isMetaData":true,
+            "id":x.assetId==res.masterAssetId?res.id:undefined,
             "assetId": x.assetId,
+            "assetName": x.assetName,
+            "assetType":x.assetType,
+            "unit":x.unit,
+            "description": res.description,
+            "categories":res.categories,
+            "categorizedBy":res.categorizedBy,
+            "devices":res.devices,
+            "station":res.station,
+            "recordedBy": x.recordedBy,
+            "recordingStarted":x.recordingStarted,
+            "status": x.status,
+            "holdUntil":res.holdUntil,
+            "expireOn":res.expireOn,
+            "duration": x.duration,
+            "size":x.size,
+            //"retentionSpanText":x.retentionSpanText,
+            "isMaster":x.assetId==res.masterAssetId,
             "evidence": {
               "id": res.id,
               "tenantId": res.tenantId,
@@ -887,13 +905,13 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               "expireOn": res.expireOn,
               "description": res.description
             }
-          });
+          };
+          dispatch(addAssetToBucketActionCreator(asset));
         })
-        dispatch(addAssetToBucketActionCreator(bucketAssets));
+        
       }
     }).catch((error: any) => {
-      if (error.response.status === 500) {
-      }
+     
     })
   }
   const onAdd = async (submitType: SubmitType) => {
@@ -1014,6 +1032,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       body: JSON.stringify(payload),
     }).then(function (res) {
       if (res.status == 200) {
+        setTimeout(() => {
+          getUploadedEvidence(ids);
+        }, 2000); 
       }
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
@@ -1037,7 +1058,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     let assetId: number = 0;
     let checkSubmitType: any = uploadAssetBucket
       .filter(
-        (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
+        (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset && x.id!=undefined
       )
       .map((x: any) => {
         ids = x.id;

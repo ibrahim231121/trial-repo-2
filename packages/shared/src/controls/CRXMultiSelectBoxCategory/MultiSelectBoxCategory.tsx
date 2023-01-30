@@ -30,7 +30,7 @@ const MultiSelectBoxCategory = ({
   visibility,
 }: multiSelectProps) => {
 
-  const useSelectBoxStyle = makeStyles((theme: Theme) =>
+  const useSelectBoxStyle : any = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: "#fff",
@@ -178,6 +178,7 @@ const MultiSelectBoxCategory = ({
       <Autocomplete
         defaultValue={defaultValue}
         autoComplete={autoComplete}
+        autoHighlight={true}
         filterSelectedOptions={false}
         disableClearable
         disableCloseOnSelect={true}

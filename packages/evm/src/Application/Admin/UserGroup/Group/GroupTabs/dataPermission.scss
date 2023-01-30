@@ -344,20 +344,31 @@
       font-size: 14px;
     }
   }
-  .usersGroupDataTable {
-    display: block !important;
-    table {
-      thead {
-        top : 0px !important;
-        z-index: 99 !important;
-      }
-    }
-  }
   .stickyPos {
     z-index: 99;
   }
 }
 
-html {
-  overflow-x: hidden !important;
+.usersGroupDataTable {
+  display: block !important;
+  table{
+    thead{
+      tr{
+        th{
+          top : 0px !important;
+          left : 0px !important
+        }
+      }
+    }
+    tbody {
+      tr{
+        td {
+          left:  0px !important;
+        }
+      }
+    }
+  }
+  &::after {
+    display: none;
+  }
 }

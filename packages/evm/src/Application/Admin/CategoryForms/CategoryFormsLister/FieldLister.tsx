@@ -1,19 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
-import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CBXMultiSelectForDatatable } from "@cb/shared";
+import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './fieldLister.scss';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
-import * as Yup from "yup";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { GridFilter, HeadCellProps, onClearAll, onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, PageiGrid, SearchObject, ValueString } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { GridFilter, HeadCellProps, onClearAll, onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, Order, PageiGrid, SearchObject, ValueString } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import User from "../../User";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
-import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { CRXDataTable } from "@cb/shared";
 import { FormFieldsTemplate } from "../TypeConstant/types";
+import { controlTypes } from "../TypeConstant/constants";
 
 type FieldListerModel = {
   categoryFormId: number;
@@ -74,13 +73,12 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
           id: template?.id,
           name: template?.name,
           displayName: template?.display?.caption,
-          controlType: template?.type,
-          width: template?.display?.width,
+          controlType: controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
         }
       })
     }
     setRows(FormFieldsTemplateRows);
-    setReformattedRows(FormFieldsTemplateRows)
+    setReformattedRows({...reformattedRows, rows: FormFieldsTemplateRows, controlTypeList: controlTypes});
   }
 
   useEffect(() => {
@@ -90,14 +88,30 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
     setPaging(false)
   }, [pageiGrid])
 
+useEffect(() => {
+  setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});  
+  setPaging(true);
+},[page, rowsPerPage])
+
   const onSave = async () => {
-    setSelectedFields(selectedItems);
+    let selectedFields : FormFieldsTemplate[] = [];
+    selectedFields = selectedItems?.map((template: any) => {
+      return {
+        id: template?.id,
+        name: template?.name,
+        displayName: template?.displayName,
+        controlType: controlTypes?.find((x:any) => x.value ==template?.controlType || x.displayText == template?.controlType)?.displayText ?? "",
+        width : 0,
+      }
+    });
+    setSelectedFields(selectedFields);
     setFieldValue("fields", selectedItems.map((x: any) => { return x.id }));
     handleClose();
   }
 
   const closeDialog = () => {
     handleClose();
+    setDisable(true);
   };
 
 
@@ -108,13 +122,13 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
 
   React.useEffect(() => {
     setFormFields();
+
   }, [filterFormFields?.data]);
 
   React.useEffect(() => {
     let selectedFieldIdsList = selectedItems.map((x: any) => { return x.id });
     let actualselectedFieldIdsList = selectedFields.map((x: any) => { return x.id });
     if (JSON.stringify(selectedFieldIdsList.sort()) !== JSON.stringify(actualselectedFieldIdsList.sort())) {
-
       setDisable(false);
     }
     else {
@@ -135,7 +149,7 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
         if (actualselectedFieldIdsList.indexOf(x.id) > -1)
           return x;
       });
-      let selectedItems: FormFieldsTemplate[] = selectedUsers?.map((template: any) => {
+      let selectedItemsList: FormFieldsTemplate[] = selectedUsers?.map((template: any) => {
         return {
           id: template.id,
           name: template.name,
@@ -144,23 +158,15 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
           width: template?.display?.width
         }
       })
-      setSelectedItems(selectedItems);
+      let selectedArray = [...selectedItems, ...selectedItemsList];
+      selectedArray = selectedArray.filter((ele, ind) => ind === selectedArray.findIndex(elem => elem.id === ele.id));
+      setSelectedItems(selectedArray);
     }
   }
 
   React.useEffect(() => {
     setData();
   }, [formFieldsList?.data, filterFormFields?.data]);
-
-
-  useEffect(() => {
-    // if (id != undefined && id != null && id > 0) {
-
-    // }
-    // else {
-
-    // }
-  }, [id]);
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -180,14 +186,11 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
     }
   };
 
-  const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
-    let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
-      if (colIdx === index)
-        headCell.headerArray = [{ value: "" }];
-      return headCell;
-    });
-    return headCellReset;
-  };
+  useEffect(() => {
+    if(searchData.length > 0){
+      setIsSearchable(true)
+    }
+  }, [searchData]);
 
   const searchText = (
     rowsParam: User[],
@@ -212,40 +215,26 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
     initialRows: any,
     isSearchable: boolean
   ) => {
-    if (initialRows) {
-      let options = rowsParam.map((row: any, _: any) => {
-        let option: any = {};
-        option["value"] = row[headCells[colIdx].id];
-        return option;
+    
+    if(colIdx === 3 && initialRows && initialRows.controlTypeList && initialRows.controlTypeList.length > 0) { 
+      let options: any = [];
+      initialRows.controlTypeList.map((x: any) => {
+        options.push({id : x.id, value: x.displayText });
       });
-      // For those properties which contains an array
-      if (
-        headCells[colIdx].id.toString() === "categories" ||
-        headCells[colIdx].id.toString() === "recordedBy"
-      ) {
-        let moreOptions: any = [];
-
-        reformattedRows.forEach((row: any, _: any) => {
-          let x = headCells[colIdx].id;
-          row[x]?.forEach((element: any) => {
-            let moreOption: any = {};
-            moreOption["value"] = element;
-            moreOptions.push(moreOption);
-          });
-        });
-        options = moreOptions;
-      }
+      
 
       return (
-        <CBXMultiSelectForDatatable
-          width={220}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
-          isCheckBox={false}
-          isduplicate={true}
-        />
+        <CBXMultiCheckBoxDataFilter 
+            width = {245} 
+            option={options} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => clearAll()}
+            isCheckBox={true}
+            multiple={true}
+            isduplicate={true}
+            selectAllLabel="All"
+          />
       );
     }
   };
@@ -290,7 +279,10 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
       searchComponent: searchText,
       minWidth: "300",
       width: "400",
-      maxWidth: "400"
+      maxWidth: "400",
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Control_Type")}`,
@@ -304,46 +296,22 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
         columns: HeadCellProps[],
         colIdx: number,
         initialRow: any
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
       minWidth: "300",
       width: "150",
       maxWidth: "800",
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
-    },
-    {
-      label: `${t("Width")}`,
-      id: "width",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "300",
-      width: "250",
-      maxWidth: "800"
     }
   ]);
 
-  const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+  const changeMultiselect = (val: renderCheckMultiselect[], colIdx: number) => {
     onSelection(val, colIdx)
     headCells[colIdx].headerArray = val;
   }
 
-  const dataArrayBuilder = () => {
-    let dataRows: FormFieldsTemplate[] = reformattedRows;
-    searchData.forEach((el: SearchObject) => {
-      dataRows = onTextCompare(dataRows, headCells, el);
-    });
-    setRows(dataRows);
-  };
-
-  useEffect(() => {
-    dataArrayBuilder();
-  }, [searchData]);
-
-  const getFilteredUserData = () => {
+  const getFilteredFieldData = () => {
     pageiGrid.gridFilter.filters = []
 
     searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
@@ -361,29 +329,27 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
     if (page !== 0)
       setPage(0)
     else
-      dispatch(getUsersInfoAsync(pageiGrid));
+      dispatch(getAllFormFieldsFilter(pageiGrid));
 
     setIsSearchable(false)
   }
 
   const handleKeyDown = (event: any) => {
     if (event.key === 'Enter') {
-      getFilteredUserData()
+      getFilteredFieldData();
     }
   }
   const handleBlur = () => {
     if (isSearchable)
-      getFilteredUserData()
+    getFilteredFieldData();
   }
-
-
 
   const clearAll = () => {
     const clearButton: any = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]
     clearButton && clearButton.click()
     setOpen(false)
     pageiGrid.gridFilter.filters = []
-    dispatch(getUsersInfoAsync(pageiGrid));
+    dispatch(getAllFormFieldsFilter(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -415,7 +381,6 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
           defaultButton={false}
           showSticky={false}
           closeWithConfirm={closeWithConfirm}
-
         >
           {success && (
             <CRXAlert
@@ -472,6 +437,7 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={filterFormFields?.totalCount}
                   setSortOrder={(sort: any) => sortingOrder(sort)}
+                  
                 />
               )
               }

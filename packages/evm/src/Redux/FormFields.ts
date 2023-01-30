@@ -24,20 +24,9 @@ export const getAllFormFields: any = createAsyncThunk(
     }
 );
 
-export const getAllTypes: any = createAsyncThunk(
-    'getAllTypes',
-    async () => {
-        return SetupConfigurationAgent.getAllTypes()
-            .then((response: any) => response)
-            .catch((error: any) => {
-                console.error(error.response.data);
-            });
-    }
-); 
-
 export const fromFieldsSlice = createSlice({
     name: 'FormFields',
-    initialState: { filterFormFields: [] , getAllFormFields : [], getAllTypes : []},
+    initialState: { filterFormFields: [] , getAllFormFields : [] },
     reducers: {},
     extraReducers: (builder) => {
         builder
@@ -45,8 +34,6 @@ export const fromFieldsSlice = createSlice({
                 state.filterFormFields = payload;
             }).addCase(getAllFormFields.fulfilled, (state: any, { payload }) => {
                 state.getAllFormFields = payload;
-            }).addCase(getAllTypes.fulfilled, (state: any, { payload }) => {
-                state.getAllTypes = payload;
             })
     }
 });

@@ -74,6 +74,16 @@
     font-size: 14px;
     font-weight: var(--Font-style-normal);
     position: relative;
+    .bucketActionMenuAll{
+      button{
+        background: transparent;
+        border: 0px;
+        font-size: 23px;
+        width: 40px;
+        height: 10px;
+        color: var(--color-333333);
+      }
+    }
 
     .bucketListCheckedAll {
       position: absolute;
@@ -780,7 +790,7 @@
 }
 
 body {
-  overflow: visible !important;
+  overflow: initial !important;
   padding-right: 0 !important;
 }
 

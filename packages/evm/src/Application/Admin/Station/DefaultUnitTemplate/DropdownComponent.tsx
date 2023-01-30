@@ -36,6 +36,7 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({ deviceTypeId, sta
         }
     }
 
+
     return (
         <>
             <CRXSelectBox

@@ -9,9 +9,10 @@ import './uploadPoliciesDetail.scss';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
-import { getAllUploadPoliciesFilter, getAllData } from "../../../../Redux/UploadPolicies";
+import { getAllUploadPoliciesInfoAsync, getAllData } from "../../../../Redux/UploadPolicies"; 
 import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type UploadPoliciesDetailProps = {
     id: string
@@ -64,7 +65,24 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
       });
     const isAddCase = isNaN(+id);
     const { t } = useTranslation<string>();
+    const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+        gridFilter: {
+          logic: "and",
+          filters: []
+        },
+        page: 1,
+        size: 25,
+        gridSort: {
+          field: "name",
+          dir: "asc"
+        }
+      })
     
+    useEffect(() => {
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+        }
+    }, []);
     
     React.useEffect(() => {
         uploadPolicyDetailDropdownDataRef.current = uploadPolicyDetailDropdownData; 
@@ -491,7 +509,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 addCaseHandler();
                 dispatch(enterPathActionCreator({ val: payload.name }));   
                 onMessageShow(true,t("Success_You_have_updated_the_Upload_Policy"));
-                dispatch(getAllUploadPoliciesFilter());
+                dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));
                 
             })
             .catch(function(error) {      

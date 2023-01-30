@@ -723,110 +723,111 @@ const Group = () => {
      : ""}
       <CRXToaster ref={groupMsgRef} />
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={139}/>
-      <CrxTabPanel value={value} index={0}>
-        {/* <div className={showMessageError}> */}
-        <div
-          className={`${showMessageError} ${
-            alertType == "inline" ? "" : "errorGroupInfo"
-          }`}
-        >
-          <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} setIsSaveButtonDisabled={setIsSaveButtonDisabled} errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
-        </div>
-      </CrxTabPanel>
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={138}/>
+      
+        <CrxTabPanel value={value} index={0}>
+          {/* <div className={showMessageError}> */}
+          <div
+            className={`${showMessageError} ${
+              alertType == "inline" ? "" : "errorGroupInfo"
+            }`}
+          >
+            <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} setIsSaveButtonDisabled={setIsSaveButtonDisabled} errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
+          </div>
+        </CrxTabPanel>
 
       <CrxTabPanel value={value} index={1}>
         <div
-          className={`${
-            showSuccess ? "crxGroupTab1 isErrorHide" : "crxGroupTab1"
-          } ${messagesadd}`}
+          className="crxGroupTab1"
         >
           <User ids={userIds} onChangeUserIds={onChangeUserIds}></User>
         </div>
       </CrxTabPanel>
 
-      <CrxTabPanel value={value} index={2}>
-        {/* <div
-          onClick={scrollGroupTop}
-          className={`${
-            showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"
-          } ${messagesadd}`}
-        ></div> */}
-        <Application
-          resAppPermission={resAppPermission}
-          applicationPermissions={applicationPermissions}
-          onSetAppPermissions={getAppPermissions}
-          groupIdName={groupIdName}
-          isAppPermissionsChange={isAppPermissionsChange}
-        ></Application>
-      </CrxTabPanel>
+        <CrxTabPanel value={value} index={2}>
+          {/* <div
+            onClick={scrollGroupTop}
+            className={`${
+              showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"
+            } ${messagesadd}`}
+          ></div> */}
+          <Application
+            resAppPermission={resAppPermission}
+            applicationPermissions={applicationPermissions}
+            onSetAppPermissions={getAppPermissions}
+            groupIdName={groupIdName}
+            isAppPermissionsChange={isAppPermissionsChange}
+          ></Application>
+        </CrxTabPanel>
 
-      <CrxTabPanel value={value} index={3}>
-        <div className="crxGroupTab3">
-          <DataPermission
-            dataPermissionsInfo={dataPermissions}
-            onChangeDataPermission={onChangeDataPermission}
-            onDeletePermission={(id: number) => {
-              var deletedPermissions = deletedDataPermissions;
-              deletedPermissions.push(id);
-              setDeletedDataPermissions(deletedPermissions);
-            }}
-          ></DataPermission>
-        </div>
-      </CrxTabPanel>
+        <CrxTabPanel value={value} index={3}>
+          <div className="crxGroupTab3">
+            <DataPermission
+              dataPermissionsInfo={dataPermissions}
+              onChangeDataPermission={onChangeDataPermission}
+              onDeletePermission={(id: number) => {
+                var deletedPermissions = deletedDataPermissions;
+                deletedPermissions.push(id);
+                setDeletedDataPermissions(deletedPermissions);
+              }}
+            ></DataPermission>
+          </div>
+        </CrxTabPanel>
 
-      <div className="tab-bottom-buttons stickyFooter_Tab">
-        <div className="save-cancel-button-box">
+        <div className="tab-bottom-buttons stickyFooter_Tab">
+          <div className="save-cancel-button-box">
+            <CRXButton
+              variant="contained"
+              className="groupInfoTabButtons"
+              onClick={onSave}
+              disabled={isSaveButtonDisabled}
+            >
+              {t("Save")}
+            </CRXButton>
+            <CRXButton
+              className="groupInfoTabButtons secondary"
+              color="secondary"
+              variant="outlined"
+              onClick={() =>
+                history.push(
+                  urlList.filter(
+                    (item: any) => item.name === urlNames.adminUserGroups
+                  )[0].url
+                )
+              }
+            >
+              {t("Cancel")}
+            </CRXButton>
+          </div>
           <CRXButton
-            variant="contained"
-            className="groupInfoTabButtons"
-            onClick={onSave}
-            disabled={isSaveButtonDisabled}
-          >
-            {t("Save")}
-          </CRXButton>
-          <CRXButton
-            className="groupInfoTabButtons secondary"
+            onClick={() => redirectPage()}
+            className="groupInfoTabButtons-Close secondary"
             color="secondary"
             variant="outlined"
-            onClick={() =>
-              history.push(
-                urlList.filter(
-                  (item: any) => item.name === urlNames.adminUserGroups
-                )[0].url
-              )
-            }
           >
-            {t("Cancel")}
+            {t("Close")}
           </CRXButton>
         </div>
-        <CRXButton
-          onClick={() => redirectPage()}
-          className="groupInfoTabButtons-Close secondary"
-          color="secondary"
-          variant="outlined"
+
+        <CRXConfirmDialog
+          setIsOpen={() => setIsOpen(false)}
+          onConfirm={closeDialog}
+          isOpen={isOpen}
+          className="userGroupNameConfirm"
+          primary={t("Yes_close")}
+          secondary={t("No,_do_not_close")}
+          text="user group form"
         >
-          {t("Close")}
-        </CRXButton>
-      </div>
-      <CRXConfirmDialog
-        setIsOpen={() => setIsOpen(false)}
-        onConfirm={closeDialog}
-        isOpen={isOpen}
-        className="userGroupNameConfirm"
-        primary={t("Yes_close")}
-        secondary={t("No,_do_not_close")}
-        text="user group form"
-      >
-        <div className="confirmMessage __crx__Please__confirm__modal">
-          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user_group_form'")}</strong>. {t("If_you_close_the_form")}, 
-          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-          <div className="confirmMessageBottom">
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          <div className="confirmMessage __crx__Please__confirm__modal">
+            {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+            <strong>{t("'user_group_form'")}</strong>. {t("If_you_close_the_form")}, 
+            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+            </div>
           </div>
-        </div>
-      </CRXConfirmDialog>
+        </CRXConfirmDialog>
+
     </div>
   );
 };

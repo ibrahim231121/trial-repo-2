@@ -44,6 +44,9 @@ import CategoryFormsAndFields from "./Application/Admin/CategoryForms/CategoryFo
 import CategoryFormsDetail from "./Application/Admin/CategoryForms/CategoryFormsLister/CategoryFormsDetail";
 import Cookies from "universal-cookie";
 import MicroservicesBuildVersion from "./Application/MicroservicesBV";
+import CasesList from "./Application/Cases/CasesLister/CasesList";
+import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
+
 
 
 const cookies = new Cookies();
@@ -115,7 +118,7 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editUser)[0].url} exact={true} component={CreateUserForm} />
                 {/* <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sharedMedia)[0].url}  component={SharedMedia}  /> */}
                 <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-                <Route path="/assets/SharedMedia" exact={true} component={SharedMedia} />
+                <Route path={urlList.filter((item: any) => item.name === urlNames.sharedMedia)[0].url} exact={true} component={SharedMedia} />
 
 
                 <PrivateRoute moduleId={17} path={urlList.filter((item: any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
@@ -136,13 +139,23 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.categoryFormsCreate)[0].url} exact={true} component={CategoryFormsDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url} exact={true} component={CategoryFormsDetail} />
                 <Route path="/token/:token" exact={true} component={Token} />
-
+           
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitCreate} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.tenantSettings)[0].url} exact={true} component={TenantSettings} />
+                
+                
+                {/* Cases */}
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.cases)[0].url}  exact={true} component={CasesList} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createCase)[0].url}  exact={true} component={CaseDetail} />
+
+                
                 <Route path="/notfound" component={ErrorPage} />
                 <Route path="*" component={ErrorPage} />
+               
 
-              </Switch>
+               
+               
+                </Switch>
             </main>
             <footer>
               <Footer />

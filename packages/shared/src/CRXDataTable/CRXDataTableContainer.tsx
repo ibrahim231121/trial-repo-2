@@ -50,7 +50,6 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
     <>
   
     <TableContainer
-      
       className={classes.container + " AssetsDataGrid tableScrollValue " + className}
       component={Paper}
     >

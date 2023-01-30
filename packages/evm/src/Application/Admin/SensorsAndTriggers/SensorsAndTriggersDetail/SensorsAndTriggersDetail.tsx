@@ -12,6 +12,8 @@ import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
 import { getAllSensorsEvents, getAllData } from "../../../../Redux/SensorEvents";
 import { RootState } from "../../../../Redux/rootReducer";
+import { CRXTabs, CrxTabPanel } from "@cb/shared";
+import { getByPlaceholderText } from "@testing-library/react";
 
 type SensorsAndTriggersDetailProps = {
     id: string
@@ -565,14 +567,24 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const getFormatedLabel = (label: string) => {
         return <span className="requiredLable">
                     {label}{" "}
-                    {label === 'Action' || 'Icon' ? <span style={{color: "#000",paddingLeft: "8px", fontWeight: "bold"}}>*</span> : <span></span>}
+                    {label === 'Action' ? <span className="actionLabel">*</span> : <span></span>}
                 </span>
     }
 
+    const [value, setValue] = React.useState(0);
+
+    function handleChange(event: any, newValue: number) {
+        setValue(newValue);
+      }
+    const tabs = [
+        { label: t("Settings"), index: 0 },
+        { label: t("Device_Parameters"), index: 1 },
+      ];
+
     return (
-        
-        <div className="sensors-and-triggers">
-                {success && (
+
+        <div className="sensors-and-triggers crxTabsPermission switchLeftComponents" style={{}}>
+            {success && (
                   <CRXAlert
                     message={t("Success_You_have_saved_the_Sensors_And_Triggers")}
                     alertType="toast"
@@ -587,14 +599,34 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                     alertType="inline"
                     open={true}
                   />
-                )}        
-                    <div className="nameFieldSensors">
-                    <Grid container>
-                        <Grid item xs={12} sm={12} md={12} lg={5} >
+                )} 
+            
+            <CRXTabs  value={value} onChange={handleChange} tabitems={tabs} stickyTab={139}/>
+                <CrxTabPanel value={value} index={0}>
+
+                <div className="itemIndicator">
+                      <label className="indicates-label"><b>*</b> Indicates required field</label>
+                    </div>
+
+                    <div className="sesorsSetting">
+                
+            
+
+                    </div>
+
+                    <div className="settingsContent">
+                    {/* <div className="CRXPageTitle titlePage">
+                         <h2>Settings</h2>
+                    </div> */}
+                <Grid container spacing={2} className="settingsForm" >
+                
+                    <Grid item xs={12} sm={12} md={12} lg={5}>
+                        <div className="sensorsLeftCol">
+                        
                             <TextField
                                 required={true}
                                 value={name}
-                                label={t("Name")}
+                                label={t("Sensors_and_triggers_name")}
                                 className="sensors-and-triggers-input"
                                 onChange={(e: any) => setName(e.target.value)}
                                 disabled = {false}
@@ -603,20 +635,8 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 regex=""
                                 onBlur={() => checkNameValidation(name)}
                                 />
-                        </Grid>
-                    </Grid>
-                        {/* <Grid  item xs={12} sm={12} md={12} lg={5}>
-                            
-                        </Grid> */}
-                    </div>
-            <div className="settingsContent">
-                    <div className="CRXPageTitle titlePage">
-                         <h2>Settings</h2>
-                    </div>
-                <Grid container spacing={2} className="settingsForm" >
-                
-                    <Grid item xs={12} sm={12} md={8} lg={4} >
-                        <div>
+                    
+
                             <span className="gridFilterTextBox">
                             <CRXHeading variant="subtitle1" className="label">
                                 {getFormatedLabel(t("Action"))}
@@ -624,14 +644,15 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                             <CRXSelectBox
                                 className="select-box"
                                 id="settingAction"
-                                value={switchParameters.action.data.value > 0 ? switchParameters.action.data.value : defaultAction}
+                                value={switchParameters.action.data.value > 0 ? switchParameters.action.data.value : getByPlaceholderText}
                                 onChange={(e: any) => onDeviceSettingChange(e, 'action')}
                                 options={settingsDropdownData.actionList}
                                 isRequried={true}
                                 disabled={false}
                                 defaultOption={true}
-                                defaultOptionText={defaultAction}
-                                defaultValue={defaultAction} />
+                                
+                                defaultValue={defaultAction}/>
+                                
                             </span>
 
                             <span className="gridFilterTextBox">
@@ -647,8 +668,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 disabled={false}
                                 isRequried={true}
                                 defaultOption={true}
-                                defaultOptionText={defaultIcon}
-                                defaultValue={defaultIcon}
+                                
                                 error={!!deviceSettingsValidation.icon}
                                 errorMsg={deviceSettingsValidation.icon} />
                             </span>
@@ -666,8 +686,8 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     isRequried={true}
                                     disabled={false}
                                     defaultOption={true}
-                                    defaultOptionText={defaultCategory}
-                                    defaultValue={defaultCategory} />
+                                     
+                                    />
                             </span>
 
                             <span className="gridFilterTextBox">
@@ -683,14 +703,14 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     isRequried={true}
                                     disabled={false}
                                     defaultOption={true}
-                                    defaultOptionText={defaultCamera}
-                                    defaultValue={defaultCamera} />
+                                    
+                                    />
                             </span>
                         </div>
                     </Grid>
                     <div className='grid_spacer'></div>
 
-                    <Grid item xs={12} sm={12} md={8} lg={4}>
+                    <Grid item xs={12} sm={12} md={12} lg={5}>
                             <span className="gridFilterTextBox">
                                 <CRXHeading variant="subtitle1" className="label">
                                     {getFormatedLabel(t("Bookmark"))}
@@ -706,8 +726,8 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     error={!!deviceSettingsValidation.bookmark}
                                     errorMsg={deviceSettingsValidation.bookmark}
                                     defaultOption={true}
-                                    defaultOptionText={defaultBookmark}
-                                    defaultValue={defaultBookmark} />
+                                    
+                                    />
                             </span>
 
                             <div className="setttingsTextBox">
@@ -748,15 +768,13 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                     </Grid>
                 </Grid>
             </div>
-
-
-            <div className="deviceParameterContent">
-            
-
-                <div className="CRXPageTitle titlePage">
-                    <h2>Device Parameters</h2>
-                </div>
                 
+                
+                </CrxTabPanel>
+
+                <CrxTabPanel value={value} index={1}>
+                <div className="deviceParameterContent">
+
                 <div className="deviceParameterHeader">
                     <CRXRows container spacing={0}>
                         <CRXColumn className="deviceParameterColumn" container item xs={3} spacing={0}>{t("Device")}</CRXColumn>
@@ -847,14 +865,15 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                         onClick={onAddDeviceParameter}
                         color='primary'
                         variant='contained'
-                    > {t("Add_data_permissions")}
+                    > {t("Add_device_parameters")}
                     </CRXButton>
                 </div>
-            </div>
 
-            
-            
-            <div className="tab-bottom-buttons">
+                </div>
+
+                </CrxTabPanel>
+
+                <div className="tab-bottom-buttons">
                 <div className="save-cancel-button-box">
                 <CRXButton
                     variant="contained"
@@ -884,6 +903,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 </CRXButton>
                 </div>
             </div>
+
             <CRXConfirmDialog
                 setIsOpen={() => setIsOpen(false)}
                 onConfirm={closeDialog}
@@ -903,6 +923,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 </div>
             </CRXConfirmDialog>
         </div>
+
     )
 }
 

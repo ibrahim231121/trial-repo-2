@@ -1,19 +1,19 @@
 .footerDiv {
   padding-left: 80px;
   font-size: 12px;
-  position: sticky;
+  position: relative;
   color: var(--color-666666);
   height: 30px;
   display: flex;
   align-items: center;
   width: 100%;
-  bottom: 10px;
+  bottom: 15px;
   font-family:var(--Arial-font-family);
-  z-index: 1300;
+  z-index: 999;
 
   i {
     position: absolute;
-    right: 16px;
+    right: 29px;
     font-size: 24px;
     color: var(--color-d1d2d4);
 

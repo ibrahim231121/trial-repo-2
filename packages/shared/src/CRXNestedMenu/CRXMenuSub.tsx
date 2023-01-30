@@ -49,7 +49,12 @@ const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT)
 
     }
 
+    const dataTableStickyBodyPos = document.querySelector("body");
+
     const onItemClick = (event: any, item : itemsProps) => {
+
+        dataTableStickyBodyPos?.classList.remove("dataTableStickyBodyPos");
+
         if (item.disabled) {
             event.preventDefault();
             return;
@@ -177,9 +182,11 @@ const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT)
         
         if(activeItem != null) {
             window.addEventListener('mouseup', removeParent);
+             dataTableStickyBodyPos?.classList.add("dataTableStickyBodyPos");
         }
         return () => {
             window.removeEventListener('mouseup', removeParent);
+             dataTableStickyBodyPos?.classList.remove("dataTableStickyBodyPos");
         }
     }, [activeItem])
 

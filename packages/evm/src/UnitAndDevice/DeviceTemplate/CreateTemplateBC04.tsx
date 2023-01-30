@@ -865,9 +865,8 @@ const CreateTemplate = (props: any) => {
     if (editCase == false) {
       UnitsAndDevicesAgent.addTemplateConfiguration(body).then((response: number)=>{
         if (response > 0) {
-          history.push('/admin/unitanddevices/createtemplate/template', { id: response, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+          history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: response, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
           history.go(0)
-          resetForm()
         }
         targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: 'success', duration: 5000, clearButtton: true });
       })
@@ -886,11 +885,9 @@ const CreateTemplate = (props: any) => {
       body.id = historyState.id;
       const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
-        setDataFetched(false);
-        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true });
-        loadData(historyState.id);
-        dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNames }));
-        resetForm();
+        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
+        history.replace(urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: historyState.id, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+        history.go(0)
       })
       .catch((e:any) => {
         console.error(e);
@@ -900,7 +897,7 @@ const CreateTemplate = (props: any) => {
   };
 
   const cloneTemplate = () => {
-    history.push('/admin/unitanddevices/createtemplate/template', { id: historyState.id, isclone: true, name: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+    history.push(urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: historyState.id, isclone: true, name: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
     history.go(0)
   }
 
@@ -1061,7 +1058,7 @@ const CreateTemplate = (props: any) => {
                   <div className="tctButton stickyFooter_Tab">
                     <div className="tctLeft">
                       <CRXButton
-                        className={validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
+                        className={`primary ${validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}`}
                         disabled={validationFailed || !dirty}
                         type="submit"
                         onClick={() => handleSave(values, resetForm)}

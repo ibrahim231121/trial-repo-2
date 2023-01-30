@@ -79,7 +79,10 @@ const dateOptions = {
 
 const MAX_REQUEST_SIZE_FOR = {
   CATEGORY : 1000,
-  STATION: 100
+  STATION: 100,
+  CASES: 100,
+  DATA_RETENTION: 100,
+  DATE_UPLOAD: 100
 }
 
 const basicDateDefaultValue = dateOptions.basicoptions[0].value;

@@ -15,6 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import "./CRXDataTable.scss";
 import DataTableContainer from "./CRXDataTableContainer";
 import { makeStyles } from "@material-ui/core/styles";
+
 const useStyles = makeStyles((theme) => ({
   
   selectDropdown: {
@@ -57,9 +58,15 @@ const useStyles = makeStyles((theme) => ({
   },
 
   pagination : {
-    height:"45px",
+    height:"60px",
     overflow : "hidden",
-    position : "relative",
+    position: "fixed",
+    left: "0px",
+    bottom: "26px",
+    background: "#FFF",
+    borderTop: "1px solid var(--color-ccc)",
+    width: "calc(100% - 26px)",
+    zIndex: 2,
     '& .MuiToolbar-regular' : {
       height:"45px",
       minHeight: "45px",
@@ -111,6 +118,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   topSpaceDrag,
   headerPositionInit,
   stickyToolbar,
+  isPaginationRequired,
 }) => {
   const classes = useStyles();
   
@@ -378,6 +386,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         showTotalSelectedText={showTotalSelectedText}
                         toolBarButton={toolBarButton}
                         stickyToolbar={stickyToolbar}
+                        offsetY={offsetY}
                       />
                     )}
 
@@ -418,7 +427,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       topSpaceDrag={topSpaceDrag}
                       headerPositionInit={headerPositionInit}
                     />
-                    {/* {(rowsPerPage  >= 25) ? */}
+                    {(isPaginationRequired == null || isPaginationRequired == true) ?
                       <TablePagination
                         className="dataTablePages"
                         //classes = {clxFooter.root}  
@@ -440,9 +449,11 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         onPageChange={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                       />
-                    {/* : null
-                    } */}
+                   : null
+                    }
+                    <div className="overlayPanel_Right"></div>
                    <div className="overlayPanel"></div>
+                   <div className="overlayPanel_bottom"></div>
                   </div>
                 </ThemeProvider>
               ) : null}

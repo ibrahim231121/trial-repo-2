@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, CategoryModel } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
+import { Cases } from './models/CasesModels';
 import { CRXLoader } from "@cb/shared"
 import jwt_decode from 'jwt-decode';
 
@@ -40,7 +41,7 @@ import {
     EVIDENCE_GET_URL,
     BASE_URL_AUTHENTICATION_SERVICE,
     EVIDENCE_GET_BY_ID_URL,
-    BASE_URL_Cases_SERVICE,
+    BASE_URL_CASES_SERVICE,
     BASE_URL_Configuration_SERVICE,
     BASE_URL_DeviceHeartBeat_SERVICE,
     BASE_URL_COMMAND_SERVICE
@@ -74,6 +75,8 @@ import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/Sensor
 import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/RetentionPolicies';
 import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies';
 import { logOutUser } from '../../Logout/API/auth';
+import { url } from 'inspector';
+import { Case } from '../../Application/Cases/CaseTypes';
 
 
 
@@ -192,7 +195,6 @@ const requests = {
 }
 export const SetupConfigurationAgent = {
     getAllControlTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Fields/GetAllControlTypesKeyValues", config),
-    getAllTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Forms/GetAllTypesKeyValues", config),
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     postCategories: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteCategoryForms: (extraHeader?: Headers[]) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
@@ -203,6 +205,8 @@ export const SetupConfigurationAgent = {
     getSingleCategory: (id : number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
     getSingleFormField: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields/${id}`, config),
     getSingleCategoryForm: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms/${id}`, config),
+    postCategoryForms: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    putCategoryForms: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -235,8 +239,7 @@ export const SetupConfigurationAgent = {
     getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config),
     GetUploadPolicyValues: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetUploadPolicyValues", config),
     getAllFiltersUploadPolicies: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
@@ -392,7 +395,19 @@ export const SearchAgent = {
 }
 
 export const CasesAgent = {
-    getCasesBuildVersion: () => requests.get<any>(BASE_URL_Cases_SERVICE, "/Cases/Health/BuildVersion"),
+    getCasesBuildVersion: () => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/Health/BuildVersion"),
+    getCaseStates: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStates"),
+    getCaseStatus: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStatus"),
+    getCaseCreationType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseCreationType"),
+    getCaseClosedType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseClosedType"),
+    addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, "/Cases", caseBody, config),
+
+
+    getAllCases: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<Cases[]>>(BASE_URL_CASES_SERVICE, `/Case/GetAll${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
+    // getAllCasesInfo: (url: string) => requests.get<Cases[]>(BASE_URL_CASES_SERVICE, "/Case/GetAllCases" + url, config),
+    deleteCase: (url: string) => requests.delete<void>(BASE_URL_CASES_SERVICE, url, config),
 }
 
 export const ConfigurationAgent = {
@@ -427,3 +442,6 @@ export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
     }, []);
     return [data];
 };
+
+
+

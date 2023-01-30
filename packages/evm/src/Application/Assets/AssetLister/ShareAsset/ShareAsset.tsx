@@ -45,6 +45,8 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const [emailError, setEmailError] = React.useState<string>("");
   const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
   const [showReasonError, setShowReasonError] = React.useState<boolean>(false);
+  const [linkExpireDisableState, setLinkExpireDisableState] = React.useState<boolean>(false);
+
 
   const [radioCheck, setRadioCheck] = React.useState<string>("");
   const [reasonCheck, setreasonCheck] = React.useState<string>("");
@@ -83,13 +85,17 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   React.useEffect(() => {
     if(linkExpireType == "1")//hour
     {
+      setLinkExpireDisableState(false);
       setLinkExpireDuration(linkExpire);
     } else if (linkExpireType == "2") {
       //day
+      setLinkExpireDisableState(false);
       let tmpExpireTime = parseInt(linkExpire) * 24;
       setLinkExpireDuration(tmpExpireTime + "");
     } else if (linkExpireType == "3") {
       //infinite
+      setLinkExpireDisableState(true);
+      setLinkExpire('');
       setLinkExpireDuration(linkExpire);
     }
   }, [linkExpireType]);
@@ -332,6 +338,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       required={true}
                       value={linkExpire}
                       onChange={(e) => setLinkExpire(e.target.value)}
+                      disabled={linkExpireDisableState}
                     />
                        <div>{showLinkExpirationError ? (
                       <div className="errorStationStyle">

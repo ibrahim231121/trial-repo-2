@@ -4,7 +4,6 @@ import { CRXDataTable,
   CRXToaster, 
   CRXButton, 
   CBXMultiCheckBoxDataFilter,
-  CRXTruncation
 } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
@@ -759,11 +758,10 @@ const User: React.FC = () => {
           totalRecords={users.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
-           offsetY={-27}
-           topSpaceDrag = {5}
-           searchHeaderPosition={222}
-           dragableHeaderPosition={187}
-           stickyToolbar={133}
+           offsetY={119}
+           stickyToolbar={137}
+           searchHeaderPosition={241}
+           dragableHeaderPosition={207}
            //End here
         />
       )}

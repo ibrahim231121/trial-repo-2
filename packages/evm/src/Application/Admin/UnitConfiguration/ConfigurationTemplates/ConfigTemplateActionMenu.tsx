@@ -50,7 +50,6 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
 
   const ViewLog = () => {
     if (row) {
-      // history.push('/admin/unitanddevices/template/viewlog', { id: row.id, type: row.type, name: row.name })
       history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateViewLog)[0].url, { id: row.id, type: row.type, name: row.name })
     }
   };
@@ -78,7 +77,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
   }
   const cloneTemplate = () => {
     if (row) {
-      history.push('/admin/unitanddevices/createtemplate/template', { id: row.id, isclone: true, name: row.name, deviceId: row.device.deviceId, deviceType: row.deviceType });
+      history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: row.id, isclone: true, name: row.name, deviceId: row.device.deviceId, deviceType: row.deviceType });
     }
   }
 

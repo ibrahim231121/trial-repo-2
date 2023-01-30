@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState,useContext} from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
@@ -11,9 +11,8 @@ import { urlList, urlNames } from "../../../../utils/urlList"
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton } from "@cb/shared";
-import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
-
-
+import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {
   ValueString,
   HeadCellProps,
@@ -23,30 +22,36 @@ import {
   onClearAll,
   onSetHeadCellVisibility,
   onSaveHeadCellData,
-  PageiGrid
+  PageiGrid,
+  SearchObject,
+  GridFilter,
+  onSetSearchDataValue
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import {CRXAlert,CRXToaster} from "@cb/shared";
-import {getAllUploadPoliciesFilter} from '../../../../Redux/UploadPolicies';
+import {getAllUploadPoliciesInfoAsync} from '../../../../Redux/UploadPolicies';
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 
 
 type UploadPoliciesTemplate = {
-  id : number;
+  id: number;
   description: string;
 }
 
-const ORDER_BY = "asc" as Order;
-const ORDER_BY_PARAM = "recordingStarted";
-
 const UploadPoliciesList: React.FC = () => {
   const { t } = useTranslation<string>();
-
+  const dispatch = useDispatch();
+  let history = useHistory();
+  const reformattedRowsRef = useRef<UploadPoliciesTemplate[]>();
   const [rows, setRows] = React.useState<UploadPoliciesTemplate[]>([]);
+  const [order, setOrder] = React.useState<Order>("asc");
+  const [orderBy, setOrderBy] = React.useState<string>("Name");
+  const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<UploadPoliciesTemplate[]>([]);
-  const [selectedActionRow,setSelectedActionRow] = useState<UploadPoliciesTemplate[]>();
+  const [selectedActionRow, setSelectedActionRow] = useState<UploadPoliciesTemplate[]>();
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
   const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -54,21 +59,51 @@ const UploadPoliciesList: React.FC = () => {
       filters: []
     },
     page: page,
-    size: rowsPerPage
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+    }
   })
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
-  const dispatch = useDispatch();
-  let history = useHistory();
-
-  const reformattedRowsRef = useRef<UploadPoliciesTemplate[]>();
+  
   const filterUploadPolicies: any = useSelector((state: RootState) => state.uploadPoliciesSlice.filterUploadPolicies);
-  const { getModuleIds} = useContext(ApplicationPermissionContext);
+  const { getModuleIds } = useContext(ApplicationPermissionContext);
+
+  useEffect(() => {
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "uploadPoliciesTemplateDataTable");
+  }, []);
+
+  const setUploadPoliciesData = () => {
+    let uploadPoliciesTemplateRows: UploadPoliciesTemplate[] = []
+    if (filterUploadPolicies?.data && filterUploadPolicies?.data.length > 0) {
+      uploadPoliciesTemplateRows = filterUploadPolicies?.data.map((template: any) => {
+        return { 
+            id: template.id, 
+            name: template.name, 
+            description: template.description, 
+        }
+      })
+    }
+    
+    setRows(uploadPoliciesTemplateRows);
+    setReformattedRows({...reformattedRows, rows: uploadPoliciesTemplateRows});
+    reformattedRowsRef.current = uploadPoliciesTemplateRows;
+  }
+
+  React.useEffect(() => {
+    setUploadPoliciesData();
+  }, [filterUploadPolicies?.data]);
+
   useEffect(() => {
     if(paging)
-      dispatch(getAllUploadPoliciesFilter(pageiGrid));
+      dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));
     setPaging(false)
   },[pageiGrid])
-  
+
 
   useEffect(() => {
     document
@@ -77,32 +112,19 @@ const UploadPoliciesList: React.FC = () => {
       ?.classList.add("MuiMenu_Modal_Ui");
   });
 
-  useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
-    setPaging(true)
-  },[page, rowsPerPage])
+  const searchText = (
+    rowsParam: UploadPoliciesTemplate[],
+    headCell: HeadCellProps[],
+    colIdx: number
+  ) => {
 
-  useEffect(() => {
-    let headCellsArray = onSetHeadCellVisibility(headCells);
-    setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "uploadPoliciesTemplateDataTable");
-    dispatch(enterPathActionCreator({ val: "" }));
-}, []);
-
-React.useEffect(() => {
-  setUploadPoliciesData();
-}, [filterUploadPolicies?.data]);
-
-    const onChange = (valuesObject: ValueString[], colIdx: number) => {
-      headCells[colIdx].headerArray = valuesObject;      
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
     }
 
-    const searchText = (
-      headCell: HeadCellProps[],
-      colIdx: number
-    ) => {
     return (
-      <TextSearch headCells={headCell} colIdx={colIdx} onChange={(valueObject) => onChange(valueObject,colIdx)} />
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
   };
 
@@ -112,19 +134,24 @@ React.useEffect(() => {
       variant: obj.variant,
       duration: obj.duration,
       clearButtton: true,
-      className : "policy"
+      className: "policy"
     });
   }
 
-  const onMessageShow = (isSuccess:boolean,message: string) => {
+  const onMessageShow = (isSuccess: boolean, message: string) => {
     UploadFormMessages({
       message: message,
-      variant: isSuccess? 'success' : 'error',
+      variant: isSuccess ? 'success' : 'error',
       duration: 5000,
       className: "policy"
-    });    
+    });
   }
-
+  const openEditForm = (rowId: number) => {
+    let urlPathName = urlList.filter((item: any) => item.name === urlNames.uploadPoliciesEdit)[0].url;
+    history.push(
+      urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + rowId
+    );
+  }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -142,12 +169,23 @@ React.useEffect(() => {
       label: `${t("Policy_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e,""),
-      sort: false,
-      searchFilter: false,
+      dataComponent: (e: string, id: number) => {
+        var selectedRow = reformattedRowsRef.current?.find((x: any) => x.name == e);
+        if (getModuleIds().includes(63)) {
+          return <Restricted moduleId={63}>
+            <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={
+              (e) => openEditForm(selectedRow?.id ?? 0)}>{e}</div>
+          </Restricted>
+        }
+        else 
+        {
+          return textDisplay(e, "")
+        }
+      },
+      sort: true,
+      searchFilter: true,
       searchComponent: searchText,
-      minWidth: "790",
-      detailedDataComponentId: "name",
+      minWidth: "760",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -157,38 +195,46 @@ React.useEffect(() => {
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ''),
-      sort: false,
-      searchFilter: false,
+      sort: true,
+      searchFilter: true,
       searchComponent: searchText,
-      minWidth: "805",
-      detailedDataComponentId: "name",
-      attributeName: "Name",
+      minWidth: "765",
+      attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
     },
   ]);
 
-  const setUploadPoliciesData = () => {
-    let uploadPoliciesTemplateRows: UploadPoliciesTemplate[] = []
-    if (filterUploadPolicies?.data && filterUploadPolicies?.data.length > 0) {
-      uploadPoliciesTemplateRows = filterUploadPolicies?.data.map((template: any) => {
-        return { 
-            id: template.id, 
-            name: template.name, 
-            description: template.description, 
-        }
-      })
+  const onSelection = (v: ValueString[], colIdx: number) => {
+    if (v.length > 0) {
+      for (var i = 0; i < v.length; i++) {
+        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, searchDataValue]);
+      }
+    } else {
+      setSearchData((prevArr) =>
+        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+      );
     }
-    setRows(uploadPoliciesTemplateRows);
-    reformattedRowsRef.current = uploadPoliciesTemplateRows;
-  }
+  };
+
+  useEffect(() => {
+    if(searchData.length > 0){
+      setIsSearchable(true)
+    }
+  }, [searchData]);
 
   const getSelectedItemsUpdate = () => {
     setSelectedItems([]);
   }
 
   const UploadPolicyAction = () => {
-    dispatch(getAllUploadPoliciesFilter(pageiGrid));
+    dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));
   }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
@@ -198,21 +244,68 @@ React.useEffect(() => {
 
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    dispatch(getAllUploadPoliciesFilter(pageiGrid));  
+    dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));  
+    setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
   };
- 
 
   const onSetHeadCells = (e: HeadCellProps[]) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
-
   };
+
+  const getFilteredUploadPoliciesData = () => {
+    pageiGrid.gridFilter.filters = []
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+    })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
+
+    console.log("PageiGrid : ", pageiGrid)
+
+    if(page !== 0)
+      setPage(0)
+    else
+      dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));
+    
+    setIsSearchable(false)
+  }
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPaging(true)
+  },[page, rowsPerPage])
+
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setPaging(true)
+  }
+
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredUploadPoliciesData()
+    }
+  }
+  const handleBlur = () => {
+    if(isSearchable) {     
+      getFilteredUploadPoliciesData()
+    }
+  }
+
   return (
-    <div className="CrxUploadPoliciesTable switchLeftComponents">
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className="CrxUploadPoliciesTable switchLeftComponents" onKeyDown={handleKeyDown}>
       <CRXToaster ref={uploadMsgFormRef} />
-        {
+      {
         rows && (
           <CRXDataTable
             id="uploadPoliciesTemplateDataTable"
@@ -220,24 +313,25 @@ React.useEffect(() => {
               row={selectedActionRow}
               selectedItems={selectedItems}
               getRowData={UploadPolicyAction}
-              getSelectedData= {getSelectedItemsUpdate}
-              onMessageShow = {onMessageShow}
+              getSelectedData={getSelectedItemsUpdate}
+              onMessageShow={onMessageShow}
             />}
-            toolBarButton = {
+            toolBarButton={
               <>
-              <Restricted moduleId={0}>
-                <CRXButton className="primary UploadPoliciesBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.uploadPoliciesCreate)[0].url) }}>
-                  {t("Create_Upload_Policy")}
-                </CRXButton>
-              </Restricted>
-              
+                <Restricted moduleId={62}>
+                  <CRXButton className="primary UploadPoliciesBtn" onClick={() => { history.push(urlList.filter((item: any) => item.name === urlNames.uploadPoliciesCreate)[0].url) }}>
+                    {t("Create_Upload_Policy")}
+                  </CRXButton>
+                </Restricted>
+
               </>
             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
+            initialRows={reformattedRows}
             headCells={headCells}
-            orderParam={ORDER_BY}
-            orderByParam={ORDER_BY_PARAM}
+            orderParam={order}
+            orderByParam={orderBy}
             showToolbar={true}
             showCountText={false}
             columnVisibilityBar={false}
@@ -258,20 +352,22 @@ React.useEffect(() => {
             selectedItems={selectedItems}
             //Please dont miss this block.
             offsetY={-27}
-            topSpaceDrag = {5}
+            topSpaceDrag={5}
             searchHeaderPosition={219}
             dragableHeaderPosition={184}
             stickyToolbar={133}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}
-            setPage= {(pages:any) => setPage(pages)}
-            setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
+            setPage={(pages: any) => setPage(pages)}
+            setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterUploadPolicies?.totalCount}
+            setSortOrder={(sort:any) => sortingOrder(sort)}
           />
         )
       }
     </div>
+    </ClickAwayListener>
   );
 };
 

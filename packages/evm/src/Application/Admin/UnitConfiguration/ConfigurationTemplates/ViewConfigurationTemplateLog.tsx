@@ -24,6 +24,7 @@ import {
   } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useTranslation } from "react-i18next";  
 import { useDispatch, useSelector } from "react-redux";
+import { urlList, urlNames } from '../../../../utils/urlList';
 
 type ConfigTemplateLogs = {
     id: number;
@@ -200,7 +201,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
             toolBarButton={
              
               <div className="Button">
-                            <Link to={{ pathname: '/admin/configurationtemplate' }}>
+                            <Link to={{ pathname: urlList.filter((item: any) => item.name === urlNames.urladminUnitConfigurationTemplate)[0].url }}>   
                               <div>X</div>
                             </Link>
                   </div>

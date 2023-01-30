@@ -34,6 +34,7 @@ interface VideoScreenProp {
   isAudioGraph: any;
   ffScreenIcon ? : any;
   setscreenChangeVideoId : any
+  isGuestView: boolean
 }
 
 const VideoScreen = ({
@@ -61,6 +62,7 @@ const VideoScreen = ({
   isAudioGraph,
   ffScreenIcon,
   setscreenChangeVideoId,
+  isGuestView
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -346,7 +348,7 @@ const VideoScreen = ({
         
       </div>
       
-      {mapEnabled && (
+      {(mapEnabled) && ((isGuestView && openMap) || !isGuestView) ? (
         <div className="_video_Player_Right_Panel">
           <div className="_panel_resize_bar"></div>
           <AssetDetailsPanel
@@ -359,10 +361,11 @@ const VideoScreen = ({
             gpsJson={gpsJson}
             openMap={openMap}
             setOnMarkerClickTimeData={setOnMarkerClickTimeData}
+            isGuestView={isGuestView}
             toasterMsgRef={toasterMsgRef}
           />
         </div>
-      )}
+      ) : ""}
      
     </div>
   );

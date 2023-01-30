@@ -13,18 +13,26 @@ const assetBucketSlice = createSlice({
     },
     add: (state: any, action: PayloadAction<any>) => {
       const { payload } = action
-      if (!Array.isArray(payload)) {
-        const find = state.assetBucketData.findIndex((val: any) => val.id === payload.id)
-        if (find === -1) {
-          state.assetBucketData.push(payload)
+      // if(payload.isMetaData && payload.isMetaData==true){
+      //   const find = state.assetBucketData.findIndex((val: any) => val.assetId === payload.assetId)
+      //   if (find === -1) {
+      //     state.assetBucketData.push(payload)
+      //   }
+      // }
+      // else {
+        if (!Array.isArray(payload)) {
+          const find = state.assetBucketData.findIndex((val: any) => val.assetId === payload.assetId)
+          if (find === -1) {
+            state.assetBucketData.push(payload)
+          }
+        } else {
+          const find = payload.filter((p: any) => !state.assetBucketData.find((s: any) => p.assetId === s.assetId))
+          if (payload.length > find.length) {
+            state.isDuplicateFound = true;
+          }
+          state.assetBucketData.push(...find)
         }
-      } else {
-        const find = payload.filter((p: any) => !state.assetBucketData.find((s: any) => p.id === s.id))
-        if (payload.length > find.length) {
-          state.isDuplicateFound = true;
-        }
-        state.assetBucketData.push(...find)
-      }
+      //}
       //work for local storage.
       localStorage.setItem("isBucket", "True");
       localStorage.setItem("assetBucket", JSON.stringify(state.assetBucketData));

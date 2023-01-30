@@ -1,8 +1,8 @@
 .sensors-and-triggers {
-    padding: 120px 4px 0px 65px;
+    padding: 100px 4px 0px 65px !important;
     .settingsContent {
-        // position: relative;
-        margin-top: 50px;
+        margin-top: 25px;
+        padding: 0 130px 0 130px;
         .titlePage{
             font-size: 50px !important;
             margin-bottom: 35px;
@@ -14,15 +14,27 @@
         .select-box {
             width: 100%;
         }
+        // .sensorsLeftCol{
+        //     .gridFilterTextBox{
+        //         h6 {
+        //         // width: 220.66px !important;
+        //         width: 275px;
+        //         align-items: baseline;
+        //         }
+        //     }
+        // }
+
         .gridFilterTextBox {
             margin-bottom: 30px;
             display: flex;
             align-items: center;
             width: 100%;
             h6 {
-                width: 220.66px !important;
+                // width: 220.66px !important;
+                width: 305px ;
                 align-items: baseline;
             }
+
             .gridFilterSpanUi {
                 width: 100%;
             }
@@ -31,6 +43,7 @@
                     content: none;
                 }
             }
+            
         }
         .setting_para {
             position: absolute;
@@ -39,23 +52,38 @@
         }
         .requiredLable{
             align-items: baseline;
+            font-size: 14px;
             span{
+                .inputLabelReq{
                 font-size: 20px;
                 position: relative;
                 top: -5px;
-                left: 9px;
+                left: 8px;
                 padding-left: 0px !important;
                 font-weight: var(--Font-style-bold);
+                }
+                
             }
+            
         }
         .setttingsTextBox{
-            margin-top: 35px;
+            margin-top: 32px;
             margin-bottom: 35px;
         }
         .email_checkBox_ui{
             span{
-            margin-left: 27px;
+            margin-left: 41px;
             }
+        }
+        .inputLabelNoReq{
+            font-size: 14px;
+        }
+        
+    }
+
+    .requiredLable{
+        .inputLabelReq{
+            left: 8px;
         }
     }
     .settingsForm{
@@ -63,7 +91,7 @@
     }
 
     .deviceParameterContent {
-        margin-top: 20px;
+        margin-top: 25px;
         .titlePage{
             margin-bottom: 35px;
             margin-left: 75px;
@@ -155,7 +183,7 @@
         .deviceParameterBtnAdd {
             margin: 0 86px;
             padding: 0 0 0 0;
-            border-top: 1px solid var(--color-333333);
+            border-top: 1px solid var(--color-707070);
             .PreSearchButton {
                 background-color: var(--color-333333);
                 color: var(--color-d1d2d4) !important;
@@ -177,7 +205,7 @@
     }    
     @media screen  and (min-width: 1700px) and (max-width:2200px) {
         .grid_spacer {
-            width: 144px;
+            width: 125px;
         }
     }
     @media screen and (max-width:1279px) {
@@ -189,48 +217,152 @@
     .tab-bottom-buttons {
         display: flex;
         justify-content: space-between;
-        padding: 0 81px;
-        margin-top: 50px;
+        // padding: 0 81px;
+        margin-top: 25px;
         .groupInfoTabButtons {
             margin-right: 20px;
         }
     }
     .nameFieldSensors {
-        margin-left: 71px;
-        margin-bottom: 29px;
+        // margin-bottom: 29px;
         margin-top: 26px;
-        h6{
-            width: 15%;
-        }
         .gridFilterTextBox {
             display: flex;
+            .requiredLable{
+                margin-right: 61px;
+                margin-left: 6px;
+            }
         }
-        // .gridFilterSpanUi {
-        //     width: 100%;
-        //     margin-left: 119px;
-        // }
         .MuiInput-root {
-            width: 255px;
+            width: 454px;
         } 
     }
-}
 
 
-
-.email_checkBox_ui {
-    margin-left: 4px;
-    label {
-        font-size: 14px;
+    .email_checkBox_ui {
         margin-left: 4px;
-        span {
-            font-size: 20px;
-            color: black;
-            font-weight: 700;
+        label {
+            font-size: 14px;
             margin-left: 4px;
-            margin-right: 20px;
+            span {
+                font-size: 20px;
+                color: black;
+                font-weight: 700;
+                margin-left: 4px;
+                margin-right: 20px;
+            }
         }
+        
     }
-    span {
-        margin-left: 16px;
-    }
+
+   .MuiTab-root{
+        &:nth-child(2){
+            padding: 0 51px !important;
+        }
+    } 
+        
+    div[role="tabpanel"] {
+         min-height: calc(100vh - 292px) !important;
+        }
+        
+
+        .sesorsSetting{
+            display: flex;
+            flex-direction: column;
+            margin-top: 25px;
+            margin-left: 225px;
+        }
+
+       
+        .itemIndicator{
+            margin-bottom: 25px;
+            margin-top: 85px;
+            margin-left: 75px;
+            
+            .indicates-label{
+                font-style: italic;
+                font-size: 14px;
+                color: var(--color-333333);
+                margin-left: 10px;
+            }
+            b {
+                font-size: 20px;
+                margin-right: 8px;
+              }
+        }
+        i.Mui-disabled {
+            background-color: var(--color-e5e5e5);
+          }
+          .Mui-disabled {
+            background-color: var(--color-e5e5e5);
+            color: var(--color-979797) !important;
+            font-size: 14px;
+            &:hover {
+              border: none;
+            }
+            &:focus {
+              border: none;
+            }
+            &::before {
+              color: var(--color-979797) !important;
+            }
+            .MuiIconButton-label {
+              color: var(--color-979797);
+            }
+
+            &:-ms-input-placeholder {
+              color: var(--color-979797) !important;
+            }
+
+            &::-webkit-input-placeholder {
+              color: var(--color-979797) !important;
+            }
+
+            &::placeholder {
+              color: var(--color-979797) !important;
+            }
+          }
+
+      .actionLabel{
+        color: #000;
+        padding-left: 8px; 
+        font-weight: bold; 
+        font-size: 20px;
+      }
+          
 }
+
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+    .sensors-and-triggers {
+        .settingsContent {
+            padding: 0 0px 0 0px;
+        }
+        .sesorsSetting{
+            margin-left: 0px;
+        }
+        .nameFieldSensors{
+            .MuiInput-root{
+                width: 480px;
+            }
+            .gridFilterTextBox{
+                .requiredLable{
+                    margin-left: 0px;
+                }
+            }
+        } 
+        .itemIndicator{
+            margin-left: 0px;
+            
+            .indicates-label{
+                margin-left: 0px;
+            }
+        } 
+        
+    }
+  }
+
+

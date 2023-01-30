@@ -29,9 +29,10 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
 
   const filterTemplatesByStation = (templates: any[], stationId: number) => {
     var filteredTemplates = templates.filter(function (item: any) {
-      return item.value == stationId;
+      if (item.stationId == stationId) {
+        return { displayText: item.displayText, value: item.value }
+      }
     })
-
     return filteredTemplates;
   }
   const onChangeName = (e: any) => {
@@ -71,12 +72,11 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     setGroupName(e.target.value);
   };
   useEffect(() => {
-
     setName(info.name);
     setDescription(info.description);
     setGroupName(info.groupName);
     setconfigTemplate(info.configTemp);
-    setconfigList(info.configTemplateList);
+    setconfigList([{ displayText: t("None"), value: "0" }, ...filterTemplatesByStation(info.allconfigTemplateList, info.stationId)]);
     setstationList(info.stationList);
     setstationId(info.stationId);
   }, [info]);
@@ -90,7 +90,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   };
 
   const onChangeStation = (e: any) => {
-    debugger
+    //debugger
     console.log([{ displayText: t("None"), value: "0" }, ...filterTemplatesByStation(info.allconfigTemplateList, e.target.value)], "templates")
     onChangeGroupInfo(
       name,

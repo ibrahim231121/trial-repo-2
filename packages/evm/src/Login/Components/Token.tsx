@@ -7,6 +7,7 @@ import ApplicationPermissionContext from '../../ApplicationPermission/Applicatio
 import {TokenType} from '../../types'
 import { AuthenticationAgent } from "../../utils/Api/ApiAgent";
 import { Token } from "../../utils/Api/models/AuthenticationModels";
+import { urlList, urlNames } from "../../utils/urlList";
 
 
 const TokenPage=(props:any)=> {
@@ -21,7 +22,7 @@ const TokenPage=(props:any)=> {
 
   useEffect(() => {
     if (checkVerifier() == null) {
-      history.push("/assets");
+      history.push(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
     } else {
      
     
@@ -39,7 +40,7 @@ const TokenPage=(props:any)=> {
                 
                 setModuleIds(moduleIdsAssigned);
             }
-            history.push("/assets");
+            history.push(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
           })
         );
         

@@ -71,7 +71,8 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
 
   //This block use for initial bind the component or error case hanldler
   useEffect(() => {
-    setRotate("rotate");
+    if(!error)
+      setRotate("rotate");
   }, []);
 
   //update the value of progrees and control icon and and class from this block

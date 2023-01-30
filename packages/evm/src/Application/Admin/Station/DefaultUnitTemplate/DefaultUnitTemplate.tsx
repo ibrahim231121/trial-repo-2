@@ -29,7 +29,7 @@ const DefaultUnitTemplate: React.FC = () => {
     const [success, setSuccess] = React.useState<boolean>(false);
     const [error, setError] = React.useState<boolean>(false);
     const [page, setPage] = React.useState<number>(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(50);
     const [paging, setPaging] = React.useState<boolean>();
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
         gridFilter: {
@@ -81,7 +81,7 @@ const DefaultUnitTemplate: React.FC = () => {
                     searchFilter: false,
                     searchComponent: () => null,
                     visible: true,
-                    minWidth: '297',
+                    minWidth: '275',
                     maxWidth: '0',
                 };
                 headCellArray.push(headCellObject);
@@ -214,19 +214,14 @@ const DefaultUnitTemplate: React.FC = () => {
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
-            // <CRXRows container="container" spacing={0}>
-            // <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
-            
-            <DropdownComponent
-                // className='bilal'
+              
+            <DropdownComponent 
                 deviceTypeId={parseInt(_deviceTypeId)}
                 stationId={parseInt(_rowId)}
                 selectBoxValue={_selectBoxValues}
                 configurationTemplatesFromStore={_configurationTemplatesFromStore}
                 setSelectBoxValueIntoParent={(eventFromChild: any) => manipulateSelectBoxValueResponse(eventFromChild, parseInt(_rowId))} />
-
-                // </CRXColumn>
-                // </CRXRows>      
+   
         );
     }
 
@@ -249,7 +244,7 @@ const DefaultUnitTemplate: React.FC = () => {
                 />
             )}
             
-            <div className='switchLeftComponents'>
+            <div className='switchLeftComponents defaultUnitTemplate'>
                 {(headCellState.length > 0 && stationDataTableRow.length > 0)
                     &&
                     <CRXDataTable
@@ -279,27 +274,33 @@ const DefaultUnitTemplate: React.FC = () => {
                         setPage={(page: any) => setPage(page)}
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                         totalRecords={stationCount}
-                        offsetY={44}
+                         //Please dont miss this block.
+                        offsetY={-27}
+                        topSpaceDrag = {5}
+                        searchHeaderPosition={222}
+                        dragableHeaderPosition={50}
+                        stickyToolbar={133}
+                        //End here
                     />
                 }
                 
-                <div className='crxFooterEditFormBtn'>
-                <div className='save-cancel-button-box'>
+                <div className='stickyFooter_Tab'>
+                    <div className='save-cancel-button-box'>
 
-                <CRXButton
-                    className="groupInfoTabButtons secondary"
-                    onClick={saveBtnClickHandler}
-                    disabled={disableSaveBtn}>
-                    {t("Save")}
-                </CRXButton>
-                <CRXButton
-                    className="groupInfoTabButtons secondary"
-                    onClick={cancelBtnHandler}
-                    disabled={false}>
-                    {t("Cancel")}
-                </CRXButton>
+                        <CRXButton
+                            className="groupInfoTabButtons secondary"
+                            onClick={saveBtnClickHandler}
+                            disabled={disableSaveBtn}>
+                            {t("Save")}
+                        </CRXButton>
+                        <CRXButton
+                            className="groupInfoTabButtons secondary"
+                            onClick={cancelBtnHandler}
+                            disabled={false}>
+                            {t("Cancel")}
+                        </CRXButton>
 
-                </div>
+                    </div>
 
                 <CRXButton
                     className="groupInfoTabButtons secondary"

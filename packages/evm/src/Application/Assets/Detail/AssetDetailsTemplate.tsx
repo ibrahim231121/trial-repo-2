@@ -88,7 +88,7 @@ const AssetDetailsTemplate = () => {
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
-  const [openMap, setOpenMap] = React.useState(false);
+  const [openMap, setOpenMap] = React.useState<boolean>(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
@@ -207,8 +207,9 @@ const AssetDetailsTemplate = () => {
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
+        let formDatas: any[] = [];
         x.formData.forEach((y: any) => {
-          let formDatas: any[] = [];
+          
           y.fields.map((z: any) => {
             let formData = {
               key: z.key,
@@ -216,10 +217,10 @@ const AssetDetailsTemplate = () => {
             }
             formDatas.push(formData);
           })
-          categories.push({
-            name: y.name,
-            formDatas: formDatas
-          })
+        })
+        categories.push({
+          name: x.name,
+          formDatas: formDatas
         })
       });
       let assetMetadata: any = assetsList.find(x => x.id == parseInt(assetId));
@@ -370,7 +371,7 @@ const AssetDetailsTemplate = () => {
     let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
     let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
     let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
-    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+    let nameFormatting = (hourFormatting ? hourFormatting + " Hours, " : "") + (minuteFormatting ? minuteFormatting + " Minutes, " : "") + (secondFormatting ? secondFormatting + " Seconds" : "")
     return numberFormatting + " (" + nameFormatting + ")";
   }
 
@@ -620,7 +621,7 @@ const AssetDetailsTemplate = () => {
   }
 
   const newRound = (x: any, y: any) => {
-    history.push('/assetdetail', {
+    history.push(urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url, {
       evidenceId: evidenceId,
       assetId: x,
       assetName: y,
@@ -845,14 +846,14 @@ const AssetDetailsTemplate = () => {
     }
   };
 
-  const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: any, apiKey: any) => {
+  const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: boolean, apiKey: any) => {
     let availableAssets = videoPlayerData.filter((x: any) => x.status == "Available");
     if (availableAssets.length > 0) {
       let videos = availableAssets.filter((x: any) => x.typeOfAsset == "Video");
 
       switch (videoPlayerData[0]?.typeOfAsset) {
         case 'Video':
-          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} /> :
+          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} guestView={false} /> :
             <>
               <div className="_player_video_uploading">
                 <div className="layout_inner_container">
@@ -990,7 +991,11 @@ const AssetDetailsTemplate = () => {
                               <span style={{ fontWeight: 700 }}>{x.name} :</span>
                             </Grid>
                             <Grid item xs={9}>
-                              <span>{x.formDatas.map((x: any) => x.key + " : " + x.value)}</span>
+                              {x.formDatas.map((x: any) =>
+                                <Grid item xs={9}> 
+                                  <span> {x.key + " : " + x.value} </span>
+                                </Grid>
+                              )}
                             </Grid>
                           </Grid>
 
@@ -1095,7 +1100,7 @@ const AssetDetailsTemplate = () => {
                               className="linkColor"
                               onClick={refresh}
                               to={{
-                                pathname: "/assetdetail",
+                                pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
                                 state: {
                                   evidenceId: evidenceId,
                                   assetId: asset.id,
