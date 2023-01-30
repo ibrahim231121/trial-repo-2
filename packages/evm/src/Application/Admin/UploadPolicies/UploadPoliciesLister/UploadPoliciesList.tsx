@@ -166,14 +166,14 @@ const UploadPoliciesList: React.FC = () => {
       minWidth: "80",
     },
     {
-      label: `${t("Policy_Name")}`,
+      label: `${t("Upload_Policy_Name")}`,
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
         var selectedRow = reformattedRowsRef.current?.find((x: any) => x.name == e);
         if (getModuleIds().includes(63)) {
           return <Restricted moduleId={63}>
-            <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={
+            <div className="linkColor" onClick={
               (e) => openEditForm(selectedRow?.id ?? 0)}>{e}</div>
           </Restricted>
         }
@@ -185,7 +185,7 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "760",
+      minWidth: "780",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -198,8 +198,9 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "765",
-      attributeName: "Description",
+      minWidth: "808",
+      detailedDataComponentId: "name",
+      attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -302,8 +303,9 @@ const UploadPoliciesList: React.FC = () => {
   }
 
   return (
+    
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxUploadPoliciesTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="CrxUploadPoliciesTable switchLeftComponents UploadPoliceMainPage" onKeyDown={handleKeyDown}>
       <CRXToaster ref={uploadMsgFormRef} />
       {
         rows && (
@@ -351,11 +353,10 @@ const UploadPoliciesList: React.FC = () => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
             //Please dont miss this block.
-            offsetY={-27}
-            topSpaceDrag={5}
-            searchHeaderPosition={219}
-            dragableHeaderPosition={184}
-            stickyToolbar={133}
+            offsetY={119}
+            stickyToolbar={135}
+            searchHeaderPosition={235}
+            dragableHeaderPosition={201}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}

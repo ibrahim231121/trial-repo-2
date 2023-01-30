@@ -194,6 +194,14 @@
   }
   .applicationIcon {
     font-size:18px;
+    &:hover {
+      color: #d1d2d4;
+    }
+  }
+  button {
+    &:hover {
+      color: #d1d2d4;
+    }
   }
 }
 

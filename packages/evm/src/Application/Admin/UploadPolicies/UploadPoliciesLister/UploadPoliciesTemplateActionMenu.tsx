@@ -92,12 +92,13 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
+        portal={true}
         position="auto"
-        offsetX={25}
-        offsetY={12}
-        className="menuCss"
+        offsetX={-24}
+        offsetY={24}
+        className="menuCss uploadPolicyMainActionMenu"
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
@@ -108,7 +109,7 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
         {selectedItems.length <= 1 ? (
           <MenuItem onClick={openCreateUploadPolicyForm}>
             <Restricted moduleId={63}>
-              <div className="crx-meu-content   crx-spac"  >
+              <div className="crx-meu-content crx-spac "  >
                 <div className="crx-menu-icon">
                   <i className="far fa-pencil"></i>
                 </div>

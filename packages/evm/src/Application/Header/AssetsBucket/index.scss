@@ -1429,3 +1429,13 @@ text-transform: lowercase;
   .bucketIcon_tooltip {
     text-transform: lowercase !important;
   } 
+
+
+  .selectInner_content_autoComplete {
+    input{
+      &::placeholder {
+        opacity: 1;
+        color: #74767C;
+      }
+    }
+  }
