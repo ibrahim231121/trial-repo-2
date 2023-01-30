@@ -248,7 +248,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                             </CRXButton>
                         </div>
                         <div className="create_category_Content">
-                            <CRXRows container="container" spacing={0}>
+                            <CRXRows container="container" spacing={0} className="create_category_rows">
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Field_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Control_Type")}</CRXColumn>
@@ -260,13 +260,13 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                                 <CRXButton
                                     disabled={!(isValid && dirty)}
                                     variant="contained"
-                                    className="groupInfoTabButtons"
+                                    className="primary button_save"
                                     onClick={() => onSubmit(values)}
                                 >
                                     {t("Save")}
                                 </CRXButton>
                                 <CRXButton
-                                    className="groupInfoTabButtons secondary"
+                                    className="secondary"
                                     color="secondary"
                                     variant="outlined"
                                     onClick={navigateToCategoryFormsAndFields}

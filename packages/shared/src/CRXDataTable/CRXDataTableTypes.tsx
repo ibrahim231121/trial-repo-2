@@ -11,8 +11,8 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: "34px",
-      paddingTop : "35px",
+      paddingBottom: "40px",
+      paddingTop : "31px",
       minHeight : "30px !important",
       height : "30px",
       position : "sticky",

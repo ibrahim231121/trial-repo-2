@@ -100,7 +100,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
         
         {(provided: any) => (
           <RootRef rootRef={provided.innerRef}>
-            <TableBody>
+            <TableBody className="table_body_">
               {
                 //container.rows
                 //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

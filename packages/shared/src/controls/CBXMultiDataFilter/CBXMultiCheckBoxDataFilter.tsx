@@ -31,93 +31,7 @@ const selectStyled = makeStyles((_: Theme) =>
 
   }),
 );
-const selectBoxStyled = makeStyles({
-  
-    root: {
-      border:"0px",
-      borderRadius: "0px",
-      outline : "0px",
-      boxShadow : "none",
-      height : "0px",
-    },
-    fullWidth: {
-        background : "#333"
-    },
-    focused : {
-        border:"0px",
-        background: "#404041",
-        borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none"
-    },
-    popper : {
-        background: "#404041",
-        marginTop: "1px",
-        marginLeft : "0px",
-    },
-    paper : {
-        background: "#404041",
-        borderRadius : "0px",
-        border:"0px",
-        margin: "0px"
-    },
 
-    inputRoot : {
-        border:"0px",
-        borderRadius : "0px",
-        padding:"0px 0px !important",
-        
-        '& : hover' : {
-            border:"0px",
-            borderRadius: "0px",
-            outline : "0px",
-            boxShadow : "none",
-          },
-          '&:focus' : {
-            border:"0px",
-            borderRadius: "0px",
-            outline : "0px",
-            boxShadow : "none",
-          }
-        
-    },
-    inputFocused : {
-        border:"0px",
-        borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none",
-    },
-
-    option : {
-      color:"#d1d2d4",
-      fontSize:"14px",
-      fontFamily : "Arial, Helvetica, sans-serif, Segoe UI",
-      padding : "8px 10px",
-      placeItems: "center",
-      '&:hover' : {
-        background: "#231f20",
-        color : "#F5F5F5",
-        '&:focus' : {
-          background: "#6E6E6E",
-          color:"#d1d2d4",
-        }
-      },
-      '&:focus' : {
-        background: "#6E6E6E",
-        color:"#d1d2d4",
-      },
-
-      '&[aria-selected="true"]' : {
-        backgroundColor: "#231f20",
-        color:"#f5f5f5",
-      }
-    },
-
-    listbox : {
-      paddingTop : "3px"
-    }
-  }
-);
 
 const CheckBoxStyle = makeStyles({
 
@@ -256,9 +170,99 @@ type SelectProps = {
     isCheckBox? : boolean,
 	  isduplicate? : boolean
     multiple? : boolean,
-    selectAllLabel? : string
+    selectAllLabel? : string,
+    poperZindex? : number
 }
-export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, ...props} : SelectProps) {
+  const selectBoxStyled = makeStyles({
+  
+    root: {
+      border:"0px",
+      borderRadius: "0px",
+      outline : "0px",
+      boxShadow : "none",
+      height : "0px",
+    },
+    fullWidth: {
+        background : "#333"
+    },
+    focused : {
+        border:"0px",
+        background: "#404041",
+        borderRadius: "0px",
+        outline : "0px",
+        boxShadow : "none"
+    },
+    popper : {
+        background: "#404041",
+        marginTop: "1px",
+        marginLeft : "0px",
+        zIndex : `${poperZindex}` as any,
+    },
+    paper : {
+        background: "#404041",
+        borderRadius : "0px",
+        border:"0px",
+        margin: "0px",
+       
+    },
+
+    inputRoot : {
+        border:"0px",
+        borderRadius : "0px",
+        padding:"0px 0px !important",
+        
+        '& : hover' : {
+            border:"0px",
+            borderRadius: "0px",
+            outline : "0px",
+            boxShadow : "none",
+          },
+          '&:focus' : {
+            border:"0px",
+            borderRadius: "0px",
+            outline : "0px",
+            boxShadow : "none",
+          }
+        
+    },
+    inputFocused : {
+        border:"0px",
+        borderRadius: "0px",
+        outline : "0px",
+        boxShadow : "none",
+    },
+
+    option : {
+      color:"#d1d2d4",
+      fontSize:"14px",
+      fontFamily : "Arial, Helvetica, sans-serif, Segoe UI",
+      padding : "8px 10px",
+      placeItems: "center",
+      '&:hover' : {
+        background: "#231f20",
+        color : "#F5F5F5",
+        '&:focus' : {
+          background: "#6E6E6E",
+          color:"#d1d2d4",
+        }
+      },
+      '&:focus' : {
+        background: "#6E6E6E",
+        color:"#d1d2d4",
+      },
+
+      '&[aria-selected="true"]' : {
+        backgroundColor: "#231f20",
+        color:"#f5f5f5",
+      }
+    },
+
+    listbox : {
+      paddingTop : "3px"
+    }
+  }
+);
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()

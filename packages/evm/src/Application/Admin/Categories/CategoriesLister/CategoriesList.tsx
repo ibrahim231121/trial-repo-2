@@ -231,7 +231,7 @@ const CategoriesList: React.FC = () => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-          width = {245} 
+          width = {400} 
           option={options} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -252,7 +252,7 @@ const CategoriesList: React.FC = () => {
       
       return (
         <CBXMultiCheckBoxDataFilter 
-            width = {245} 
+            width = {400} 
             option={options} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -296,8 +296,6 @@ const CategoriesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "500",
-      maxWidth: "600",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -311,7 +309,6 @@ const CategoriesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      maxWidth: "600",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -330,7 +327,6 @@ const CategoriesList: React.FC = () => {
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
       minWidth: "400",
-      maxWidth: "400",
       attributeName: "RetentionPolicyName",
       attributeType: "List",
       attributeOperator: "contains"
@@ -349,7 +345,6 @@ const CategoriesList: React.FC = () => {
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
       minWidth: "400",
-      maxWidth: "400",
       attributeName: "UploadPolicyName",
       attributeType: "List",
       attributeOperator: "contains"
@@ -363,7 +358,6 @@ const CategoriesList: React.FC = () => {
       searchFilter: true,
       searchComponent: NonField,
       minWidth: "400",
-      maxWidth: "500"
     },
 
   ]);
@@ -470,7 +464,7 @@ const sortingOrder = (sort: any) => {
               <>
 
 
-                <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
+                <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
                   {t("Create_Category")}
                 </CRXButton>
 
@@ -505,12 +499,11 @@ const sortingOrder = (sort: any) => {
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterCategories?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
-             //Please dont miss this block.
-            offsetY={-27}
-            topSpaceDrag = {5}
-            searchHeaderPosition={222}
-            dragableHeaderPosition={187}
-            stickyToolbar={133}
+            //Please dont miss this block.
+            offsetY={119}
+            stickyToolbar={137}
+            searchHeaderPosition={244}
+            dragableHeaderPosition={209}
             //End here
 			      initialRows={reformattedRows}          />
 

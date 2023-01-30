@@ -371,10 +371,10 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
-    window.scrollTo({ top: 14, behavior: "smooth" });
+    window.scrollTo({ top: 120, behavior: "smooth" });
 
    }else {
-    window.scrollTo({ top: 13, behavior: "smooth" });
+    window.scrollTo({ top: 122, behavior: "smooth" });
     
    }
    

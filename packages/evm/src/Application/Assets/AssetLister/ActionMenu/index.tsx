@@ -346,8 +346,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         });
     };
 
-    const handleDownloadAssetClick = () => {
-      debugger;
+    const handleDownloadAssetClick = () => {      
       if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length == 1){// single asset export
       const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
       const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
@@ -372,38 +371,31 @@ const ActionMenu: React.FC<Props> = React.memo(
           });
         });
       } else if (selectedItems !== undefined && selectedItems !== null){ // multi asset export
-        console.log(selectedItems);
-        //const assetId = selectedItems.evidence.asset;
+              
         let  totalFiles  = selectedItems.map((e:any) => {   
-          console.log(e);    
+             
           var filesArr  =  e.evidence.asset.map((a:any)  =>{
               var files =   a.files;               
             return files.map((x:any)  => {
-                  return { fileRecId: x.filesId, accessCode : "SOme Access Code" };
-                 })
-                //, operationType: 1   
+                  return { fileRecId: x.filesId, accessCode : "accessCode" };
+                 })           
                        
             });   
-            console.log("Files Array");
-            console.log(filesArr);  
-            
-            // console.log("flat Files Array");
-            // console.log(filesArr.flat(1));
+           
           return filesArr;
         });
-        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }
-        console.log("Total Files");
-        console.log(me);
-        console.log(" stringify total files");
-        console.log(JSON.stringify(me));
-        // var flattenFileIds =  totalFiles.flat(1).flat(1);
-        // console.log("Flatten Ids");
-        // console.log(flattenFileIds);
-    
+        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
+        showToastMsg?.({
+          message: t("files will be downloaded shortly"),
+          variant: "success",
+          duration: 5000,
+        });
         FileAgent.getMultiDownloadFileUrl(me)
         .then((response) => {
-          downloadFileByURLResponse(response);
-        })
+        
+          downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
+
+        })       
         .catch(() => {
           showToastMsg?.({
             message: t("Unable_to_download_file"),
@@ -627,6 +619,26 @@ const ActionMenu: React.FC<Props> = React.memo(
       if (link.parentNode) {
         link.parentNode.removeChild(link);
       }
+    };
+    const downloadExeFileByFileResponse = (
+      response: any,
+      assetName: string
+    ) => {
+      let fileStream =  response.data;
+      const fileName = assetName+".exe";
+      const blob = new Blob([fileStream], { type: "application/octet-stream" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      link.click();
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+      showToastMsg?.({
+        message: t("file downloaded successfully"),
+        variant: "success",
+        duration: 5000,
+      });
     };
 
 

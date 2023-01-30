@@ -388,6 +388,7 @@ export const resources = {
         "Select_permission_type":"-- Select permission type --",
         "Select_permission_value":"-- Select permission value --",
         "Select_permission_level":"-- Select permission level --",
+        "Edit_user_group":"Edit user group",
         // ----------------------------
         
         // --------- Station ----------

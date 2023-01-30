@@ -218,7 +218,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
-                className={'CRXModal ___CRXCreateFormFields__ ___CRXEditFormFields__'}
+                className={'create_form_fields_form'}
                 modelOpen={openModal}
                 onClose={() => closeDialog(dirty)}
                 defaultButton={false}
@@ -235,111 +235,117 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                     open={true}
                   />
                 )}
-                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
-                  <CRXColumn item={true} xs={4}>
+                <div className="create_category_form_field_content">
+                <div className="indicatestext tp15"><b>*</b> Indicates required field</div>
+                
+                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                    <CRXColumn item={true} xs={4}>
+                  
+                      <label className="cc_form_label">
+                        {t("Control_Type")} <span className={`${touched.type && ((errors.type?.length ?? 0) > 0) ? "error_staric" : " "}`}>*</span>
+                      </label>
+                    </CRXColumn>
+                    <CRXColumn item={true} xs={8}>
+                      <CRXSelectBox
+                        name="type"
+                        id="type"
+                        className="controle_type_select"
+                        value={values.type}
+                        onChange={(e: any) => {
+                          setFieldValue("type", e.target.value)
+                        }
+                        }
+                        options={controlTypesOptions}
+                        onClose={(e: any) => {
+                          handleBlur(e);
+                          setTouched({
+                            ...touched,
+                            ["type"]: true,
+                          });
+                        }}
+                        isRequried={touched.type && ((errors.type?.length ?? 0) > 0)}
+                        error={!((errors.type?.length ?? 0) > 0)}
+                        errorMsg={errors.type}
+                      />
 
-                    <label className="">
-                      {t("Control_Type")} <span>*</span>
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <CRXSelectBox
-                      name="type"
-                      id="type"
-                      value={values.type}
-                      onChange={(e: any) => {
-                        setFieldValue("type", e.target.value)
-                      }
-                      }
-                      options={controlTypesOptions}
-                      onClose={(e: any) => {
-                        handleBlur(e);
-                        setTouched({
-                          ...touched,
-                          ["type"]: true,
-                        });
-                      }}
-                      isRequried={touched.type && ((errors.type?.length ?? 0) > 0)}
-                      error={!((errors.type?.length ?? 0) > 0)}
-                      errorMsg={errors.type}
-                    />
+                    </CRXColumn>
+                  </CRXRows>
+                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                    <CRXColumn item={true} xs={4}>
+                      <label htmlFor="name" className="cc_form_label">
+                        {t("Field_Name")} <span className={`${errors.name !== undefined &&
+                        touched.name ? "error_staric" : ""}`}>*</span>
+                      </label>
+                    </CRXColumn>
+                    <CRXColumn item={true} xs={8}>
+                      <Field
+                        id="name"
+                        key="name"
+                        name="name"
+                        className={`crx_formik_field`}
+                      />
+                      {errors.name !== undefined &&
+                        touched.name ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.name}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
 
-                  </CRXColumn>
-                </CRXRows>
-                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
-                  <CRXColumn item={true} xs={4}>
-                    <label htmlFor="name">
-                      {t("Field_Name")} <span>*</span>
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <Field
-                      id="name"
-                      key="name"
-                      name="name"
-                    />
-                    {errors.name !== undefined &&
-                      touched.name ? (
-                      <div className="errorTenantStyle">
-                        <i className="fas fa-exclamation-circle"></i>
-                        {errors.name}
-                      </div>
-                    ) : (
-                      <></>
-                    )}
+                    </CRXColumn>
+                  </CRXRows>
 
-                  </CRXColumn>
-                </CRXRows>
-
-                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
-                  <CRXColumn item={true} xs={4}>
-                    <label htmlFor="displayName">
-                      {t("Field_Display_Name")}
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <Field
-                      id="displayName"
-                      key="displayName"
-                      name="displayName"
-                    />
-                  </CRXColumn>
-                </CRXRows>
-                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
-                  <CRXColumn item={true} xs={4}>
-                    <label htmlFor="defaultFieldValue">
-                      {t("Field_Values")}
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <Field
-                      id="defaultFieldValue"
-                      key="defaultFieldValue"
-                      name="defaultFieldValue"
-                    />
-                  </CRXColumn>
-                </CRXRows>
-
-                <div className="tab-bottom-buttons form-fields-btns">
-                  <div className="save-cancel-button-box">
+                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                    <CRXColumn item={true} xs={4}>
+                      <label htmlFor="displayName" className="cc_form_label">
+                        {t("Field_Display_Name")}
+                      </label>
+                    </CRXColumn>
+                    <CRXColumn item={true} xs={8}>
+                      <Field
+                        id="displayName"
+                        key="displayName"
+                        name="displayName"
+                        className={`crx_formik_field`}
+                      />
+                    </CRXColumn>
+                  </CRXRows>
+                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                    <CRXColumn item={true} xs={4}>
+                      <label htmlFor="defaultFieldValue" className="cc_form_label">
+                        {t("Field_Values")}
+                      </label>
+                    </CRXColumn>
+                    <CRXColumn item={true} xs={8}>
+                      <Field
+                        id="defaultFieldValue"
+                        key="defaultFieldValue"
+                        name="defaultFieldValue"
+                        className={`crx_formik_field`}
+                      />
+                    </CRXColumn>
+                  </CRXRows>
+                </div>
+                <div className="create_form_modal_footer">
                     <CRXButton
+                      color="primary"
                       variant="contained"
-                      className="groupInfoTabButtons"
+                      className="primary save_button_cc"
                       onClick={() => onSave(values)}
                       disabled={!isValid || !dirty}
                     >
                       {t("Save")}
                     </CRXButton>
                     <CRXButton
-                      className="groupInfoTabButtons secondary"
+                      className="secondary"
                       color="secondary"
                       variant="outlined"
                       onClick={handleClose}
                     >
                       {t("Cancel")}
                     </CRXButton>
-                  </div>
-
                 </div>
               </CRXModalDialog>
               <CRXConfirmDialog

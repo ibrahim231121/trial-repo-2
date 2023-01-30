@@ -297,7 +297,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
-                className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__'}
+                className={' ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__ create_category_form_modal'}
                 modelOpen={openModal}
                 onClose={() => closeDialog(dirty)}
                 defaultButton={false}
@@ -315,54 +315,57 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                   />
                 )}
 
-                <div className="settingsContent">
-                  <span className="gridFilterTextBox">
-
-                    <div className="text-field">
-                      <div className="CBX-input">
-                        <label htmlFor="name">
-                          Name <span>*</span>
-                        </label>
-                        <Field
-                          id="name"
-                          key="name"
-                          name="name"
-                        />
-                        {errors.name !== undefined &&
-                          touched.name ? (
-                          <div className="errorTenantStyle">
-                            <i className="fas fa-exclamation-circle"></i>
-                            {errors.name}
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-field">
-
-                      < TextField
-                        id="description"
-                        required={false}
-                        value={values.description}
-                        label={t("Description")}
-                        className="categories-input"
-                        onChange={(e: any) => setFieldValue("description", e.target.value)}
-                        disabled={false}
-                        type="text"
-                        multiline={true}
+                <div className="createCategory_form">
+                <div className="indicatestext tp15"><b>*</b> Indicates required field</div>
+                <div className="category_form_fields">
+                    <div className="CBX-input">
+                      <label htmlFor="name">
+                        Name <span className={`${errors.name !== undefined &&
+                          touched.name ? " error_staric" : " "}`}>*</span>
+                      </label>
+                      <Field
+                        id="name"
+                        key="name"
+                        name="name"
+                        className={`name_field ${errors.name !== undefined &&
+                          touched.name ? " error_filed" : " "}`}
                       />
+                     
                     </div>
-
-                  </span>
+                    {errors.name !== undefined &&
+                        touched.name ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.name}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                 </div>
-                <div className="retention-type">
-                  <label className="">
-                    {t("Evidence_Retention_Policy")} <span>*</span>
+                <div className="category_form_fields">
+
+                  <TextField
+                    id="description"
+                    required={false}
+                    value={values.description}
+                    label={t("Description")}
+                    className="categories-input"
+                    onChange={(e: any) => setFieldValue("description", e.target.value)}
+                    disabled={false}
+                    type="text"
+                    multiline={true}
+                  />
+                </div>
+
+                
+                <div className="category_form_fields">
+                  <label className="form_label">
+                    {t("Evidence_Retention_Policy")} <span className={`${touched.evidenceRetentionPolicy && " error_staric"}`}>*</span>
                   </label>
                   <CRXSelectBox
                     name="evidenceRetentionPolicy"
                     id="evidenceRetentionPolicy"
+                    className={`evidence_rentention_select wd450 ${touched.evidenceRetentionPolicy && " error_select"}`}
                     value={values.evidenceRetentionPolicy}
                     onChange={(e: any) => {
                       setFieldValue("evidenceRetentionPolicy", e.target.value)
@@ -382,13 +385,14 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                   />
                 </div>
 
-                <div className="retention-type">
-                  <label className="">
-                    {t("Upload_Policy")} <span>*</span>
+                <div className="category_form_fields">
+                  <label className="form_label">
+                    {t("Upload_Policy")} <span className={`${touched.uploadPolicy && " error_staric"}`}>*</span>
                   </label>
                   <CRXSelectBox
                     id="uploadPolicy"
                     name="uploadPolicy"
+                    className={`wd450 ${touched.uploadPolicy && " error_select"}`}
                     value={values.uploadPolicy}
                     onChange={(e: any) => {
                       setFieldValue("uploadPolicy", e.target.value)
@@ -401,7 +405,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                         ...touched,
                         ["uploadPolicy"]: true,
                       });
-                      console.log("touched", touched)
+                      
                     }}
                     isRequried={touched.uploadPolicy && ((errors.uploadPolicy?.length ?? 0) > 0)}
                     error={!((errors.uploadPolicy?.length ?? 0) > 0)}
@@ -409,11 +413,12 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                   />
                 </div>
 
-                <div className="retention-type">
+                <div className="category_form_fields">
 
                   <CRXMultiSelectBoxLight
                     label={t("Category_Forms")}
                     id="categoryForms"
+                    className="category_form_multiSelect wd450"
                     multiple={true}
                     value={values.categoryForms}
                     options={categoryFormsOptions}
@@ -426,12 +431,13 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     }}
                   />
                 </div>
-                <div>
+                <div className="file_upload_button">
                   <input
                     type="file"
                     accept=".wav"
                     id="audioprompt"
                     name="audioprompt"
+                    className="audio_file_upload"
                     onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
                   />
                   {errors.audioprompt &&
@@ -439,7 +445,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                       {errors.audioprompt}
                     </div>}
                 </div>
-                <div className="tab-bottom-buttons retention-type-btns">
+                </div>
+                <div className="create_category_form_btns">
                   <div className="save-cancel-button-box">
                     <CRXButton
                       variant="contained"
@@ -465,7 +472,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                 setIsOpen={() => setIsOpen(false)}
                 onConfirm={handleClose}
                 isOpen={isOpen}
-                className="CategoriesConfirm"
+                className="Categories_Confirm"
                 primary={t("Yes_close")}
                 secondary={t("No,_do_not_close")}
                 text="retention policy form"

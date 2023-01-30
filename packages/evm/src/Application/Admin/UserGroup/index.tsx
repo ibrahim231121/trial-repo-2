@@ -59,7 +59,7 @@ const UserGroup: React.FC = () => {
   const [orderBy, setOrderBy] = React.useState<string>("Name");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<GroupUser[]>([]);
-
+  const [selectedActionRow, setSelectedActionRow] = React.useState<GroupUser>();
   const [reformattedRows, setReformattedRows] = React.useState<GroupUser[]>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -211,7 +211,7 @@ const UserGroup: React.FC = () => {
       label: t("Group Name"),
       id: "name",
       align: "left",
-      dataComponent: (e: string) => AnchorDisplay(e),
+      dataComponent: (e: string) =>  AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -364,7 +364,10 @@ const UserGroup: React.FC = () => {
         rows && (
           <CRXDataTable
             id="userGroupDataTable"
-            actionComponent={<UserGroupActionMenu />}
+            actionComponent={<UserGroupActionMenu
+              row={selectedActionRow}
+              selectedItems={selectedItems}
+              />}
             toolBarButton = {
               <>
               <Restricted moduleId={6}>
@@ -375,6 +378,7 @@ const UserGroup: React.FC = () => {
               {/* <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton> */}
               </>
             }
+            getRowOnActionClick={(val: GroupUser) => setSelectedActionRow(val)}
             showToolbar={true}
             dataRows={rows}
             headCells={headCells}

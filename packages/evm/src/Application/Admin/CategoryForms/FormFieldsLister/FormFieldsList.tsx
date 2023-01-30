@@ -143,7 +143,7 @@ const FormFieldsList: React.FC = () => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-          width = {245} 
+          width = {400} 
           option={options} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -182,9 +182,7 @@ const FormFieldsList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "400",
-      maxWidth: "400",
+      minWidth: "450",
       attributeName: "displayName",
       attributeType: "String",
       attributeOperator: "contains"
@@ -197,9 +195,7 @@ const FormFieldsList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "493",
-      maxWidth: "400",
+      minWidth: "450",
       attributeName: "name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -217,9 +213,7 @@ const FormFieldsList: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
-      minWidth: "300",
-      width: "200",
-      maxWidth: "800",
+      minWidth: "408",
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
@@ -325,7 +319,7 @@ const FormFieldsList: React.FC = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxCategoriesTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="category_tab_parent" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -341,7 +335,7 @@ const FormFieldsList: React.FC = () => {
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
+                  <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
                     {t("Create_Form_Fields")}
                   </CRXButton>
                 </Restricted>
@@ -363,7 +357,7 @@ const FormFieldsList: React.FC = () => {
             searchHeader={true}
             allowDragableToList={false}
             showActionSearchHeaderCell={true}
-            className="crxTableHeight crxTableDataUi CategoriesTableTemplate CategoriesTable_UI"
+            className="crxTableHeight categoryTab_datatable"
             onClearAll={clearAll}
             getSelectedItems={(v: FormFieldsTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -375,9 +369,7 @@ const FormFieldsList: React.FC = () => {
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterFormFields?.totalCount}
-            offsetY={20}
-            dragableHeaderPosition={207}
-            topSpaceDrag={5}
+           
           />
 
         )

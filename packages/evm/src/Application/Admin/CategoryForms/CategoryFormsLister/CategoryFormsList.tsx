@@ -142,9 +142,7 @@ const CategoryFormsList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "926",
-      maxWidth: "800",
+      minWidth: "660",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -157,9 +155,7 @@ const CategoryFormsList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "926",
-      maxWidth: "800",
+      minWidth: "670",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -264,7 +260,7 @@ const CategoryFormsList: React.FC = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxCategoriesTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="category_tab_parent" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -279,7 +275,7 @@ const CategoryFormsList: React.FC = () => {
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton className="CategoriesBtn" onClick={handleClickOpen}>
+                  <CRXButton color="primary" className="primary CategoriesBtn" onClick={handleClickOpen}>
                     {t("Create_Category_Forms")}
                   </CRXButton>
                 </Restricted>
@@ -301,7 +297,7 @@ const CategoryFormsList: React.FC = () => {
             searchHeader={true}
             allowDragableToList={false}
             showActionSearchHeaderCell={true}
-            className="crxTableHeight crxTableDataUi CategoriesTableTemplate CategoriesTable_UI"
+            className="crxTableHeight categoryTab_datatable"
             onClearAll={clearAll}
             getSelectedItems={(v: CategoryFormsTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -313,12 +309,8 @@ const CategoryFormsList: React.FC = () => {
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterCategoryForms?.totalCount}
-            //Please dont miss this block.
-            offsetY={20}
-            dragableHeaderPosition={207}
-            topSpaceDrag={5}
             setSortOrder={(sort:any) => sortingOrder(sort)}
-          //End here
+          
           />
 
         )
