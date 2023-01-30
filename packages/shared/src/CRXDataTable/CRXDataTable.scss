@@ -35,6 +35,26 @@
           }
         }
       }
+      td {
+        &:hover {
+         a{
+             &.linkColor {
+                 text-decoration: underline;
+             }
+           }
+         }
+     }
+      &.SelectedActionMenu {
+        td {
+            color: var(--color-d1d2d4) !important;
+            &.col-three {
+                background-color: #333333 !important;
+            }
+            .truncation_button {
+                color: var(--color-d1d2d4);
+            }
+        }
+     }
     }
 
     thead {
@@ -258,6 +278,26 @@
                     color: var(--color-d1d2d4);
                   }
                 }
+            }
+          } 
+          td {
+            &:hover {
+              a {
+                &.linkColor {
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+          &.SelectedActionMenu {
+            td {
+              color: var(--color-d1d2d4) !important;
+              &.col-three {
+                background-color: #333333 !important;
+              }
+              .truncation_button {
+                color: var(--color-d1d2d4);
+              }
             }
           }
       }

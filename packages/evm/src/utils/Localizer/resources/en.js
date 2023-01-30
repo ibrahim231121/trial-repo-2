@@ -491,7 +491,8 @@ export const resources = {
         "Sensors_And_Triggers": "Sensors And Triggers",
         "Sensors_And_Triggers_Form": "Sensors And Triggers Form",
         "Retention_Policies": "Retention Policies",
-        "Create_Retention_Policies": "Create Retention Policies",
+        "Create_Retention_Policies": "Create Retention Policy",
+        "Policy_Name" : "Policy Name",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"Are you sure you would like to delete sensors and triggers?",
 
         
@@ -880,6 +881,9 @@ export const resources = {
         "Duplicate_Name_is_not_allowed":"Duplicate Name is not allowed",
         "Are_you_sure_you_would_like_to_delete_retention_policies?" : "Are you sure you would like to delete retention policies?",
         "All_Retention_Policies_Deleted_Successfully" : "All Retention Policies Deleted Successfully",
+        "Retention_time_is_required" : "Time is required",
+        "Policy_Name_is_required" : "Policy Name is required",
+        "Retention_size_is_required" : "Size is required",
 
         //----------  Upload Policies  ---------       
         "Upload" :"Upload",
