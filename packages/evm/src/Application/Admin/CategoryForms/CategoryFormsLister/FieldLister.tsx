@@ -74,6 +74,7 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
           name: template?.name,
           displayName: template?.display?.caption,
           controlType: controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
+          isRequired : template?.isRequired.toString(),
         }
       })
     }
@@ -102,6 +103,7 @@ useEffect(() => {
         displayName: template?.displayName,
         controlType: controlTypes?.find((x:any) => x.value ==template?.controlType || x.displayText == template?.controlType)?.displayText ?? "",
         width : 0,
+        isRequired: template?.isRequired,
       }
     });
     setSelectedFields(selectedFields);
@@ -151,11 +153,12 @@ useEffect(() => {
       });
       let selectedItemsList: FormFieldsTemplate[] = selectedUsers?.map((template: any) => {
         return {
-          id: template.id,
-          name: template.name,
+          id: template?.id,
+          name: template?.name,
           displayName: template?.display?.caption,
           controlType: template?.type,
-          width: template?.display?.width
+          width: template?.display?.width,
+          isRequired : template?.isRequired.toString(),
         }
       })
       let selectedArray = [...selectedItems, ...selectedItemsList];
@@ -303,6 +306,17 @@ useEffect(() => {
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
+    },
+    {
+      label: `${t("IsRequired")}`,
+      id: "isRequired",
+      align: "left",
+      sort: false,
+      searchFilter: false,
+      dataComponent: (e: string) => textDisplay(e, " "),
+      searchComponent: () => null,
+      minWidth: "100",
+      maxWidth: "800"
     }
   ]);
 

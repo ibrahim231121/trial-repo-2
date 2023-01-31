@@ -40,4 +40,5 @@ export type FormFieldsTemplate = {
     displayName : string;
     controlType : string;
     width : number;
+    isRequired : any;
   }

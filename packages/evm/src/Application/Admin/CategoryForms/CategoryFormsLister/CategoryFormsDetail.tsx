@@ -88,7 +88,8 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                                     name: template.name,
                                     displayName: template?.display?.caption,
                                     controlType:  controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
-                                    width: template?.display?.width
+                                    width: template?.display?.width,
+                                    isRequired : template.isRequired,
                                 }
                             });
                             setSelectedFields(selectedFormFields);
@@ -249,9 +250,10 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                         </div>
                         <div className="create_category_Content">
                             <CRXRows container="container" spacing={0} className="create_category_rows">
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Field_Name")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={4} spacing={0}>{t("Control_Type")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("IsRequired")}</CRXColumn>
                             </CRXRows>
                         </div>
                         <FieldRowLister selectedFields={selectedFields} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FieldRowLister>

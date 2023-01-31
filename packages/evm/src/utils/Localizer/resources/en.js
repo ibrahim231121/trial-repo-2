@@ -890,6 +890,7 @@ export const resources = {
 
         //----------  Upload Policies  ---------       
         "Upload" :"Upload",
+        "IsRequired": "IsRequired",
         "Metadata_Upload_Connection":"Metadata Upload Connection",
         "Asset_Upload_Priority":"Asset Upload Priority",
         "Asset_Upload_Connection":"Asset Upload Connection",

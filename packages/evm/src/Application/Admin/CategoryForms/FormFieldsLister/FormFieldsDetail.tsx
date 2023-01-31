@@ -28,6 +28,7 @@ type FormFieldDetailModel = {
   name: string;
   displayName: string;
   defaultFieldValue: string;
+  isRequired : boolean;
 }
 
 const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProps) => {
@@ -44,7 +45,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
     type: "",
     name: "",
     displayName: "",
-    defaultFieldValue: ""
+    defaultFieldValue: "",
+    isRequired : false,
   });
   const dispatch = useDispatch();
   const [controlTypesOptions, setControlTypesOptions] = React.useState<DropdownModel[]>([]);
@@ -71,7 +73,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
       Display: {
         caption: payload.displayName,
       },
-      defaultFieldValue: payload.defaultFieldValue
+      defaultFieldValue: payload.defaultFieldValue,
+      isRequired : payload.isRequired,
     }
     if (id > 0) {
       url += "/" + id;
@@ -105,6 +108,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
              displayName: payload?.displayName,
              controlType: controlTypes?.find((x: any) => x.value == payload.type || x.displayText == payload.type)?.displayText ?? "",
              width: 0,
+             isRequired : payload?.isRequired,
            }];
            props.setSelectedFields(fields);
            props.setFieldValue("fields", fields.map((x: any) => { return x.id }));
@@ -176,7 +180,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
             displayName: response?.display?.caption,
             name: response?.name,
             type: response?.type,
-            defaultFieldValue: response?.defaultFieldValue
+            defaultFieldValue: response?.defaultFieldValue,
+            isRequired : response?.isRequired,
           });
         }
       })
@@ -190,14 +195,15 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
         type: "",
         name: "",
         displayName: "",
-        defaultFieldValue: ""
+        defaultFieldValue: "",
+        isRequired : false,
       });
     }
   }, [id]);
 
   const formFieldsValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    type: Yup.string().required("Control Type is required")
+    type: Yup.string().required("Control Type is required"),
   });
 
   return (
@@ -327,6 +333,22 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                       />
                     </CRXColumn>
                   </CRXRows>
+<CRXRows container={true} spacing={1} className="crx_form_group_row">
+                  <CRXColumn item={true} xs={4}>
+                    <label htmlFor="isReuired" className="cc_form_label">
+                      {t("isRequired")}
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <Field
+                      type="checkbox"
+                      name="isRequired"
+                      id="isRequired"
+                      key="isRequired"
+					  className={`crx_formik_field`}
+					   />
+                  </CRXColumn>
+                </CRXRows>
                 </div>
                 <div className="create_form_modal_footer">
                     <CRXButton

@@ -217,6 +217,17 @@ const FormFieldsList: React.FC = () => {
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
+    },
+    {
+      label: `${t("IsRequired")}`,
+      id: "isRequired",
+      align: "left",
+      sort: false,
+      searchFilter: false,
+      dataComponent: (e: string) => textDisplay(e, " "),
+      searchComponent: () => null,
+      minWidth: "100",
+      maxWidth: "800"
     }
   ]);
 
@@ -228,11 +239,12 @@ const FormFieldsList: React.FC = () => {
           id: template?.id,
           name: template?.name,
           displayName: template?.display?.caption,
-          controlType :controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
+          controlType: controlTypes?.find((x: any) => x.value == template?.type)?.displayText,
+          isRequired: template.isRequired.toString(),
         }
       })
     }
-
+    
     setRows(FormFieldsTemplateRows);
     setReformattedRows(FormFieldsTemplateRows);
   }
