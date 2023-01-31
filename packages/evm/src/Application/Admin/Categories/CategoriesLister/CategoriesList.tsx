@@ -292,7 +292,7 @@ const CategoriesList: React.FC = () => {
       dataComponent: (e: string, id: number) => {
         return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => openEditForm(id)} className={"dataTableText txtStyle"}>{e}</div>
       },
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
@@ -305,7 +305,7 @@ const CategoriesList: React.FC = () => {
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
@@ -318,7 +318,7 @@ const CategoriesList: React.FC = () => {
       id: "retentionPolicyName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: (
         rowData: CategoriesTemplate[],
@@ -336,7 +336,7 @@ const CategoriesList: React.FC = () => {
       id: "uploadPolicyName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: (
         rowData: CategoriesTemplate[],
@@ -359,7 +359,6 @@ const CategoriesList: React.FC = () => {
       searchComponent: NonField,
       minWidth: "400",
     },
-
   ]);
 
   useEffect(() => {

@@ -35,6 +35,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
   const [id, setId] = useState<number>(props?.id);
   const [openModal, setOpenModal] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
+  const [isFieldValueEnable, setIsFieldValueEnable] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [error, setError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
@@ -258,7 +259,15 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                         className="controle_type_select"
                         value={values.type}
                         onChange={(e: any) => {
-                          setFieldValue("type", e.target.value)
+                          let controlType = e.target.value;
+                          setFieldValue("type", controlType)
+                          let controlTypeId = controlTypes?.find((x: any) => x.value == controlType)?.id;
+                          if (controlTypeId == 2 || controlTypeId == 5 || controlTypeId == 6 || controlTypeId == 3) {
+                            setIsFieldValueEnable(true);
+                          }
+                          else {
+                            setIsFieldValueEnable(false);
+                          }
                         }
                         }
                         options={controlTypesOptions}
@@ -318,7 +327,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                       />
                     </CRXColumn>
                   </CRXRows>
-                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                  {isFieldValueEnable && <CRXRows container={true} spacing={1} className="crx_form_group_row">
                     <CRXColumn item={true} xs={4}>
                       <label htmlFor="defaultFieldValue" className="cc_form_label">
                         {t("Field_Values")}
@@ -333,20 +342,21 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                       />
                     </CRXColumn>
                   </CRXRows>
-<CRXRows container={true} spacing={1} className="crx_form_group_row">
-                  <CRXColumn item={true} xs={4}>
-                    <label htmlFor="isReuired" className="cc_form_label">
-                      {t("isRequired")}
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <Field
-                      type="checkbox"
-                      name="isRequired"
-                      id="isRequired"
-                      key="isRequired"
-					  className={`crx_formik_field`}
-					   />
+                  }
+                  <CRXRows container={true} spacing={1} className="crx_form_group_row">
+                    <CRXColumn item={true} xs={4}>
+                      <label htmlFor="isReuired" className="cc_form_label">
+                        {t("isRequired")}
+                      </label>
+                    </CRXColumn>
+                    <CRXColumn item={true} xs={8}>
+                      <Field
+                        type="checkbox"
+                        name="isRequired"
+                        id="isRequired"
+                        key="isRequired"
+                        className={`crx_formik_field`}
+                      />
                   </CRXColumn>
                 </CRXRows>
                 </div>

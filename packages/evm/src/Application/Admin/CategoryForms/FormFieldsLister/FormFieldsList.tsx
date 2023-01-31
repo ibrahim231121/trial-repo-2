@@ -219,7 +219,7 @@ const FormFieldsList: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("IsRequired")}`,
+      label: `${t("required")}`,
       id: "isRequired",
       align: "left",
       sort: false,
@@ -240,7 +240,7 @@ const FormFieldsList: React.FC = () => {
           name: template?.name,
           displayName: template?.display?.caption,
           controlType: controlTypes?.find((x: any) => x.value == template?.type)?.displayText,
-          isRequired: template.isRequired.toString(),
+          isRequired: template.isRequired == true ? "Yes" : "No",
         }
       })
     }

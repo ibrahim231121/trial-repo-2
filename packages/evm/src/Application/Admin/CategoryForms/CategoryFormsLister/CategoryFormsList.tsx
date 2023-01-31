@@ -119,6 +119,11 @@ const CategoryFormsList: React.FC = () => {
     );
   };
 
+  const editCategoryForm = (categoryFormId : number) => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + categoryFormId);
+  };
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -138,7 +143,9 @@ const CategoryFormsList: React.FC = () => {
       label: `${t("Category_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: string, id: number) => {
+        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editCategoryForm(id)} className={"dataTableText txtStyle"}>{e}</div>
+      },
       sort: false,
       searchFilter: true,
       searchComponent: searchText,

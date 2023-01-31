@@ -36,7 +36,7 @@ const FormFieldRowValue: React.FC<infoProps> = ({ selectedFields, setSelectedFie
                         <label>{rowField?.controlType}</label>
                     </CRXColumn>
                     <CRXColumn className="fieldsCol" container="container" item="item" xs={2} spacing={0}>
-                        <label>{rowField?.isRequired.toString()}</label>
+                        <label>{rowField?.isRequired.toString() == "true" ? "Yes" : "No"}</label>
                     </CRXColumn>
                     <CRXColumn className="crx-fieldsCol-btn" container="container" item="item" xs={1} spacing={0} >
                         <button

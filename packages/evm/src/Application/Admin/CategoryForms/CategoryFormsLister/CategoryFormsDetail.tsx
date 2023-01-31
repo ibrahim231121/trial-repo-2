@@ -18,6 +18,7 @@ import FormFieldInfo from "./FormFieldInfo";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { controlTypes } from '../TypeConstant/constants';
 import FormFieldsDetail from '../FormFieldsLister/FormFieldsDetail';
+import { getAllCategyFormsFilter } from '../../../../Redux/CategoryForms';
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
@@ -139,7 +140,8 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                 url += "/ChangeForm/" + id;
                 SetupConfigurationAgent.putCategoryForms(url, body).then((res:any)=>{
                     onMessageShow(true,t("Category_Form_Edited_Successfully"));
-                    dispatch(enterPathActionCreator({ val: values?.name }));
+                    dispatch(getAllCategyFormsFilter(pageiGrid));
+                    navigateToCategoryFormsAndFields();
                 })
                     .catch((e: any) => {
                         if (e?.response?.status === 409) {
@@ -156,10 +158,8 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
         {
             SetupConfigurationAgent.postCategoryForms(url, body).then((res:any)=>{
                 onMessageShow(true,t("Category_Form_Saved_Successfully"));
-                dispatch(enterPathActionCreator({ val: values?.name }));
-                const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url}`;
-                history.push(path.substring(0, path.lastIndexOf("/")) + "/" + res);
-                // setIsSaveDisable(true);
+                dispatch(getAllCategyFormsFilter(pageiGrid));
+                navigateToCategoryFormsAndFields();
             })
                 .catch((e: any) => {
                     if (e?.response?.status === 409) {
@@ -253,7 +253,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("IsRequired")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("required")}</CRXColumn>
                             </CRXRows>
                         </div>
                         <FieldRowLister selectedFields={selectedFields} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FieldRowLister>

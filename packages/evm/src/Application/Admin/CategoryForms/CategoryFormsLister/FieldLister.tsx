@@ -74,7 +74,7 @@ const FieldLister: FC<FieldListerModel> = ({ categoryFormId, title, pageiGrids, 
           name: template?.name,
           displayName: template?.display?.caption,
           controlType: controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
-          isRequired : template?.isRequired.toString(),
+          isRequired : template?.isRequired.toString() == "true" ? "Yes" : "No",
         }
       })
     }
@@ -103,7 +103,7 @@ useEffect(() => {
         displayName: template?.displayName,
         controlType: controlTypes?.find((x:any) => x.value ==template?.controlType || x.displayText == template?.controlType)?.displayText ?? "",
         width : 0,
-        isRequired: template?.isRequired,
+        isRequired: template?.isRequired.toString() == "Yes" ? true : false,
       }
     });
     setSelectedFields(selectedFields);
@@ -158,7 +158,7 @@ useEffect(() => {
           displayName: template?.display?.caption,
           controlType: template?.type,
           width: template?.display?.width,
-          isRequired : template?.isRequired.toString(),
+          isRequired : template?.isRequired.toString() == "true" ? "Yes" : "No",
         }
       })
       let selectedArray = [...selectedItems, ...selectedItemsList];
@@ -308,7 +308,7 @@ useEffect(() => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("IsRequired")}`,
+      label: `${t("required")}`,
       id: "isRequired",
       align: "left",
       sort: false,
