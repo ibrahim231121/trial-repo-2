@@ -235,6 +235,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                             </div>
                             <div className="_asset_group_list_thumb">
                               <AssetThumbnail
+                                assetName ={asset.assetName}
                                 assetType={asset.assetType}
                                 fileType={asset.files && asset.files[0]?.type}
                                 className={"CRXPopupTableImage"}

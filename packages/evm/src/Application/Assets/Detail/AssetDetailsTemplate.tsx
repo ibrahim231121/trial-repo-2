@@ -1125,6 +1125,7 @@ const AssetDetailsTemplate = () => {
                           </div>
                           <div className="_detail_thumb_column">
                             <AssetThumbnail
+                              assetName={asset.assetName}
                               assetType={asset.typeOfAsset}
                               className={"CRXPopupTableImage  CRXPopupTableImageUi"}
                               onClick={() => newRound(asset.id, asset.name)}
