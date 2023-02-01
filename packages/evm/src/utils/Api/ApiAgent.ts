@@ -192,6 +192,22 @@ function getTenantId() {
     }
 };
 
+const downloadExeFileByFileResponse = (
+    response: any,
+    assetName: string
+  ) => {
+    let fileStream =  response.data;
+    const fileName = assetName+".exe";
+    const blob = new Blob([fileStream], { type: "application/octet-stream" });
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute("download", fileName);
+    link.click();
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }    
+  };
+  
 const requests = {
     get: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBody) },
     getAll: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBodyPaginated) },

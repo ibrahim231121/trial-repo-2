@@ -83,6 +83,22 @@ type MasterAssetEvidence = {
   evidenceId: number
 };
 
+const downloadExeFileByFileResponse = (
+  response: any,
+  assetName: string
+) => {
+  let fileStream =  response.data;
+  const fileName = assetName+".exe";
+  const blob = new Blob([fileStream], { type: "application/octet-stream" });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.setAttribute("download", fileName);
+  link.click();
+  if (link.parentNode) {
+    link.parentNode.removeChild(link);
+  }
+};
+
 const ActionMenu: React.FC<Props> = React.memo(
   ({
     row,
@@ -370,7 +386,29 @@ const ActionMenu: React.FC<Props> = React.memo(
             duration: 5000,
           });
         });
-      } else if (selectedItems !== undefined && selectedItems !== null){ // multi asset export
+      }else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length > 1){ // multi asset export
+              
+        let  totalFiles  = row.map((e:any) => {   
+             
+          var filesArr  =  e.evidence.asset.map((a:any)  =>{
+              var files =   a.files;               
+            return files.map((x:any)  => {
+                  return { fileRecId: x.filesId, accessCode : "accessCode" };
+                 })           
+                       
+            });   
+           
+          return filesArr;
+        });
+        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
+        showToastMsg?.({
+          message: t("files will be downloaded shortly"),
+          variant: "success",
+          duration: 5000,
+        });
+        createMultiExportRequest(me);
+      } 
+      else if (selectedItems !== undefined && selectedItems !== null){ // multi asset export
               
         let  totalFiles  = selectedItems.map((e:any) => {   
              
@@ -390,19 +428,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           variant: "success",
           duration: 5000,
         });
-        FileAgent.getMultiDownloadFileUrl(me)
-        .then((response) => {
-        
-          downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
-
-        })       
-        .catch(() => {
-          showToastMsg?.({
-            message: t("Unable_to_download_file"),
-            variant: "error",
-            duration: 5000,
-          });
-        });
+        createMultiExportRequest(me);
       } else{
         showToastMsg?.({
           message: t("There_is_no_File_against_this_Asset"),
@@ -413,6 +439,26 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     };
 
+    const createMultiExportRequest = (
+      multiFilesRequest: any) => {
+        FileAgent.getMultiDownloadFileUrl(multiFilesRequest)
+        .then((response) => {
+        
+          downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
+          showToastMsg?.({
+            message: t("file downloaded successfully"),
+            variant: "success",
+            duration: 5000,
+          });
+        })       
+        .catch(() => {
+          showToastMsg?.({
+            message: t("Unable_to_download_file"),
+            variant: "error",
+            duration: 5000,
+          });
+        });
+    };
     const handleDownloadMetaDataClick = () => {
       /**
        * ! This snippet is only for Asset Lister.
@@ -620,26 +666,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         link.parentNode.removeChild(link);
       }
     };
-    const downloadExeFileByFileResponse = (
-      response: any,
-      assetName: string
-    ) => {
-      let fileStream =  response.data;
-      const fileName = assetName+".exe";
-      const blob = new Blob([fileStream], { type: "application/octet-stream" });
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.setAttribute("download", fileName);
-      link.click();
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
-      }
-      showToastMsg?.({
-        message: t("file downloaded successfully"),
-        variant: "success",
-        duration: 5000,
-      });
-    };
+    
 
 
     const downloadFileByURLResponse = (url: string) => {
@@ -1529,3 +1556,4 @@ const ActionMenu: React.FC<Props> = React.memo(
 );
 
 export default ActionMenu;
+export {downloadExeFileByFileResponse};
