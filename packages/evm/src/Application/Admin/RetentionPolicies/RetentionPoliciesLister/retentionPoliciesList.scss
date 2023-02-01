@@ -136,6 +136,11 @@ iframe {
           color: var(--color-ff6e20) !important;
         }
       }
+      td {
+        .material-icons {
+          font-size: 14px;
+        }
+      }
     }
   }
 }

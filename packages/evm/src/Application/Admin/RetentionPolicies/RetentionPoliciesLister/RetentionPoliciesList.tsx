@@ -153,7 +153,7 @@ const RetentionPoliciesList: React.FC = () => {
   const retentionInfiniteOrTimeSpace = (timeSpace: string): JSX.Element => {
     if (timeSpace == "") {
       return (
-        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+        <CRXIcon className=""><i className="fa-regular fa-infinity"></i></CRXIcon>
       );
 
     }
