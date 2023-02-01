@@ -244,7 +244,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
       handleClose();
     }
   };
-
+        
   const checkNameValidation = () => {
     let isDisable = true;
     if (!name) {

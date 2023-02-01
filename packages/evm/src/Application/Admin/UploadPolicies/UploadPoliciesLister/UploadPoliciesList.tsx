@@ -198,9 +198,8 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "808",
-      detailedDataComponentId: "name",
-      attributeName: "Name",
+      minWidth: "765",
+      attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
     },
