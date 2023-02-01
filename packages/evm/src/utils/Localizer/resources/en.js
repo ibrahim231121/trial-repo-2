@@ -922,23 +922,25 @@ export const resources = {
         "Email alert" : "Email Alert",
         "Add_device_parameters":"+ Add device parameters",
       
-            //----------  Cases  ---------       
-          "Create_Case" :"Create Case",
-          "Case_Summary":"Case Summary",
-          "Prosecutor":"Prosecutor",
-          "Lead_Officer":"Lead Officer",
-          "Created_On":"Created On",
-          "State":"State",
-          
+      
+        //----------  Cases  ---------       
+        "Create_Case" :"Create Case",
+        "Case_Summary":"Case Summary",
+        "Prosecutor":"Prosecutor",
+        "Lead_Officer":"Lead Officer",
+        "Created_On":"Created On",
+        "State":"State",
+        
 
-          "Case_deleted":"Case deleted",
-          "Delete_case":"Delete case",
-          "Edit_case":"Edit case",
+        "Case_deleted":"Case deleted",
+        "Delete_case":"Delete case",
+        "Edit_case":"Edit case",
 
-          "Case":"Case",
-          
-          "Title":"Title",
-          "You_have_saved_the_Case_successfully":"You have saved the Case successfully",
+        "Case":"Case",
+        "Case_Detail":"Case Detail",
+        "Title":"Title",
+        "You_have_saved_the_Case_successfully":"You have saved the Case successfully",
+        "You_have_updated_the_Case_successfully":"You have updated the Case successfully"
       }
     }
   };

@@ -119,8 +119,8 @@ export const urlList: any = [
         name: urlNames.editCase,
         url: "/cases/caseDetail/:id",
         details: [
+            { routeTo: "/cases", type: "link", label: "Manage Cases", },
             { type: 'text', label: 'Edit Case' },
-            { routeTo: '/cases/caseDetail', type: 'link', label: 'Manage Case' },            
         ],
     }, 
     {

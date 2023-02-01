@@ -147,6 +147,7 @@ const Routes = () => {
                 {/* Cases */}
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.cases)[0].url}  exact={true} component={CasesList} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createCase)[0].url}  exact={true} component={CaseDetail} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editCase)[0].url}  exact={true} component={CaseDetail} />
 
                 
                 <Route path="/notfound" component={ErrorPage} />

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router";
+import { useDispatch } from "react-redux";
 import { useTranslation } from 'react-i18next';
 import './caseDetail.scss';
 import * as Yup from "yup";
@@ -7,7 +8,9 @@ import moment from "moment";
 import { Formik, Form, Field } from "formik";
 import { AutoCompleteOptionType, CaseFormType, Case } from "../CaseTypes";
 import { NotificationMessage } from  '../../Header/CRXNotifications/notificationsTypes';
-import { CasesAgent } from "../../../utils/Api/ApiAgent"; 
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
+import { CasesAgent } from "../../../utils/Api/ApiAgent";
+import { urlList, urlNames } from "../../../utils/urlList";
 import {
   CRXTabs,
   CrxTabPanel,
@@ -21,20 +24,26 @@ import {
   CRXToaster,
   TextField
 } from "@cb/shared";
+import { validate } from "uuid";
 
-const CasesDetail:React.FC = () => {
+
+
+const CasesDetail: React.FC = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const caseInitialState: CaseFormType = {
+    RecId:0,
     Title: "",
     CMT_CAD_RecId: 0,
-    CADCsv: "",
-    RMSId: "",
+    CADCsv: "CADCsv",
+    RMSId: "RMSId",
     State: {
       id: 0,
       label: ""
     },
-    Status: {
+    Status:  {
       id: 0,
       label: ""
     },
@@ -49,60 +58,176 @@ const CasesDetail:React.FC = () => {
       label: ""
     }
    };
-   const [casePayload, setCasePayload] = React.useState<CaseFormType>(caseInitialState);
-   const [states, setStates] = React.useState<AutoCompleteOptionType[]>([{ id :0, label: "Created"}, {id: 1, label: "New"}, {id: 2, label: "Approved"}]);
-   const [status, setStatus] = React.useState<AutoCompleteOptionType[]>([{ id :0, label: "Open"}, {id: 1, label: "Closed"}, {id: 2, label: "Deleted"}]);  
-   const [creationTypes, setCreationTypes] = React.useState<AutoCompleteOptionType[]>([{ id :0, label: "Manual"}, {id: 1, label: "Automatic"}, {id: 2, label: "RMS"}]);  
-   const [closedTypes, setClosedTypes] = React.useState<AutoCompleteOptionType[]>([{ id :0, label: "ClosedAndReleaseEvidence"}, {id: 1, label: "ClosedWithEvidenceDelete"}]);
+  
+   const [casePayload, setCasePayload] =  useState<CaseFormType>(caseInitialState);
+   const { id }  = useParams<{ id: string }>();
+   const caseId = parseInt(id);
+
+   const [stateTouched, setStateTouched] =  useState<number>(0);
+   const [statesAutoCompleteOptions, setStatesAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
+   const [statesAutoCompleteValue, setStatesAutoCompleteValue] =  useState<AutoCompleteOptionType | null>(null);
+
+   const [statusTouched, setStatusTouched] =  useState<number>(0);
+   const [statusAutoCompleteOptions, setStatusAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
+   const [statusAutoCompleteValue, setStatusAutoCompleteValue] =  useState<AutoCompleteOptionType | null>(null);
+
+   const [creationTypeTouched, setCreationTypeTouched] =  useState<number>(0);
+   const [creationTypesAutoCompleteOptions, setCreationTypesAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
+   const [creationTypesAutoCompleteValue, setCreationTypesAutoCompleteValue] =  useState<AutoCompleteOptionType | null>(null);
+
+   const [closedTypesCompleteOptions, setClosedTypesAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
+   const [closedTypesCompleteValue, setClosedTypesAutoCompleteValue] =  useState<AutoCompleteOptionType | null>(null);
+
+   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+   const [error, setError] =  useState<boolean>(false);
+   const [errorResponseMessage, setErrorResponseMessage] =  useState<string>(
+    t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+  );
    const toasterRef = useRef<typeof CRXToaster>(null);
 
 
    //useEffects
+   useEffect(()=>{
+    if(caseId > 0 ){
+      getTheCaseForUpdate(caseId);
+    }
+  },[id]);
+
+   useEffect (()=>{
+    fillCaseAutoCompletes();
+   },[casePayload,statesAutoCompleteOptions,statusAutoCompleteOptions,creationTypesAutoCompleteOptions,closedTypesCompleteOptions]);
+
     useEffect(()  =>{
+      console.log("Status",statusAutoCompleteValue);
+
       async function fetchAllDropDownsData() {
-
-        await CasesAgent.getCaseStates('/Cases/GetCaseStates')
-        .then((states: any) => {
-          setStates(states);
-        })
-        .catch(() => {});
-
-        await CasesAgent.getCaseStatus('/Cases/GetCaseStatus')
-        .then((status: any) => {
-          setStatus(status);
-        })
-        .catch(() => {});
-
-        await CasesAgent.getCaseCreationType('/Cases/GetCaseCreationType')
-        .then((creationTypes: any) => {
-          setCreationTypes(creationTypes);
-        })
-        .catch(() => {});
-
-        await CasesAgent.getCaseClosedType('/Cases/GetCaseClosedType')
-        .then((closedTypes: any) => {
-          setClosedTypes(closedTypes);
+        await CasesAgent.getCaseStates('/Case/GetAllDropDownValues')
+        .then((response: any) => {
+          console.log("GetAllDropDownValues",response)
+          setStatesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseStates));
+          setStatusAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseStatus));
+          setCreationTypesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseCreationType));
+          setClosedTypesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseClosedType));
         })
         .catch(() => {});
       }
-      
       fetchAllDropDownsData();
     }, []);
-
+   
    //methods
+   const getTheCaseForUpdate=(caseId:number)=>{
+    CasesAgent.getCase(`/Case/${caseId}`)
+    .then((Case: any) => {
+      console.log("success response",Case);
+      caseInitialState.Title = Case.title;
+      caseInitialState.RecId= Case.id;
+      caseInitialState.CMT_CAD_RecId = Case.CMT_CAD_RecId;
+      caseInitialState.CADCsv = Case.cadCsv;
+      caseInitialState.RMSId = Case.rmsId;
+      caseInitialState.State = {
+        id : (Case.stateId),
+      };
+      caseInitialState.Status =  {
+        id :(Case.status),
+      };
+      caseInitialState.CreationType = {
+        id : (Case.creationType),
+      };
+      caseInitialState.DescriptionPlainText = Case.description.plainText;
+      caseInitialState.DescriptionJson = "";
+      caseInitialState.ClosedType = {
+        id: (Case.closedType),
+      };
+      setCasePayload(caseInitialState);
+    })
+  }
+  const fillCaseAutoCompletes = () => {
+    if (casePayload.Title !== "") {
+      if (statesAutoCompleteOptions.length > 0) {
+        let stateAutoComplete = statesAutoCompleteOptions.filter((x: any) => x.id == casePayload.State?.id)[0];
+        setStatesAutoCompleteValue(stateAutoComplete);
+      }
+      if (statusAutoCompleteOptions.length > 0) {
+        let statusAutoComplete = statusAutoCompleteOptions.filter((x: any) => x.id == casePayload.Status?.id)[0];
+        setStatusAutoCompleteValue(statusAutoComplete);
+      }
+      if (creationTypesAutoCompleteOptions.length > 0) {
+        let creationTypesAutoComplete = creationTypesAutoCompleteOptions.filter(x => x.id == casePayload.CreationType?.id)[0];
+        setCreationTypesAutoCompleteValue(creationTypesAutoComplete);
+      }
+      if (closedTypesCompleteOptions.length > 0) {
+        let closedTypesAutoComplete = closedTypesCompleteOptions.filter(x => x.id == casePayload.ClosedType?.id)[0];
+        setClosedTypesAutoCompleteValue(closedTypesAutoComplete);
+      }
+    }
+  }
+    
    const caseValidationSchema = Yup.object().shape({
     Title: Yup.string().required("Title is required"),
     State: Yup.object().shape({
-      id: Yup.string().required('State is required')
+      id: Yup.number().min(1).required('State is required'),
+      label: Yup.string()
     }),
     Status: Yup.object().shape({
-      id: Yup.string().required('Status is required')
+      id: Yup.number().min(1).required('Status is required'),
+      label: Yup.string()
     }),
     CreationType:  Yup.object().shape({
-      id: Yup.string().required('Creation Type is required')
+      id: Yup.number().min(1).required('Creation Type is required'),
+      label: Yup.string()
     })
   });
+  const remapArrayToAutoCompleteOptionType = (arr: Array<any>): Array<AutoCompleteOptionType> => {
+    let autoCompleteArray: any = [];
+    if (arr.length > 0) {
+      for (const elem of arr) {
+        autoCompleteArray.push({
+          id: elem.id,
+          label: elem.label,
+        });
+      }
+      autoCompleteArray = autoCompleteArray.sort((a: any, b: any) => (a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
+    }
+    return autoCompleteArray;
+  };
+  const navigateToCases = () => {
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.cases)[0].url
+    );
+  };
+ 
+  const CreateCase=(caseBody:any)=>{
+    CasesAgent.addCase('/Case',caseBody).then((response: number) => {
 
+      console.log("success response",response)
+      showToastMsg(t("You_have_saved_the_Case_successfully"),"success");
+      setTimeout(() => navigateToCases(), 3000);
+    })
+      .catch((e: any) => {
+         setError(true);
+         setErrorResponseMessage(e.response.data);
+         showToastMsg( e.response.data,"error");
+
+        console.log("error", e.response.data)
+        console.error(e);
+      });
+  }
+  const updateCase=(caseBody:any)=>{
+    CasesAgent.editCase(`/Case/${caseId}`,caseBody).then((response: number) => {
+
+      console.log("success response from update",response)
+      showToastMsg(t("You_have_updated_the_Case_successfully"),"success");
+      setTimeout(() => navigateToCases(), 3000);
+    })
+      .catch((e: any) => {
+         setError(true);
+         setErrorResponseMessage(e.response.data);
+         showToastMsg( e.response.data,"error");
+
+        console.log("error", e.response.data)
+        console.error(e);
+      });
+  }
   const onSubmit= (values: any) => {
     console.log("submitFrom function", values)
     let caseBody: Case = { 
@@ -111,56 +236,43 @@ const CasesDetail:React.FC = () => {
       CMT_CAD_RecId:0,
       CADCsv: "CADCsv",
       RMSId:"RMSId",
-      State: values.State.id,
+      StateId: values.State.id,
       Status: values.Status.id,
       CreationType: values.CreationType.id,
       ClosedType: values.ClosedType.id,
-      DescriptionPlainText: values.DescriptionPlainText,
-      DescriptionJson: "DescriptionJson",
+      Description:{
+        Formatted:  values.DescriptionPlainText, //ask kareem bhai 
+        PlainText: values.DescriptionPlainText
+      },
+      CreatedBy: parseInt(localStorage.getItem('User Id') ?? "0"),
     }
     console.log("caseBody", caseBody);
-    showToastMsg();
-    if (true) {
-      CasesAgent.addCase('/Cases',caseBody).then((response: number) => {
-        console.log("success response",response)
-        showToastMsg();
-        //dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
-        // const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url}`;
-        // history.push(path.substring(0, path.lastIndexOf("/")) + "/" + response);
-        
-        //setTimeout(() => navigateToStations(), 3000);
-      })
-        .catch((e: any) => {
-          // errorHandler(e.response.data);
-          // setError(true);
-          console.log("error", e)
-          console.error(e);
-        });
+    
+    if(caseId > 0 ){
+     updateCase(caseBody);
+    }
+    else{
+      CreateCase(caseBody)
     }
   }
-  
-  
-  const showToastMsg = () => {
+  const showToastMsg = (message: string, variant: string) => {
     toasterRef.current.showToaster({
-      message: t("You_have_saved_the_Case_successfully"),
-      variant: "success",
-      duration: 7000,
+      message: (message),
+      variant: variant,
+      duration: 4000,
       clearButtton: true,
     });
 
     let notificationMessage: NotificationMessage = {
-      title: t("Station_Detail"),
-      message: t("Success_You_have_saved_the_Station"),
+      title: t("Case_Detail"),
+      message: t("You_have_saved_the_Case_successfully"),
       type: "success",
       date: moment(moment().toDate())
         .local()
         .format("YYYY / MM / DD HH:mm:ss"),
     };
-    //dispatch(addNotificationMessages(notificationMessage));
+    dispatch(addNotificationMessages(notificationMessage));
   };
-
-
-
 
    return (
       <>
@@ -171,10 +283,12 @@ const CasesDetail:React.FC = () => {
         validationSchema={caseValidationSchema}
         onSubmit={(values) => {
           console.log("SUBMIT : " + values);
+          onSubmit(values)
         }}
+        validateOnChange={true}
         >
-      {
-        ({setFieldValue, values, errors, touched, dirty, isValid }) => (
+      {props => (
+        (
           <>
             <Form>
             <div className="CaseSettingsUpdate  switchLeftComponents">
@@ -214,11 +328,11 @@ const CasesDetail:React.FC = () => {
                             name="Title"
                           />
                     </div>
-                    {errors.Title !== undefined &&
-                        touched.Title ? (
+                    {props.errors.Title !== undefined &&
+                        props.touched.Title ? (
                           <div className="errorTenantStyle">
                             <i className="fas fa-exclamation-circle"></i>
-                            {errors.Title}
+                            {props.errors.Title}
                           </div>
                         ) : (
                           <></>
@@ -231,7 +345,7 @@ const CasesDetail:React.FC = () => {
                         item="item"
                         lg={12}
                         xs={12}
-                        spacing={0}
+                        spacing={-2}
                       >
                     <div className="CBX-input">
                         <label htmlFor="cMT_CAD_RecId">
@@ -241,6 +355,7 @@ const CasesDetail:React.FC = () => {
                             id="cMT_CAD_RecId"
                             key="cMT_CAD_RecId"
                             name="CMT_CAD_RecId"
+                            readOnly={true}
                           />
                     </div>
                   </CRXColumn>
@@ -261,10 +376,10 @@ const CasesDetail:React.FC = () => {
                             id="cADCsv"
                             key="cADCsv"
                             name="CADCsv"
+                            readOnly={true}
                           />
                     </div>
                   </CRXColumn>
-
                   <CRXColumn
                         className="CaseDetailCol"
                         container="container"
@@ -281,6 +396,7 @@ const CasesDetail:React.FC = () => {
                             id="rMSId"
                             key="rMSId"
                             name="RMSId"
+                            readOnly={true}
                           />
                     </div>
                   </CRXColumn>
@@ -293,24 +409,34 @@ const CasesDetail:React.FC = () => {
                       xs={12}
                       spacing={0}
                     >
-                    <CRXMultiSelectBoxLight
-                            className="reasonsAutocomplete"
-                            label="State"
-                            multiple={false}
-                            CheckBox={true}
-                            required={true}
-                            options={states}
-                            value={values.State}
-                            autoComplete={false}
-                            isSearchable={true}
-                            disabled={!values.State}
-                            onChange={(
-                              e: React.SyntheticEvent,
-                              value: string[]
-                            ) => {
-                              setFieldValue("State", value, true);
-                            }}
-                          />
+                   <CRXMultiSelectBoxLight
+                              id="State"
+                              className="getStationField"
+                              label= "State"
+                              multiple={false}
+                              error={stateTouched == 1}
+                              errorMsg={"State is required"}
+                              value={statesAutoCompleteValue || ''}
+                              options={statesAutoCompleteOptions}//.length > 0 && statesAutoCompleteOptions}
+                              onChange={(
+                                e: any,
+                                value: AutoCompleteOptionType,
+                                reason: string
+                              ) =>
+                              {
+                                props.setFieldValue("State", value, true);
+                                setStateTouched(value === null ? 1 : 0)
+                                setStatesAutoCompleteValue(value === null ? null : value);
+                              }
+                              }
+                              onBlur ={() =>
+                                {
+                                  setStateTouched(statesAutoCompleteValue == (null || undefined) ? 1 : 0)
+                                }}
+                              CheckBox={true}
+                              checkSign={false}
+                              required={true}
+                            />
                   </CRXColumn>
 
                   <CRXColumn
@@ -322,22 +448,32 @@ const CasesDetail:React.FC = () => {
                       spacing={0}
                     >
                     <CRXMultiSelectBoxLight
-                            className="reasonsAutocomplete"
-                            label="Status"
+                            id="Status"
+                            className=""
+                            label= "Status"
                             multiple={false}
-                            CheckBox={true}
-                            required={true}
-                            options={status}
-                            value={values.Status}
-                            autoComplete={false}
-                            isSearchable={true}
-                            disabled={!values.Status}
+                            error={statusTouched==1}
+                            errorMsg={"Status is required"}
+                            value={statusAutoCompleteValue || ''}
+                            options={statusAutoCompleteOptions}//.length > 0 && statusAutoCompleteOptions}
                             onChange={(
-                              e: React.SyntheticEvent,
-                              value: string[]
-                            ) => {
-                              setFieldValue("Status", value, true);
+                              e: any,
+                              value: AutoCompleteOptionType,
+                              reason: string
+                            ) =>
+                            {
+                              props.setFieldValue("Status", value, true);
+                              setStatusTouched(value === null ? 1 : 0)
+                              setStatusAutoCompleteValue(value === null ? null : value);
+                            }
+                            }
+                            onBlur ={() =>
+                            {
+                              setStatusTouched(statusAutoCompleteValue == (null || undefined) ? 1 : 0)
                             }}
+                            CheckBox={true}
+                            checkSign={false}
+                            required={true}
                           />
                   </CRXColumn>
 
@@ -349,24 +485,35 @@ const CasesDetail:React.FC = () => {
                       xs={12}
                       spacing={0}
                     >
-                    <CRXMultiSelectBoxLight
-                            className="reasonsAutocomplete"
-                            label="Creation Type"
-                            multiple={false}
-                            CheckBox={true}
-                            required={true}
-                            options={creationTypes}
-                            value={values.CreationType}
-                            autoComplete={false}
-                            isSearchable={true}
-                            disabled={!values.CreationType}
-                            onChange={(
-                              e: React.SyntheticEvent,
-                              value: string[]
-                            ) => {
-                              setFieldValue("CreationType", value, true);
-                            }}
-                          />
+                     <CRXMultiSelectBoxLight
+                              id="CreationType"
+                              className=""
+                              label= "Creation Type"
+                              multiple={false}
+                              error={creationTypeTouched ==1}
+                             // error={touched.CreationType===false}
+                              errorMsg={"Creation Type is required"}
+                              value={creationTypesAutoCompleteValue || ''}
+                              options={creationTypesAutoCompleteOptions}//.length > 0 && creationTypesAutoCompleteOptions}
+                              onChange={(
+                                e: any,
+                                value: AutoCompleteOptionType,
+                                reason: string
+                              ) =>
+                              {
+                                props.setFieldValue("CreationType", value, true);
+                                setCreationTypeTouched(value === null ? 1 : 0)
+                                setCreationTypesAutoCompleteValue(value === null ? null : value);
+                              }
+                              }
+                              onBlur ={() =>
+                              {
+                                setCreationTypeTouched(creationTypesAutoCompleteValue == (null || undefined) ? 1 : 0)
+                              }}
+                              CheckBox={true}
+                              checkSign={false}
+                              required={true}
+                            />  
                   </CRXColumn>
 
                   <CRXColumn
@@ -377,24 +524,28 @@ const CasesDetail:React.FC = () => {
                       xs={12}
                       spacing={0}
                     >
-                    <CRXMultiSelectBoxLight
-                            className="reasonsAutocomplete"
-                            label="Closed Type"
-                            multiple={false}
-                            CheckBox={true}
-                            required={false}
-                            options={closedTypes}
-                            value={values.ClosedType}
-                            autoComplete={false}
-                            isSearchable={true}
-                            disabled={!values.ClosedType}
-                            onChange={(
-                              e: React.SyntheticEvent,
-                              value: string[]
-                            ) => {
-                             setFieldValue("ClosedType", value, true);
-                            }}
-                          />
+                      <CRXMultiSelectBoxLight
+                              id="ClosedType"
+                              className=""
+                              label= "Closed Type"
+                              multiple={false}
+                              errorMsg={"Closed Type is required"}
+                              value={closedTypesCompleteValue || ''}
+                              options={closedTypesCompleteOptions}//.length > 0 && closedTypesCompleteOptions}
+                              onChange={(
+                                e: any,
+                                value: AutoCompleteOptionType,
+                                reason: string
+                              ) =>
+                              {
+                                props.setFieldValue("ClosedType", value, true);
+                                setClosedTypesAutoCompleteValue(value === null ? null : value);
+                              }
+                              }                             
+                              CheckBox={true}
+                              checkSign={false}
+                              required={false}
+                            />
                   </CRXColumn>
 
                   <CRXColumn
@@ -415,10 +566,9 @@ const CasesDetail:React.FC = () => {
                             name="DescriptionPlainText"
 
                             required={false}
-                            value={values.DescriptionPlainText}
-                          //  label="Description"
+                            value={props.values.DescriptionPlainText || ''}
                             className="retention-policies-input"
-                            onChange={(e: any) =>  setFieldValue("DescriptionPlainText", e.target.value, true)}
+                            onChange={(e: any) =>  props.setFieldValue("DescriptionPlainText", e.target.value, true)}
                             disabled = {false}
                             type="text"
                             regex=""
@@ -433,20 +583,27 @@ const CasesDetail:React.FC = () => {
                   
                 </CRXRows>
 
-                <CRXButton
+                <CRXButton 
                     type="submit"
-                    disabled={!isValid || !dirty}
-                    onClick={() => onSubmit(values)} 
+                    disabled={!props.isValid || !props.dirty}
                     variant="contained"
                     className="groupInfoTabButtons"
                   >
-                    Save
-                  </CRXButton>
+                  {t("Save")}
+                </CRXButton>
+                <CRXButton
+                    className="groupInfoTabButtons secondary"
+                    color="secondary"
+                    variant="outlined"
+                    onClick={navigateToCases}
+                  >
+                  {t("Cancel")}
+                </CRXButton>
               </div>
             </div>
-          </Form>
+            </Form>
         </>
-        )}
+      ))}
       </Formik>
     </>
   );

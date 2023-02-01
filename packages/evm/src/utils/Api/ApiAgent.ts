@@ -408,17 +408,18 @@ export const SearchAgent = {
 
 export const CasesAgent = {
     getCasesBuildVersion: () => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/Health/BuildVersion"),
-    getCaseStates: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStates"),
-    getCaseStatus: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStatus"),
-    getCaseCreationType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseCreationType"),
-    getCaseClosedType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseClosedType"),
-    addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, "/Cases", caseBody, config),
+    getCaseStates: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+    getCaseStatus: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+    getCaseCreationType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+    getCaseClosedType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+    addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
+    editCase: (url:string, caseBody: Case) => requests.put<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
 
-
+    getCase: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
     getAllCases: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<Cases[]>>(BASE_URL_CASES_SERVICE, `/Case/GetAll${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
-    // getAllCasesInfo: (url: string) => requests.get<Cases[]>(BASE_URL_CASES_SERVICE, "/Case/GetAllCases" + url, config),
+    // getAllCasesInfo: (url: string) => requests.get<Cases[]>(BASE_URL_Cases_SERVICE, "/Case/GetAllCases" + url, config),
     deleteCase: (url: string) => requests.delete<void>(BASE_URL_CASES_SERVICE, url, config),
 }
 

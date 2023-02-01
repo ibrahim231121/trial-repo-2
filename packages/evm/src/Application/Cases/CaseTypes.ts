@@ -1,5 +1,5 @@
 export type CaseFormType = {
-   
+    RecId: number;
     Title: string;  //*
     CMT_CAD_RecId: number;
     CADCsv: string;
@@ -23,13 +23,15 @@ export interface Case {
     CMT_CAD_RecId: number;
     CADCsv: string;
     RMSId: string;
-    State: number; //*
+    StateId: number; //*
     Status: number; //*
     CreationType: number; //*
     ClosedType: number;
-    DescriptionPlainText:string;
-    DescriptionJson: string;
-   
+    Description:{
+        Formatted:  string,
+        PlainText: string
+    }
+    CreatedBy:number;
 };
 
 export type CaseTemplate = {
