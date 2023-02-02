@@ -545,7 +545,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
       <CRXToaster ref={retentionMsgFormRef} />
       <CRXModalDialog
         maxWidth="gl"
-        title={props.title}
+        title={props.title != '' ? props.title:name}
         className={"CRXModal CRXRetentionPolicies"}
         modelOpen={openModal}
         onClose={closeDialog}

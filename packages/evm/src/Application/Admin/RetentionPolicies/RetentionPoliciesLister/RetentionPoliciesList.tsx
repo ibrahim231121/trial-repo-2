@@ -166,7 +166,7 @@ const RetentionPoliciesList: React.FC = () => {
   }
   const openEditForm = (rowId: number) => {
     //if (getModuleIds().includes(67)) {
-    onClickOpenModel(true, Number(rowId), t("Edit_retention_policy"))
+    onClickOpenModel(true, Number(rowId), '')
     //}
   }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([

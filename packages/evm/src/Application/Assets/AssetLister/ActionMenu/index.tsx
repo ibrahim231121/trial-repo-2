@@ -1194,7 +1194,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           {multiAssetDisabled === false ? (
             <MenuItem>
               <ActionMenuCheckList
-                moduleId={0}
+                moduleId={70}
                 descriptorId={3}
                 maximumDescriptor={maximumDescriptor}
                 evidence={row?.evidence}

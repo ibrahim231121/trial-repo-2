@@ -60,6 +60,11 @@ import ActionMenu from "../../Assets/AssetLister/ActionMenu";
 import { Asset } from "../../../utils/Api/models/EvidenceModels";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { setAssetBucketBasket } from "../../../Redux/assetBucketBasketSlice";
+import { Link } from "react-router-dom";
+import { urlList, urlNames } from "../../../utils/urlList";
+import { CRXTruncation } from "@cb/shared";
+import { AssetDetailRouteStateType } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
+import DetailedAssetPopup from "../../Assets/AssetLister/AssetDataTable/DetailedAssetPopup";
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 // window.onRecvError = new CustomEvent("onUploadError");
@@ -1264,7 +1269,35 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
     setActiveScreen(0);
     setIsModalOpen(false);
   }
-
+  const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
+    let masterAsset = evidence.masterAsset;
+    let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
+    let dataLink = 
+    <>
+      <Link
+        className="linkColor"
+        to={{
+          pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
+          state: {
+            evidenceId: evidence.id,
+            assetId: masterAsset.assetId,
+            assetName: assetName,
+            evidenceSearchObject: evidence
+          } as AssetDetailRouteStateType,
+        }}
+      >
+        <div className="assetName">
+        <CRXTruncation placement="top" content={assetName} />
+        </div>
+      </Link>
+      {assets  && evidence.masterAsset.lock &&
+      <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
+      }
+      <DetailedAssetPopup asset={assets} row={evidence} />
+    </>
+    return dataLink;
+      
+  };
   return (
     <>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
@@ -1554,7 +1587,10 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                       {x?.isMaster ? (
                                         <>
                                           <div className="bucketListAssetName">
-                                            {selectedAsset[0].assetName}
+                                            {
+                                              assetNameTemplate(selectedAsset[0].assetName,x.evidence)
+                                            }
+                                            
                                           </div>
                                           <div className="bucketListRec">
                                             {selectedAsset[0].assetType}
@@ -1569,7 +1605,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                                   0,
                                                   25
                                                 ) + "..."
-                                              : selectedAsset[0].assetName}
+                                              : assetNameTemplate(selectedAsset[0].assetName,x.evidence)}
                                           </div>
                                           <div className="bucketListRec">
                                             {selectedAsset[0].assetType}
