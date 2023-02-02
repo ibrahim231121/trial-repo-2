@@ -43,6 +43,7 @@ import { getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import { RootState } from "../../Redux/rootReducer";
 import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../../utils/hub_config";
 import Restricted from "../../ApplicationPermission/Restricted";
+import moment from "moment";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -53,7 +54,8 @@ export type UnitInfoModel = {
   configTemplateList: any;
   stationList: any;
   stationId: any;
-  allconfigTemplateList: any
+  allconfigTemplateList: any;
+  lastCheckedIn: any
 };
 
 type UnitAndDevice = {
@@ -92,7 +94,8 @@ const UnitCreate = (props: historyProps) => {
     configTemplateList: [],
     stationList: [],
     stationId: "",
-    allconfigTemplateList: []
+    allconfigTemplateList: [],
+    lastCheckedIn:[]
   });
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -132,6 +135,7 @@ const UnitCreate = (props: historyProps) => {
     page: page,
     size: rowsPerPage
   })
+  const tenMinutes:number=10;
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -161,7 +165,7 @@ const UnitCreate = (props: historyProps) => {
   const [configTemplateList, setConfigTemplateList] = useState<any[]>([]);
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
   const stationList: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
-
+  
 
   React.useEffect(() => {
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
@@ -169,7 +173,14 @@ const UnitCreate = (props: historyProps) => {
     UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response: GetPrimaryDeviceInfo) => {
       setPrimaryDeviceInfo(response);
       if (response != undefined) {
-        setUnitStatus(response.status.toUpperCase());
+        let currentTime = new Date();   
+        let tenMinutesAddedInlastCheckedIn= moment(response.lastCheckedIn).add(tenMinutes, 'm').toDate() ;
+        if(tenMinutesAddedInlastCheckedIn < currentTime && response.status != "Inactive"){
+          setUnitStatus("OFFLINE");
+        }
+        else{
+          setUnitStatus(response.status.toUpperCase());
+        }
       }
     });
 
@@ -223,7 +234,7 @@ const UnitCreate = (props: historyProps) => {
       configTemplateList.map((x: any) => {
         template.push({ displayText: x.name, value: x.id, stationId: x.stationId });
       });
-
+     
 
       let stationlst: any = [{ displayText: t("None"), value: "0" }];
       stationList.map((x: any) => {
@@ -238,7 +249,8 @@ const UnitCreate = (props: historyProps) => {
         configTemplateList: template,
         stationList: stationlst,
         stationId: stationID,
-        allconfigTemplateList: allconfigTemplateList
+        allconfigTemplateList: allconfigTemplateList,
+        lastCheckedIn: primaryDeviceInfo.lastCheckedIn
       });
       dispatch(
         enterPathActionCreator({
@@ -299,7 +311,8 @@ const UnitCreate = (props: historyProps) => {
       configTemplateList: configTemplateList,
       stationList: stationList,
       stationId: stationId,
-      allconfigTemplateList: allconfigTemplateList
+      allconfigTemplateList: allconfigTemplateList,
+      lastCheckedIn: primaryDeviceInfo.lastCheckedIn
     });
 
   };
@@ -313,7 +326,8 @@ const UnitCreate = (props: historyProps) => {
       configTemplateList: configTemplateList,
       stationList: stationList,
       stationId: primaryDeviceInfo === undefined ? "" : stationID,
-      allconfigTemplateList: allconfigTemplateList
+      allconfigTemplateList: allconfigTemplateList,
+      lastCheckedIn: primaryDeviceInfo.lastCheckedIn
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -334,7 +348,8 @@ const UnitCreate = (props: historyProps) => {
       configTemplateList: primaryDeviceInfo === undefined ? [] : unitInfo.configTemplateList,
       stationList: primaryDeviceInfo === undefined ? [] : unitInfo.stationList,
       stationId: primaryDeviceInfo === undefined ? "" : stationID,
-      allconfigTemplateList: allconfigTemplateList
+      allconfigTemplateList: allconfigTemplateList,
+      lastCheckedIn:primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.lastCheckedIn
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
