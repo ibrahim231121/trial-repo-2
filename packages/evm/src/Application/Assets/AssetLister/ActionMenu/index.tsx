@@ -363,7 +363,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {      
-      debugger;
+      
       if (selectedItems !== undefined && selectedItems !== null && selectedItems.length > 1){ // multi asset export
               
         let  totalFiles  = selectedItems.map((e:any) => {   
@@ -1194,7 +1194,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           {multiAssetDisabled === false ? (
             <MenuItem>
               <ActionMenuCheckList
-                moduleId={0}
+                moduleId={70}
                 descriptorId={3}
                 maximumDescriptor={maximumDescriptor}
                 evidence={row?.evidence}

@@ -6,7 +6,7 @@ import {DateTimeComponent } from '../GlobalComponents/DateTime';
 import { dateOptionsTypes } from '../utils/constant';
 import { RootState } from "../Redux/rootReducer";
 import textDisplay from "../GlobalComponents/Display/TextDisplay";
-
+import moment from "moment";
 import anchorDisplayUnit from "../GlobalComponents/Display/AnchorDisplayUnit";
 import './index.scss'
 import { getUnitInfoAsync, getAllUnitVersionKeyValuesAsync, getAllUnitStatusKeyValuesAsync, getAllUnitTemplateKeyValuesAsync, getAllUnitAssignmentKeyValuesAsync } from "../Redux/UnitReducer";
@@ -77,9 +77,10 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-
+  const tenMinutes:number=10;
   const rowsRef = useRef<any>([]);
   const statusJson =useRef<any>();
+  const intervalRef = useRef<any>();
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
   const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
   const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);
@@ -113,7 +114,6 @@ const UnitAndDevices: React.FC = () => {
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   
-
   React.useEffect(() => {
     subscribeGroupToSocket("UnitStatus");
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
@@ -126,13 +126,18 @@ const UnitAndDevices: React.FC = () => {
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "Units & Devices");  // will check this
     document.getElementById("UDAssigned")?.parentElement?.classList.add("UDAssignedClass");
-  
+
+    intervalRef.current = setInterval(() => {
+      getTheUnitStatusWithLogTimeInterval(rowsRef.current);
+    }, 600000);
+
     return () => {
         singleEventListener("onWSMsgRecEvent");
         unSubscribeGroupFromSocket("UnitStatus");
+        clearInterval(intervalRef.current);
          };
   }, []);
-
+ 
   const singleEventListener = (function(element: any) {
           var eventListenerHandlers:any = {};
           return function(eventName: string, func?: any) {
@@ -150,7 +155,7 @@ const UnitAndDevices: React.FC = () => {
   const setData = () => {
 
     let unitRows: Unit[] = [];
-    
+
         if (units.data && units.data.length > 0) {
           unitRows = units.data.map((unit: any, i:number) => {
             let urlProps = {
@@ -159,29 +164,30 @@ const UnitAndDevices: React.FC = () => {
               stationId : unit.stationRecId,
               template : unit.template
             }
-            return {
-                id: unit.recId,
-                unitId: JSON.stringify(urlProps),
-                description: unit.description,
-                station: unit.station,
-                serialNumber: unit.serialNumber,
-                template: unit.template,
-                key: unit.key,
-                version: unit.version,
-                //assignedTo: unit.assignedTo,
-                assignedToStr: unit.assignedToStr,
-              //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
-              //     return x.trim();
-              // }) : [],
-                lastCheckedIn: unit.lastCheckedIn,
-                status: unit.status,
-                stationId: unit.stationRecId
+            let objUnit={
+              id: unit.recId,
+              unitId: JSON.stringify(urlProps),
+              description: unit.description,
+              station: unit.station,
+              serialNumber: unit.serialNumber,
+              template: unit.template,
+              key: unit.key,
+              version: unit.version,
+              //assignedTo: unit.assignedTo,
+              assignedToStr: unit.assignedToStr,
+            //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
+            //     return x.trim();
+            // }) : [],
+              lastCheckedIn: unit.lastCheckedIn,
+              status: unit.status,
+              stationId: unit.stationRecId
             }
+            return objUnit;
           })
         }
         rowsRef.current = unitRows;
         setRows(unitRows)
-        
+        getTheUnitStatusWithLogTimeInterval(unitRows);
         setReformattedRows({...reformattedRows, 
             rows: unitRows, 
             unitStatus: unitStatus, 
@@ -193,6 +199,17 @@ const UnitAndDevices: React.FC = () => {
         //setReformattedRows(unitRows);
         singleEventListener("onWSMsgRecEvent", onMsgReceived);
   }
+  const getTheUnitStatusWithLogTimeInterval=(objUnit:any)=>{
+      let currentTime = new Date();   
+      for (let index = 0; index < objUnit.length; index++) {
+        let tenMinutesAddedInlastCheckedIn= moment(objUnit[index].lastCheckedIn).add(tenMinutes, 'm').toDate() ;
+        if(tenMinutesAddedInlastCheckedIn < currentTime && objUnit[index].status != "Inactive"){
+          objUnit[index].status = "Offline";
+        }
+      }
+      setRows(objUnit);
+    }
+  
   function onMsgReceived(e: any) {
     if(e !=null && e.data != null && e.data.body !=null) { 
       statusJson.current = JSON.parse(e.data.body.data);
@@ -206,6 +223,7 @@ const UnitAndDevices: React.FC = () => {
         const rowscopy = [...rowsRef.current];
         if(index !== -1){
           rowscopy[index].status = statusJson.Data;
+          rowscopy[index].lastCheckedIn = statusJson.LogTime;
           rowsRef.current = rowscopy;
           setRows(rowscopy);
         }
@@ -220,6 +238,8 @@ const UnitAndDevices: React.FC = () => {
     setData();
     dispatch(enterPathActionCreator({ val: ""}));
   }, [units.data, unitStatus, unitTemplates, unitVersions, unitAssignments]);
+
+  
 
   useEffect(() => {
     if(paging)

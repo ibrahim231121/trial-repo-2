@@ -26,6 +26,7 @@ import DetailedAssetPopup from "../AssetLister/AssetDataTable/DetailedAssetPopup
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import AnchorDisplay from "../../../utils/AnchorDisplay";
 import CategoryForm from "../AssetLister/Category/CategoryForm";
+import { CRXLoader } from "@cb/shared";
 
 
 
@@ -139,6 +140,8 @@ const SharedMedia = () => {
   const [initialRecord, setInitialRecord] = React.useState<SharedAssetLister[]>([]);
   let reformattedRows: SharedAssetLister[] = [];
   const [rows, setRows] = React.useState<SharedAssetLister[]>([]);
+  const [loadingValue, setLoadingValue] = React.useState<boolean>(false);
+  const [dataResponse,setDataResponse] = React.useState<any>();
 
   const { t } = useTranslation<string>();
   const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
@@ -313,11 +316,10 @@ const SharedMedia = () => {
     setHeadCells(headCellsArray);
   }, [isdownloadable,ismetaDataIncluded])
 
-
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
-
+  
   useEffect(() => {
     if (gpsFileData && gpsFileData.length > 0) {
       const blobSasUrl = gpsFileData[0].downloadUri;
@@ -350,19 +352,26 @@ const SharedMedia = () => {
     });
     return headCellsArray;
   };
+ 
+
   const DecryptLink = async () => {
+    
     let downloadUrlList: string[] = [];
     let dataList: assetdata[] = [];
     const cookies = new Cookies();
-    const url = EVIDENCE_SERVICE_URL + '/OpenSharedMedia?E=' + `${token}`
+    const url = EVIDENCE_SERVICE_URL + '/OpenSharedMedia?E=' + `${token}`;
+    // debugger;
+    setLoadingValue(true);
+    
     const res = await fetch(url, {
       method: 'Get',
       headers: { 'Content-Type': 'application/json' },
     });
-
     let response = await res.json();
+    setLoadingValue(false);
+    document.documentElement.style.overflow = "visible !important";
+    //setDataResponse(response);
     let tempRec: SharedAssetLister[] = [];
-    //let formsData: Form[] = [];
     let formsfields: Field[] = [];
     let formfieldstring = '';
     let tmpCategory: categoriesModel[] = [];
@@ -649,12 +658,13 @@ const dataArrayBuilder = () => {
   setRows(dataRows);
 };
 
-useEffect(() => {
-  const htmlDiv = document.getElementsByTagName('html');
-  htmlDiv && (htmlDiv[0].style.overflow = "unset !important")
-}, [])
+
 return (
   <div className="crxManageUsers switchLeftComponents manageUsersIndex">
+    <CRXLoader
+          show={loadingValue == true}
+          loadingText="Please wait"
+        />
     {/* <div style={{ textAlign: "center" }}>
         <span style={{ fontSize: "28px", fontWeight: "900" }}>Shared Media</span><br></br>
         <span style={{ fontSize: "16px", fontWeight: "400" }}>{LinkStatus}</span>
@@ -668,7 +678,7 @@ return (
       ) : null} */}
 
 
-    {/* {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)} */}
+    {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
 
 
     {/* {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />} */}

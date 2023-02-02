@@ -118,7 +118,8 @@ export interface GetPrimaryDeviceInfo {
     assignedTo: string,
     assests: string,
     uploading: string,
-    configTemplateId: string
+    configTemplateId: string,
+    lastCheckedIn: any
 }
 
 export interface UnitTemp {
