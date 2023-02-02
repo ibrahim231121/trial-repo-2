@@ -363,29 +363,28 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {      
-      if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length == 1){// single asset export
-      const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
-      const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
-      if (!assetFileId) {
+      debugger;
+      if (selectedItems !== undefined && selectedItems !== null && selectedItems.length > 1){ // multi asset export
+              
+        let  totalFiles  = selectedItems.map((e:any) => {   
+             
+          var filesArr  =  e.evidence.asset.map((a:any)  =>{
+              var files =   a.files;               
+            return files.map((x:any)  => {
+                  return { fileRecId: x.filesId, accessCode : "accessCode" };
+                 })           
+                       
+            });   
+           
+          return filesArr;
+        });
+        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
         showToastMsg?.({
-          message: t("There_is_no_File_against_this_Asset"),
-          variant: "error",
+          message: t("files will be downloaded shortly"),
+          variant: "success",
           duration: 5000,
         });
-        return;
-      }
-
-      FileAgent.getDownloadFileUrl(assetFileId)
-        .then((response) => {
-          downloadFileByURLResponse(response);
-        })
-        .catch(() => {
-          showToastMsg?.({
-            message: t("Unable_to_download_file"),
-            variant: "error",
-            duration: 5000,
-          });
-        });
+        createMultiExportRequest(me);
       }else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length > 1){ // multi asset export
               
         let  totalFiles  = row.map((e:any) => {   
@@ -407,35 +406,36 @@ const ActionMenu: React.FC<Props> = React.memo(
           duration: 5000,
         });
         createMultiExportRequest(me);
-      } 
-      else if (selectedItems !== undefined && selectedItems !== null){ // multi asset export
-              
-        let  totalFiles  = selectedItems.map((e:any) => {   
-             
-          var filesArr  =  e.evidence.asset.map((a:any)  =>{
-              var files =   a.files;               
-            return files.map((x:any)  => {
-                  return { fileRecId: x.filesId, accessCode : "accessCode" };
-                 })           
-                       
-            });   
-           
-          return filesArr;
-        });
-        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
-        showToastMsg?.({
-          message: t("files will be downloaded shortly"),
-          variant: "success",
-          duration: 5000,
-        });
-        createMultiExportRequest(me);
-      } else{
-        showToastMsg?.({
-          message: t("There_is_no_File_against_this_Asset"),
-          variant: "error",
-          duration: 5000,
-        });
-      }
+      }else  if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length == 1){// single asset export
+        const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
+        const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
+        if (!assetFileId) {
+          showToastMsg?.({
+            message: t("There_is_no_File_against_this_Asset"),
+            variant: "error",
+            duration: 5000,
+          });
+          return;
+        }
+  
+        FileAgent.getDownloadFileUrl(assetFileId)
+          .then((response) => {
+            downloadFileByURLResponse(response);
+          })
+          .catch(() => {
+            showToastMsg?.({
+              message: t("Unable_to_download_file"),
+              variant: "error",
+              duration: 5000,
+            });
+          });
+        }else{
+          showToastMsg?.({
+            message: t("There_is_no_File_against_this_Asset"),
+            variant: "error",
+            duration: 5000,
+          });
+        }
 
     };
 
