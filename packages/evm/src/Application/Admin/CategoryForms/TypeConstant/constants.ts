@@ -11,3 +11,10 @@ export const controlTypes = [
     { value: "CaseNO", displayText: 'Case Number', id : 7 },
     { value: "CADID", displayText: 'CAD ID', id : 9 }
 ];
+
+export const controlTypesForValidation =  [
+    { value: "FieldDropDownListType", id : 2 },
+    { value: "FieldCheckedBoxListType", id : 5 },
+    { value: "FieldRadioButtonListType", id : 6 },
+    { value: "FieldCheckedBoxType", id : 3 },
+];

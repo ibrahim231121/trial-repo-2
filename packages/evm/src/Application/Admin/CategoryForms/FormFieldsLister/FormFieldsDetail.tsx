@@ -9,7 +9,7 @@ import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
-import { controlTypes } from "../TypeConstant/constants";
+import { controlTypes, controlTypesForValidation } from "../TypeConstant/constants";
 
 type FormFieldsDetailProps = {
   id: number,
@@ -130,7 +130,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
             setResponseError("An issue occurred while saving, please try again.")
           }
           return e;
-          return e;
         })
     }
   }
@@ -205,6 +204,10 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
   const formFieldsValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     type: Yup.string().required("Control Type is required"),
+    defaultFieldValue: Yup.string().when("type", {
+      is: (key: any) => controlTypesForValidation.some((x => x.value === key)),
+      then: Yup.string().required("Field Values is required")
+    }),
   });
 
   return (
@@ -262,7 +265,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                           let controlType = e.target.value;
                           setFieldValue("type", controlType)
                           let controlTypeId = controlTypes?.find((x: any) => x.value == controlType)?.id;
-                          if (controlTypeId == 2 || controlTypeId == 5 || controlTypeId == 6 || controlTypeId == 3) {
+                          if (controlTypesForValidation.some((x => x.id === controlTypeId))) {
                             setIsFieldValueEnable(true);
                           }
                           else {
@@ -282,7 +285,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                         error={!((errors.type?.length ?? 0) > 0)}
                         errorMsg={errors.type}
                       />
-
                     </CRXColumn>
                   </CRXRows>
                   <CRXRows container={true} spacing={1} className="crx_form_group_row">
@@ -330,7 +332,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                   {isFieldValueEnable && <CRXRows container={true} spacing={1} className="crx_form_group_row">
                     <CRXColumn item={true} xs={4}>
                       <label htmlFor="defaultFieldValue" className="cc_form_label">
-                        {t("Field_Values")}
+                        {t("Field_Values")} <span className={`${errors.name !== undefined &&
+                          touched.name ? "error_staric" : ""}`}>*</span>
                       </label>
                     </CRXColumn>
                     <CRXColumn item={true} xs={8}>
@@ -340,6 +343,15 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                         name="defaultFieldValue"
                         className={`crx_formik_field`}
                       />
+                      {errors.defaultFieldValue !== undefined &&
+                        touched.defaultFieldValue ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.defaultFieldValue}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </CRXColumn>
                   </CRXRows>
                   }
