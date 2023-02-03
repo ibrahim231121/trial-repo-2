@@ -1481,7 +1481,7 @@ span.playBackTooltipUp {
     right: 0px !important;
     left: auto !important;
     bottom: 0px !important;
-    margin-bottom: 239px !important;
+    margin-bottom: 302px !important;
     margin-right: 97px;
   }
 }
@@ -2536,7 +2536,6 @@ span.playBackTooltipUp {
     color: var(--color-d1d2d4);
     padding: 0 16px;
     border: 1px solid transparent;
-    margin-left: 176px;
     display: flex;
     align-items: center;
     transition: all .1s;
@@ -2566,7 +2565,7 @@ span.playBackTooltipUp {
 
 ._beforeline_Main {
   position: relative;
-  width: 81%;
+  width: 100%;
   &:hover {
     cursor: pointer;
   }
@@ -2676,9 +2675,10 @@ span.playBackTooltipUp {
   display: none !important;
 }
 .timeLineSyncActions {
-  margin-left: 175px;
   display: flex;
   .SplitButton_action {
+    position: relative;
+    z-index: 9999;
     > div {
       height: 30px;
     }

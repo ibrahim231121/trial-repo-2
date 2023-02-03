@@ -566,13 +566,18 @@
         left: unset !important;
         top: unset !important;
         right: 199px;
-        bottom: 116px;
+        bottom: 180px;
     }
     .SettingBackMenu {
         right: 187px;
         bottom: 190px;
     }
 
+}
+.enabledMultiLine  {
+    .MuiMenu-paper { 
+        bottom: 205px;
+    }
 }
 
 

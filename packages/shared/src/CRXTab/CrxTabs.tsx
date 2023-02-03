@@ -11,7 +11,7 @@ const CrxTabsParent = withStyles({
     position: "sticky",
     top: "138px",
     background: "#fff",
-    zIndex : 9999,
+    zIndex : 999,
   },
   indicator: {
     backgroundColor: '#C34400',

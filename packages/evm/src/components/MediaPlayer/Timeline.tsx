@@ -93,7 +93,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 
   useEffect(() => {
     document.addEventListener('mousemove',function(e){
-      let x = e.pageX ;
+      let x = e.pageX + 172;
       if(refStyle.current  ) {
         const leftSide = refStyle.current.style.left = (x) + "px" ;
         if(leftSide < "-10px") {
@@ -103,7 +103,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
   
      });
 
-  });
+  },[]);
 
 const enabledTimeline_bar =   timelinedetail.filter((x: any) => x.enableDisplay);
 const syncButtonClass = syncButton ? "syncButton_Disabled" : "syncButton_Enabled";

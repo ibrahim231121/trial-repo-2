@@ -3,7 +3,6 @@
     display: block;
 
   }
-  
   .video_player_hover_thumb {
     bottom: 17px;
     max-width: 136px;
@@ -425,4 +424,31 @@
 
 .showHeaderBar {
   display: block;
+}
+
+._Multiview_Grid { 
+
+  #video_player_hover_thumb1 {
+     bottom: 144px !important;
+    }
+
+    #video_player_hover_thumb2 {
+      bottom: 170px  !important;
+     }
+     #video_player_hover_thumb3 {
+      bottom: 196px  !important;
+     }
+
+}
+.video_with_multiple_timeline {
+  #video_player_hover_thumb1 {
+    bottom: 184px  !important;
+   }
+
+   #video_player_hover_thumb2 {
+     bottom: 228px  !important;
+    }
+    #video_player_hover_thumb3 {
+     bottom: 270px   !important;
+    }
 }
