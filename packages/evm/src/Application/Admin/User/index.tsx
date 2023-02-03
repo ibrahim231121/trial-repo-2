@@ -111,6 +111,7 @@ const User: React.FC = () => {
       }
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+  const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
 
   React.useEffect(() => {
 
@@ -307,6 +308,7 @@ const User: React.FC = () => {
   };
 
   const onSelectedClear = (colIdx: number) => {
+    setIsSearchableOnChange(true)
     setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
     let headCellReset = onSelectedIndividualClear(headCells,colIdx);
     setHeadCells(headCellReset);
@@ -318,6 +320,7 @@ const User: React.FC = () => {
   ) => {
     onSelection(val, colIdx);
     headCells[colIdx].headerArray = val;
+    setIsSearchableOnChange(true)
   };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -524,6 +527,8 @@ const User: React.FC = () => {
     if(searchData.length > 0){
       setIsSearchable(true)
     }
+    if(isSearchableOnChange)
+      getFilteredUserData()
   }, [searchData]);
 
   // useEffect(() => {
@@ -652,7 +657,6 @@ const User: React.FC = () => {
   }
 
   const getFilteredUserData = () => {
-      console.log("User Population 2")
       pageiGrid.gridFilter.filters = []
       searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
           let x: GridFilter = {
@@ -673,6 +677,7 @@ const User: React.FC = () => {
         dispatch(getUsersInfoAsync(pageiGrid));
       
       setIsSearchable(false)
+      setIsSearchableOnChange(false)
   }
 
   useEffect(() => {
@@ -683,6 +688,8 @@ const User: React.FC = () => {
 
   const sortingOrder = (sort: any) => {
     setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
     setPaging(true)
   }
 

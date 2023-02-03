@@ -57,7 +57,11 @@ const CategoryFormsList: React.FC = () => {
       filters: []
     },
     page: page,
-    size: rowsPerPage
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+    }
   })
   const dispatch = useDispatch();
   const isFirstRenderRef = useRef<boolean>(true);
@@ -256,6 +260,8 @@ const CategoryFormsList: React.FC = () => {
   
   const sortingOrder = (sort: any) => {
     setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
     setPaging(true)
   }
 

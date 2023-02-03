@@ -225,7 +225,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   const handleRequestSort = async (property: any) => {
     const isAsc = orderData.orderBy === property && orderData.order === "asc";
     setOrderData({ order: isAsc ? "desc" : "asc", orderBy: property });
-    setPage(0);
+    //setPage(0);
     setCheckAllPageWise([])
     //setSelectedItems([]);
   };

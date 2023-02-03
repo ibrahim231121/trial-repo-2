@@ -261,6 +261,8 @@ const SensorsAndTriggersList: React.FC = () => {
 
   const sortingOrder = (sort: any) => {
     setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
     setPaging(true)
   }
 

@@ -166,7 +166,7 @@ type SelectProps = {
     option : LabelType[];
     defaultValue ? : any;
     width : number;
-    onSelectedClear : (e : any) => void,
+    onSelectedClear : () => void,
     isCheckBox? : boolean,
 	  isduplicate? : boolean
     multiple? : boolean,
@@ -330,7 +330,8 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
   const handleToggleOption = (selectedOptions : any) =>
     setSelectedOptions(selectedOptions);
 
-  const handleClearOptions = () => setSelectedOptions([]);
+  const handleClearOptions = () => {setSelectedOptions([]); onSelectedClear()};
+
   const getOptionLabel = (option : any) => `${option.value}`;
 
   const handleSelectAll = (isSelected : any) => {

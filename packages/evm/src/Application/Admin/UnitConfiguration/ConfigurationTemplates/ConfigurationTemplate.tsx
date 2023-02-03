@@ -210,6 +210,7 @@ const ConfigurationTemplates: React.FC = () => {
     },
   });
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
+  const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
 
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
@@ -310,6 +311,7 @@ const ConfigurationTemplates: React.FC = () => {
   };
 
   const onSelectedClear = (colIdx: number) => {
+    setIsSearchableOnChange(true)
     setSearchData((prevArr) =>
       prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
     );
@@ -323,6 +325,7 @@ const ConfigurationTemplates: React.FC = () => {
   ) => {
     onSelection(val, colIdx);
     headCells[colIdx].headerArray = val;
+    setIsSearchableOnChange(true)
   };
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -378,6 +381,7 @@ const ConfigurationTemplates: React.FC = () => {
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             multiple={true}
+            isduplicate={true}
             selectAllLabel="All"
           />
         </div>
@@ -423,6 +427,7 @@ const ConfigurationTemplates: React.FC = () => {
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
+            isduplicate={true}
             multiple={true}
             selectAllLabel="All"
           />
@@ -468,6 +473,7 @@ const ConfigurationTemplates: React.FC = () => {
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
+            isduplicate={true}
             multiple={true}
             selectAllLabel="All"
           />
@@ -570,6 +576,8 @@ const ConfigurationTemplates: React.FC = () => {
     //dataArrayBuilder();
     console.log("searchData", searchData);
     if (searchData.length > 0) setIsSearchable(true);
+    if(isSearchableOnChange)
+      getFilteredConfigurationTemplateData()
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -631,6 +639,7 @@ const ConfigurationTemplates: React.FC = () => {
       //dispatch(getGroupUserCountAsync());
     }
     setIsSearchable(false);
+    setIsSearchableOnChange(false)
   };
 
   useEffect(() => {
@@ -648,6 +657,8 @@ const ConfigurationTemplates: React.FC = () => {
       ...pageiGrid,
       gridSort: { field: sort.orderBy, dir: sort.order },
     });
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
     setPaging(true);
   };
 

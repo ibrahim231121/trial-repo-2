@@ -78,6 +78,7 @@ const CategoriesList: React.FC = () => {
     }
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
+  const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const isFirstRenderRef = useRef<boolean>(true);
   const [reformattedRows, setReformattedRows] = React.useState<any>([]);
@@ -365,6 +366,8 @@ const CategoriesList: React.FC = () => {
     if(searchData.length > 0){
       setIsSearchable(true)
     }
+    if(isSearchableOnChange)
+      getFilteredCategoryData()
   }, [searchData]);
   
   const SpeakerIcon = (e: any) => {
@@ -421,6 +424,7 @@ const CategoriesList: React.FC = () => {
       dispatch(getAllCategoriesFilter(pageiGrid));
     
     setIsSearchable(false)
+    setIsSearchableOnChange(false)
 }
 
 useEffect(() => {
@@ -442,6 +446,8 @@ const handleBlur = () => {
 
 const sortingOrder = (sort: any) => {
   setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+  setOrder(sort.order)
+  setOrderBy(sort.orderBy)
   setPaging(true)
 }
 
