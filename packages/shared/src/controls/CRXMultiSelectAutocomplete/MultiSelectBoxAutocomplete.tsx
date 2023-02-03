@@ -53,10 +53,10 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         top:"2px",
         left:"0px",
         '& > ul' : {
-            padding: "0px",
             maxHeight:"332px",
             minHeight:"165px",
             overflowY: "auto",
+            padding: "0px",
         }
     },  
     popper: {

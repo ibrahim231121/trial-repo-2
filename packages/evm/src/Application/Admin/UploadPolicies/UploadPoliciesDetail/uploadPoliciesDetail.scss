@@ -1,5 +1,4 @@
 .upload-policies {
-    padding: 0px 4px 45px 65px;
     .settingsContent {
         position: relative;
         margin-top: 76px;
@@ -29,7 +28,7 @@
 
     .uploadPolicyDetailContent {
         position: relative;
-        margin-top: 138px;
+        margin-top: 24px;
             > h2 {
                 position: absolute;
                 top: -100px;
@@ -148,17 +147,7 @@
     }
     
     .tab-bottom-buttons {
-        display: flex;
         justify-content: space-between;
-        position: fixed;
-        width: calc(100% - 117px);
-        left: 89px;
-        background-color: var(--color-White);
-        bottom: 0;
-        align-items: center;
-        border-top: 1px solid var(--color-878787);
-        padding-bottom: 49px;
-        padding-top: 20px;
         .groupInfoTabButtons {
             margin-right: 34px;
         }
@@ -209,7 +198,7 @@
 .upload-policies-ui {
     .cbxTabsContent  {
         .updated-policy-fields {
-            padding-top: 218px;
+            padding-top: 105px;
             .indicates-label {
                 font-style: italic;
                 font-size: 14px;
@@ -231,9 +220,6 @@
     .inputLabelReq {
         top: -7px;
         left: 9px; 
-    }
-    .cbxTabsContent {
-        min-height: calc(100vh - 166px);
     }
     .MuiTabs-scroller {
         margin-top: 7px;

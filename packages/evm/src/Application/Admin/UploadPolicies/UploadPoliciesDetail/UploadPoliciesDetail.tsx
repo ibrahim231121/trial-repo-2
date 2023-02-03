@@ -618,7 +618,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
       }
     return (
         
-        <div className="upload-policies upload-policies-ui">
+        <div className="upload-policies upload-policies-ui switchLeftComponents ">
             <CRXToaster ref={uploadMsgFormRef} />
 
             <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
@@ -795,7 +795,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
 
             
             
-            <div className="tab-bottom-buttons">
+            <div className="tab-bottom-buttons stickyFooter_Tab">
                 <div className="save-cancel-button-box">
                 <CRXButton
                     variant="contained"
