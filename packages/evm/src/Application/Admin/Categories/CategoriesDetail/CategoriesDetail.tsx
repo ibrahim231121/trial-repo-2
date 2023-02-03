@@ -11,7 +11,9 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { CRXMultiSelectBoxLight } from "@cb/shared";
 import { getAllCategoriesFilter } from "../../../../Redux/Categories";
-import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
+import moment from "moment";
+import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
+import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 
 type CategoriesDetailProps = {
   id: number,
@@ -28,11 +30,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const categoryFormsList: any = useSelector((state: RootState) => state.CategoryFormSlice.getAllCategoryForms);
   const [openModal, setOpenModal] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-  const [success, setSuccess] = React.useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [isOpen, setIsOpen] = React.useState(false);
-  const [error, setError] = React.useState<boolean>(false);
-  const [responseError, setResponseError] = React.useState<string>('');
   const [requestCategoryModel, setRequestCategoryModel] = React.useState<RequestCategoryModel>();
   const { t } = useTranslation<string>();
   const [categoryPayLoad, setCategoryPayLoad] = React.useState<CategoryModel>({
@@ -88,6 +86,33 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     setUploadPolicesOptions(UploadPoliciesTemplateRows);
   }
 
+  const CategoriesFormMessages = (obj: any) => {
+    categoriesFormRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+
+  const onMessageShow = (isSuccess: boolean, message: string) => {
+    CategoriesFormMessages({
+      message: message,
+      variant: isSuccess ? 'success' : 'error',
+      duration: 7000
+    });
+    if (isSuccess) {
+      let notificationMessage: NotificationMessage = {
+        title: t("Categories"),
+        message: message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  }
 
   const SendSaveRequest = (Obj: RequestCategoryModel) => {
     if (Obj.Name != "") {
@@ -96,8 +121,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       if (id > 0) {
         url += "/" + id;
         SetupConfigurationAgent.putCategories(url, body).then(() => {
-          setSuccess(true);
-          setError(false);
+          onMessageShow(true, t("Category_Edited_Successfully"));
           dispatch(getAllCategoriesFilter(props.pageiGrid));
           setTimeout(() => { handleClose() }, 500);
           setRequestCategoryModel({
@@ -113,20 +137,17 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         })
           .catch((e: any) => {
             if (e?.response?.status === 409) {
-              setError(true);
-              setResponseError(e?.response?.data)
+              onMessageShow(false, e?.response?.data);
             }
             else {
-              setError(true);
-              setResponseError("An issue occurred while saving, please try again.")
+              onMessageShow(false, "An issue occurred while saving, please try again.");
             }
             return e;
           })
       }
       else {
         SetupConfigurationAgent.postCategories(url, body).then(() => {
-          setSuccess(true);
-          setError(false);
+          onMessageShow(true, t("Category_Saved_Successfully"));
           dispatch(getAllCategoriesFilter(props.pageiGrid));
           setTimeout(() => { handleClose() }, 500);
           setRequestCategoryModel({
@@ -141,12 +162,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
           })
         }).catch((e: any) => {
           if (e?.response?.status === 409) {
-            setError(true);
-            setResponseError(e?.response?.data)
+            onMessageShow(false, e?.response?.data);
           }
           else {
-            setError(true);
-            setResponseError("An issue occurred while saving, please try again.")
+            onMessageShow(false, "An issue occurred while saving, please try again.");
           }
           return e;
         })
@@ -189,14 +208,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const handleClose = () => {
     setOpenModal(false);
     props.openModel(false);
-    setError(false)
-    setSuccess(false);
     setIsOpen(false);
   };
   React.useEffect(() => {
     setOpenModal(true)
-    setError(false)
-    setSuccess(false);
   }, []);
 
   const getBase64 = async (payload: CategoryModel) => {
@@ -305,15 +320,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                 closeWithConfirm={closeWithConfirm}
 
               >
-                {error && (
-                  <CRXAlert
-                    className=""
-                    message={responseError}
-                    type="error"
-                    alertType="inline"
-                    open={true}
-                  />
-                )}
 
                 <div className="createCategory_form">
                 <div className="indicatestext tp15"><b>*</b> Indicates required field</div>

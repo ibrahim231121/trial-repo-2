@@ -179,7 +179,7 @@ export const resources = {
         "Viewable_Once":"Viewable Once",
         "Downloadable":"Downloadable",
         "Please_Select":"Please Select",
-
+        "Categories":"Categories",
         "Search_by":"Search by",
         "Date_and_Time":"Date and Time",
         "Add_search_criteria":"Add search criteria",
