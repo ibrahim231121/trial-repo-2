@@ -385,7 +385,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           duration: 5000,
         });
         createMultiExportRequest(me);
-      }else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length > 1){ // multi asset export
+      }else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length > 1 && (row.assetId === null || row.assetId === undefined)){ // multi asset export
               
         let  totalFiles  = row.map((e:any) => {   
              
@@ -406,7 +406,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           duration: 5000,
         });
         createMultiExportRequest(me);
-      }else  if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length == 1){// single asset export
+      }else  if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null){// single asset export
         const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
         const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
         if (!assetFileId) {
