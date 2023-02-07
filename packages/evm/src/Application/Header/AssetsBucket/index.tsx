@@ -82,11 +82,11 @@ interface AssetBucket {
 }
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
-  let {assetType, assetName} = evidence.masterAsset;
+  let assetType = evidence.masterAsset.assetType;
   let fileType = evidence.masterAsset?.files[0]?.type;
 
   return (
-    <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} fontSize="61pt" />
+    <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />
   );
 };
 
@@ -1575,7 +1575,6 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                     </div>
                                     <div className="bucketThumb">
                                       <AssetThumbnail
-                                        assetName={selectedAsset[0].assetName}
                                         assetType={selectedAsset[0].assetType}
                                         fileType={
                                           selectedAsset[0]?.files[0]?.type

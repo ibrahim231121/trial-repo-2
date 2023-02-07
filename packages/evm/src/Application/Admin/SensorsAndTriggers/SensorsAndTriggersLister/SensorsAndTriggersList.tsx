@@ -299,6 +299,7 @@ const SensorsAndTriggersList: React.FC = () => {
                   {t("Create_Sensor_&_Trigger")}
                 </CRXButton>
               </Restricted>
+              {/* <CRXButton className="secondary SensorsFilterBtn filterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton> */}
               </>
             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}

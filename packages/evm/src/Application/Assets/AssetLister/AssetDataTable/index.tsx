@@ -29,11 +29,9 @@ import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
-  console.log("THumbnail Evidence");
-  console.log(evidence);
-  let {assetType, assetName} = evidence.masterAsset;
+  let assetType = evidence.masterAsset.assetType;
   let fileType = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.type;
-  return <AssetThumbnail assetName ={assetName} assetType={assetType} fileType={fileType} fontSize="61pt" />;
+  return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
 };
 
 const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {

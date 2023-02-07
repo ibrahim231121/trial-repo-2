@@ -30,6 +30,7 @@ import {
   ActionMenuPlacement,
   AssetBucket,
   AssetLockUnLockErrorType,
+  LockUnlockAsset,
 } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
@@ -81,22 +82,6 @@ type AssetAction = {
 type MasterAssetEvidence = {
   masterId: number,
   evidenceId: number
-};
-
-const downloadExeFileByFileResponse = (
-  response: any,
-  assetName: string
-) => {
-  let fileStream =  response.data;
-  const fileName = assetName+".exe";
-  const blob = new Blob([fileStream], { type: "application/octet-stream" });
-  const link = document.createElement("a");
-  link.href = window.URL.createObjectURL(blob);
-  link.setAttribute("download", fileName);
-  link.click();
-  if (link.parentNode) {
-    link.parentNode.removeChild(link);
-  }
 };
 
 const ActionMenu: React.FC<Props> = React.memo(
@@ -193,11 +178,20 @@ const ActionMenu: React.FC<Props> = React.memo(
       } else {
         setIsSelectedItem(false);
       }
-      // Check for Lock property in Evidence response, to show message in Action Menu Item.
-      if (row?.evidence?.masterAsset?.lock) {
-        setIsLockedAccess(true);
-      } else {
-        setIsLockedAccess(false);
+      /**
+      ** Check for Lock property in Evidence response,
+      ** look for every asset in evidence row, to show message in Action Menu Item.
+      */
+      const assetId = row?.assetId;
+      if (assetId) {
+        for (const asset of row?.evidence?.asset) {
+          if (asset.assetId === assetId) {
+            if (asset.lock)
+              setIsLockedAccess(true);
+            else
+              setIsLockedAccess(false);
+          }
+        }
       }
       /**
        ** Category Window Depends on Evidence Response Provided from Parent Element,
@@ -291,15 +285,15 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
-      const _requestBody = [];
+      let _requestBody: LockUnlockAsset = { evidenceId: 0, assetLockObject: [] };
       let groupRecIdArray = AssignedGroups.split(",").map((item) => {
         return parseInt(item, 10);
       });
       if (isSelectedItem) {
         selectedItems.map((x: any) => {
           if (x.evidence.masterAsset.lock) {
-            _requestBody.push({
-              evidenceId: x.id,
+            _requestBody.evidenceId = x.id
+            _requestBody.assetLockObject.push({
               assetId: x.assetId,
               groupRecIdList: groupRecIdArray,
               operation: operation,
@@ -307,8 +301,8 @@ const ActionMenu: React.FC<Props> = React.memo(
           }
         });
       } else {
-        _requestBody.push({
-          evidenceId: row?.evidence.id,
+        _requestBody.evidenceId = row?.evidence.id;
+        _requestBody.assetLockObject.push({
           assetId: row.assetId,
           groupRecIdList: groupRecIdArray,
           operation: operation,
@@ -459,6 +453,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           });
         });
     };
+
     const handleDownloadMetaDataClick = () => {
       /**
        * ! This snippet is only for Asset Lister.
@@ -666,7 +661,26 @@ const ActionMenu: React.FC<Props> = React.memo(
         link.parentNode.removeChild(link);
       }
     };
-    
+    const downloadExeFileByFileResponse = (
+      response: any,
+      assetName: string
+    ) => {
+      let fileStream = response.data;
+      const fileName = assetName + ".exe";
+      const blob = new Blob([fileStream], { type: "application/octet-stream" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      link.click();
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+      showToastMsg?.({
+        message: t("file downloaded successfully"),
+        variant: "success",
+        duration: 5000,
+      });
+    };
 
 
     const downloadFileByURLResponse = (url: string) => {
@@ -948,8 +962,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     }
     const linkAssetHandler = () => {
       let tempLinkedAssets: AssetAction[] = [];
-      if (assetlinks.length > 0) 
-      {
+      if (assetlinks.length > 0) {
         assetlinks.map((x: AssetLink) => {
 
           tempLinkedAssets.push({
@@ -961,8 +974,7 @@ const ActionMenu: React.FC<Props> = React.memo(
 
         });
       }
-      else
-      {
+      else {
         tempLinkedAssets.push({
           masterId: row.evidence.masterAssetId,
           assetId: row.assetId,
@@ -980,26 +992,24 @@ const ActionMenu: React.FC<Props> = React.memo(
     }
     const moveAssetHandler = () => {
       let tempLinkedAssets: AssetAction[] = [];
-      if (assetlinks.length > 0) 
-      {
-      assetlinks.map((x: AssetLink) => {
+      if (assetlinks.length > 0) {
+        assetlinks.map((x: AssetLink) => {
+          tempLinkedAssets.push({
+            masterId: x.masterId,
+            assetId: x.assetId,
+            evidenceId: x.evidenceId,
+            actionType: "move"
+          });
+        });
+      }
+      else {
         tempLinkedAssets.push({
-          masterId: x.masterId,
-          assetId: x.assetId,
-          evidenceId: x.evidenceId,
+          masterId: row.evidence.masterAssetId,
+          assetId: row.assetId,
+          evidenceId: row.evidence.id,
           actionType: "move"
         });
-      });
-    }
-    else
-    {
-      tempLinkedAssets.push({
-        masterId: row.evidence.masterAssetId,
-        assetId: row.assetId,
-        evidenceId: row.evidence.id,
-        actionType: "move"
-      });
-    }
+      }
       setOpenAssetAction(tempLinkedAssets);
 
     }
@@ -1238,31 +1248,31 @@ const ActionMenu: React.FC<Props> = React.memo(
 
 
 
-       
-            <MenuItem>
-              <ActionMenuCheckList
-                moduleId={0}
-                descriptorId={2}
-                maximumDescriptor={maximumDescriptor}
-                evidence={row?.evidence}
-                actionMenuName={t("Link_asset")}
-                securityDescriptors={securityDescriptorsArray}
-                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+
+          <MenuItem>
+            <ActionMenuCheckList
+              moduleId={0}
+              descriptorId={2}
+              maximumDescriptor={maximumDescriptor}
+              evidence={row?.evidence}
+              actionMenuName={t("Link_asset")}
+              securityDescriptors={securityDescriptorsArray}
+              isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+            >
+              <div
+                className="crx-meu-content crx-spac"
+                onClick={linkAssetHandler}
               >
-                <div
-                  className="crx-meu-content crx-spac"
-                  onClick={linkAssetHandler}
-                >
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-
-                  <div className="crx-menu-list">{t("Link_asset")}</div>
-
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
                 </div>
-              </ActionMenuCheckList>
-            </MenuItem>
-          
+
+                <div className="crx-menu-list">{t("Link_asset")}</div>
+
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+
           {actionMenuPlacement == ActionMenuPlacement.DetailedAssets ? (
             <MenuItem>
               <ActionMenuCheckList
@@ -1556,4 +1566,3 @@ const ActionMenu: React.FC<Props> = React.memo(
 );
 
 export default ActionMenu;
-export {downloadExeFileByFileResponse};

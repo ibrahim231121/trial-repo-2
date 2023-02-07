@@ -108,11 +108,11 @@
   &.crx-model {
     .MuiDialog-scrollPaper {
       .MuiDialog-paperScrollPaper {
-        min-width: 645px;
+        min-width: 600px;
         .CRXContent_user {
           &::-webkit-scrollbar-button:vertical:decrement {
-            height: 63px;
-            background-position: 0px 47px !important;
+          height: 63px;
+          background-position: 0px 47px !important;
           }
           .CRXSettingContent {
             &.settingsContent {
@@ -125,7 +125,7 @@
                   .gridFilterTextBox {
                     h6 {
                       flex-grow: 0;
-                      width: 130px;
+                      width: 144px;
                       .requiredLable {
                         .inputLabelReq {
                           left: 9px;
@@ -249,7 +249,7 @@
           }
           .retention-type {
             h6 {
-              width: 117px;
+              width: 143px;
               .requiredLable {
                 .inputLabelReq {
                   left: 9px;
@@ -259,24 +259,22 @@
                 }
               }
             }
-            margin-top: 7px;
-            margin-left: 63px;
+            margin-top: 26px;
             .retentionPoliciesField {
               display: flex;
 
-              margin-bottom: 17px;
+              margin-top: 0;
               .number_retention_field_ui {
                 display: flex;
-
+             
                 .number_field_textBox {
                   display: flex;
                   margin-top: 0;
                   .Crx_defaultText {
-                    // max-width: 150px;
+                    max-width: 150px;
                     input {
+                      width: 100%;
                       font-size: 14px;
-                      min-width: 94px;
-                      max-width: 94px;
                       &.errors {
                         outline: 2px solid var(--color-aa1d1d);
                         border: none;
@@ -287,7 +285,7 @@
                         color: var(--color-979797);
                       }
                       &::placeholder {
-                        color: var(--color-74767c);
+                         color: var(--color-74767c);
                       }
                     }
                   }
@@ -310,62 +308,40 @@
                   }
                   .number_field_child {
                     input {
-                      min-width: 60px;
-                      max-width: 60px;
+                      min-width: 135px;
                       &:disabled {
                         background-color: var(--color-e5e5e5);
                         border: none;
                         color: var(--color-979797);
                       }
                       &::placeholder {
-                        color: var(--color-74767c);
+                         color: var(--color-74767c);
                       }
                     }
                   }
                 }
                 label {
-                  margin: 7px 0 0 11px;
+                  margin: 7px 11px;
                 }
               }
               .indefinite_checkBox_ui {
                 margin-left: 0;
                 label {
-                  margin-left: 5px;
-                  span {
-                    display: none;
-                  }
-                }
-                span {
                   margin-left: 0;
-                  padding-left: 0;
-                }
-              }
-              .number_retention_field_ui {
-                h6 {
-                  width: 144px;
+                  span {
+                    margin-left: 9px;
+                  }
                 }
               }
             }
             &.radioRententionPolicies {
               margin-top: 18px;
-              margin-left: 0;
               margin-bottom: -3px;
-              display: flex;
-              place-content: baseline;
               h6 {
-                display: flex;
-                flex-direction: row;
-              }
-              .rententionPoliciesField {
-                display: flex;
-                flex-direction: column;
-                margin-bottom: 70px;
+                width: 145px;
               }
               fieldset {
-                width: 132px;
-                &:first-child {
-                  margin-bottom: 17px;
-                }
+                margin-right: 17px;
                 .crxEditRadioBtn {
                   span {
                     &:hover {
@@ -373,24 +349,14 @@
                     }
                   }
                 }
-                .crx-radio-btn {
-                  label {
-                    margin-left: 3px;
-                  }
-                }
               }
-          
             }
             &.retentionTypeCheck {
-              margin-top: 0;
-              margin-bottom: -2px;
-              margin-left: 23px;
-              display: flex;
-              place-content: center;
+              margin-top: 16px;
+              margin-bottom: 69px;
             }
             &.retentionTypeCheckGb {
-              margin-bottom: -12px;
-              margin-top: 24px;
+              margin-bottom: 72px;
               .retentionPoliciesField {
                 .number_retention_field_ui {
                   .number_field_textBox {
@@ -411,9 +377,8 @@
               }
             }
             &.retentionTimeError {
-              .number_field_child {
-                max-width: 94px;
-                min-width: 94px;
+              .number_field_child  {
+                max-width: 174px;
               }
             }
           }

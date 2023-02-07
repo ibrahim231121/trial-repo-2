@@ -244,7 +244,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
       handleClose();
     }
   };
-        
+
   const checkNameValidation = () => {
     let isDisable = true;
     if (!name) {
@@ -597,7 +597,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
           <CRXHeading variant="subtitle1" className="label">
             {getFormatedLabel(t("Retention_Type"))}
           </CRXHeading>
-          <div className="rententionPoliciesField">
+
           <CRXRadio
             className="crxEditRadioBtn"
             content={RadioTimePeriodBtnValues}
@@ -608,7 +608,18 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
             checked={true}
             name="radio-buttons"
           />
-{radioTimePeriod && (
+
+          <CRXRadio
+            className="crxEditRadioBtn"
+            content={RadioDiskSpaceBtnValues}
+            value={retentionType}
+            setValue={(e: any) =>
+              onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)
+            }
+            name="radio-buttons"
+          />
+        </div>
+        {radioTimePeriod && (
           <div className="retention-type">
             <div className="retentionPoliciesField">
               <div
@@ -712,7 +723,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
           <div className="retention-type retentionTypeCheck">
             <div className="retentionPoliciesField">
               <div className="indefinite_checkBox_ui">
-              
+                <label>
+                  {t("Indefinite")}
+                  <span></span>
+                </label>
                 <CRXCheckBox
                   checked={unlimitedRetention}
                   lightMode={true}
@@ -721,25 +735,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
                     onIndefiniteChange(e, "indefinite")
                   }
                 />
-                  <label>
-                  {t("Indefinite")}
-                  <span></span>
-                </label>
               </div>
             </div>
           </div>
         )}
-          <CRXRadio
-            className="crxEditRadioBtn"
-            content={RadioDiskSpaceBtnValues}
-            value={retentionType}
-            setValue={(e: any) =>
-              onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)
-            }
-            name="radio-buttons"
-          />
-        
-        
         {radioDiskSpace && (
           <div className="retention-type retentionTypeCheckGb">
             <div
@@ -772,8 +771,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
             </div>
           </div>
         )}
-        </div>
-</div>
+
         <div className="modalFooter CRXFooter">
           <div className="nextBtn">
             <CRXButton

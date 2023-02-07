@@ -34,7 +34,7 @@ import {
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { urlList, urlNames } from "../../../utils/urlList";
-import ActionMenu, { downloadExeFileByFileResponse } from "../AssetLister/ActionMenu";
+import ActionMenu from "../AssetLister/ActionMenu";
 import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, EvidenceReformated } from "./AssetDetailsTemplateModel";
 import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
@@ -818,52 +818,17 @@ const AssetDetailsTemplate = () => {
   }
 
   const DownloadFile = () => {
-
-    if(GroupedFilesId !== null && GroupedFilesId !== undefined ){
-      if(GroupedFilesId.length == 1){
-        console.log("1 download");  
-        console.log(GroupedFilesId);       
-          FileAgent.getDownloadFileUrl(GroupedFilesId[0].filesId)
-            .then((response) => {
-              downloadFileByURLResponse(response);
-            })
-            .catch(() => {
-              targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
-            });
-       
-      }else {
-        console.log("multi download");
-        let fileRequest = GroupedFilesId.map((x: any) => {
-         return {fileRecId : x.filesId, accessCode : "access code"}
-      });
-      let multiExport = {fileRequest : fileRequest,operationType : 1 }
-      console.log(fileRequest);
-      targetRef.current.showToastMsg?.({
-        message: t("files will be downloaded shortly"),
-        variant: "success",
-        duration: 5000,
-      });
-      FileAgent.getMultiDownloadFileUrl(multiExport)
-      .then((response) => {
-      
-        downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
-        targetRef.current.showToastMsg?.({
-          message: t("file downloaded successfully"),
-          variant: "success",
-          duration: 5000,
+    GroupedFilesId.forEach((x: any) => {
+      FileAgent.getDownloadFileUrl(x.filesId)
+        .then((response) => {
+          downloadFileByURLResponse(response);
+        })
+        .catch(() => {
+          targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
         });
-      })       
-      .catch(() => {
-        targetRef.current.showToastMsg?.({
-          message: t("Unable_to_download_file"),
-          variant: "error",
-          duration: 5000,
-        });
-      });
+    })
 
-    }  
-
-  }}
+  }
 
   const downloadFileByURLResponse = (url: string) => {
     const link = document.createElement("a");
@@ -1125,7 +1090,6 @@ const AssetDetailsTemplate = () => {
                           </div>
                           <div className="_detail_thumb_column">
                             <AssetThumbnail
-                              assetName={asset.assetName}
                               assetType={asset.typeOfAsset}
                               className={"CRXPopupTableImage  CRXPopupTableImageUi"}
                               onClick={() => newRound(asset.id, asset.name)}

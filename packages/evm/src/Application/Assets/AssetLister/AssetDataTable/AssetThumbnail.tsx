@@ -1,10 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import thumbImg from "../../../../Assets/Images/Getac-Logo-Light-Grey_mb.svg";
 import audioIcon from "../../../../Assets/svgs/regular/waveform-lines.svg";
 import thumb from "../../../../../src/Assets/Images/thumbb.png";
-import { FileAgent } from '../../../../utils/Api/ApiAgent';
+
 interface Props {
-  assetName:string;
   assetType: string;
   fileType?: string;
   fontSize?: string;
@@ -12,27 +11,7 @@ interface Props {
   onClick?: any;
 }
 
-export const AssetThumbnailIcon = (assetName:any,  data: any, fileType: any): any => {
-
-  const videoIcon = <i className="fas fa-solid fa-file-video"></i>
-   const [videoElement , setVideoElement] = useState(videoIcon);
-
-   useEffect(()=>{
-    if(fileType === 'Video'){
-      FileAgent.getThumbnail(assetName)
-              .then(res=> {
-                console.log(" Thumbnail Res ");
-                console.log(res);
-                var base64Flag = 'data:image/jpeg;base64,';
-                if(res.bytes !== '' ){
-                  var imageData = base64Flag + res.bytes
-                  var imageTag = <img src={imageData} alt="Alt Text"  />
-                  setVideoElement(imageTag);
-                }
-              })
-               
-    }
-   },[])
+export const AssetThumbnailIcon = (data: any, fileType: any): any => {
   switch (data) {
     
     case "Doc":
@@ -62,10 +41,8 @@ export const AssetThumbnailIcon = (assetName:any,  data: any, fileType: any): an
       return <div className="asset_lister_thumb"><i className="fa-regular fa-waveform-lines"></i></div>;
     case "Video":
       return <div className="asset_lister_thumb">
-        <div className="_video_play_icon">
-          <span className="icon icon-play4"></span>
-        </div>
-        {videoElement}
+        <div className="_video_play_icon"><span className="icon icon-play4"></span></div>
+        <i className="fas fa-solid fa-file-video"></i>
       </div>;
     default:
       return <div className="Unspecified-file-type">
@@ -75,7 +52,6 @@ export const AssetThumbnailIcon = (assetName:any,  data: any, fileType: any): an
 };
 
 export const AssetThumbnail: React.FC<Props> = ({
-  assetName,
   assetType,
   fileType,
   className = " ",
@@ -84,7 +60,7 @@ export const AssetThumbnail: React.FC<Props> = ({
   return (
     <>
       <div className={"assetThumb " + className} onClick={onClick}>
-        {AssetThumbnailIcon(assetName, assetType, fileType)}
+        {AssetThumbnailIcon(assetType, fileType)}
       </div>
     </>
   );

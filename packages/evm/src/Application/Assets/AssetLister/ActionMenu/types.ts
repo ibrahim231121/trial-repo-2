@@ -32,3 +32,14 @@ export type AssetBucket = {
     recordingStarted: string;
     categories: string[];
 }
+
+export interface LockUnlockViewModel {
+    assetId: number;
+    groupRecIdList: (number | null)[];
+    operation: string;
+}
+
+export interface LockUnlockAsset {
+    evidenceId: number;
+    assetLockObject : Array<LockUnlockViewModel>;
+}

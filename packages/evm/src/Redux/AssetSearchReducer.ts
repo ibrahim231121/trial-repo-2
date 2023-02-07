@@ -3,6 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { SearchAgent } from '../utils/Api/ApiAgent';
 import { SearchModel } from '../utils/Api/models/SearchModel';
 import { setLoaderValue } from './loaderSlice';
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 
 interface assetSearchType{
     QUERRY:any,
@@ -20,9 +22,30 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
     } else {
         localStorage.setItem('assetSearchQuerry', JSON.stringify(QUERRY));
     }
+    /**
+     *! Need to revert under written logic, as it needs to be catered from Elastic Query.
+     *! It block to render child asset if they are locked.
+     */
+    const cookies = new Cookies();
+    let decoded : any = jwt_decode(cookies.get("access_token"));
+    const Allowed_Access_To_Restricted_Assets = "29";
+    const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
+    
     return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}]).then((response: SearchModel.Evidence[]) => {
-        thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
-        return response
+        thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }));
+        /**
+         *! Child asset only be rendered if 'Permission is missing' or 'Search Type' is not 'ViewOwnAssets'.
+         */
+        if((!isAllowed) && searchType !== 'ViewOwnAssets') {
+           const evidenceResponse = response.map((evidence: any) => {
+            return {
+                ...evidence,
+                asset : evidence.asset.filter((x: any) => x.lock == undefined)
+            }
+           });
+           return evidenceResponse;
+        }
+        return response;
     }).catch((error: any) => {
         thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
         return error.response.status;

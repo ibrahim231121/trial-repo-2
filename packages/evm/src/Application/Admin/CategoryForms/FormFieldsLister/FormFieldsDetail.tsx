@@ -358,7 +358,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                   <CRXRows container={true} spacing={1} className="crx_form_group_row">
                     <CRXColumn item={true} xs={4}>
                       <label htmlFor="isReuired" className="cc_form_label">
-                        {t("required")}
+                        {t("isRequired")}
                       </label>
                     </CRXColumn>
                     <CRXColumn item={true} xs={8}>

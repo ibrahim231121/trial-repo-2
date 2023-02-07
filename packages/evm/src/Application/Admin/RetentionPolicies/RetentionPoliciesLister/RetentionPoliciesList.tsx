@@ -94,10 +94,8 @@ const RetentionPoliciesList: React.FC = () => {
         return { 
             id: template.id,
             name:template.name ,
-            // retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
-            // softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
-            retentionTimeOrSpace: template.retentionTimeOrSpace,
-            softDeleteTime: template.softDeleteTime,
+            retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
+            softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
             description: template.description , 
             isInfinite  : template.detail.limit.isInfinite          
 
@@ -110,7 +108,6 @@ const RetentionPoliciesList: React.FC = () => {
   }
   
   React.useEffect(() => {
-    console.log("abc ",filterRetentionPolicies?.data)
     setRetentionPoliciesData();
   }, [filterRetentionPolicies?.data]);
   
@@ -156,7 +153,7 @@ const RetentionPoliciesList: React.FC = () => {
   const retentionInfiniteOrTimeSpace = (timeSpace: string): JSX.Element => {
     if (timeSpace == "") {
       return (
-        <CRXIcon className=""><i className="fa-regular fa-infinity"></i></CRXIcon>
+        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
       );
 
     }
@@ -215,9 +212,6 @@ const RetentionPoliciesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "400",
-      attributeName: "RetentionTimeOrSpace",
-      attributeType: "String",
-      attributeOperator: "contains"
     },
     {
       label: `${t("Soft_Delete_Time")}`,
@@ -228,9 +222,6 @@ const RetentionPoliciesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "400",
-      attributeName: "SoftDeleteTime",
-      attributeType: "String",
-      attributeOperator: "contains"
     },
     {
       label: `${t("Description")}`,
