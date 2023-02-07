@@ -294,7 +294,7 @@ const SensorsAndTriggersList: React.FC = () => {
             />}
             toolBarButton = {
               <>
-              <Restricted moduleId={0}>
+              <Restricted moduleId={52}>
                 <CRXButton className="SensorsEventsBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url) }}>
                   {t("Create_Sensor_&_Trigger")}
                 </CRXButton>
