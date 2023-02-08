@@ -300,6 +300,7 @@ function App() {
         // div2.append(i2);
         var i2 = (
           <AssetThumbnail
+            assetName={con.assetName}
             className="onDraggingThumb"
             assetType={con.assetType}
             fontSize="50pt"

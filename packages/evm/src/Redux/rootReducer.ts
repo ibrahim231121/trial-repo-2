@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import pathNameReducer from './breadCrumbReducer';
 import assetBucketSlice from './AssetActionReducer';
+import assetThumbnailSlice from './AssetThumbnailReducer';
 import groupSlice from './GroupReducer';
 import categorySlice from './categoryReducer';
 import CategoryFormSlice from './CategoryFormSlice';
@@ -35,6 +36,7 @@ import casesSlice from './CasesReducer';
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
+  assetThumbnail: assetThumbnailSlice.reducer,
   groupReducer: groupSlice.reducer,
   assetCategory: categorySlice.reducer,
   CategoryFormFields: CategoryFormSlice.reducer,
