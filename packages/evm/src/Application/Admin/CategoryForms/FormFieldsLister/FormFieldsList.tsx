@@ -39,8 +39,8 @@ const ORDER_BY = "asc" as Order;
 const ORDER_BY_PARAM = "recordingStarted";
 
 const FormFieldsList: React.FC = () => {
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<string>("LastLogin");
+  const [order, setOrder] = React.useState<Order>("asc");
+  const [orderBy, setOrderBy] = React.useState<string>("Name");
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const { t } = useTranslation<string>();
@@ -50,7 +50,6 @@ const FormFieldsList: React.FC = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<FormFieldsTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = useState<FormFieldsTemplate[]>();
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
@@ -163,7 +162,7 @@ const FormFieldsList: React.FC = () => {
       id: "id",
       align: "right",
       dataComponent: () => null,
-      sort: false,
+      sort: true,
       searchFilter: false,
       searchComponent: () => null,
       keyCol: true,
@@ -179,11 +178,11 @@ const FormFieldsList: React.FC = () => {
       dataComponent: (e: string, id: number) => {
         return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e}</div>
       },
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "450",
-      attributeName: "displayName",
+      attributeName: "caption",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -192,7 +191,7 @@ const FormFieldsList: React.FC = () => {
       id: "name",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "450",
@@ -205,7 +204,7 @@ const FormFieldsList: React.FC = () => {
       id: "controlType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: (
         rowData: FormFieldsTemplate[],
@@ -222,12 +221,15 @@ const FormFieldsList: React.FC = () => {
       label: `${t("required")}`,
       id: "isRequired",
       align: "left",
-      sort: false,
+      sort: true,
       searchFilter: false,
       dataComponent: (e: string) => textDisplay(e, " "),
       searchComponent: () => null,
       minWidth: "100",
-      maxWidth: "800"
+      maxWidth: "800",
+      attributeName: "IsRequired",
+      attributeType: "String",
+      attributeOperator: "contains"
     }
   ]);
 
@@ -329,6 +331,13 @@ const FormFieldsList: React.FC = () => {
     }
   }
 
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
+    setPaging(true)
+  }
+
   return (
     <ClickAwayListener onClickAway={handleBlur}>
     <div className="category_tab_parent" onKeyDown={handleKeyDown}>
@@ -381,7 +390,7 @@ const FormFieldsList: React.FC = () => {
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterFormFields?.totalCount}
-           
+            setSortOrder={(sort:any) => sortingOrder(sort)}
           />
 
         )

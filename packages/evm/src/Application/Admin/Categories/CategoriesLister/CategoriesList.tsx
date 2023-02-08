@@ -6,7 +6,6 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import './categoriesList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable, CRXTooltip } from "@cb/shared";
-import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
 import CategoriesDetail from "../CategoriesDetail/CategoriesDetail";
 import {
   SearchObject,

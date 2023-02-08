@@ -134,7 +134,7 @@ const CategoryFormsList: React.FC = () => {
       id: "id",
       align: "right",
       dataComponent: () => null,
-      sort: false,
+      sort: true,
       searchFilter: false,
       searchComponent: () => null,
       keyCol: true,
@@ -150,7 +150,7 @@ const CategoryFormsList: React.FC = () => {
       dataComponent: (e: string, id: number) => {
         return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editCategoryForm(id)} className={"dataTableText txtStyle"}>{e}</div>
       },
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "660",
@@ -163,7 +163,7 @@ const CategoryFormsList: React.FC = () => {
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
+      sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "670",
@@ -193,7 +193,6 @@ const CategoryFormsList: React.FC = () => {
   React.useEffect(() => {
     setCategoryForms();
   }, [filterCategoryForms?.data]);
-
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);

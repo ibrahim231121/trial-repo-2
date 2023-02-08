@@ -1,14 +1,27 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { SetupConfigurationAgent } from '../utils/Api/ApiAgent';
+import { setLoaderValue } from './loaderSlice';
 
 export const getAllFormFieldsFilter: any = createAsyncThunk(
     'getAllFormFieldsFilter',
-    async (pageiFilter?: any) => {
-        let headers = [{ key: 'GridFilter', value: JSON.stringify(pageiFilter.gridFilter) }]
-        return await SetupConfigurationAgent.getAllFormFields(`?Page=${pageiFilter.page + 1}&Size=${pageiFilter.size}`, headers)
-            .then((response: any) => response)
-            .catch((error: any) => {
-                console.error("Response Error: ",error.response.data);
+    async (pageiFilter: any, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({ isLoading: true }));
+        const url = `?Page=${pageiFilter.page + 1}&Size=${pageiFilter.size}`;
+        let headers = [
+            {
+                key: 'GridFilter',
+                value: JSON.stringify(pageiFilter.gridFilter)
+            },
+            {
+                key: 'GridSort',
+                value: JSON.stringify(pageiFilter.gridSort)
+            }]
+        return await SetupConfigurationAgent.getAllFormFields(url, headers)
+            .then((response) => {
+                thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
+                return response
+            }).catch((error: any) => {
+                console.error("Response Error: ", error.response.data);
             });
     }
 );
