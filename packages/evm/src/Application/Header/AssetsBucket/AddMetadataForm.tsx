@@ -59,7 +59,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [isNext, setIsNext] = useState<boolean>(true);
   const [isEditCase, setIsEditCase] = useState<boolean>(false);
   const [stationDisable, setStationDisable] = useState<boolean>(false);
-  const [isDisable, setIsDisable] = useState<boolean>(false);
+  const [isSaveBtnDisable, setIsSaveBtnDisable] = useState<boolean>(false);
   const [isOwnerDisable, setIsOwnerDisable] = useState<boolean>(false);
   const [isCategoryDisable, setIsCategoryDisable] = useState<boolean>(false);
   const [formFields, setFormFields] = useState<any>([]);
@@ -67,12 +67,11 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
   });
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [alertType, setAlertType] = useState<string>("inline");
   const [alert, setAlert] = useState<boolean>(false);
   const [responseError, setResponseError] = useState<string>("");
   const [errorType, setErrorType] = useState<string>("error");
-  const [isCategoriesFormEmpty, setIsCategoriesFormEmpty] = useState<boolean>(false);
+  const [isCategoryFormEmpty, setIsCategoryFormEmpty] = useState<boolean>(false);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
@@ -133,9 +132,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       formpayload.owner.length == 0
     ) {
 
-      setIsDisable(true);
+      setIsSaveBtnDisable(true);
     } else {
-      setIsDisable(false);
+      setIsSaveBtnDisable(false);
     }
 
     if (formpayload && (formpayload.station !== "" || formpayload.owner.length > 0 || formpayload.category.length > 0)) {
@@ -233,9 +232,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       // NOTE : Submit Button Disable State, on the basis of Form Input.
       const isFormValidated: boolean = formFields.some((ele: any) => (ele.value.length === 0 || ele.value.length > 1024));
       if (!isFormValidated)
-        setIsDisable(false);
+        setIsSaveBtnDisable(false);
       else
-        setIsDisable(true);
+        setIsSaveBtnDisable(true);
     }
   }, [formFields, activeScreen]);
 
@@ -268,6 +267,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         setValidationSchema(validation);
       }
     });
+    /**
+      ** Checking either Current Category Contains any Empty Form.
+      ** Then Maintaining State for Visiblity of 'Skip_category_form_and_save' Button. 
+    **/
+    if(formpayload.category.length > 0){
+      const isFormExist = formpayload.category.every((x: any) => x.form.length === 0);
+      setIsCategoryFormEmpty(isFormExist);
+      setIsSaveBtnDisable(false);
+    }  
   }, [formpayload.category]);
 
   const fetchStation = async () => {
@@ -936,7 +944,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       }, 2000);
       return res;
     }).catch((error: any) => {
-      setIsDisable(false);
+      setIsSaveBtnDisable(false);
       if (error.response.status === 500) {
         setAlert(true);
         setResponseError(
@@ -1047,7 +1055,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       }
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
-        setIsDisable(false);
+        setIsSaveBtnDisable(false);
         setResponseError(
           t(
             "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
@@ -1277,7 +1285,20 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               setShowSucess={() => null}
             />
             <div className="__CRX__Asset_MetaData__Form__">
-              <RenderDialogueOrCategoryForm />
+              {/* <RenderDialogueOrCategoryForm /> */}
+              {formpayload.category.some((o: any) => o.form.length > 0) ? (
+                <DisplayCategoryForm
+                  formCollection={formpayload.category}
+                  initialValueObjects={InitialValues}
+                  validationSchema={validationSchema}
+                  setFieldsFunction={(e: any) => setFormField(e)}
+                />
+              )
+                : (
+                  <NoFormAttachedOfAssetBucket
+                    categoryCollection={formpayload.category}
+                  />
+                )}
             </div>
           </>
         );
@@ -1292,41 +1313,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const backBtnHandler = () => {
     setActiveScreen(activeScreen - 1);
     setIsNext(true);
-    setIsDisable(false);
-  }
-
-  const RenderDialogueOrCategoryForm = (): JSX.Element => {
-    /**
-     ** Checking either Current Category Contains any Empty Form.
-     ** Then Maintaining State for Visiblity of 'Skip_category_form_and_save' Button. 
-     * */
-    const isCategoriesFormExist = (formpayload.category.every((x: any) => x.form.length === 0));
-    if (isCategoriesFormExist) {
-      setIsDisable(false);
-    }
-    setIsCategoriesFormEmpty(isCategoriesFormExist);
-    return (
-      <>
-        {formpayload.category.some((o: any) => o.form.length > 0) ? (
-          <DisplayCategoryForm
-            formCollection={formpayload.category}
-            initialValueObjects={InitialValues}
-            validationSchema={validationSchema}
-            setFieldsFunction={(e: any) => setFormField(e)}
-          />
-        )
-          : (
-            <NoFormAttachedOfAssetBucket
-              categoryCollection={formpayload.category}
-            />
-          )}
-      </>
-    );
+    setIsSaveBtnDisable(false);
   }
   // Added to Seperate Submit Button Handler to handle Submission of Categories With No Form. 
   const SaveBtnSubmitForm = () => {
-    setIsDisable(true);
-    if (isCategoriesFormEmpty) {
+    setIsSaveBtnDisable(true);
+    if (isCategoryFormEmpty) {
       onSubmit(SubmitType.WithoutForm);
     } else {
       onSubmit(SubmitType.WithForm);
@@ -1340,7 +1332,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
           <div className="saveBtn">
             <CRXButton
               className="primary"
-              disabled={isDisable}
+              disabled={isSaveBtnDisable}
               onClick={() => SaveBtnSubmitForm()}
             >
               {t("Save")}
@@ -1350,7 +1342,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
           <div className="nextBtn">
             <CRXButton
               className="primary"
-              disabled={isDisable}
+              disabled={isSaveBtnDisable}
               onClick={nextBtnHandler}
             >
               {t("Next")}
@@ -1363,8 +1355,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               <CRXButton className='cancelButton secondary' color='secondary' variant='contained' onClick={backBtnHandler}>
                 {t("Back")}
               </CRXButton>
-              {/* Won't render if Categories have Form in it. */}
-              {(!isCategoriesFormEmpty) &&
+              {/* Won't render if Categories Don't have Form in it. */}
+              {(!isCategoryFormEmpty) &&
                 <CRXButton className='skipButton' onClick={() => onSubmit(SubmitType.WithoutForm)}>
                   {t("Skip_category_form_and_save")}
                 </CRXButton>
