@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef } from "react";
-import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField, CRXToaster } from "@cb/shared";
+import { CRXModalDialog, CRXButton, CRXConfirmDialog,  CRXSelectBox, TextField, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './categoriesDetail.scss';
 import { useDispatch, useSelector } from "react-redux";
@@ -207,7 +207,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
 
   const handleClose = () => {
     setOpenModal(false);
-    props.openModel(false);
+    //props.openModel(false);
     setIsOpen(false);
   };
   React.useEffect(() => {

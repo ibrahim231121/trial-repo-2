@@ -3,7 +3,6 @@ import { Switch, Route, useHistory } from "react-router-dom";
 import clsx from 'clsx';
 import { CRXAppBar , CRXPanelStyle, } from "@cb/shared";
 import AppHeader from './Application/Header/index'
-import Footer from './Application/Footer'
 import MannageAsset from "./Application/Assets/AssetLister";
 import UserGroup from "./Application/Admin/UserGroup";
 import Group from "./Application/Admin/UserGroup/Group";
@@ -158,9 +157,7 @@ const Routes = () => {
                
                 </Switch>
             </main>
-            <footer>
-              <Footer />
-            </footer>
+            
           </IdleTimer>
         </>
       </Switch>

@@ -24,7 +24,7 @@ import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRetentionPoliciesInfoAsync } from "../../../../Redux/RetentionPolicies";
 
-import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type RetentionPoliciesDetailProps = {
   id: number;
@@ -338,6 +338,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
   }, [name, retentionTimeDays, retentionHours, retentionSize]);
 
   useEffect(() => {
+    
     dispatch(enterPathActionCreator({ val: "" }));
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));

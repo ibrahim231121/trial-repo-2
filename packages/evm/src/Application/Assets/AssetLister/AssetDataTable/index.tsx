@@ -492,7 +492,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "358",
+      minWidth: "390",
     },
     {
       label: t("Captured"),
@@ -518,7 +518,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
-      minWidth: "250",
+      minWidth: "255",
       visible: false,
     },
     {
@@ -754,10 +754,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={!showAdvanceSearch == false ? 180 : 750}
-          stickyToolbar={122}
-          searchHeaderPosition={227}
-          dragableHeaderPosition={192}
+          offsetY={239}
+          stickyToolbar={117}
+          searchHeaderPosition={201}
+          dragableHeaderPosition={166}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}
@@ -765,6 +765,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
           setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={rows.length}
           selfPaging={true}
+          viewName="assetListerView"
+          showExpandViewOption={true}
         />
 
       )}

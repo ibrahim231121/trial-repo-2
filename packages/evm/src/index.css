@@ -426,7 +426,7 @@ input:-webkit-autofill {
     width: 100%;
     position: fixed;
     left: 62px;
-    bottom: 0px;
+    bottom: -25px;
     z-index: 999;
 }
 

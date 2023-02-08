@@ -4,9 +4,7 @@ import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
 import {
   CRXModalDialog,
-  CRXAlert,
   CRXConfirmDialog,
-  CRXToaster,
 } from "@cb/shared";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
@@ -23,7 +21,7 @@ import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { EvidenceAgent, FileAgent } from "../../../../utils/Api/ApiAgent";
 import {
@@ -362,8 +360,8 @@ const ActionMenu: React.FC<Props> = React.memo(
               
         let  totalFiles  = selectedItems.map((e:any) => {   
              
-          var filesArr  =  e.evidence.asset.map((a:any)  =>{
-              var files =   a.files;               
+          let filesArr  =  e.evidence.asset.map((a:any)  =>{
+              let files =   a.files;               
             return files.map((x:any)  => {
                   return { fileRecId: x.filesId, accessCode : "accessCode" };
                  })           
@@ -383,8 +381,8 @@ const ActionMenu: React.FC<Props> = React.memo(
               
         let  totalFiles  = row.map((e:any) => {   
              
-          var filesArr  =  e.evidence.asset.map((a:any)  =>{
-              var files =   a.files;               
+          let filesArr  =  e.evidence.asset.map((a:any)  =>{
+              let files =   a.files;               
             return files.map((x:any)  => {
                   return { fileRecId: x.filesId, accessCode : "accessCode" };
                  })           
@@ -537,7 +535,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           getAssetData?.assets?.master?.files
         );
 
-        var assetInfo;
+        let assetInfo;
         if (getAssetData) {
           let categories: any[] = [];
           getAssetData.categories.forEach((x: any) => {
@@ -557,15 +555,15 @@ const ActionMenu: React.FC<Props> = React.memo(
             });
           });
 
-          var owners: any[] = getAssetData.assets.master.owners.map(
+          let owners: any[] = getAssetData.assets.master.owners.map(
             (x: any) =>
               x.record.find((y: any) => y.key == "UserName")?.value ?? ""
           );
 
-          var unit: number[] = [];
+          let unit: number[] = [];
           unit.push(getAssetData.assets.master.unitId);
 
-          var checksum: number[] = [];
+          let checksum: number[] = [];
           getAssetData.assets.master.files.forEach((x: any) => {
             checksum.push(x.checksum.checksum);
           });
@@ -575,7 +573,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             0
           );
 
-          var categoriesForm: string[] = [];
+          let categoriesForm: string[] = [];
           getAssetData.categories.forEach((x: any) => {
             categoriesForm.push(x.record.cmtFieldName);
           });

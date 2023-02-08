@@ -1,7 +1,4 @@
 import React from "react";
-import thumbImg from "../../../../Assets/Images/Getac-Logo-Light-Grey_mb.svg";
-import audioIcon from "../../../../Assets/svgs/regular/waveform-lines.svg";
-import thumb from "../../../../../src/Assets/Images/thumbb.png";
 
 interface Props {
   assetType: string;

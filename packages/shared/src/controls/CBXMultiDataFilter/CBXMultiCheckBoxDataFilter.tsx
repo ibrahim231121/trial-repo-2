@@ -171,9 +171,10 @@ type SelectProps = {
 	  isduplicate? : boolean
     multiple? : boolean,
     selectAllLabel? : string,
-    poperZindex? : number
+    poperZindex? : number,
+    percentage? : boolean
 }
-export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, percentage,  ...props} : SelectProps) {
   const selectBoxStyled = makeStyles({
   
     root: {
@@ -391,7 +392,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
     );
   };
   const inputRenderer = (params : any) => (
-    <TextField className={'select_Checkbox_input_field ' + `${ selectedOptions.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params} variant="outlined" />
+    <TextField className={'select_Checkbox_input_field ' + `${ selectedOptions.length > 0 && "bg-dp-value"}` } style={{width : props.width + `${percentage == true ? "%" : "px"}`}} {...params} variant="outlined" />
   );
   const getOptionSelected = (option: any, selectedOptions: any) =>
     option.value === selectedOptions.value;
@@ -399,7 +400,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
   const filter = createFilterOptions()
   return (
     <ClickAwayListener onClickAway={OnCloseHandler}>
-    <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
+    <div  ref={selectRefs} style={{width : props.width + `${percentage == true ? "%" : "px"}`}} className={"cbx_multi_data_filter " + classes.root}>
     
     <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
 

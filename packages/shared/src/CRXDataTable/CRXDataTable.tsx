@@ -58,18 +58,19 @@ const useStyles = makeStyles((theme) => ({
   },
 
   pagination : {
-    height:"60px",
+    height:"50px",
     overflow : "hidden",
+    paddingTop : "14px",
     position: "fixed",
     left: "0px",
-    bottom: "26px",
+    bottom: "5px",
     background: "#FFF",
     borderTop: "1px solid var(--color-ccc)",
     width: "calc(100% - 26px)",
     zIndex: 2,
     '& .MuiToolbar-regular' : {
-      height:"45px",
-      minHeight: "45px",
+      height:"30px",
+      minHeight: "30px",
     }
   },
  
@@ -119,6 +120,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   headerPositionInit,
   stickyToolbar,
   isPaginationRequired,
+  viewName,
+  showExpandViewOption
 }) => {
   const classes = useStyles();
   
@@ -360,11 +363,28 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     });
   }
   
+  const [expandView, setExpand] = useState<boolean>(false)
+  const handleExpandCollapse = () => {
+      let viewChanger :any = expandView == false ? setExpand(true) : setExpand(false);
+      return viewChanger
+  };
+
+  useEffect(() => {
+    let panelLeft : any = document.querySelector(".CRXLeftPanel");
+    
+    if(expandView == true) {
+      panelLeft && (panelLeft.style.display = "none")
+    } else {
+      panelLeft && (panelLeft.style.display = "block")
+    }
+  },[expandView])
   return (
     <>
       {Object.values(containers).map((container: any) => {
         return (
-          <React.Fragment key={container.id}>
+          
+          <div key={container.id} className={expandView == true ? "dataTableExpandView" : "dataTableECollapseView"}>
+            
             <Grid className={classes.gridStyle} item>
               {container.id === id ? (
                 <ThemeProvider theme={theme}>
@@ -387,6 +407,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         toolBarButton={toolBarButton}
                         stickyToolbar={stickyToolbar}
                         offsetY={offsetY}
+                        toggleExpanView={() => handleExpandCollapse()}
+                        expanView={expandView}
+                        showExpandViewOption={showExpandViewOption}
                       />
                     )}
 
@@ -426,6 +449,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       dragableHeaderPosition={dragableHeaderPosition}
                       topSpaceDrag={topSpaceDrag}
                       headerPositionInit={headerPositionInit}
+                      viewName={viewName}
+                      expanViews={expandView}
                     />
                     {(isPaginationRequired == null || isPaginationRequired == true) ?
                       <TablePagination
@@ -451,14 +476,14 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       />
                    : null
                     }
-                    <div className="overlayPanel_Right"></div>
-                   <div className="overlayPanel"></div>
-                   <div className="overlayPanel_bottom"></div>
+                  <div className="overlayPanel_Right"></div>
+                  <div className="overlayPanel"></div>
+                  <div className="overlayPanel_bottom"></div>
                   </div>
                 </ThemeProvider>
               ) : null}
             </Grid>
-          </React.Fragment>
+          </div>
         );
       })}
     </>

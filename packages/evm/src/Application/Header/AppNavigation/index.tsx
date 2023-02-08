@@ -16,19 +16,12 @@ const CRXLefNavigation = () => {
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
-
+    
     let pathBody = document.querySelector("body");
 
     if(path !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
         pathBody?.classList.remove("pathAssetDetail");
-      urlList.map((items: any, i: number) => {
-        const footerRemove: any = document.getElementsByClassName("footerDiv");
-        if (items.type == "form") {
-
-          footerRemove[0].style.display = "none"
-        }
-      })
-    window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
   }
     const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);

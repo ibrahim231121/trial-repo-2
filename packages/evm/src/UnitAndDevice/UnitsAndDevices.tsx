@@ -477,7 +477,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "127",
+    minWidth: "230",
     attributeName: "UnitId",
     attributeType: "String",
     attributeOperator: "contains"
@@ -492,8 +492,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     searchFilter: true,
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
     multiSelectCheckbox(rowData, columns, colIdx, initialRows),      
-    minWidth: "175",
-    maxWidth: "175",
+    minWidth: "200",
     attributeName: "Status",
     attributeType: "List",
     attributeOperator: "contains"
@@ -506,8 +505,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "242",
-    maxWidth: "242",
+    minWidth: "200",
     attributeName: "Description",
     attributeType: "String",
     attributeOperator: "contains"
@@ -521,8 +519,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-    minWidth: "175",
-    maxWidth: "175",
+    minWidth: "250",
     attributeName: "AssignedTo",
     attributeType: "List",
     attributeOperator: "contains"
@@ -535,8 +532,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "142",
-    maxWidth: "142",
+    minWidth: "140",
     attributeName: "SerialNumber",
     attributeType: "String",
     attributeOperator: "contains"
@@ -549,8 +545,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "160",
-    maxWidth: "160",
+    minWidth: "216",
     attributeName: "Key",
     attributeType: "String",
     attributeOperator: "contains"
@@ -565,7 +560,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
     // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-    minWidth: "120",
+    minWidth: "230",
     maxWidth: "120",
     attributeName: "Version",
     attributeType: "List",
@@ -868,7 +863,7 @@ const handleBlur = () => {
 
 return (
   <ClickAwayListener onClickAway={handleBlur}>
-    <div className="unitDeviceMain searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown}>
+    <div className="searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown}>
       {/* <p className="unitsStatusCounter">{rows.length} Units</p> */}
       {
         
@@ -915,9 +910,10 @@ return (
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
            offsetY={119}
-           stickyToolbar={132}
-           searchHeaderPosition={236}
-           dragableHeaderPosition={201}
+           stickyToolbar={118}
+           searchHeaderPosition={204}
+           dragableHeaderPosition={168}
+           showExpandViewOption={true}
            //End here
           />
           )

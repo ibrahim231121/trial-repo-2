@@ -11,12 +11,14 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: "40px",
-      paddingTop : "31px",
-      minHeight : "30px !important",
-      height : "30px",
+      paddingBottom: "19px",
+      paddingTop : "0px",
+      minHeight : "unset !important",
+      height : "unset",
       position : "sticky",
-      width : "100%"
+      width : "100%",
+      alignItems: "self-end",
+      gap:"16px"
     },
     highlight:
       theme.palette.type === "light"
@@ -28,9 +30,11 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
           },
     title: {
       flex: "1 1 100%",
-      lineHeight: "0",
+      lineHeight: "0.5",
       fontSize: "14px",
       color: "#333",
+      position: "relative",
+      left: "-16px"
     },
     alignment: {
       textAlign: "left",
@@ -195,7 +199,10 @@ export interface DataTableToolbarProps {
   showTotalSelectedText?: boolean;
   toolBarButton? : React.ReactNode,
   stickyToolbar? : number,
-  offsetY? : number
+  offsetY? : number,
+  expanView : any,
+  toggleExpanView : () => void;
+  showExpandViewOption : boolean
 }
 
 export type DataTableProps = {
@@ -242,6 +249,8 @@ export type DataTableProps = {
   headerPositionInit? : number,
   stickyToolbar? : number,
   isPaginationRequired?: boolean,
+  viewName? : string,
+  showExpandViewOption : boolean
 };
 
 export type OrderData = {
@@ -286,7 +295,9 @@ export type DataTableContainerProps = {
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
   topSpaceDrag? : number,
-  headerPositionInit? : number
+  headerPositionInit? : number,
+  viewName? : string,
+  expanViews : boolean
 };
 
 export type DataTableStickyHeadersProps = {
@@ -320,7 +331,9 @@ export type DataTableStickyHeadersProps = {
   offsetY? : number,
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
-  topSpaceDrag? : number
+  topSpaceDrag? : number,
+  viewName? : string,
+  expanViews : boolean
 };
 
 export type DataTableBodyProps = {
@@ -376,6 +389,8 @@ export type DataTableHeaderProps = {
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
   setBodyCellWidth? : any,
+  viewName? : string,
+  expanViews : boolean
 };
 
 export type DataTableClearFilterProps = {

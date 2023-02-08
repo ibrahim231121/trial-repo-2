@@ -601,7 +601,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                   />
                 )} 
             
-            <CRXTabs  value={value} onChange={handleChange} tabitems={tabs} stickyTab={139}/>
+            <CRXTabs  value={value} onChange={handleChange} tabitems={tabs} stickyTab={138}/>
                 <CrxTabPanel value={value} index={0}>
 
                 <div className="itemIndicator">
@@ -873,7 +873,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
 
                 </CrxTabPanel>
 
-                <div className="tab-bottom-buttons">
+                <div className="tab-bottom-buttons stickyFooter_Tab">
                 <div className="save-cancel-button-box">
                 <CRXButton
                     variant="contained"

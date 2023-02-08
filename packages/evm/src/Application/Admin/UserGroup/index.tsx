@@ -254,7 +254,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "225",
+      minWidth: "232",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -373,7 +373,7 @@ const UserGroup: React.FC = () => {
             toolBarButton = {
               <>
               <Restricted moduleId={6}>
-                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
+                <CRXButton className="managePermissionBtn" color="primary" primary={true} onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
@@ -411,8 +411,9 @@ const UserGroup: React.FC = () => {
             //Please dont miss this block.
             offsetY={119}
             stickyToolbar={137}
-            searchHeaderPosition={240}
-            dragableHeaderPosition={205}
+            searchHeaderPosition={224}
+            dragableHeaderPosition={189}
+            showExpandViewOption={true}
             //End here
    
           />

@@ -30,6 +30,7 @@ import {
   onMultipleCompare,
   GridFilter,
   PageiGrid,
+  RemoveSidePanelClass,
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
@@ -283,7 +284,8 @@ const User: React.FC = () => {
             isCheckBox={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-            width = {150} 
+            width = {100} 
+            percentage={true}
             option={status} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -347,7 +349,6 @@ const User: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "230",
-      width:"230",
       visible: true,
       attributeName: "UserName",
       attributeType: "String",
@@ -362,7 +363,6 @@ const User: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
-      width:"200",
       visible: true,
       attributeName: "FName",
       attributeType: "String",
@@ -377,7 +377,6 @@ const User: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
-      width:"200",
       visible: true,
       attributeName: "LName",
       attributeType: "String",
@@ -393,7 +392,6 @@ const User: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "250",
-      width: "250",
       visible: true,
       attributeName: "Email",
       attributeType: "String",
@@ -407,9 +405,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
-      
       minWidth: "112",
-      width:"112",
       visible: true,
       attributeName: "Status",
       attributeType: "List",
@@ -421,8 +417,7 @@ const User: React.FC = () => {
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      minWidth: "230",
-      width:"230",
+      minWidth: "250",
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,
@@ -456,7 +451,7 @@ const User: React.FC = () => {
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "230",
-      width:"230",
+      
       attributeName: "UserGroups",
       attributeType: "List",
       attributeOperator: "contains"
@@ -491,7 +486,7 @@ const User: React.FC = () => {
         //   multiple={true}
         // />
         <CBXMultiCheckBoxDataFilter 
-            width = {245} 
+            width = {100} 
             option={status} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -500,6 +495,7 @@ const User: React.FC = () => {
             multiple={true}
             isduplicate={true}
             selectAllLabel="All"
+            percentage={true}
           />
       );
     }
@@ -654,6 +650,7 @@ const User: React.FC = () => {
 
   const CreateUserForm = () => {
     history.push(urlList.filter((item:any) => item.name === urlNames.createUser)[0].url);
+    RemoveSidePanelClass()
   }
 
   const getFilteredUserData = () => {
@@ -767,9 +764,10 @@ const User: React.FC = () => {
            //Please dont miss this block.
            offsetY={119}
            stickyToolbar={137}
-           searchHeaderPosition={241}
-           dragableHeaderPosition={207}
+           searchHeaderPosition={224}
+           dragableHeaderPosition={189}
            //End here
+           showExpandViewOption={true}
         />
       )}
       

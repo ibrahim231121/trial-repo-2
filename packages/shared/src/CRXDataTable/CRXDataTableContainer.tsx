@@ -40,7 +40,9 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   selfPaging,
   searchHeaderPosition,
   dragableHeaderPosition,
-  topSpaceDrag
+  topSpaceDrag,
+  viewName,
+  expanViews
 }) => {
 
   const classes : any = useStyles();
@@ -92,6 +94,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
           searchHeaderPosition={searchHeaderPosition}
           dragableHeaderPosition={dragableHeaderPosition}
           topSpaceDrag={topSpaceDrag}
+          viewName={viewName}
+          expanViews={expanViews}
         />
 
         <DataTableBody

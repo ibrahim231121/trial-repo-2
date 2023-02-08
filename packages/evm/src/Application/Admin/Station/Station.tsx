@@ -377,10 +377,11 @@ const Station: React.FC = () => {
           setSortOrder={(sort:any) => sortingOrder(sort)}
           //Please dont miss this block.
           offsetY={50}
-          stickyToolbar={136}
-          searchHeaderPosition={240}
-          dragableHeaderPosition={206}
+          stickyToolbar={138}
+          searchHeaderPosition={223}
+          dragableHeaderPosition={188}
           //End here
+          showExpandViewOption={true}
         />
       )}
       

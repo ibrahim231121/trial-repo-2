@@ -274,27 +274,7 @@ iframe {
     }
    
   }
-.AssetsDataGrid {
-    &::after{
-        position: fixed;
-        right: 28px;
-        height: calc(100% - 77px);
-        background: var(--color-ccc);
-        width: 1px;
-        content: "";
-        top: 7px;
-    }
-    &::before {
-        position: fixed;
-        left: 90px;
-        height: calc(100% - 77px);
-        background: var(--color-ccc);
-        width: 1px;
-        content: "";
-        top: -8px;
-        z-index: 4;
-    }
-}
+
 //html horizontal scroll bar css
 html {
     overflow-x: overlay;
@@ -375,25 +355,7 @@ html {
 
   .makeStyles-content-9 {
     .AssetsDataGrid {
-        // table {
-        //     thead {
-        //         tr {
-        //             th.dragHeadFirstCol{
-        //                 left: 25px !important;
-        //             }
-        //             th.dragHeadsecondCol {
-        //                 left: 85px !important;
-        //             }
-        //         }
-        //     }
-        //     tbody {
-        //         tr {
-        //             td {
-        //                 left: 25px !important;
-        //             }
-        //         }
-        //     }
-        // }
+      
         &::before {
             background: transparent;
         }
@@ -430,5 +392,31 @@ html {
     }
     .dataTableStickyPos {
       z-index: 1204;
+    }
+  }
+
+  .stickyPos {
+    .toolbar_counter_text {
+        padding-top: 8px;
+    }
+  }
+
+  .dataTableColumnShoHide {
+    position: relative;
+    top: 8px;
+  }
+
+
+  .dataTableExpandView {
+    &::before {
+      background: #fff;
+      height: 27px;
+      width: 100%;
+      content: "";
+      left: 0px;
+      display: block;
+      position: fixed;
+      top: 109px;
+      z-index: 9999;
     }
   }

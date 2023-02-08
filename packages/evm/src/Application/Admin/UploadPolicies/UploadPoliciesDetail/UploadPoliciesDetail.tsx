@@ -14,7 +14,7 @@ import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { CRXTabs } from "@cb/shared";
 import { CrxTabPanel } from "@cb/shared";
-import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type UploadPoliciesDetailProps = {
     id: string
@@ -616,6 +616,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
       function handleChange(event: any, newValue: number) {
         setValue(newValue);
       }
+      useEffect(() => {
+        RemoveSidePanelClass()
+      },[])
     return (
         
         <div className="upload-policies upload-policies-ui switchLeftComponents ">

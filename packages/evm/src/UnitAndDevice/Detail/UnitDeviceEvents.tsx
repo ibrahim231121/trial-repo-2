@@ -279,6 +279,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
                     showTotalSelectedText={false}
                     lightMode={false}
                     offsetY={45}
+                    showExpandViewOption={false}
                 />
             )
             }

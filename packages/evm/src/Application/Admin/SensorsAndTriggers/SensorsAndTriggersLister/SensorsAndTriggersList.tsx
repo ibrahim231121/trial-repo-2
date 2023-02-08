@@ -161,7 +161,7 @@ const SensorsAndTriggersList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "1550",
+      minWidth: "1612",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
@@ -326,8 +326,10 @@ const SensorsAndTriggersList: React.FC = () => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
              //Please dont miss this block.
-            offsetY={119}
-            stickyToolbar={120}
+             offsetY={119}
+             stickyToolbar={122}
+             searchHeaderPosition={229}
+             dragableHeaderPosition={194}
              //End here
             page={page}
             rowsPerPage={rowsPerPage}
@@ -335,6 +337,7 @@ const SensorsAndTriggersList: React.FC = () => {
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterSensorEvents?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
+            showExpandViewOption={true}
           />
         )
       }

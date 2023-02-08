@@ -33,7 +33,7 @@ import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
 import { GroupSubModules, Module, UserGroups, MemberId } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
-import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 export type GroupInfoModel = {
   name: string;
@@ -710,6 +710,9 @@ const Group = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    RemoveSidePanelClass()
+  },[])
   return (
     <div className="App crxTabsPermission switchLeftComponents" style={{}}>
       {showSuccess && showSuccess ? <CRXAlert
@@ -723,7 +726,7 @@ const Group = () => {
      : ""}
       <CRXToaster ref={groupMsgRef} />
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={138}/>
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={135}/>
       
         <CrxTabPanel value={value} index={0}>
           {/* <div className={showMessageError}> */}

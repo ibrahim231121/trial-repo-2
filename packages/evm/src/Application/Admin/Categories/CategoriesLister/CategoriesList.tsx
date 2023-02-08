@@ -231,7 +231,8 @@ const CategoriesList: React.FC = () => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-          width = {400} 
+          width = {100} 
+          percentage = {true}
           option={options} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -252,7 +253,8 @@ const CategoriesList: React.FC = () => {
       
       return (
         <CBXMultiCheckBoxDataFilter 
-            width = {400} 
+            width = {100} 
+            percentage={true}
             option={options} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -282,8 +284,6 @@ const CategoriesList: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: "",
-      maxWidth: "100",
     },
     {
       label: `${t("Category_Name")}`,
@@ -295,7 +295,7 @@ const CategoriesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
+      minWidth: "390",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -308,7 +308,7 @@ const CategoriesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
+      minWidth: "525",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -326,7 +326,7 @@ const CategoriesList: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
-      minWidth: "400",
+      minWidth: "244",
       attributeName: "RetentionPolicyName",
       attributeType: "List",
       attributeOperator: "contains"
@@ -344,7 +344,7 @@ const CategoriesList: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
-      minWidth: "400",
+      minWidth: "232",
       attributeName: "UploadPolicyName",
       attributeType: "List",
       attributeOperator: "contains"
@@ -357,7 +357,7 @@ const CategoriesList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: NonField,
-      minWidth: "400",
+      minWidth: "200",
     },
   ]);
 
@@ -506,9 +506,10 @@ const sortingOrder = (sort: any) => {
             //Please dont miss this block.
             offsetY={119}
             stickyToolbar={137}
-            searchHeaderPosition={244}
-            dragableHeaderPosition={209}
+            searchHeaderPosition={224}
+            dragableHeaderPosition={188}
             //End here
+            showExpandViewOption={true}
 			      initialRows={reformattedRows}          />
 
           )

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -28,7 +28,24 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
     return findIndex === -1 ? false : true;
   };
+  const [showScroll, setShowScroll] = React.useState(false);
 
+  const checkScrollTop = () => {
+    if (!showScroll && window.pageYOffset > 10) {
+      setShowScroll(true);
+    } else if (showScroll && window.pageYOffset <= 10) {
+      setShowScroll(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkScrollTop);
+    return () => window.removeEventListener("scroll", checkScrollTop);
+  }, []);
+
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const handleChange = (row: any) => {
     onSetSelectedItems(row);
   };
@@ -128,7 +145,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               left : "90px",
                               zIndex : "2"
                             }}
-                            className="DataTableBodyCell CellCheckBox col-two"
+                            className="DataTableBodyCell CellCheckBox col-two dataTableActionColumn"
                             scope="row"
                           >
                              {dragVisibility === true ||
@@ -182,7 +199,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "150px" : "89px"}`,
                               zIndex : "1"
                             }}
-                            className="DataTableBodyCell col-three"
+                            className="DataTableBodyCell col-three dataTableCheckBoxColumn"
                             scope="row"
                             ref={node}
                           >
@@ -250,6 +267,11 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
           </RootRef>
         )}
       </Droppable>
+       <i
+        className="fas fa-chevron-up gotoTop"
+        onClick={scrollTop}
+        style={{ display: showScroll ? "flex" : "none" }}
+      ></i> 
     </>
   );
 };

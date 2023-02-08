@@ -1,13 +1,13 @@
 .footerDiv {
-  padding-left: 80px;
+  padding-left: 64px;
   font-size: 12px;
-  position: relative;
+  position: fixed;
   color: var(--color-666666);
   height: 30px;
   display: flex;
   align-items: center;
-  width: 100%;
-  bottom: 15px;
+  width: 50%;
+  bottom: 3px;
   font-family:var(--Arial-font-family);
   z-index: 999;
 

@@ -50,7 +50,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   },[page,checkAllPageWise])
 
   return (
-    <TableHead style={{"top" : searchHeaderPosition + "px", zIndex : 999}} className="searchable_header">
+    <TableHead style={{"top" : searchHeaderPosition + "px", zIndex : 998}} className="searchable_header">
       <TableRow>
         {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell
@@ -65,7 +65,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
           <TableCell
             padding="checkbox"
-            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadFirstCol"}
+            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadFirstCol dataTableActionColumn"}
             style={{
             left: "90px", 
                     position: "sticky", 
@@ -86,7 +86,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         }
         {(showActionCol || showActionCol === undefined) ? 
           <TableCell
-            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadsecondCol"}
+            className={classes.searchHeaderStickness + " TableSearchAbleHead dragHeadsecondCol dataTableCheckBoxColumn"}
             style={{
             width: "80px",
             minWidth : "80px",

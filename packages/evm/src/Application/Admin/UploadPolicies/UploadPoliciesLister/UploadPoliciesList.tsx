@@ -185,7 +185,7 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "780",
+      minWidth: "800",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -198,10 +198,9 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "808",
-      detailedDataComponentId: "name",
-      attributeName: "Name",
-      attributeType: "String",
+      minWidth: "788",
+      attributeName: "Description",
+	  detailedDataComponentId: "name",      attributeType: "String",
       attributeOperator: "contains"
     },
   ]);
@@ -357,8 +356,8 @@ const UploadPoliciesList: React.FC = () => {
             //Please dont miss this block.
             offsetY={119}
             stickyToolbar={135}
-            searchHeaderPosition={235}
-            dragableHeaderPosition={201}
+            searchHeaderPosition={222}
+            dragableHeaderPosition={188}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}
@@ -366,6 +365,7 @@ const UploadPoliciesList: React.FC = () => {
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterUploadPolicies?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
+            showExpandViewOption={true}
           />
         )
       }

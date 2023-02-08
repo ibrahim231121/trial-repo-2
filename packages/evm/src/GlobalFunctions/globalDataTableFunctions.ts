@@ -209,3 +209,9 @@ export const onSetSearchDataValue = (
   };
   return searchDataValue;
 };
+
+
+export const RemoveSidePanelClass:any = () => {
+  let sideMenu : any = document.querySelector(".CRXLeftPanel");
+  return sideMenu && (sideMenu.style.display = "block")
+} 

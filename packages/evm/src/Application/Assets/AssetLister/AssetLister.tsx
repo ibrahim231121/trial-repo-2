@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn,CRXAlert  } from '@cb/shared';
 import AdvanceOption from './AdvanceOption';
@@ -6,6 +6,7 @@ import MasterMain from './AssetDataTable';
 import jwt_decode from "jwt-decode";
 import './AssetLister.scss';
 import SelectedAsset from './SelectedAsset';
+import "../../../Assets/css/animate.min.css";
 import queries from '../QueryManagement/queries';
 import { DateTimeComponent, DateTimeObject } from '../../../GlobalComponents/DateTime';
 import { getAssetSearchInfoAsync, getAssetSearchNameAsync } from "../../../Redux/AssetSearchReducer";
@@ -351,9 +352,10 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if (responseForSearch.length > 0) {
-
+      const footer : any = document.querySelector(".footerDiv")
       setSearchData(responseForSearch);
       setRandomKey(Math.random())
+      footer && (footer.style.bottom = "18px")
     }
     else {
       setSearchData([]);
@@ -371,10 +373,10 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
-    window.scrollTo({ top: 120, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
    }else {
-    window.scrollTo({ top: 122, behavior: "smooth" });
+    window.scrollTo({ top: 1, behavior: "smooth" });
     
    }
    
@@ -517,12 +519,22 @@ const SearchComponent = (props: any) => {
   },[])
 
   const stickyBorderClass = stickyBorder ? "stickyBorder_Add" : "stickyBorder_Remove"; 
-
+  const searchBar : any = useRef()
+  const showSearchBar = () => {
+    searchBar && (searchBar.current.style.top = "89px")
+  }
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "79px" : "124px"}}>
-      {showShortCutSearch && 
-        <div className='predictiveSearch_wraper'>
+       {/* {showShortCutSearch == false ?  <div className='showArrow-search'>
+          <button onClick={() => showSearchBar()}>
+            <i className='fa fa-angle-down'></i>
+          </button>
+        </div> : ""
+        } */}
+        
+        {showShortCutSearch == true ?
+        <div ref={searchBar} className={ `predictiveSearch_wraper`}>
         <div className={`predictiveSearch ${searchData.length > 0 ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
@@ -561,7 +573,8 @@ const SearchComponent = (props: any) => {
           </CRXButton>
         </div>
         </div>
-      }
+        : "" }
+        
         {showShortCutSearch && (
           <>
             <div className='middleContent'>

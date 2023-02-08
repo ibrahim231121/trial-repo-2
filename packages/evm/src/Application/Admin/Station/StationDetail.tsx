@@ -31,6 +31,7 @@ import UnitTemplates from "./UnitTemplates/UnitTemplates";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "./../../Header/CRXNotifications/notificationsTypes"
+import { RemoveSidePanelClass } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 const StationDetail: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -430,6 +431,9 @@ const StationDetail: React.FC = () => {
     dispatch(addNotificationMessages(notificationMessage));
   };
 
+  useEffect(() => {
+    RemoveSidePanelClass()
+  },[])
   return (
     <>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />

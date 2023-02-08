@@ -374,7 +374,8 @@ const ConfigurationTemplates: React.FC = () => {
             isduplicate={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-            width = {400} 
+            width = {100} 
+            percentage={true} 
             option={station} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -421,7 +422,8 @@ const ConfigurationTemplates: React.FC = () => {
             isduplicate={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-            width = {400} 
+            width = {100} 
+            percentage={true} 
             option={type} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -467,7 +469,8 @@ const ConfigurationTemplates: React.FC = () => {
             isduplicate={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-            width = {380} 
+             width = {100} 
+             percentage={true}
             option={indicator} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -506,7 +509,7 @@ const ConfigurationTemplates: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "430",
+      minWidth: "435",
       detailedDataComponentId: "device",
       attributeName: "Name",
       attributeType: "String",
@@ -763,10 +766,11 @@ const ConfigurationTemplates: React.FC = () => {
             setSortOrder={(sort: any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={143}
-            stickyToolbar={157}
-            searchHeaderPosition={240}
-            dragableHeaderPosition={206}
+            stickyToolbar={122}
+            searchHeaderPosition={228}
+            dragableHeaderPosition={193}
             //End here
+            showExpandViewOption={true}
           />
         )}
       </div>

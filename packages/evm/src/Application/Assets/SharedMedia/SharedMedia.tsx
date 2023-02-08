@@ -2,30 +2,24 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
-import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
-import { Asset, Category, Evidence, AssetSharingModel, SharedAssetLister, categoriesModel, Form, Field } from "../../../utils/Api/models/EvidenceModels";
-import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import DateTime from "../../../GlobalComponents/DateTime/DateTime";
+import { Category, Evidence, SharedAssetLister, categoriesModel, Field } from "../../../utils/Api/models/EvidenceModels";
 import moment from "moment";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 import { Link } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
-import { setLoaderValue } from "../../../Redux/loaderSlice";
-import { CRXTooltip, CRXButton, CRXDataTable, ActionMenu } from "@cb/shared";
+
+import { CRXTooltip,  CRXDataTable } from "@cb/shared";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { HeadCellProps, onClearAll, onDateCompare, onMultipleCompare, onMultiToMultiCompare, onResizeRow, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, SearchObject, ValueString } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { HeadCellProps, onClearAll,  onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, SearchObject, ValueString } from "../../../GlobalFunctions/globalDataTableFunctions";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
-import { DateTimeObject } from "../Detail/AssetDetailsTemplateModel";
-import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
+
 import { CRXTruncation } from "@cb/shared";
 import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import DetailedAssetPopup from "../AssetLister/AssetDataTable/DetailedAssetPopup";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
-import AnchorDisplay from "../../../utils/AnchorDisplay";
-import CategoryForm from "../AssetLister/Category/CategoryForm";
+
 import { CRXLoader } from "@cb/shared";
 
 

@@ -64,13 +64,13 @@
   &.makeStyles-contentShift-10 {
     .searchComponents {
       padding: 0 4px 0px 65px;
-      padding-top: 124px;
+      padding-top: 96px;
       transition: 0.5s padding ease-out;
     }
 
     .switchLeftComponents {
       padding: 0 4px 0px 65px;
-      padding-top: 113px;
+      padding-top: 96px;
       transition: 0.5s padding ease-out;
     }
   }
@@ -78,29 +78,29 @@
 
 .makeStyles-content-9 {
   .searchComponents {
-    padding-top: 118px;
+    padding-top: 96px;
     transition: 1s padding ease-out;
   }
 
   .switchLeftComponents {
-    padding-top: 118px;
+    padding-top: 96px;
     transition: 1s padding ease-out;
   }
 }
 //Its a fix for build issue not releted to work
 .jss9 {
   .switchLeftComponents {
-    padding-top: 118px;
+    padding-top: 96px;
     transition: 1s padding ease-out;
   }
   &.jss10 {
     .searchComponents {
       padding: 0 4px 0px 65px;
-      padding-top: 112px;
+      padding-top: 96px;
     }
     .switchLeftComponents {
       padding: 0 4px 0px 65px;
-      padding-top: 113px;
+      padding-top: 96px;
       transition: 1s padding ease-out;
     }
   }
@@ -158,8 +158,8 @@
   .crxClearfilter {
     &::before {
       position: absolute;
-      top: 4px;
-      left: auto;
+      top: 9px;
+      left: -1px;
       right: auto;
       width: 100%;
       height: 1px;
@@ -171,4 +171,72 @@
 
 .crxClearfilter {
   border-top: 1px solid transparent;
+}
+
+.showSearchBox {
+    position: fixed;
+    top: -240px;
+    background: #fff;
+    width: 93.8%;
+    z-index: 9999;
+    padding: 50px 0;
+    box-shadow: rgb(0 0 0 / 20%) 0px 5px 10px 0;
+}
+
+.showArrow-search {
+  position: fixed;
+  left: 51%;
+  top: 60px;
+  z-index: 9999;
+  button  {
+    background: transparent;
+    border: 0px;
+    &:hover {
+      background: transparent;
+      border:0px
+    }
+    i{
+      font-size: 33px;
+      color: #333;
+
+    }
+  }
+}
+
+.AssetsDataGrid {
+  &::after{
+      position: fixed;
+      right: 28px;
+      height: calc(100% - 77px);
+      background: var(--color-ccc);
+      width: 1px;
+      content: "";
+      top: 33px;
+  }
+  &::before {
+      position: fixed;
+      left: 90px;
+      height: calc(100% - 97px);
+      background: var(--color-ccc);
+      width: 1px;
+      content: "";
+      top: 33px;
+      z-index: 4;
+  }
+  .CRXDataTableCustom  {
+      thead {
+          &.drag_header {
+              tr {
+                  th {
+                      &:last-child {
+                          .DragHandle {
+                              display: none;
+                          }
+                      }
+                  }
+              }
+              
+          }
+      }
+  }
 }

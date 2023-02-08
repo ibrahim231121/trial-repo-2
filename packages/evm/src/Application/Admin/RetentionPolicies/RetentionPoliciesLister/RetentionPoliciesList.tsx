@@ -295,6 +295,7 @@ const RetentionPoliciesList: React.FC = () => {
   };
 
   const onClickOpenModel = (modelOpen: boolean, id: number, title: string) => {
+    
     setId(id);
     setTitle(title);
     setOpenModel(modelOpen);
@@ -387,7 +388,7 @@ const RetentionPoliciesList: React.FC = () => {
               <>
                 <Restricted moduleId={62}>
 
-                  <CRXButton className="RetentionPoliciesBtn" onClick={() => { onClickOpenModel(true, 0, "Create Retention Policy") }}>
+                  <CRXButton className="RetentionPoliciesBtn" primary={true} color="primary" onClick={() => { onClickOpenModel(true, 0, "Create Retention Policy") }}>
                     {t("Create_Retention_Policies")}
                   </CRXButton>
                 </Restricted>
@@ -425,9 +426,10 @@ const RetentionPoliciesList: React.FC = () => {
             //Please dont miss this block.
             offsetY={119}
             stickyToolbar={137}
-            searchHeaderPosition={241}
-            dragableHeaderPosition={207}
+            searchHeaderPosition={224}
+            dragableHeaderPosition={189}
           //End here
+          showExpandViewOption={true}
           />
 
         )

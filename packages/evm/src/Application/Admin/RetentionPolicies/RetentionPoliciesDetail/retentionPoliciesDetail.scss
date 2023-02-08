@@ -266,7 +266,11 @@
               margin-top: 0;
               .number_retention_field_ui {
                 display: flex;
-             
+                .number_field_textBox {
+                  h6 {
+                    width: 143px;
+                  }
+                }
                 .number_field_textBox {
                   display: flex;
                   margin-top: 0;
@@ -357,15 +361,6 @@
             }
             &.retentionTypeCheckGb {
               margin-bottom: 72px;
-              .retentionPoliciesField {
-                .number_retention_field_ui {
-                  .number_field_textBox {
-                    h6 {
-                      width: 143px;
-                    }
-                  }
-                }
-              }
             }
           }
           .retentionPolicyError {

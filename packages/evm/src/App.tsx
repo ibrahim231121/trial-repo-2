@@ -34,6 +34,7 @@ import { getAccessAndRefreshTokenAsync } from "./Redux/AccessAndRefreshTokenRedu
 import { useInterval } from "usehooks-ts";
 import { logOutUser } from "./Logout/API/auth";
 import { useHistory } from "react-router-dom";
+import { RemoveSidePanelClass } from "./GlobalFunctions/globalDataTableFunctions";
 
 declare const window: any;
 interface CounterState {
@@ -79,7 +80,6 @@ function App() {
   const [groupIds, setGroupIds] = React.useState<number[]>([]);
   const [tenantId, setTenantId] = React.useState<number>(0);
 
-  const [open, setOpen] = useState(true);
   const isRefreshTokeSuccess: boolean = useSelector((state: RootState) => state.accessAndRefreshTokenSlice.success);
   const history = useHistory();
 
@@ -107,9 +107,7 @@ function App() {
     })
   }
 
-  const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
+
   const handleChange = (event: any) => {
     dispatch(cultureActionCreator(event.target.value));
   };
@@ -502,6 +500,7 @@ function App() {
           })}
           > */}
 
+            {RemoveSidePanelClass()}
             <Routes />
 
             {/* </main>

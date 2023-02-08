@@ -17,7 +17,7 @@ import Restricted from "../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid, RemoveSidePanelClass } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 type Props = {
   selectedItems?: any;
@@ -140,7 +140,7 @@ const UserActionMenu: React.FC<Props> = ({
    
     const path = `${urlList.filter((item: any) => item.name === urlNames.editUser)[0].url}`;
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id);
-    
+    RemoveSidePanelClass()
   };
 
   React.useEffect(() => {

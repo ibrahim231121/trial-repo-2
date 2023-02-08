@@ -1,5 +1,5 @@
 .sensors-and-triggers {
-    padding: 100px 4px 0px 65px !important;
+    
     .settingsContent {
         margin-top: 25px;
         padding: 0 130px 0 130px;
@@ -14,16 +14,6 @@
         .select-box {
             width: 100%;
         }
-        // .sensorsLeftCol{
-        //     .gridFilterTextBox{
-        //         h6 {
-        //         // width: 220.66px !important;
-        //         width: 275px;
-        //         align-items: baseline;
-        //         }
-        //     }
-        // }
-
         .gridFilterTextBox {
             margin-bottom: 30px;
             display: flex;
@@ -91,7 +81,8 @@
     }
 
     .deviceParameterContent {
-        margin-top: 25px;
+        width : 90%;
+        margin:  0 auto;
         .titlePage{
             margin-bottom: 35px;
             margin-left: 75px;
@@ -108,7 +99,7 @@
             place-content: center;
         }
         .deviceParameterHeader {
-            margin: 0 86px;
+           
             .deviceParameterColumn {
                 background: var(--color-333333);
                 color: var(--color-d1d2d4);
@@ -127,13 +118,9 @@
         .deviceParameterPageScroll {
             padding: 0;
             width: 100%;
-            max-height: 336px;
-            margin: 0 auto;
-            overflow-x: hidden;
-            overflow-y: overlay;
             .deviceParameterColumnContent {
-                padding: 10px 0 27px;
-                margin: 0 86px;
+                padding: 0px 15px 0px;
+                margin: 0px;
                 .deviceParameterColumnItem {
                     padding: 17px 0;
                     position: relative;
@@ -143,11 +130,7 @@
                             width: 100%;
                         }
                     }
-                    &:last-child {
-                        &:nth-of-type(odd) {
-                          padding-bottom: 0;
-                        }
-                    }
+                   
                     &:nth-of-type(even) {
                         background: var(--color-f2f2f2);
                     }
@@ -181,14 +164,14 @@
         }
 
         .deviceParameterBtnAdd {
-            margin: 0 86px;
+            margin: 0px;
             padding: 0 0 0 0;
             border-top: 1px solid var(--color-707070);
             .PreSearchButton {
                 background-color: var(--color-333333);
                 color: var(--color-d1d2d4) !important;
                 font-size: 14px;
-                margin-top: 27px;
+                margin-top: 15px;
                 height: 30px;
                 box-shadow: none !important;
             }
@@ -218,10 +201,6 @@
         display: flex;
         justify-content: space-between;
         // padding: 0 81px;
-        margin-top: 25px;
-        .groupInfoTabButtons {
-            margin-right: 20px;
-        }
     }
     .nameFieldSensors {
         // margin-bottom: 29px;
@@ -260,12 +239,6 @@
             padding: 0 51px !important;
         }
     } 
-        
-    div[role="tabpanel"] {
-         min-height: calc(100vh - 292px) !important;
-        }
-        
-
         .sesorsSetting{
             display: flex;
             flex-direction: column;

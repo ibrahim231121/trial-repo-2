@@ -34,7 +34,9 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
     offsetY,
     searchHeaderPosition,
     dragableHeaderPosition,
-    topSpaceDrag
+    topSpaceDrag,
+    viewName,
+    expanViews
 }) => {
     return (
         <>
@@ -61,7 +63,8 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
              showCheckBoxesCol={showCheckBoxesCol}
              showActionCol={showActionCol}
              setBodyCellWidth={setBodyCellWidth}
-             
+             viewName={viewName}
+             expanViews={expanViews}
            />
          
         </DragableHead>
