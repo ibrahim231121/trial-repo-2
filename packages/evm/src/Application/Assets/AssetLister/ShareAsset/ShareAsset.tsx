@@ -50,9 +50,13 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [radioCheck, setRadioCheck] = React.useState<string>("");
   const [reasonCheck, setreasonCheck] = React.useState<string>("");
+  const [commentCheck, setcommentCheck] = React.useState<string>("");
+
   const [linkExpireCheck, setlinkExpireCheck] = React.useState<string>("");
 
   const [showreasonCheckError, setShowreasonCheckError] =
+    React.useState<boolean>(false);
+    const [showcommentCheckError, setShowcommentCheckError] =
     React.useState<boolean>(false);
   const [showLinkExpirationError, setShowLinkExpirationError] =
     React.useState<boolean>(false);
@@ -125,6 +129,16 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     }
   }, [reasonForView]);
   React.useEffect(() => {
+    if (comment.length > 1000) {
+      setcommentCheck("Characters must be less than or equal to 1000");
+      setShowcommentCheckError(true);
+    }
+    else {
+      setcommentCheck("");
+      setShowcommentCheckError(false);
+    }
+  }, [comment]);
+  React.useEffect(() => {
     if (linkExpire == "") {
       setlinkExpireCheck("Link Expiration is required");
       setShowLinkExpirationError(false);
@@ -157,6 +171,17 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setreasonCheck("W");
       //setShowReasonError(false);
       setShowreasonCheckError(false);
+    }
+  };
+  const checkComment = () => {
+    if (comment.length > 1000) {
+      setcommentCheck("Characters must be less than or equal to 1000");
+      //setShowReasonError(true);
+      setShowcommentCheckError(true);
+    } else {
+      setcommentCheck("W");
+      //setShowReasonError(false);
+      setShowcommentCheckError(false);
     }
   };
   const checkExpirationLink = () => {
@@ -420,7 +445,11 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                   </div>
                 </div>
 
-                <div className="__CRX__ShareAssets__Layout">
+                <div
+                  className={`__CRX__ShareAssets__Layout ${
+                    showcommentCheckError == true ? "__CRX__Reason__Error" : ""
+                  }`}
+                >
                   <div className="categoryTitle __CRX__Title__Share">
                     {t("Comments")}
                   </div>
@@ -429,7 +458,14 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       className="crx-category-scroll"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
+                      onBlur={checkComment}
                     ></textarea>
+                    {showcommentCheckError ? (
+                      <div className="errorStationStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {commentCheck}
+                      </div>
+                    ) : null}
                     {/* <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} /> */}
                   </div>
                 </div>

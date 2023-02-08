@@ -55,6 +55,7 @@
 .CRXLogoMenu {
   display: flex;
   height: 57px;
+
   .appLogo {
     display: inline-block;
     width: 216px;
@@ -62,6 +63,16 @@
     top: 11px;
     height: 32px;
   }
+
+  .appLogo-shared {
+    display: inline-block;
+    width: 283px;
+    position: relative;
+    top: 11px;
+    height: 31px;
+  }
+
+
   .toggleIcon {
     color: var(--color-d1d2d4);
     height: auto !important;
@@ -73,6 +84,7 @@
     padding-left: 30px;
     line-height: 54px;
     position: relative;
+
     &:before {
       position: absolute;
       height: 32px;
@@ -89,6 +101,7 @@
   padding-left: 25px;
   padding-top: 7px;
   padding-right: 30px;
+
   .MuiIconButton-root {
     padding: 7px 0px;
 
@@ -97,12 +110,14 @@
       color: var(--color-d1d2d4);
     }
   }
+
   button {
     span {
-      i.crxTooltipMenuIcon{
+      i.crxTooltipMenuIcon {
         color: var(--color-d1d2d4) !important;
       }
     }
+
     color: var(--color-d1d2d4) !important;
   }
 }
@@ -115,11 +130,13 @@
     list-style: none;
     padding: 0px;
     margin: 0px;
+
     li {
       display: inline-block;
       padding: 0 10px;
       position: relative;
       top: -4px;
+
       &:after {
         width: 2px;
         height: 14px;
@@ -129,14 +146,17 @@
         top: 7px;
         right: 0px;
       }
+
       &:last-child {
         padding-right: 0px;
+
         &:after {
           width: 0px;
         }
       }
     }
   }
+
   .panelContent {
     display: flex;
     justify-content: right;
@@ -148,6 +168,7 @@
 .CRXActiveBreadcrumb {
   padding-left: 41px;
   padding-top: 8px;
+
   .li {
     color: var(--color-C34400);
     text-decoration: none;
@@ -157,13 +178,14 @@
   .active {
     // color: var(--color-C34400);
     font-size: 12px;
-    font-family:var(--base-font-family);
+    font-family: var(--base-font-family);
 
     &:hover {
       // color: var(--color-C34400);
       text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
     }
+
     &:focus {
       // color: var(--color-C34400);
       text-decoration: var(--Text-decoration-underline);
@@ -185,19 +207,24 @@
 .applicationsMenu {
   margin-top: 15px;
   margin-right: 9px;
+
   .MuiSvgIcon-root {
     font-size: 24px;
     color: var(--color-d1d2d4);
   }
+
   .CRXDropDownBtn {
     min-width: 30px;
   }
+
   .applicationIcon {
-    font-size:18px;
+    font-size: 18px;
+
     &:hover {
       color: #d1d2d4;
     }
   }
+
   button {
     &:hover {
       color: #d1d2d4;
@@ -214,15 +241,17 @@
   position: relative;
   top: 2px;
   padding-bottom: 16px;
+
   h2 {
     padding: 2px 0 0 0;
     margin: 0px;
     color: var(--color-333333);
     font-size: 24px;
     font-weight: 500;
-    font-family:var(--base-font-family);
+    font-family: var(--base-font-family);
     margin-top: 5px;
   }
+
   .bottomLine {
     position: absolute;
     left: 0px;
@@ -233,6 +262,7 @@
     height: 1px;
     box-shadow: var(--color-black-10) 0px 0px 15px 0px;
   }
+
   // &:after {
   //   position: absolute;
   //   content: "";
@@ -246,7 +276,7 @@
 
 #applicationIcon_grid_tooltip {
   .MuiTooltip-tooltip {
-  font-size: 14px;
+    font-size: 14px;
 
   }
 }

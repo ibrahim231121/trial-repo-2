@@ -11,6 +11,8 @@ import CRXAssetsBucketPanel from './AssetsBucket'
 import CRXNotficationPanel from './CRXNotifications';
 import CRXGlobalSearchPanel from './CRXGlobalSearch';
 import AppLogo from '../../Assets/Images/getacLogo.png'
+import SharedEvidenceAppLogo from '../../Assets/Images/SharedEvidenceAppLogo.png'
+
 import './index.scss'
 import { urlList, urlNames } from '../../utils/urlList';
 
@@ -71,7 +73,14 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                         <CRXAppDropdown />
                         ):(null)
                         }
+                        {!isguestUser? (
+                        
                         <img src={AppLogo} className="appLogo"/>
+                       
+                        ):(
+                        <img src={SharedEvidenceAppLogo} className="appLogo-shared"/>
+                        )
+                        }
                         {/* <CRXHeading align="left" className="AppName"  variant="h4">
                             ENTERPRISE
                         </CRXHeading> */}

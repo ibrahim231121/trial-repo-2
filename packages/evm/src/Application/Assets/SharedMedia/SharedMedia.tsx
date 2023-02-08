@@ -579,7 +579,7 @@ const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, senso
 
     switch (videoPlayerData[0]?.typeOfAsset) {
       case 'Video':
-        return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} /> :
+        return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} guestView={true} /> :
           <>
             <div className="_player_video_uploading">
               <div className="layout_inner_container">

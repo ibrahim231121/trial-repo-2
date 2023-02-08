@@ -75,7 +75,7 @@ useEffect(() => {
   let CheckedSpeed = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")
 
   useEffect(()=>{
-      if(settingMenuEnabled === null) {
+      if(settingMenuEnabled === null) {  
         document.documentElement.style.overflow = "hidden";
         document.body.scrollTop = 0; 
         document.documentElement.scrollTop = 0;

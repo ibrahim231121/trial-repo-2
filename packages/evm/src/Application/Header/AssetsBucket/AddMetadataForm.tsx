@@ -219,7 +219,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setIsOwnerDisable(false);
       setIsCategoryDisable(false);
       setIsEditCase(false);
-      setFormPayload({ ...formpayload, category: [], station: "", owner: [] });
+      setFormPayload({ ...formpayload});
+
     }
   }, [formpayload.masterAsset]);
 
