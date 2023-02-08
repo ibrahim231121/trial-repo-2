@@ -101,13 +101,13 @@ const CasesDetail: React.FC = () => {
       console.log("Status",statusAutoCompleteValue);
 
       async function fetchAllDropDownsData() {
-        await CasesAgent.getCaseStates('/Case/GetAllDropDownValues')
+        await CasesAgent.getAllDropDownValues('/Case/GetAllDropDownValues')
         .then((response: any) => {
           console.log("GetAllDropDownValues",response)
-          setStatesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseStates));
-          setStatusAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseStatus));
-          setCreationTypesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseCreationType));
-          setClosedTypesAutoCompleteOptions(remapArrayToAutoCompleteOptionType(response.caseClosedType));
+          setStatesAutoCompleteOptions(response.caseStates);
+          setStatusAutoCompleteOptions(response.caseStatus);
+          setCreationTypesAutoCompleteOptions(response.caseCreationType);
+          setClosedTypesAutoCompleteOptions(response.caseClosedType);
         })
         .catch(() => {});
       }
@@ -177,19 +177,6 @@ const CasesDetail: React.FC = () => {
       label: Yup.string()
     })
   });
-  const remapArrayToAutoCompleteOptionType = (arr: Array<any>): Array<AutoCompleteOptionType> => {
-    let autoCompleteArray: any = [];
-    if (arr.length > 0) {
-      for (const elem of arr) {
-        autoCompleteArray.push({
-          id: elem.id,
-          label: elem.label,
-        });
-      }
-      autoCompleteArray = autoCompleteArray.sort((a: any, b: any) => (a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
-    }
-    return autoCompleteArray;
-  };
   const navigateToCases = () => {
     history.push(
       urlList.filter((item: any) => item.name === urlNames.cases)[0].url

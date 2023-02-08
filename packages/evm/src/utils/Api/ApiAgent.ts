@@ -409,10 +409,8 @@ export const SearchAgent = {
 
 export const CasesAgent = {
     getCasesBuildVersion: () => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/Health/BuildVersion"),
-    getCaseStates: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
-    getCaseStatus: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
-    getCaseCreationType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
-    getCaseClosedType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+    getAllDropDownValues: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
+
     addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
     editCase: (url:string, caseBody: Case) => requests.put<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
 
