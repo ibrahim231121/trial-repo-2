@@ -34,11 +34,11 @@ import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/U
 import { UserStatus } from './UserEnum';
 import {NameAndValue, AutoCompleteOptionType, userStateProps } from './UserTypes';
 let USER_DATA : userStateProps = {
-  email: '',
+  loginId: '',
   firstName: '',
   middleInitial: '',
   lastName: '',
-  secondaryEmail: '',
+  email: '',
   mobileNumber: '',
   userGroups: [],
   deactivationDate: '',
@@ -52,12 +52,13 @@ const CreateUserForm = () => {
   const [error, setError] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState('sendAct');
   const [generatePassword, setGeneratePassword] = React.useState('');
+ 
   const [formpayload, setFormPayload] = React.useState<userStateProps>({
-    email: '',
+    loginId: '',
     firstName: '',
     middleInitial: '',
     lastName: '',
-    secondaryEmail: '',
+    email: '',
     mobileNumber: '',
     userGroups: [],
     deactivationDate: '',
@@ -111,9 +112,9 @@ const CreateUserForm = () => {
   }
 
   const checkFormPayload = () =>{
-    const { email, firstName, middleInitial, lastName, secondaryEmail, userGroups, deactivationDate, mobileNumber, pin } =
+    const { loginId, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber, pin } =
       formpayload;
-      if (validateEmail(email) && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateEmail(secondaryEmail) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
+      if (validateEmail(loginId) && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateLoginId(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
       
         return true;
       }
@@ -157,9 +158,9 @@ else {
   React.useEffect(() => {
     if (userPayload && id) {
       const {
-        secondaryEmail,
+        email,
         name: { first: firstName, last: lastName, middle: middleInitial },
-        account: { email, password },
+        account: { loginId, password },
         mobileNumber,
         userGroups,
         deactivationDate,
@@ -185,8 +186,8 @@ else {
       }
 
       USER_DATA = {
-        secondaryEmail,
         email,
+        loginId,
         firstName,
         middleInitial,
         lastName,
@@ -196,8 +197,8 @@ else {
         pin
       };
       setFormPayload({
-        secondaryEmail,
         email,
+        loginId,
         firstName,
         middleInitial,
         lastName,
@@ -284,7 +285,7 @@ else {
 
   const fetchUser = async () => {
     UsersAndIdentitiesServiceAgent.getUser(id).then((response: UserList) => {
-      dispatch(enterPathActionCreator({ val: response.account.email }));
+      dispatch(enterPathActionCreator({ val: response.account.loginId }));
    
       setUserPayload(response);
     });
@@ -472,7 +473,7 @@ else {
     const account: Account = {
       isAdministrator: 1,
       status: 1,
-      email: formpayload.email,
+      loginId: formpayload.loginId,
       password: onSelectPasswordType(),
       isPasswordResetRequired,
       lastLogin: moment().toDate(),
@@ -490,7 +491,7 @@ else {
     }
 
     const payload: User = {
-      secondaryEmail: formpayload.secondaryEmail,
+      email: formpayload.email,
       deactivationDate: formpayload.deactivationDate,
       name,
       account,
@@ -507,12 +508,20 @@ else {
       setError(true);
       return;
     }
+    if (formpayload.email === "" && radioValue == 'sendAct') {
+      setError(true);
+      setAlert(true);
+      setResponseError(t('Please_Fill_out_the_Email_Field_In_case_of_Send_Activation_Link'));
+      return;
+    }
+    
+
     const payload = setAddPayload();
     const errorUndefined = (error : any) =>{
       
-      if (error.errors.email !== undefined && error.errors.email.length > 0) {
+      if (error.errors.loginId !== undefined && error.errors.loginId.length > 0) {
         setAlert(true);
-        setResponseError(error.errors.email[0]);
+        setResponseError(error.errors.loginId[0]);
       }
       if (error.errors.First !== undefined && error.errors.First.length > 0) {
         setAlert(true);
@@ -526,9 +535,9 @@ else {
         setAlert(true);
         setResponseError(error.errors.Middle[0]);
       }
-      if (error.errors.secondaryEmail !== undefined && error.errors.secondaryEmail.length > 0) {
+      if (error.errors.email !== undefined && error.errors.email.length > 0) {
         setAlert(true);
-        setResponseError(error.errors.secondaryEmail[0]);
+        setResponseError(error.errors.email[0]);
       }
       if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
         setAlert(true);
@@ -544,13 +553,13 @@ else {
       setAlert(true);
       setResponseError(error);
       const errorString = error;
-      if (errorString.includes('secondaryEmail') === true) {
+      if (errorString.includes('email') === true) {
         setIsExtEmail('isExtEmail');
       } else {
         setIsExtEmail('');
       }
 
-      if (errorString.includes('email') === true) {
+      if (errorString.includes('loginId') === true) {
         setIsExtUsers('isExtUserName');
       } else {
         setIsExtUsers('');
@@ -571,8 +580,10 @@ else {
           
           else if (!isNaN(+error)) {
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
-            if(radioValue == 'sendAct'){
-            sendEmail(formpayload.email, '', userName);} //discussion needed
+            if(radioValue == 'sendAct')
+            {        
+               sendEmail(formpayload.email, '', userName);
+            } 
             userFormMessages({
               message: t('You_have_created_the_user_account.'),
               variant: 'success',
@@ -645,12 +656,10 @@ else {
     if (disableLink || isPasswordResetRequired) {
       userPayload.account.status = 3;
     }
-    const account = { ...userPayload.account, email: formpayload.email, password: onSelectEditPasswordType(), isPasswordResetRequired: isPasswordResetRequired };
-    
-
+    const account = { ...userPayload.account, password: onSelectEditPasswordType(), isPasswordResetRequired: isPasswordResetRequired };
     const payload: User = {
       ...userPayload,
-      secondaryEmail: formpayload.secondaryEmail,
+      email: formpayload.email,
       deactivationDate: formpayload.deactivationDate,
       name,
       account,
@@ -672,14 +681,19 @@ else {
       setError(true);
       return;
     }
+    if (formpayload.email === "" && radioValue == 'sendAct') {
+      setError(true);
+      setAlert(true);
+      setResponseError(t('Please_Fill_out_the_Email_Field_In_case_of_Send_Activation_Link'));
+      return;
+    }
     const urlEdit = USER + '/' + `${id}`;
-
     const payload = setEditPayload();
     UsersAndIdentitiesServiceAgent.editUser(urlEdit, payload).then(() => {
-      dispatch(enterPathActionCreator({ val: payload.account.email }));
+      dispatch(enterPathActionCreator({ val: payload.account.loginId }));
       if (disableLink) {
         const userName = userPayload.name.first + ' ' + userPayload.name.last;
-        sendEmail(payload.account.email, userPayload.id, userName, true); // discussion needed ?
+        sendEmail(payload.email, userPayload.id, userName, true); 
         userFormMessages({
           message: t('You_have_resent_the_activation_link.'),
           variant: 'success',
@@ -714,10 +728,17 @@ else {
     history.goBack();
   }
 
-  const validateEmail = (email: string) => {
+  const validateEmail = (loginId: string) => {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    return re.test(String(loginId).toLowerCase());
+  };
+  const validateLoginId = (loginId: string) => {
+    if(loginId == "")
+        return true;
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(loginId).toLowerCase());
   };
 
   const validateUserName = (userName: string): { error: boolean, errorMessage: string } => {
@@ -819,48 +840,32 @@ else {
   }
 
   const checkUserName = (userNameOnChange: string = "") => {
-    userNameOnChange = setValue(formpayload.email, userNameOnChange);
+    userNameOnChange = setValue(formpayload.loginId, userNameOnChange);
     const isUserNameValid = validateEmail(userNameOnChange);
     if (!userNameOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
-        userNameErr: t('Email_is_required')
+        userNameErr: t('LoginId_is_required')
       });
     } else if (!isUserNameValid) {
       setFormPayloadErr({
         ...formpayloadErr,
-        userNameErr: t('Please_provide_a_valid_email_address')
+        userNameErr: t('Please_provide_a_valid_loginId')
       });
     } 
-    else if (userNameOnChange.toLowerCase() == formpayload.secondaryEmail.toLowerCase()) {
-      setFormPayloadErr({
-        ...formpayloadErr,
-        userNameErr: t('Email_Cannot_be_same_as_Secondary_Email')
-      });
-    }
     else {
       setFormPayloadErr({ ...formpayloadErr, userNameErr: '' });
     }
   }
 
   const checkEmail = (emailOnChange: string = "") => {
-    emailOnChange = setValue(formpayload.secondaryEmail, emailOnChange);
-    const isEmailValid = validateEmail(emailOnChange);
-    if (!emailOnChange) {
+    emailOnChange = setValue(formpayload.email, emailOnChange);
+    const isEmailValid = validateLoginId(emailOnChange);
+
+     if (emailOnChange !="" && !isEmailValid) {
       setFormPayloadErr({
         ...formpayloadErr,
-        emailErr: t("Secondary_Email_is_required")
-      });
-    } else if (!isEmailValid) {
-      setFormPayloadErr({
-        ...formpayloadErr,
-        emailErr: t('Please_provide_a_valid_Secondary_email_address')
-      });
-    }
-    else if (emailOnChange.toLowerCase() == formpayload.email.toLowerCase()) {
-      setFormPayloadErr({
-        ...formpayloadErr,
-        emailErr: t('Secondary_Email_Cannot_be_same_as_Email')
+        emailErr: t('Please_provide_a_valid_email_address')
       });
     }
     else {
@@ -1004,11 +1009,11 @@ else {
       const phoneNumber = userPayload.mobileNumber;
         const userGroupNames = userPayload.userGroups?.map((x: any) => ( {id:x.groupId, label : x.groupName}));
         const user_temp = {
-        email: userPayload.account.email,
+        loginId: userPayload.account.loginId,
         firstName: userPayload.name.first,
         middleInitial: userPayload.name.middle,
         lastName: userPayload.name.last,
-        secondaryEmail: userPayload.secondaryEmail,
+        email: userPayload.email,
         mobileNumber: phoneNumber,
         userGroups: userGroupNames,
         pin: userPayload.pin,
@@ -1073,11 +1078,11 @@ else {
                 error={!!formpayloadErr.userNameErr}
                 errorMsg={formpayloadErr.userNameErr}
                 required={true}
-                value={formpayload.email}
-                label={t("Email")}
+                value={formpayload.loginId}
+                label={t("LoginId")}
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => {
-                  setFormPayload({ ...formpayload, email: e.target.value })
+                  setFormPayload({ ...formpayload, loginId: e.target.value })
                   checkUserName(e.target.value)
                 }}
                 disabled={isADUser}
@@ -1137,13 +1142,12 @@ else {
               <TextField
                 error={!!formpayloadErr.emailErr}
                 errorMsg={formpayloadErr.emailErr}
-                required={true}
-                value={formpayload.secondaryEmail}
+                value={formpayload.email}
                 disabled={isADUser}
-                label={t("Secondary_Email")}
+                label={t("Email")}
                 className={'users-input ' + isExtEmail}
                 onChange={(e: any) => {
-                  setFormPayload({ ...formpayload, secondaryEmail: e.target.value })
+                  setFormPayload({ ...formpayload, email: e.target.value })
                   checkEmail(e.target.value)
                 }}
                 onBlur={() => (checkEmail())}

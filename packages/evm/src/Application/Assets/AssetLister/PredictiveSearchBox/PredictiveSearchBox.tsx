@@ -73,7 +73,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded 
               should: [
                 {
                   "match": {
-                    "asset.owners": decodedToken.UserName
+                    "asset.owners": decodedToken.LoginId
                   },
                 }
               ]

@@ -21,7 +21,7 @@ export const logOutUser = (next:()=>void) =>{
         const options = { path:'/' };
         opt = cookies.remove('access_token',options)
         opt = cookies.remove('refreshToken',options)
-        opt = localStorage.removeItem('username')
+        opt = localStorage.removeItem('loginId')
         opt = localStorage.removeItem('remember me')
         opt = localStorage.removeItem('User Id')
         opt = localStorage.removeItem('expirytime_token')
@@ -40,7 +40,7 @@ export const logOutUserSessionExpired = (next:()=>void) =>{
     const options = { path:'/' };
     opt = cookies.remove('access_token',options)
     opt = cookies.remove('refreshToken',options)
-    opt = localStorage.removeItem('username')
+    opt = localStorage.removeItem('loginId')
     opt = localStorage.removeItem('remember me')
     opt = localStorage.removeItem('User Id')
     opt = localStorage.removeItem('expirytime_token')

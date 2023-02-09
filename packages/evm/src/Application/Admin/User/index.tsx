@@ -45,10 +45,10 @@ import "./userIndex.scss";
 
 type User = {
   id: string;
-  userName: string;
+  loginId: string;
   fName: string;
   lName: string;
-  secondaryEmail: string;
+  email: string;
   status: string;
   lastLogin: string;
   userGroups: string[];
@@ -130,7 +130,7 @@ const User: React.FC = () => {
       userRows = users.data.map((user: any) => {
         return {
           id: user.recId,
-          userName: user.userName,
+          loginId: user.loginId,
           fName: user.fName,
           lName: user.lName,
           lastLogin: user.lastLogin,
@@ -140,7 +140,7 @@ const User: React.FC = () => {
                   return x.trim();
                 })
               : [],
-          secondaryEmail: user.secondaryEmail,
+          email: user.email,
           isADUser : user.isADUser,
           status: user.status,
         };
@@ -341,8 +341,8 @@ const User: React.FC = () => {
       width:"80"
     },
     {
-      label: `${t("Email")}`,
-      id: "userName",
+      label: `${t("LoginId")}`,
+      id: "loginId",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
@@ -383,8 +383,8 @@ const User: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Secondary_Email")}`,
-      id: "secondaryEmail",
+      label: `${t("Email")}`,
+      id: "email",
       align: "left",
       
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -572,10 +572,10 @@ const User: React.FC = () => {
       let dataRows: User[] = reformattedRows.rows;
       searchData.forEach((el: SearchObject) => {
         if (
-          el.columnName === "userName" ||
+          el.columnName === "loginId" ||
           el.columnName === "fName" ||
           el.columnName === "lName" ||
-          el.columnName === "secondaryEmail" ||
+          el.columnName === "email" ||
           el.columnName === "userGroups" 
         )
           dataRows = onTextCompare(dataRows, headCells, el);

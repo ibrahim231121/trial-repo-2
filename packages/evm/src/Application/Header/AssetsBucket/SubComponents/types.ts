@@ -26,7 +26,7 @@ export type MasterAssetBucket = {
 
 export type UserNameAndValue = {
     userid: string;
-    userName: string;
+    loginId: string;
 };
 
 export type CategoryNameAndValue = {

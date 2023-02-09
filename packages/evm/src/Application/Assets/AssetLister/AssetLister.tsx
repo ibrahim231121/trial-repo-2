@@ -116,7 +116,7 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: 'My Assets',
-      query: () => queries.GetAssetsByUserName(decoded.UserName),
+      query: () => queries.GetAssetsByUserName(decoded.LoginId),
       renderData: function () {
         setQuerryString(evidenceSearchType.MyAsstes);
         setDateTimeAsset(dateTimeDropDown);

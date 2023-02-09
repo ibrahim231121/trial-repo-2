@@ -5,7 +5,7 @@ import { setAPIAgentConfig } from '../../utils/Api/ApiAgent';
 
 export interface IDecoded {
     RememberMe: string;
-    UserName: string;
+    LoginId: string;
     UserId: string;
     exp: string;
     AssignedGroups: string;
@@ -19,7 +19,7 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
     }
 
     decoded = jwt_decode(idToken);
-    localStorage.setItem('username', decoded.UserName);
+    localStorage.setItem('loginId', decoded.LoginId);
     localStorage.setItem('remember me', decoded.RememberMe);
     localStorage.setItem('User Id', decoded.UserId);
     localStorage.setItem('expirytime_token', decoded.exp);
@@ -70,7 +70,7 @@ export const logOutUser = () => {
     var opt;
     const options = { path: '/' };
     opt = cookies.remove('access_token', options);
-    opt = localStorage.removeItem('username');
+    opt = localStorage.removeItem('loginId');
     opt = localStorage.removeItem('remember me');
     localStorage.removeItem('User Id');
     window.location.href = '/';

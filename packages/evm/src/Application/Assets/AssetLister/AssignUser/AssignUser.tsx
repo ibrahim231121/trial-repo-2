@@ -202,7 +202,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       for (const element of arr) {
         sortedArray.push({
           id: element.recId,
-          label: element.userName,
+          label: element.loginId,
         });
       }
     }

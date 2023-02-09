@@ -205,7 +205,7 @@ const manageDeactivateClass =  row?.status.toLocaleLowerCase() != "deactivated" 
               {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}
               </p>
               <p>
-                {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
+                {row?.firstName} {row?.lastName}: <b>{row?.loginId}</b>
               </p>
               <p>
                 {t("Please_confirm_if_you_would_like_to")} {modalType} {t("this_user_account.")}

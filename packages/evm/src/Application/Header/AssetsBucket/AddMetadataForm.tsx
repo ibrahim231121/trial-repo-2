@@ -320,7 +320,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       const userNames = users.data.map((user: any) => {
         return {
           userid: user.recId,
-          userName: user.userName,
+          loginId: user.loginId,
         } as UserNameAndValue;
       });
       sendOptionList(userNames);
@@ -332,7 +332,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     data?.forEach((item, index) => {
       dateOfArry.push({
         id: item.userid,
-        label: item.userName,
+        label: item.loginId,
       });
     });
     setUserOption(dateOfArry);
@@ -777,7 +777,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         audioDevice: null,
         camera: null,
         isOverlaid: true,
-        recordedByCSV: localStorage.getItem('username'),
+        recordedByCSV: localStorage.getItem('loginId'),
       };
     });
 
@@ -1031,7 +1031,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         audioDevice: null,
         camera: null,
         isOverlaid: true,
-        recordedByCSV: localStorage.getItem('username'),
+        recordedByCSV: localStorage.getItem('loginId'),
       };
     });
     return uploadedFile;

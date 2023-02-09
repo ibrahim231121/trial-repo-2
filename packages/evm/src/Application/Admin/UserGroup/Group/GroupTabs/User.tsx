@@ -31,7 +31,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 type User = {
     id: number;
-    userName: string,
+    loginId: string,
     firstName: string,
     lastName: string,
     userGroups: string[]
@@ -56,7 +56,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     // const [idValue, setIdValue] = React.useState<Number[]>(ids);
     const [rows, setRows] = React.useState<User[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<string>("UserName");
+    const [orderBy, setOrderBy] = React.useState<string>("LoginId");
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<any>([]);
@@ -91,7 +91,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             userRows = users.map((user: any) => {
                 return {
                     id: user.recId,
-                    userName: user.userName,
+                    loginId: user.loginId,
                     firstName: user.fName,
                     lastName: user.lName,
                     userGroups: user.userGroups != null ? user.userGroups.split(',').map((x: string) => {
@@ -213,8 +213,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             
         },
         {
-            label: t("User_Name"),
-            id: "userName",
+            label: t("LoginId"),
+            id: "loginId",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
             sort: true,
@@ -302,7 +302,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         if (reformattedRows !== undefined) {
             let dataRows: User[] = reformattedRows.rows;
             searchData.forEach((el: SearchObject) => {
-                if (el.columnName === "userName" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "status")
+                if (el.columnName === "loginId" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "status")
                     dataRows = onTextCompare(dataRows, headCells, el);
                 if (el.columnName === "lastLogin")
                     dataRows = onDateCompare(dataRows, headCells, el);
