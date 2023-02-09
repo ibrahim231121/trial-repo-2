@@ -82,6 +82,23 @@ type MasterAssetEvidence = {
   evidenceId: number
 };
 
+const downloadExeFileByFileResponse = (
+  response: any,
+  assetName: string
+) => {
+  let fileStream =  response.data;
+  const fileName = assetName+".exe";
+  const blob = new Blob([fileStream], { type: "application/octet-stream" });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.setAttribute("download", fileName);
+  link.click();
+  if (link.parentNode) {
+    link.parentNode.removeChild(link);
+  }
+};
+
+
 const ActionMenu: React.FC<Props> = React.memo(
   ({
     row,
@@ -1564,3 +1581,4 @@ const ActionMenu: React.FC<Props> = React.memo(
 );
 
 export default ActionMenu;
+export {downloadExeFileByFileResponse};
