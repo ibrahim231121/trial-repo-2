@@ -45,6 +45,7 @@ import Cookies from "universal-cookie";
 import MicroservicesBuildVersion from "./Application/MicroservicesBV";
 import CasesList from "./Application/Cases/CasesLister/CasesList";
 import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
+import ImageViewer from "./components/MediaPlayer/ImageViewer/ImageViewer";
 
 
 
@@ -79,6 +80,7 @@ const Routes = () => {
         <HomeRoute exact path="/logout" component={Logout} />
         <SessionRoute exact path="/sessionExpiration" component={Session} />
         <Route exact path="/token/:token" component={Token} />
+        <Route exact path="/ImageViewer" component={ImageViewer} />
         <>
           <IdleTimer
             timeout={1200000}
