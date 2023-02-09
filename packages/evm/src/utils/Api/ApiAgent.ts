@@ -322,6 +322,7 @@ export const FileAgent = {
     getThumbnail: (name: string) => requests.get<any>(FILE_SERVICE_URL, "/Files/FetchThumbnail/" + name, config),
     getHealthCheck: () => requests.get<string>(FILE_SERVICE_URL, '/Files/HealthCheck', config),
     getFileBuildVersion: () => requests.get<any>(FILE_SERVICE_URL, "/Files/Health/BuildVersion"),
+    changeFileUploadStatus: (url: any, body:any) => requests.patch<any>(FILE_SERVICE_URL, url, body, config),
     getMultiDownloadFileUrl: (body: any) => {
         return axios.post(`${FILE_SERVICE_URL}/Files/multifiledownload`, body, {
             headers: config.headers,

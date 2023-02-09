@@ -47,7 +47,6 @@ import {
   AddFilesToFileService,
   getFileSize,
   resumeFileUpload,
-  updateStatus,
 } from "../../../GlobalFunctions/FileUpload";
 import { CRXModalDialog } from "@cb/shared";
 import AddMetadataForm from "./AddMetadataForm";
@@ -618,7 +617,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
     const checkValue = () => {
       if(data.data.loadedBytes == data.data.fileSize){
-        changeUploadedFileStatus(data.data.fileId);
+       
         return true
       }
       else{
@@ -919,7 +918,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
   const getUploadInfo = (data: any) => {
     const checkValue = () => {
       if(data.data.loadedBytes == data.data.fileSize){
-        changeUploadedFileStatus(data.data.fileId)
+        
         return true
       }
       else{
@@ -1026,31 +1025,6 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
     return prog;
   };
   
-  const changeUploadedFileStatus = async(file:any) => {
-    let body = [
-      {
-        op: "replace",
-        path: "state",
-        value: "Uploaded",
-      },
-    ];
-    const requestOptions = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cookies.get("access_token")}`,
-      TenantId: "1"
-      },
-      body: JSON.stringify(body),
-    };
-    const resp = await fetch(
-      FILE_SERVICE_URL + `/Files/` + file,
-      requestOptions
-    );
-    if (resp.ok) {
-      updateStatus(file,window.onRecvBucketData,true)
-    }
-  }
 
   
   const retryFile = (file: FileUploadInfo) => {

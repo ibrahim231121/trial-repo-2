@@ -2,7 +2,8 @@ import { duration } from 'moment';
 import { AbortController } from "@azure/abort-controller";
 import { BlobServiceClient, BlockBlobStageBlockOptions, BlockBlobCommitBlockListOptions, BlockBlobClient } from "@azure/storage-blob";
 import { v4 as uuidv4 } from "uuid";
-import { getFileSize } from "./FileUpload";
+import {  getFileSize } from "./FileUpload";
+import { FileAgent } from '../utils/Api/ApiAgent';
 declare const window: any;
 
 interface UploadStageBlockInfo {
@@ -85,7 +86,7 @@ const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
             name: usb.file.name,
             size: usb.file.size,
             type: usb.file.type,
-            state:usb.file.state,
+            state: "Uploaded",
         }
     };
     if (index == -1)
@@ -106,7 +107,18 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo,  onRecvData: any) => 
                 console.log("response", response)
                 //this is the case when user uploaded the file and refresh the page wihout add metadata
                 if(onRecvData && onRecvData.type == "onUploadStatusUpdate"){
-                    saveFileToLocalStorage(usb);
+                    const body: any = [
+                        {
+                          op: "replace",
+                          path: "state",
+                          value: "Uploaded",
+                        }
+                    ];
+                      const url:any =  `/Files/` + usb.file.uploadedFileId;
+                      FileAgent.changeFileUploadStatus(url, body).then((resp) => {
+                          saveFileToLocalStorage(usb);
+                      });
+                    
                 }
             }).catch(e => {
                 console.log("error", e)
