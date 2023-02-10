@@ -157,7 +157,9 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 DeviceparametersItem(response, deviceParametersArray);
                 setSwitchParameters(switchParametersObj);
                 setDeviceParameter(deviceParametersArray);    
+                // dispatch(enterPathActionCreator({ val: `Edit :  ${response?.description}` }));
                 dispatch(enterPathActionCreator({ val: response?.description }));
+
        
                 const temp = {
                     deviceSettings: {...switchParametersObj},
@@ -644,14 +646,12 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                             <CRXSelectBox
                                 className="select-box"
                                 id="settingAction"
-                                value={switchParameters.action.data.value > 0 ? switchParameters.action.data.value : getByPlaceholderText}
+                                value={switchParameters.action.data.value > 0 ? switchParameters.action.data.value : defaultAction}
                                 onChange={(e: any) => onDeviceSettingChange(e, 'action')}
                                 options={settingsDropdownData.actionList}
                                 isRequried={true}
                                 disabled={false}
-                                defaultOption={true}
-                                
-                                defaultValue={defaultAction}/>
+                                />
                                 
                             </span>
 
@@ -667,7 +667,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 options={settingsDropdownData.iconList}
                                 disabled={false}
                                 isRequried={true}
-                                defaultOption={true}
+                                // defaultOption={true}
                                 
                                 error={!!deviceSettingsValidation.icon}
                                 errorMsg={deviceSettingsValidation.icon} />
@@ -685,7 +685,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     options={settingsDropdownData.categoryList}
                                     isRequried={true}
                                     disabled={false}
-                                    defaultOption={true}
+                                    // defaultOption={true}
                                      
                                     />
                             </span>
@@ -702,7 +702,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     options={settingsDropdownData.cameraList}
                                     isRequried={true}
                                     disabled={false}
-                                    defaultOption={true}
+                                    // defaultOption={true}
                                     
                                     />
                             </span>
@@ -710,7 +710,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                     </Grid>
                     <div className='grid_spacer'></div>
 
-                    <Grid item xs={12} sm={12} md={12} lg={5}>
+                    <Grid item xs={12} sm={12} md={12} lg={5} className="sensorsRightCol">
                             <span className="gridFilterTextBox">
                                 <CRXHeading variant="subtitle1" className="label">
                                     {getFormatedLabel(t("Bookmark"))}
@@ -725,7 +725,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     isRequried={true}
                                     error={!!deviceSettingsValidation.bookmark}
                                     errorMsg={deviceSettingsValidation.bookmark}
-                                    defaultOption={true}
+                                    // defaultOption={true}
                                     
                                     />
                             </span>
@@ -849,7 +849,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveDeviceParameter(idx)}
-                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon"/></button>
+                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon"/></button>
                                             }
                                         </CRXColumn>
                                     </CRXRows>

@@ -14,13 +14,13 @@
         .select-box {
             width: 100%;
         }
+
         .gridFilterTextBox {
             margin-bottom: 30px;
             display: flex;
             align-items: center;
             width: 100%;
             h6 {
-                // width: 220.66px !important;
                 width: 305px ;
                 align-items: baseline;
             }
@@ -62,14 +62,30 @@
         }
         .email_checkBox_ui{
             span{
-            margin-left: 41px;
+            margin-left: 9px;
             }
         }
         .inputLabelNoReq{
             font-size: 14px;
         }
+        .sensorsRightCol{
+            .gridFilterTextBox
+                h6{
+                    width: 107px;
+                }
+            .select-box{
+                width: 400px;
+            }    
+            .gridFilterTextBox{
+                .gridFilterSpanUi{
+                    width: 400px;
+                }
+            }
+        }
         
     }
+
+    
 
     .requiredLable{
         .inputLabelReq{
@@ -83,6 +99,7 @@
     .deviceParameterContent {
         width : 90%;
         margin:  0 auto;
+        
         .titlePage{
             margin-bottom: 35px;
             margin-left: 75px;
@@ -92,9 +109,7 @@
                 top: -100px;
                 margin-left: 30px;
             }
-        .select-box {
-            width: 100%;
-        }
+        
         .Mui-container {
             place-content: center;
         }
@@ -128,11 +143,13 @@
                         padding: 0px 15px;
                         .select-box {
                             width: 100%;
+
                         }
                     }
                    
                     &:nth-of-type(even) {
                         background: var(--color-f2f2f2);
+                        
                     }
                     &:nth-of-type(odd) {
                         background: var(--color-White);
@@ -160,6 +177,43 @@
                         width: 100%;
                     }
                 }
+                .adVSelectBox {
+                    width: 100%;
+                    height: 30px !important;
+                    margin: 0 auto;
+                    i.Mui-disabled {
+                      background-color: var(--color-e5e5e5);
+                    }
+                    .Mui-disabled {
+                      background-color: var(--color-e5e5e5);
+                      color: var(--color-979797) !important;
+                      font-size: 14px;
+                      &:hover {
+                        border: none;
+                      }
+                      &:focus {
+                        border: none;
+                      }
+                      &::before {
+                        color: var(--color-979797) !important;
+                      }
+                      .MuiIconButton-label {
+                        color: var(--color-979797);
+                      }
+          
+                      &:-ms-input-placeholder {
+                        color: var(--color-979797) !important;
+                      }
+          
+                      &::-webkit-input-placeholder {
+                        color: var(--color-979797) !important;
+                      }
+          
+                      &::placeholder {
+                        color: var(--color-979797) !important;
+                      }
+                    }
+                  }
             }
         }
 
@@ -239,6 +293,7 @@
             padding: 0 51px !important;
         }
     } 
+        
         .sesorsSetting{
             display: flex;
             flex-direction: column;
@@ -263,39 +318,7 @@
                 margin-right: 8px;
               }
         }
-        i.Mui-disabled {
-            background-color: var(--color-e5e5e5);
-          }
-          .Mui-disabled {
-            background-color: var(--color-e5e5e5);
-            color: var(--color-979797) !important;
-            font-size: 14px;
-            &:hover {
-              border: none;
-            }
-            &:focus {
-              border: none;
-            }
-            &::before {
-              color: var(--color-979797) !important;
-            }
-            .MuiIconButton-label {
-              color: var(--color-979797);
-            }
-
-            &:-ms-input-placeholder {
-              color: var(--color-979797) !important;
-            }
-
-            &::-webkit-input-placeholder {
-              color: var(--color-979797) !important;
-            }
-
-            &::placeholder {
-              color: var(--color-979797) !important;
-            }
-          }
-
+       
       .actionLabel{
         color: #000;
         padding-left: 8px; 
@@ -313,6 +336,16 @@
     .sensors-and-triggers {
         .settingsContent {
             padding: 0 0px 0 0px;
+            .sensorsRightCol{ 
+                .gridFilterTextBox h6 {
+                    width: 205px;
+                }
+            }
+            .email_checkBox_ui{ 
+                span {
+                    margin-left: 40px;
+                }
+            }
         }
         .sesorsSetting{
             margin-left: 0px;
@@ -333,9 +366,9 @@
             .indicates-label{
                 margin-left: 0px;
             }
-        } 
-        
-    }
-  }
+       
+        }
 
+    }
+}
 

@@ -161,7 +161,7 @@ const SensorsAndTriggersList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "1612",
+      minWidth: "1610",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
