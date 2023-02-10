@@ -755,9 +755,9 @@ else {
   };
 
   const validateFirstLastAndMiddleName = (userName: string, _type: string): { error: boolean, errorMessage: string } => {
-    const characterReg = /^[a-zA-Z0-9 ]+$/.test(String(userName).toLowerCase());
+    const characterReg = /^[a-zA-Z][a-zA-Z0-9]+([\s][a-zA-Z]+)*$/.test(String(userName).toLowerCase());
     if (!characterReg) {
-      return { error: true, errorMessage: `${t("Please_provide_a_valid")} ${_type}.` };
+      return { error: true, errorMessage: `${_type} ${t("start from alphabets and contain only alphanumeric characters and space in between character")}.` };
     } else if (userName.length < 3) {
       return { error: true, errorMessage: `${_type} ${t("must_contain_atleast_three_characters.")}` };
     }

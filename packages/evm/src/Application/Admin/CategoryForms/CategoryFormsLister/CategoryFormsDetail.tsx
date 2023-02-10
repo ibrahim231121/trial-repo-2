@@ -113,7 +113,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
     }, [id]);
 
     const categoryFromsValidationSchema = Yup.object().shape({
-        name: Yup.string().required("Name is required"),
+        name: Yup.string().required("Name is required").min(3, "Name must be greater than 3 characters").max(128, "Name must be less than 128 characters"),
         fields: Yup.array().min(1).required("at least one item needs to be here"),
     });
 

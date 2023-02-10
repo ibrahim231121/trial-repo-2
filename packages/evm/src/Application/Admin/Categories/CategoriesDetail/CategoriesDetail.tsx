@@ -284,7 +284,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   }, [uploadPoliciesList?.data]);
 
   const categoriesFromValidationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string().required("Name is required").min(3, "Name must be greater than 3 characters").max(128, "Name must be less than 128 characters"),
     evidenceRetentionPolicy: Yup.number().min(1, "Evidence Retention Policy is required"),
     uploadPolicy: Yup.number().min(1, "Upload Policy is required"),
     audioprompt: Yup.mixed()
