@@ -56,7 +56,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     // const [idValue, setIdValue] = React.useState<Number[]>(ids);
     const [rows, setRows] = React.useState<User[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<string>("LoginId");
+    const [orderBy, setOrderBy] = React.useState<string>("UserName");
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<any>([]);

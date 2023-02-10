@@ -84,7 +84,10 @@ const VideosSelection = ({
 
   const radioIconGrey = "iconGrey icon icon-radio-unchecked";
   const checkedIconGrey = "iconGrey icon-radio-checked";
-
+  const MultiBackTooltip = () => {
+      setAnchorEl(null);
+      
+    }
   return (
     <>
       {anchorEl && anchorRef.current && anchorEl ? (
@@ -92,7 +95,7 @@ const VideosSelection = ({
           <Paper>
             <div className="CRXPopupInnerDiv">
               <div className="_popover_content _popover_title">
-                <div className="CRXMultiBackIcon">
+                <div className="CRXMultiBackIcon" onClick={() => MultiBackTooltip()}>
                   <CRXTooltip
                     placement="left"
                     title="back"
