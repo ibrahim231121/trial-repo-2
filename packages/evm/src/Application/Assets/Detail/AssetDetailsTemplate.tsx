@@ -40,6 +40,7 @@ import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, 
 import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
+import PDFViewer from "./PDFViewer";
 
 const AssetDetailsTemplate = () => {
   const { state } = useLocation<AssetDetailRouteStateType>();
@@ -80,6 +81,8 @@ const AssetDetailsTemplate = () => {
   const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const [fileData, setFileData] = React.useState<any[]>([]);
+  const [pdfMasterData, setPdfMasterData] = React.useState<any[]>([]);
+  const [pdfChildData, setPdfChildData] = React.useState<any[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
   const [childFileData, setChildFileData] = React.useState<any[]>([]);
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -113,7 +116,6 @@ const AssetDetailsTemplate = () => {
   const [uploadedOn, setUploadedOn] = React.useState<string>("");
   const [isChecked, setIsChecked] = React.useState<boolean>();
   const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
-
   const tabs = [
     { label: t("Asset_Metadata_Info"), index: 0 },
     { label: t("GROUPED_AND_RELATED_ASSETS"), index: 1 },
@@ -151,17 +153,7 @@ const AssetDetailsTemplate = () => {
 
   useEffect(() => {
     if (gpsFileData && gpsFileData.length > 0) {
-      const blobSasUrl = gpsFileData[0].downloadUri;
-      const containerWithFile = blobSasUrl.substring(blobSasUrl.indexOf('.net') + 5, blobSasUrl.indexOf('?'));
-      const sasurl = blobSasUrl.replace(containerWithFile, '')
-      const blobServiceClient = new BlobServiceClient(sasurl);
-
-      const fc = containerWithFile.replaceAll('%2F', '/');
-      const containerName = fc.replace(fc.substring(fc.lastIndexOf('/')), '');//get container name only
-      const containerClient = blobServiceClient.getContainerClient(containerName);
-
-      const fileName = fc.substring(fc.lastIndexOf('/') + 1);
-      const blobClient = containerClient.getBlobClient(fileName);
+      const blobClient = getBlobClients(gpsFileData[0].downloadUri);
       gpsAndOverlayData(blobClient);
     }
   }, [gpsFileData]);
@@ -203,7 +195,10 @@ const AssetDetailsTemplate = () => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == res?.typeOfAsset && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0 && x?.files[0]?.type == res?.typeOfAsset).length == childFileData.length) { // temp condition
+    if (getAssetData && 
+    fileData.length == masterasset?.filter(x => ((x.type == res?.typeOfAsset) || (x.type == "Audio" && res?.typeOfAsset == "AudioOnly")) && x.filesId > 0).length && 
+    getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0 && ((x?.files[0]?.type == res?.typeOfAsset) || (x?.files[0]?.type == "Audio" && res?.typeOfAsset == "AudioOnly"))).length == childFileData.length) 
+    { // temp condition     
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -328,6 +323,20 @@ const AssetDetailsTemplate = () => {
     });
   }
 
+  const getBlobClients = (downloadUri: any) => {
+    const blobSasUrl = downloadUri;
+    const containerWithFile = blobSasUrl.substring(blobSasUrl.indexOf('.net') + 5, blobSasUrl.indexOf('?'));
+    const sasurl = blobSasUrl.replace(containerWithFile, '')
+    const blobServiceClient = new BlobServiceClient(sasurl);
+
+    const fc = containerWithFile.replaceAll('%2F', '/');
+    const containerName = fc.replace(fc.substring(fc.lastIndexOf('/')), '');//get container name only
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    const fileName = fc.substring(fc.lastIndexOf('/') + 1);
+    return containerClient.getBlobClient(fileName);
+  }
+
   const getUnixTimewithZeroinMillisecond = (time: number) => {
     let firsthalf = time.toString().substring(0, 10);
     let last3digits = time.toString().substring(10);
@@ -397,13 +406,21 @@ const AssetDetailsTemplate = () => {
             downloadUri: response
           }])
         }
-        else if (template.type == res?.typeOfAsset){
+        else if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")){
             setFileData([...fileData, {
               filename: template.name,
               fileurl: template.url,
               fileduration: template.duration,
               downloadUri: response
             }])
+        }
+        else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc"){
+          setPdfMasterData([...fileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          }])
         }
       }).catch(e => {
         if (template.type != "GPS") {
@@ -419,10 +436,11 @@ const AssetDetailsTemplate = () => {
   }
   const getChildAssetFile = (dt: any) => {
     let fileDownloadUrls: any = [];
+    let filePdfDownloadUrls: any = [];
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          if (template.type == res?.typeOfAsset){
+          if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")){
             fileDownloadUrls.push({
               filename: template.name,
               fileurl: template.url,
@@ -430,6 +448,15 @@ const AssetDetailsTemplate = () => {
               downloadUri: response
             })
             setChildFileData([...fileDownloadUrls])
+          }
+          else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc"){
+            filePdfDownloadUrls.push({
+              filename: template.name,
+              fileurl: template.url,
+              fileduration: template.duration,
+              downloadUri: response
+            })
+            setPdfChildData([...filePdfDownloadUrls])
           }
         }).catch(e => {
           fileDownloadUrls.push({
@@ -570,7 +597,6 @@ const AssetDetailsTemplate = () => {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
     const masterduration = row.assets.master.duration;
-    const buffering = row.assets.master.buffering;
     const camera = row.assets.master.camera;
     const file = fileData;
     let recording = row.assets.master.recording;
@@ -581,10 +607,13 @@ const AssetDetailsTemplate = () => {
     const typeOfAsset = row.assets.master.typeOfAsset;
     const name = row.assets.master.name;
     const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : "";
+    const buffering = row.assets.master.buffering;
+    const bufferingpost = buffering ? buffering?.post : 0;
+    const bufferingpre = buffering ? buffering?.pre : 0;
     recording = {
       ...recording,
-      ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
-      started: new Date(new Date(recording.started).getTime() - buffering?.pre),
+      ended: new Date(new Date(recording.ended).getTime() + bufferingpost),
+      started: new Date(new Date(recording.started).getTime() - bufferingpre),
     }
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, name: name, notes: notes, camera: camera, status: status }
     rowdetail.push(myData);
@@ -885,9 +914,10 @@ const AssetDetailsTemplate = () => {
   const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: boolean, apiKey: any) => {
     let availableAssets = videoPlayerData.filter((x: any) => x.status == "Available");
     if (availableAssets.length > 0) {
-      let videos = availableAssets.filter((x: any) => x.typeOfAsset == "Video");
+      let videos = availableAssets.filter((x: any) => x.typeOfAsset == "Video" || x.typeOfAsset == "AudioOnly" || x.typeOfAsset == "Audio");
 
       switch (videoPlayerData[0]?.typeOfAsset) {
+        case 'AudioOnly':
         case 'Video':
           return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} guestView={false} /> :
             <>
@@ -912,6 +942,10 @@ const AssetDetailsTemplate = () => {
           return <img src={availableAssets[0]?.files[0]?.downloadUri}></img>
         case 'Audio':
           return <audio controls={true} src={availableAssets[0]?.files[0]?.downloadUri}></audio>
+        case 'Doc':
+          return <>
+            {(pdfMasterData.length>0 || pdfChildData.length>0) &&<PDFViewer pdfMasterData={pdfMasterData} pdfChildData={pdfChildData} />}
+          </>
         default:
           return <></>;
       }

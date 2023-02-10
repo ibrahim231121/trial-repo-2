@@ -636,7 +636,7 @@ const VideoPlayerBase = (props: any) => {
       propdata = props.data;
     }
     if (propdata) {
-      propdata = propdata.filter((x: any) => x.typeOfAsset == "Video");
+      propdata = propdata.filter((x: any) => x.typeOfAsset == "Video" || x.typeOfAsset == "AudioOnly" || x.typeOfAsset == "Audio");
       if (propdata.length > 1) {
         setsingleVideoLoad(false);
       }
