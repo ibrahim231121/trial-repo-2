@@ -113,6 +113,7 @@ const UnitAndDevices: React.FC = () => {
     
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+  const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
   
   React.useEffect(() => {
     subscribeGroupToSocket("UnitStatus");
@@ -178,7 +179,7 @@ const UnitAndDevices: React.FC = () => {
             //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
             //     return x.trim();
             // }) : [],
-              lastCheckedIn: unit.lastCheckedIn,
+              lastCheckedIn: unit.lastCheckedIn.includes("1900") ? "": unit.lastCheckedIn,
               status: unit.status,
               stationId: unit.stationRecId
             }
@@ -427,6 +428,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 const changeMultiselect = (val: renderCheckMultiselect[], colIdx: number) => {
   onSelection(val, colIdx)
   headCells[colIdx].headerArray = val;
+  setIsSearchableOnChange(true)
 }
 
 const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
@@ -439,6 +441,7 @@ const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) =
 };
 
 const onSelectedClear = (colIdx: number) => {
+  setIsSearchableOnChange(true)
   setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
   let headCellReset = onSelectedIndividualClear(headCells,colIdx);
   setHeadCells(headCellReset);
@@ -709,6 +712,8 @@ useEffect(() => {
   console.log("searchData", searchData)
   if(searchData.length > 0)
     setIsSearchable(true)
+  if(isSearchableOnChange)
+    getFilteredUnitData()
 }, [searchData]);
 
 useEffect(() => {
@@ -836,6 +841,7 @@ useEffect(()=>{
       dispatch(getUnitInfoAsync(pageiGrid));
     }
     setIsSearchable(false)
+    setIsSearchableOnChange(false)
 }
 
  useEffect(() => {
@@ -846,6 +852,8 @@ useEffect(()=>{
 
 const sortingOrder = (sort: any) => {
   setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+  setOrder(sort.order)
+  setOrderBy(sort.orderBy)
   setPaging(true)
 }
 
