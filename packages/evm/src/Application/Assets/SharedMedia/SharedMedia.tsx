@@ -443,11 +443,11 @@ const SharedMedia = () => {
         let myData: assetdata =
         {
           id: element.assetId,
-          files: fileDataList,//fileData, 
+          files: fileDataList,
           assetduration: duration,
           assetbuffering: buffering,
           recording: recording,
-          bookmarks: bookmarks, //
+          bookmarks: bookmarks,
           unitId: unitId,
           typeOfAsset: typeOfAsset,
           name: name,
@@ -470,6 +470,7 @@ const SharedMedia = () => {
     setlinkStatus("The Link is not valid");
 
   }
+  document.documentElement.style.overflow = "scroll";
 }
 const gpsAndOverlayData = async (blobClient: any) => {
   const downloadBlockBlobResponse = await blobClient.download();
