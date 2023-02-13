@@ -45,11 +45,7 @@ export interface DeviceCurrentSoftwareVersion {
 
 export interface SoftwareVersion {
     id: number,
-    major: number,
-    minor: number,
-    build: number,
-    revision: number,
-    customVersion: number,
+    version: string,
     history: History
 }
 

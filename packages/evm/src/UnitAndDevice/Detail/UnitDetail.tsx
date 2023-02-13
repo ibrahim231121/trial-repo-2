@@ -197,7 +197,7 @@ const UnitCreate = (props: historyProps) => {
         unitAndDevicesRows = response.devices.map((data) => {
           return {
             id: data.id, deviceNames: "", deviceTypes: data.publicKey.format, deviceSerialNumbers: data.identifier,
-            deviceVersions: data.version.current.major + "." + data.version.current.minor + "." + data.version.current.build + "." + data.version.current.revision
+            deviceVersions: data.version.current.version  
           };
         });
         setRows(unitAndDevicesRows);
