@@ -66,8 +66,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
       
         headCells && headCells.map((x:any, i : any) => {
           let assetIdMinu = (x.id != "id" || x.id != "assetId" && headCells.length > 6) ? winMinus - 141 : winMinus - 60;
-          let valueInPercentage : any = (assetIdMinu / window) * 100
-          console.log("valueInPercentage", valueInPercentage)
 
             if(x.id != "id" && x.id != "assetId" && headCells.length > 6) {
                 if(i < 7 ) {
@@ -310,7 +308,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                     deltaX: deltaX.x / 2,
                     colID : headCells[colIdx].id
                   });
-                  console.log("deltaX", deltaX)
                 }}
                 onStop={() => {
                   const memo: any = {};

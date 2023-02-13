@@ -306,14 +306,12 @@ const ActionMenu: React.FC<Props> = React.memo(
       });
       if (isSelectedItem) {
         selectedItems.map((x: any) => {
-          if (x.evidence.masterAsset.lock) {
-            _requestBody.evidenceId = x.id
+            _requestBody.evidenceId = x.evidence.id;
             _requestBody.assetLockObject.push({
               assetId: x.assetId,
               groupRecIdList: groupRecIdArray,
               operation: operation,
             });
-          }
         });
       } else {
         _requestBody.evidenceId = row?.evidence.id;

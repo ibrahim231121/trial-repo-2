@@ -24,11 +24,9 @@ export const AssetThumbnailIcon = (assetName:any,  data: any, fileType: any): an
   );
 
    useEffect(()=>{
-    console.log("Asset Name = ", assetName, " File Type = ", fileType);
     if(fileType === 'Video'){
       if(assetThumbnails.map((x:any) => x.assetName).includes(assetName)) {
         var assetThumbnail = assetThumbnails.filter((x:any) => x.assetName == assetName)
-        console.log("assetThumbnail  ",assetThumbnail[0])
         var base64Flag = 'data:image/jpeg;base64,';
                 if(assetThumbnail[0].Bytes !== '' ){
                   var imageData = base64Flag + assetThumbnail[0].Bytes
