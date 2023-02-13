@@ -123,6 +123,8 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setshowSSticky={(a: any) => setshowSSticky(a)}
             categorizedBy={props.categorizedBy}
+            isCategorizedBy={props.isCategorizedBy}
+
           />
         );
       case 2:
@@ -181,6 +183,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removeMessage={removeMessage}
             holdUntill={holdUntill}
             categorizedBy={props.categorizedBy}
+            isCategorizedBy={props.isCategorizedBy}
           />
         );
       case 5:
@@ -194,6 +197,8 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             categorizedBy={props.categorizedBy}
+            isCategorizedBy={props.isCategorizedBy}
+            
           />
         );
     }

@@ -70,10 +70,10 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       unAssignCategories: [],
       assignedCategories: Assign_Category_Arr,
       updateCategories: [],
-      categorizedBy : props.categorizedBy
+      categorizedBy: props.categorizedBy
     };
-
-    EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
+    const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
+    EvidenceAgent.changeCategories(Assign_Category_URL, body, headers).then(() => {
       props.setSelectedCategoryValues([]);
       setSuccess(true);
       setTimeout(() => {

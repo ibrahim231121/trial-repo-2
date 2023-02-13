@@ -6,6 +6,7 @@ export type FormContainerProps = {
     setIsCategoryEmpty: (param: boolean) => void;
     formActionButton?: React.ReactNode;
     categorizedBy : number | null;
+    isCategorizedBy : boolean;
 };
 
 export type SelectedCategoryModel = {

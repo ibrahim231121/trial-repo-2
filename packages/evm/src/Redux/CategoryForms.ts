@@ -21,7 +21,7 @@ export const getAllCategyFormsFilter: any = createAsyncThunk(
                 thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
                 return response
             }).catch((error: any) => {
-                console.error("Error hai", error.response.data);
+                console.error("Error", error.response.data);
             });
     }
 );

@@ -61,10 +61,10 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       unAssignCategories: [],
       assignedCategories: assignedCategories,
       updateCategories: updateCategories,
-      categorizedBy : props.categorizedBy
+      categorizedBy: props.categorizedBy
     };
-
-    EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {
+    const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
+    EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body, headers).then(() => {
       setSuccess(true);
       setTimeout(() => {
         closeModal();

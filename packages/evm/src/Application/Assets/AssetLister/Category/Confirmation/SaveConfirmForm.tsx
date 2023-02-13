@@ -17,7 +17,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const initialValues: FormValues = {};
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const dispatch = useDispatch();
-  
+
   React.useEffect(() => {
     props.setModalTitle(t("Please_confirm"));
     props.setIndicateTxt(false);
@@ -49,7 +49,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       })[0];
     if (newValue) {
       /** Set removed option in to State again. */
-      props.setSelectedCategoryValues((prevState) => [...prevState, newValue]);  
+      props.setSelectedCategoryValues((prevState) => [...prevState, newValue]);
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
@@ -64,30 +64,31 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const message = props.removeMessage;
     const evidenceId = props.evidence?.id;
     const categoryId = props.removedOption.id;
-    const unAssignCategory : Category = {
+    const unAssignCategory: Category = {
       id: categoryId,
       formData: [],
       assignedOn: new Date(),
       name: ""
     };
 
-    const body : EvdenceCategoryAssignment = {
+    const body: EvdenceCategoryAssignment = {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
       updateCategories: [],
-      categorizedBy : props.categorizedBy
+      categorizedBy: props.categorizedBy
     }
     const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
-    EvidenceAgent.changeCategories(url, body).then(() => {
+    const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
+    EvidenceAgent.changeCategories(url, body, headers).then(() => {
       setSuccess(true);
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         closeModal();
       }, 3000);
     })
-    .catch(() => {
-      setError(true);
-    });
+      .catch(() => {
+        setError(true);
+      });
   }
 
   return (
@@ -112,7 +113,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
             <CRXAlert message={WarningMessage} className='crx-warning' type='warning' alertType='inline' open={true} />
           )}
           <div className='CRXCategory crx-category-attempting'>
-          {t("You_are_attempting_to_remove")} '<b>{props.removedOption.label}</b>' {t("category")}.
+            {t("You_are_attempting_to_remove")} '<b>{props.removedOption.label}</b>' {t("category")}.
           </div>
           <div className='CRXCategory crx-continue-category'>{t("Do_you_want_you_continue_with_removing_the_category?")}</div>
           <div className='modalFooter CRXFooter removeFooter removeCategoryFooter'>

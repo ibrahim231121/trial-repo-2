@@ -166,7 +166,6 @@ const ActionMenu: React.FC<Props> = React.memo(
       React.useState(false);
 
     const [isAssetLinkedOrMoved, setisAssetLinkedOrMoved] = React.useState<string>("");
-    const EXPORT_ASSETS_AND_METADATA_PERMISSION = 60;
     React.useEffect(() => {
     }, [groupedSelectedAssetsActions])
     React.useEffect(() => {
@@ -1040,6 +1039,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           isCategoryEmpty={isCategoryEmpty}
           setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
           categorizedBy={evidenceCategorizedBy()}
+          isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
         />
 
         <Menu

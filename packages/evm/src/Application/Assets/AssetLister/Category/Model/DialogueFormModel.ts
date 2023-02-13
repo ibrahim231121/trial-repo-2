@@ -14,4 +14,5 @@ export type DialogueFormProps = {
     setModalTitle: (param: string) => void;
     setIndicateTxt: (param: boolean) => void;
     categorizedBy : number | null;
+    isCategorizedBy : boolean;
 };

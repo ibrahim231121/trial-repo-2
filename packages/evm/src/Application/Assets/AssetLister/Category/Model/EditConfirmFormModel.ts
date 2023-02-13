@@ -11,6 +11,7 @@ export type EditConfirmFormProps = {
     setModalTitle: (param: string) => void;
     setActiveForm: Dispatch<SetStateAction<number>>;
     categorizedBy : number | null;
+    isCategorizedBy : boolean;
 };
 
 export interface FormValues {

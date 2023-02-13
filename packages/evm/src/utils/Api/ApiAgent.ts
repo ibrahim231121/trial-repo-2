@@ -288,7 +288,7 @@ export const EvidenceAgent = {
     addUsersToAsset: (url: string, body: number[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body, config),
     setPrimaryAsset: (url: string) => requests.get<void>(EVIDENCE_SERVICE_URL, url, config),
     updateRetentionPolicy: (url: string, body: ExtendRetention[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body, config),
-    changeCategories: (url: string, body: EvdenceCategoryAssignment) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body, config),
+    changeCategories: (url: string, body: EvdenceCategoryAssignment, extraHeader: Headers[]) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
     //openSharedMedia: (url: string) => requests.get<AssetSharingModel>(EVIDENCE_SERVICE_URL+'/OpenSharedMedia?E='+url),
     

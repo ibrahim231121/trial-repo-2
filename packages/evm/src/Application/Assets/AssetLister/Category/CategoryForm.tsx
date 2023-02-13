@@ -221,7 +221,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       };
 
       const url = `/Evidences/${evidenceId}/Categories`;
-      EvidenceAgent.changeCategories(url, body).then(() => {
+      const headers : Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
+      EvidenceAgent.changeCategories(url, body, headers).then(() => {
         setSuccess(true);
         setTimeout(() => {
           closeModalFunc();
@@ -287,6 +288,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             setSelectedCategoryValues={(v) => props.setSelectedCategoryValues(v)}
             setIndicateTxt={(e: any) => props.setIndicateTxt(e)}
             categorizedBy={props.categorizedBy}
+            isCategorizedBy={props.isCategorizedBy}
           />
         )
       )}
