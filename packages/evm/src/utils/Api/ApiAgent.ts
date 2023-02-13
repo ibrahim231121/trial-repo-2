@@ -77,6 +77,7 @@ import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies
 import { logOutUser } from '../../Logout/API/auth';
 import { url } from 'inspector';
 import { Case } from '../../Application/Cases/CaseTypes';
+import { StationPolicyConfigurationTemplate } from '../../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
 
 
 
@@ -372,6 +373,8 @@ export const UnitsAndDevicesAgent = {
     getAllStations: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
+    getStationPolicyConfigurationTemplate : (url: string) => requests.getAll<Paginated<StationPolicyConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, `/StationPolicyConfigurationTemplate/GetAll${url}`, config),
+    getAllStationForDefaultUnitTemplate : (url: string) => requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations/GetAllStationForDefaultUnitTemplate${url}`, config),
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo" + url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),

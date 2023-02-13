@@ -387,7 +387,7 @@ export const resources = {
         
         // --------- Unit ----------
         "To_Get_ID":"hr-To Get ID",
-        "Success_You_have_saved_the_Default_Unit_Template":"hr-Success: You have saved the Default Unit Template",
+        "Success_You_have_saved_the_Default_Unit_Template":"You have saved the Default Unit Template",
         "Manage_Default_Unit_Template":"hr-Manage Default Unit Template",
         "Manage_Unit_Configuration":"hr-Manage Unit Configuration",
         "Edit_template":"hr-Edit template",

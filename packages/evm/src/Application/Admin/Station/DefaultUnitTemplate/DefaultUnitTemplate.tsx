@@ -3,7 +3,7 @@ import { CRXDataTable, CRXButton, CRXConfirmDialog, CRXRows, CRXColumn } from '@
 import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
 import { HeadCellProps, PageiGrid } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import DropdownComponent from './DropdownComponent';
-import { StationInfo, TypeOfDevice } from './DefaultUnitTemplateModel';
+import { StationInfo, StationPolicyConfigurationTemplate, TypeOfDevice } from './DefaultUnitTemplateModel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CRXAlert } from '@cb/shared';
@@ -12,7 +12,7 @@ import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { DeviceType } from '../../../../utils/Api/models/UnitModels';
 import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
 import './DefaultUnitTemplate.scss';
-// import '../../UserGroup/Group/GroupTabs/dataPermission.scss'
+import { CRXToaster } from '@cb/shared';
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -22,12 +22,11 @@ const DefaultUnitTemplate: React.FC = () => {
     const [stationDataTableRow, setStationDataTableRow] = React.useState<StationInfo[]>([]);
     const [headCellState, setHeadCellState] = React.useState<HeadCellProps[]>([]);
     const [deviceTypeCollection, setDeviceType] = React.useState<DeviceType[]>([]);
+    const [stationPolicyConfigurationTemplate, setStationPolicyConfigurationTemplate] = React.useState<StationPolicyConfigurationTemplate[]>([]);
     const [stationCollection, setStationCollection] = React.useState<any[]>([]);
     const [disableSaveBtn, setDisableSaveBtn] = React.useState<boolean>(true);
     const [isStateChanged, setIsStateChanged] = React.useState<boolean>(false);
     const [confirmModalDisplay, setConfirmModalDisplay] = React.useState<boolean>(false);
-    const [success, setSuccess] = React.useState<boolean>(false);
-    const [error, setError] = React.useState<boolean>(false);
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(50);
     const [paging, setPaging] = React.useState<boolean>();
@@ -40,10 +39,12 @@ const DefaultUnitTemplate: React.FC = () => {
         size: rowsPerPage
     });
     const [stationCount, setStationCount] = React.useState(0);
+    const toasterRef = React.useRef<typeof CRXToaster>(null);
     const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
     const dispatch = useDispatch();
     React.useEffect(() => {
         getDeviceTypeRecord();
+        getStationPolicyConfigurationTemplate();
         if (!(configurationTemplatesFromStore) || Object.keys(configurationTemplatesFromStore).length === 0) {
             dispatch(getConfigurationTemplatesAsync());
         }
@@ -87,7 +88,7 @@ const DefaultUnitTemplate: React.FC = () => {
                 headCellArray.push(headCellObject);
             }
             headCellArray.push({
-                label: t("To_Get_ID"),  
+                label: t("To_Get_ID"),
                 id: 'id',
                 align: 'center',
                 dataComponent: () => null,
@@ -104,7 +105,7 @@ const DefaultUnitTemplate: React.FC = () => {
          * */
         if ((stationCollection.length > 0) && (selectBoxValues.length === 0)) //  Second Condtion Make It Run Only Once.
             createInitialStateOfSelectBox();
-    }, [deviceTypeCollection, selectBoxValues, stationCollection, configurationTemplatesFromStore]);
+    }, [deviceTypeCollection, selectBoxValues, stationCollection, configurationTemplatesFromStore, stationPolicyConfigurationTemplate]);
 
     React.useEffect(() => {
         if (paging) {
@@ -129,8 +130,18 @@ const DefaultUnitTemplate: React.FC = () => {
             });
     }
 
+    const getStationPolicyConfigurationTemplate = () => {
+        UnitsAndDevicesAgent.getStationPolicyConfigurationTemplate(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`)
+            .then((response: any) => {
+                setStationPolicyConfigurationTemplate(response.data);
+            })
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
+    }
+
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`, [{ key: 'InquireDepth', value: 'deep' }])
+        UnitsAndDevicesAgent.getAllStationForDefaultUnitTemplate(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`)
             .then((response: any) => {
                 setStationCollection(response.data);
                 setStationCount(response.totalCount);
@@ -175,13 +186,15 @@ const DefaultUnitTemplate: React.FC = () => {
     const createInitialStateOfSelectBox = () => {
         const tempArrayToHoldState = [];
         for (const station of stationCollection) {
-            let tempObjectForState = station.policies[0].configurationTemplates.map((x: any) => {
+            let policyId = parseInt(station.policies[0].id);
+            let stationPolicyConfigurationTemplateObj = stationPolicyConfigurationTemplate.filter((x: any) => x.stationPolicyId == policyId);
+            let tempObjectForState = stationPolicyConfigurationTemplateObj.map((x: any) => {
                 return {
                     stationId: parseInt(station.id),
-                    deviceTypeId: parseInt(x.typeOfDevice.id),
-                    templateId: parseInt(x.id),
+                    deviceTypeId: parseInt(x.deviceTypeId),
+                    templateId: parseInt(x.configurationTemplateId),
                     operationType: 0,
-                    StationPolicyId: parseInt(station.policies[0].id)
+                    StationPolicyId: policyId
                 }
             });
             tempArrayToHoldState.push(...tempObjectForState);
@@ -189,13 +202,22 @@ const DefaultUnitTemplate: React.FC = () => {
         if (tempArrayToHoldState.length > 0)
             setSelectBoxValues(tempArrayToHoldState);
     }
-
     const saveBtnClickHandler = () => {
         UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(() => {
-            setSuccess(true);
+            toasterRef.current.showToaster({
+                message: t("Success_You_have_saved_the_Default_Unit_Template"),
+                variant: 'success',
+                duration: 5000,
+                clearButtton: true
+              });
         })
             .catch((error: any) => {
-                setError(true);
+                toasterRef.current.showToastMsg({
+                    message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+                    variant: "error",
+                    duration: 5000,
+                    clearButtton: true
+                  });
                 console.error(error.response.data);
             });
     }
@@ -214,36 +236,20 @@ const DefaultUnitTemplate: React.FC = () => {
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
-              
-            <DropdownComponent 
+
+            <DropdownComponent
                 deviceTypeId={parseInt(_deviceTypeId)}
                 stationId={parseInt(_rowId)}
                 selectBoxValue={_selectBoxValues}
                 configurationTemplatesFromStore={_configurationTemplatesFromStore}
                 setSelectBoxValueIntoParent={(eventFromChild: any) => manipulateSelectBoxValueResponse(eventFromChild, parseInt(_rowId))} />
-   
+
         );
     }
 
     return (
         <>
-            {success && (
-                <CRXAlert
-                    message={t("Success_You_have_saved_the_Default_Unit_Template")}
-                    alertType="toast"
-                    open={true}
-                />
-            )}
-            {error && (
-                <CRXAlert
-                    className=""
-                    message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
-                    type="error"
-                    alertType="inline"
-                    open={true}
-                />
-            )}
-            
+            <CRXToaster ref={toasterRef} />
             <div className='switchLeftComponents defaultUnitTemplate'>
                 {(headCellState.length > 0 && stationDataTableRow.length > 0)
                     &&
@@ -274,16 +280,16 @@ const DefaultUnitTemplate: React.FC = () => {
                         setPage={(page: any) => setPage(page)}
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                         totalRecords={stationCount}
-                         //Please dont miss this block.
+                        //Please dont miss this block.
                         offsetY={-27}
-                        topSpaceDrag = {5}
+                        topSpaceDrag={5}
                         searchHeaderPosition={222}
                         dragableHeaderPosition={50}
                         stickyToolbar={133}
-                        //End here
+                    //End here
                     />
                 }
-                
+
                 <div className='stickyFooter_Tab'>
                     <div className='save-cancel-button-box'>
 
@@ -302,16 +308,16 @@ const DefaultUnitTemplate: React.FC = () => {
 
                     </div>
 
-                <CRXButton
-                    className="groupInfoTabButtons secondary"
-                    onClick={closeBtnHandler}
-                    disabled={false}
-                >
-                    {t("Close")}
-                </CRXButton>
+                    <CRXButton
+                        className="groupInfoTabButtons secondary"
+                        onClick={closeBtnHandler}
+                        disabled={false}
+                    >
+                        {t("Close")}
+                    </CRXButton>
                 </div>
-                
-                
+
+
 
                 <CRXConfirmDialog
                     className="crx-unblock-modal CRXStationModal"

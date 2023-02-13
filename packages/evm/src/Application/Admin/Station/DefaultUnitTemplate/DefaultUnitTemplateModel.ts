@@ -34,3 +34,9 @@ export type DropdownComponentProps = {
     configurationTemplatesFromStore: any[];
     setSelectBoxValueIntoParent: (param: any) => void;
 };
+
+export interface StationPolicyConfigurationTemplate {
+    stationPolicyId: number;
+    configurationTemplateId: number;
+    deviceTypeId: number;
+}
