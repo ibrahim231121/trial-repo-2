@@ -2,7 +2,7 @@ import { duration } from 'moment';
 import { AbortController } from "@azure/abort-controller";
 import { BlobServiceClient, BlockBlobStageBlockOptions, BlockBlobCommitBlockListOptions, BlockBlobClient } from "@azure/storage-blob";
 import { v4 as uuidv4 } from "uuid";
-import {  getFileSize } from "./FileUpload";
+import {  getFileSize, updateStatus } from "./FileUpload";
 import { FileAgent } from '../utils/Api/ApiAgent';
 declare const window: any;
 
@@ -116,6 +116,7 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo,  onRecvData: any) => 
                     ];
                       const url:any =  `/Files/` + usb.file.uploadedFileId;
                       FileAgent.changeFileUploadStatus(url, body).then((resp) => {
+                        updateStatus(usb.file.uploadedFileId,true)
                           saveFileToLocalStorage(usb);
                       });
                     

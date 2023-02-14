@@ -130,7 +130,14 @@ const dispatchError = () => {
 
 }
 
-
+export const updateStatus = async (fileId: string, fileUpdate:boolean) => {
+    const promises = [];
+    promises.push(
+        new Promise((resolve, reject) => {
+            fetchFile(fileId, fileData, resolve,fileUpdate);
+        }));
+    
+}
 export const fetchFile = async (id: string, file: any, resolve: any,fileUpdate: boolean) => {
     await fetch(`${FILE_SERVICE_URL}/Files/${id}`, {
         method: 'GET',
