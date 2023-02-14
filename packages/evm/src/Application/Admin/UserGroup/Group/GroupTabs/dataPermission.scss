@@ -345,7 +345,8 @@
     }
   }
   .stickyPos {
-    z-index: 99;
+    z-index: 7;
+    position: sticky !important;
   }
 }
 

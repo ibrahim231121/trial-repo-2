@@ -11,7 +11,7 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: "19px",
+      paddingBottom: "34px",
       paddingTop : "0px",
       minHeight : "unset !important",
       height : "unset",
@@ -117,7 +117,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       overflowY : "hidden",
       display : "table",
       paddingRight: "26px",
-      paddingBottom: "46px",
+      paddingBottom: "58px",
       //scrollBehavior: "smooth"
     },
     multiTableStikcyHeader: {
@@ -397,6 +397,7 @@ export type DataTableClearFilterProps = {
   columnVisibilityBar: boolean | undefined;
   filterClose: any;
   onClearAll: () => void;
+  expanView : boolean,
 };
 
 export type DataTableCustomizeColumnsProps = {
@@ -408,6 +409,7 @@ export type DataTableCustomizeColumnsProps = {
   onHeadCellChange: (e: HeadCellProps[]) => void;
   showCustomizeIcon?: boolean;
   filterWindow: any;
+  expanView : boolean,
 };
 
 export type OrderValue = {

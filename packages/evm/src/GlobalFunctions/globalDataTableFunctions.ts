@@ -104,7 +104,7 @@ export const onClearAll = (headCells: HeadCellProps[]) => {
       endDate: "",
       value: "custom",
       displayText: "Custom Range",
-    } 
+    }
   }
     return headCell;
   });
@@ -214,4 +214,4 @@ export const onSetSearchDataValue = (
 export const RemoveSidePanelClass:any = () => {
   let sideMenu : any = document.querySelector(".CRXLeftPanel");
   return sideMenu && (sideMenu.style.display = "block")
-} 
+}

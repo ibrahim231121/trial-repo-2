@@ -376,7 +376,7 @@ const SearchComponent = (props: any) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
    }else {
-    window.scrollTo({ top: 1, behavior: "smooth" });
+    window.scrollTo({ top: 2, behavior: "smooth" });
     
    }
    
@@ -525,7 +525,7 @@ const SearchComponent = (props: any) => {
   }
   return (
     <div className='advanceSearchChildren'>
-      <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "79px" : "124px"}}>
+      <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "56px" : "124px"}}>
        {/* {showShortCutSearch == false ?  <div className='showArrow-search'>
           <button onClick={() => showSearchBar()}>
             <i className='fa fa-angle-down'></i>

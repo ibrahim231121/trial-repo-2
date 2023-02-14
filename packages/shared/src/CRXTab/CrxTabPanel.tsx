@@ -11,7 +11,7 @@ interface TabPanelProps {
     root: {
         border:"1px solid #878787",
         borderTop: "0px",
-        padding:"25px",
+        padding:"57px 25px",
         paddingBottom : "55px",
         overflowY:"auto",
         minHeight: "calc(100vh - 220px)",

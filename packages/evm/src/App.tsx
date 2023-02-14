@@ -501,7 +501,7 @@ function App() {
           })}
           > */}
 
-            {RemoveSidePanelClass()}
+          
             <Routes />
 
             {/* </main>

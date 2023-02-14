@@ -377,7 +377,7 @@ html {
 
   .stickyBorder_Add {
     .stickyPos {
-      z-index: 1202;
+      z-index: 9;
     }
   }
   
@@ -403,7 +403,7 @@ html {
 
   .dataTableColumnShoHide {
     position: relative;
-    top: 8px;
+    top: 12px;
   }
 
 
@@ -416,7 +416,41 @@ html {
       left: 0px;
       display: block;
       position: fixed;
-      top: 109px;
+      top: 108px;
       z-index: 9999;
+    }
+  }
+
+  .drawerOff  {
+    .AssetsDataGrid {
+      .CRXDataTableCustom {
+        .drag_header, .searchable_header  {
+          tr {
+            th{
+              &.dataTableActionColumn {
+                left: 25px !important;
+              }
+              &.dataTableCheckBoxColumn {
+                left: 84px !important;
+              }
+            }
+          }
+        }
+        .table_body_ {
+          tr{
+            td{
+              &.dataTableActionColumn{
+                left: 25px !important;
+              }
+              &.dataTableCheckBoxColumn {
+                left: 84px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    .stickyPos {
+      width: calc(100% - 53px) !important;
     }
   }

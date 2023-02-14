@@ -22,7 +22,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
        const win = window.pageYOffset;
        if(win > 0) {
         stickyForm && (stickyForm.current.style.position = "sticky");
-        stickyForm && (stickyForm.current.style.top = "152px")
+        stickyForm && (stickyForm.current.style.top = "135px")
             
        }else {
           stickyForm && (stickyForm.current.style.position = "relative");

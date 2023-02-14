@@ -241,15 +241,6 @@
   }
 }
 
-.crxTooltipNotificationIcon {
-  &.crxTooltipAll {
-    margin-left: -80px;
-    position: fixed;
-    top: -5px;
-  }
-  text-transform: lowercase;
-}
-
 .bucketIconButton {
   padding: 2px 0px 4px 13px !important;
   line-height: 0px !important;
@@ -257,6 +248,9 @@
   border-radius: 0px !important;
   justify-content: left !important;
   top: 3px;
+  .crxTooltipAll {
+    width: 300px;
+  }
 }
 
 .bucketIconButton:hover,

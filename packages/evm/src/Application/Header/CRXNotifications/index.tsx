@@ -57,7 +57,7 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
   const ToggleDot = (
     <>
       <CRXIcon className='bucketIcon'>  
-        <CRXTooltip iconName="fas fa-bell" arrow={false} title="notifications" placement="bottom" className="crxTooltipNotificationIcon"/>
+        <CRXTooltip iconName="fas fa-bell" arrow={false} title="notifications" placement="left" className="crxTooltipNotificationIcon"/>
       </CRXIcon>
       {isRead && <CRXIcon className='bucketIcon' >
       

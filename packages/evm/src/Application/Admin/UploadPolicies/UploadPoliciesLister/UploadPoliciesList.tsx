@@ -355,7 +355,7 @@ const UploadPoliciesList: React.FC = () => {
             selectedItems={selectedItems}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={135}
+            stickyToolbar={130}
             searchHeaderPosition={222}
             dragableHeaderPosition={188}
             //End here

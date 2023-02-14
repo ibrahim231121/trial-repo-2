@@ -246,7 +246,7 @@ body {
   background: var(--color-White) !important;
   height: 59px;
   width: 100%;
-  z-index: 1202;
+  z-index: 9;
   padding-top: 4px;
   margin-left:  1px;
   position: sticky;
@@ -417,7 +417,7 @@ input:-webkit-autofill {
   position: fixed;
   left: 62px;
   top: 60px;
-  z-index: 999;
+  z-index: 8;
 }
 
 .overlayPanel_bottom {
@@ -425,7 +425,7 @@ input:-webkit-autofill {
     height: 40px;
     width: 100%;
     position: fixed;
-    left: 62px;
+    left: 63px;
     bottom: -25px;
     z-index: 999;
 }
@@ -451,19 +451,19 @@ input:-webkit-autofill {
   white-space: nowrap;
 }
 .dataTableShowHideFilter .MuiTooltip-popper {
-  position: absolute !important;
+  /* position: absolute !important;
   transform: translate3d(15px, -43px, 0) !important;
   top: auto !important;
   left: 0 !important;
-  right: 0;
- 
-
+  right: 0; */
 }
+
 .dataTableShowHideCustomizeColumn .MuiTooltip-popper  {
-  position: absolute !important;
+  /* position: absolute !important;
   transform: translate3d(-79px, -43px, 0) !important;
   top: auto !important;
-  width: 158px;
+  width: 158px; */
+  width: 208px;
 }
 
 .crxDropdownValidationError {

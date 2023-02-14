@@ -42,7 +42,7 @@ const FormFieldRowValue: React.FC<infoProps> = ({ selectedFields, setSelectedFie
                         <button
                             className="removeBtn"
                             onClick={() => onRemovePermission(rowField?.id)}
-                        ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon" /></button>
+                        ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon" /></button>
 
                     </CRXColumn>
                 </CRXRows>

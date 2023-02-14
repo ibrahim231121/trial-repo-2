@@ -441,7 +441,7 @@ const User: React.FC = () => {
       label: `${t("Groups")}`,
       id: "userGroups",
       align: "left",
-      dataComponent: (e: string[]) => multitextDisplay(e, "elipcestext", "top"),
+      dataComponent: (e: string[]) => multitextDisplay(e, "elipcestext", "left"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -763,7 +763,7 @@ const User: React.FC = () => {
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
            offsetY={119}
-           stickyToolbar={137}
+           stickyToolbar={130}
            searchHeaderPosition={224}
            dragableHeaderPosition={189}
            //End here

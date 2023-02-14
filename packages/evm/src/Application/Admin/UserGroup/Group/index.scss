@@ -218,6 +218,11 @@
  &::before {
    background: transparent !important;
  }
+ .CRXDataTableCustom {
+  thead {
+    z-index: 7 !important;
+  }
+ }
 }
 
 @media only screen and (max-width: 1366px) {

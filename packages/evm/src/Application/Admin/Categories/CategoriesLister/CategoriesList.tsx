@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './categoriesList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable, CRXTooltip } from "@cb/shared";
-import CategoriesDetail from "../CategoriesDetail/CategoriesDetail_remove";
+import { CRXButton, CRXDataTable } from "@cb/shared";
 import {
   SearchObject,
   ValueString,
@@ -240,7 +239,7 @@ const CategoriesList: React.FC = () => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-          width = {100} 
+          width = {93} 
           percentage = {true}
           option={options} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
@@ -262,7 +261,7 @@ const CategoriesList: React.FC = () => {
       
       return (
         <CBXMultiCheckBoxDataFilter 
-            width = {100} 
+            width = {93} 
             percentage={true}
             option={options} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
@@ -494,8 +493,8 @@ const sortingOrder = (sort: any) => {
             showTotalSelectedText={false}
             showToolbar={true}
             showCountText={false}
-            columnVisibilityBar={false}
-            showCustomizeIcon={false}
+            columnVisibilityBar={true}
+            showCustomizeIcon={true}
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
@@ -522,7 +521,7 @@ const sortingOrder = (sort: any) => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={137}
+            stickyToolbar={130}
             searchHeaderPosition={224}
             dragableHeaderPosition={188}
             //End here
@@ -531,10 +530,7 @@ const sortingOrder = (sort: any) => {
 
           )
         }
-      {/* {
-        openModel &&
-        (<CategoriesDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)
-      } */}
+     
     </div>
     </ClickAwayListener>
   );

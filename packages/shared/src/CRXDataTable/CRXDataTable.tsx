@@ -63,14 +63,17 @@ const useStyles = makeStyles((theme) => ({
     paddingTop : "14px",
     position: "fixed",
     left: "0px",
-    bottom: "5px",
-    background: "#FFF",
+    bottom: "15px",
+    backgroundColor: "#FFF",
     borderTop: "1px solid var(--color-ccc)",
     width: "calc(100% - 26px)",
     zIndex: 2,
     '& .MuiToolbar-regular' : {
       height:"30px",
       minHeight: "30px",
+    },
+    '&:hover' : {
+      backgroundColor: "#FFF",
     }
   },
  
@@ -148,7 +151,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   };
 
   const [containers, setContainers] = useState(initialContainers);
-
+  const [expandView, setExpand] = useState<boolean>(false)
   useEffect(() => {
     let rows = stableSort(
       dataRows,
@@ -313,6 +316,23 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: true }])
   }, [selectedItems]);
 
+  const handleExpandCollapse = () => {
+    let viewChanger :any = expandView == false ? setExpand(true) : setExpand(false);
+    return viewChanger
+  };
+
+useEffect(() => {
+  let panelLeft : any = document.querySelector(".CRXLeftPanel");
+  let titleBar : any = document.querySelector(".CRXActiveBreadcrumb");
+  
+    if(expandView == true) {
+      panelLeft && (panelLeft.style.display = "none") && (titleBar.style.display = "none")
+    } else {
+      panelLeft && (panelLeft.style.display = "block") && (titleBar.style.display = "block")
+    }
+
+  },[expandView])
+
   const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage); 
   };
@@ -323,6 +343,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setCheckAllPageWise([])
+    
     //setSelectedItems([]);
   };
 
@@ -363,21 +384,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     });
   }
   
-  const [expandView, setExpand] = useState<boolean>(false)
-  const handleExpandCollapse = () => {
-      let viewChanger :any = expandView == false ? setExpand(true) : setExpand(false);
-      return viewChanger
-  };
-
-  useEffect(() => {
-    let panelLeft : any = document.querySelector(".CRXLeftPanel");
-    
-    if(expandView == true) {
-      panelLeft && (panelLeft.style.display = "none")
-    } else {
-      panelLeft && (panelLeft.style.display = "block")
-    }
-  },[expandView])
+  
+  
   return (
     <>
       {Object.values(containers).map((container: any) => {

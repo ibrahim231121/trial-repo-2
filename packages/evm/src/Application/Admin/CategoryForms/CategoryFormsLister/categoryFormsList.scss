@@ -1,7 +1,7 @@
 .category_tab_parent {
   padding: 25px 100px 0px;
   position: relative;
-  z-index: 9;
+  z-index: 6;
 
   .categoryTab_datatable {
     display: block !important;
@@ -9,6 +9,7 @@
     padding-right: 0;
     .CRXDataTableCustom {
       thead {
+        z-index : 8 !important;
         &.drag_header {
           tr {
             th {
@@ -59,6 +60,19 @@
         }
       }
     }
+  }
+  .AssetsDataGrid{
+    &::after, &::before {
+      display: none !important;
+    }
+   
+  }
+  .overlayPanel_Right {
+    display: none;
+  }
+  .dataTablePages {
+    width: calc(100% - 99px) !important;
+    left: 89px !important;
   }
 }
 .rc-menu-container {

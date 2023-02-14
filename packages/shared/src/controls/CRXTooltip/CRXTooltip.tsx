@@ -9,7 +9,8 @@ type tooltipProps = {
   iconName?: string;
   content?: any;
   arrow?: boolean;
-  id? : string
+  id? : string,
+  disablePortal? : boolean
 };
 const CRXUseStyles = makeStyles(() => ({
   arrow: {
@@ -25,11 +26,12 @@ const CRXUseStyles = makeStyles(() => ({
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.20)",
     borderRadius: "0px",
     maxWidth: "250px",
-    minWidth: "100px",
-    
+    minWidth: "130px",
+    textAlign : "center"
   },
   popper : {
-    color : "#d1d2d4"
+    color : "#d1d2d4",
+    maxWidth : "320px"
   }
 }));
 
@@ -51,9 +53,9 @@ function CRXCustomizedTooltip(props: any) {
   return (
     <Tooltip
     PopperProps={{
-      disablePortal: true,
+      disablePortal: props.disablePortal,
       popperOptions: {
-      positionFixed: true,
+      //positionFixed: true,
       }
     }}
       arrow
@@ -63,7 +65,6 @@ function CRXCustomizedTooltip(props: any) {
 
         tooltip:
           props.placement.length && classes.tooltip + " " + " crxTooltipAll",
-
           popper : classes.popper
       }}
       {...props}
@@ -78,7 +79,8 @@ const CRXTooltip = ({
   iconName,
   content,
   arrow = true,
-  id
+  id,
+  disablePortal = false
 }: tooltipProps) => {
   const clsxs = CRXIconStyle();
 
@@ -105,6 +107,7 @@ const CRXTooltip = ({
         open={tooltipIsOpen}
         onOpen={() => setTooltipIsOpen(true)}
         onClose={() => setTooltipIsOpen(false)}
+        disablePortal={disablePortal}
       >
         {tooltipData()}
       </CRXCustomizedTooltip>

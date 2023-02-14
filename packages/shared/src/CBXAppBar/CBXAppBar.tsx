@@ -25,7 +25,7 @@ const theme = createTheme({
         },
     },
     zIndex : {
-        appBar: 1201,
+        appBar: 9,
     }
 });
 

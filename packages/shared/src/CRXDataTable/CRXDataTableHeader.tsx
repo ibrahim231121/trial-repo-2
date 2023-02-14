@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TableCell from "@material-ui/core/TableCell";
 import IconButton from "@material-ui/core/IconButton";
 import Draggable from "react-draggable";
@@ -11,11 +11,11 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   orderData,
   onHandleRequestSort,
   //   onResizeRow,
-  viewName,
+  //viewName,
   showCheckBoxesCol,
   showActionCol,
   setBodyCellWidth,
-  expanViews,
+  //expanViews,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation<string>();
@@ -44,122 +44,122 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
     setResizeWidth(e);
   };
 
-  const getGridColWidth = (window : any) => {
-    let winMinus : any;
-    let colWidth : any;
-    if(showCheckBoxesCol == true && showActionCol == true && viewName === "assetListerView") {
+  // const getGridColWidth = (window : any) => {
+  //   let winMinus : any;
+  //   let colWidth : any;
+  //   if(showCheckBoxesCol == true && showActionCol == true && viewName === "assetListerView") {
 
-        winMinus = window - 253;
-    }else if (showCheckBoxesCol == false && showActionCol == true) {
+  //       winMinus = window - 253;
+  //   }else if (showCheckBoxesCol == false && showActionCol == true) {
 
-        winMinus = window;
-    }else if (showCheckBoxesCol == true && showActionCol == false) {
+  //       winMinus = window;
+  //   }else if (showCheckBoxesCol == true && showActionCol == false) {
 
-        winMinus = window - 173;
-    }else {
+  //       winMinus = window - 173;
+  //   }else {
 
-       winMinus = window - 286.5;
-    }
+  //      winMinus = window - 286.5;
+  //   }
     
    
-    if(window < 1600 && window > 1365)  {
+  //   if(window < 1600 && window > 1365)  {
       
-        headCells && headCells.map((x:any, i : any) => {
-          let assetIdMinu = (x.id != "id" || x.id != "assetId" && headCells.length > 6) ? winMinus - 141 : winMinus - 60;
+        // headCells && headCells.map((x:any, i : any) => {
+        //   let assetIdMinu = (x.id != "id" || x.id != "assetId" && headCells.length > 6) ? winMinus - 141 : winMinus - 60;
 
-            if(x.id != "id" && x.id != "assetId" && headCells.length > 6) {
-                if(i < 7 ) {
-                  colWidth = x.minWidth = Math.round(assetIdMinu / 6);
-                }
-            }else if(headCells.length > 6 ) {
-              if(i <= 6) {
-                colWidth = x.minWidth = Math.round(assetIdMinu / 5);
-              }
-            }else if(headCells.length == 6 ) {
-              if(i <= 5) {
-                const minColWidth = winMinus - 78
-                colWidth = x.minWidth = (Math.round(minColWidth / 6));
-              }
-            }else if(headCells.length == 5 ){
-              if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == false) {
+  //           if(x.id != "id" && x.id != "assetId" && headCells.length > 6) {
+  //               if(i < 7 ) {
+  //                 colWidth = x.minWidth = Math.round(assetIdMinu / 6);
+  //               }
+  //           }else if(headCells.length > 6 ) {
+  //             if(i <= 6) {
+  //               colWidth = x.minWidth = Math.round(assetIdMinu / 5);
+  //             }
+  //           }else if(headCells.length == 6 ) {
+  //             if(i <= 5) {
+  //               const minColWidth = winMinus - 78
+  //               colWidth = x.minWidth = (Math.round(minColWidth / 6));
+  //             }
+  //           }else if(headCells.length == 5 ){
+  //             if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == false) {
                 
-                const minColWidths = assetIdMinu  - 165;
-                colWidth = x.minWidth = (Math.round(minColWidths / 4));
+  //               const minColWidths = assetIdMinu  - 165;
+  //               colWidth = x.minWidth = (Math.round(minColWidths / 4));
                 
-              }else if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == true) {
+  //             }else if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == true) {
                
-                const minColWidths = assetIdMinu + 52;
-                colWidth = x.minWidth = (Math.round(minColWidths / 4));
-              }
-            }else if(headCells.length < 3){
-              if(i < 3 && i != 0) {
+  //               const minColWidths = assetIdMinu + 52;
+  //               colWidth = x.minWidth = (Math.round(minColWidths / 4));
+  //             }
+  //           }else if(headCells.length < 3){
+  //             if(i < 3 && i != 0) {
                 
-                const forOneColumn = winMinus - 20;
-                colWidth = x.minWidth = (Math.round(forOneColumn));
-              }
-            }else if(headCells.length == 4){
-              if(i < 4 && i != 0) {
+  //               const forOneColumn = winMinus - 20;
+  //               colWidth = x.minWidth = (Math.round(forOneColumn));
+  //             }
+  //           }else if(headCells.length == 4){
+  //             if(i < 4 && i != 0) {
                 
-                const forThreeColumn = assetIdMinu - 140
-                colWidth = x.minWidth = (Math.round(forThreeColumn / 3));
-              }
-            }else {
-              if(i != 0) {
-                const forTwoColumn = winMinus - 46
-                colWidth = x.minWidth = (Math.round(forTwoColumn / 2));
-              }
-            }
-          return colWidth
-      })
-    }
-  }
+  //               const forThreeColumn = assetIdMinu - 140
+  //               colWidth = x.minWidth = (Math.round(forThreeColumn / 3));
+  //             }
+  //           }else {
+  //             if(i != 0) {
+  //               const forTwoColumn = winMinus - 46
+  //               colWidth = x.minWidth = (Math.round(forTwoColumn / 2));
+  //             }
+  //           }
+  //         return colWidth
+  //     })
+  //   }
+  // }
 
-  useEffect(() => {
-    const win = window.screen.width;
-   getGridColWidth(win);
+  // useEffect(() => {
+  //   const win = window.screen.width;
+  //  getGridColWidth(win);
    
-  },[])
+  // },[])
 
-  const gridColumnWidthExpand = (window : any) => {
+  // const gridColumnWidthExpand = (window : any) => {
     
-    if(window > 1680 && expanViews === true) {
+  //   if(window > 1680 && expanViews === true) {
       
-        const dx = headCells && headCells.map((x : any, _ : any) => {
-        let calcWidth : any = 0;
-        calcWidth += parseInt(x.minWidth);
-          return calcWidth;
-        })
+  //       const dx = headCells && headCells.map((x : any, _ : any) => {
+  //       let calcWidth : any = 0;
+  //       calcWidth += parseInt(x.minWidth);
+  //         return calcWidth;
+  //       })
         
-        const totalGridWidth = dx.reduce((d : any, a:any) => d + a, 0);
+  //       const totalGridWidth = dx.reduce((d : any, a:any) => d + a, 0);
       
-        const PercentageFullwidth = totalGridWidth / 1920;
-        const Percentage = PercentageFullwidth  * 100;
+  //       const PercentageFullwidth = totalGridWidth / 1920;
+  //       const Percentage = PercentageFullwidth  * 100;
         
-        const PercentageToPixel = Percentage * window / 100;
+  //       const PercentageToPixel = Percentage * window / 100;
         
-        let colWidths : any; 
-        headCells && headCells.map((x : any, _ : any) => {
+  //       let colWidths : any; 
+  //       headCells && headCells.map((x : any, _ : any) => {
         
-        //let calcCol = parseInt(x.minWidth) / totalGridWidth * 100;
+  //       //let calcCol = parseInt(x.minWidth) / totalGridWidth * 100;
         
-        // let colPercentangeToPX = calcCol * PercentageToPixel / 100;
+  //       // let colPercentangeToPX = calcCol * PercentageToPixel / 100;
 
-        let getRemaining = window - PercentageToPixel;
-          if(PercentageToPixel < window && x.id != "id") {
-              let oneColumn = Math.round(getRemaining / headCells.length);
-              colWidths = x.minWidth = parseInt(x.minWidth) + oneColumn;
-          }else {
-             colWidths = x.minWidth = parseInt(x.minWidth);
-          }
+  //       let getRemaining = window - PercentageToPixel;
+  //         if(PercentageToPixel < window && x.id != "id") {
+  //             let oneColumn = Math.round(getRemaining / headCells.length);
+  //             colWidths = x.minWidth = parseInt(x.minWidth) + oneColumn;
+  //         }else {
+  //            colWidths = x.minWidth = parseInt(x.minWidth);
+  //         }
           
       
-          return colWidths;
-        })
-    }
-  }
-  useEffect(() => {
-     gridColumnWidthExpand(window.screen.width) 
-  }, [expanViews])
+  //         return colWidths;
+  //       })
+  //   }
+  // }
+  // useEffect(() => {
+  //    gridColumnWidthExpand(window.screen.width) 
+  // }, [expanViews])
 
   return (
     <>

@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import {useTranslation} from 'react-i18next'; 
 import { DataTableClearFilterProps } from "./CRXDataTableTypes"
 
-const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, filterClose, onClearAll}) => {
+const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, filterClose, onClearAll, expanView}) => {
 
   const {t} = useTranslation<string>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined | null>(null)
@@ -33,7 +33,8 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAnchorEl(e.currentTarget)}
                 disableRipple={true}
             >
-                <CRXTooltip iconName="fas fa-filter" className='crxTooltipFilter' placement="top-start" arrow={false} title="filter"></CRXTooltip>
+                <CRXTooltip iconName="fas fa-filter" className='crxTooltipFilter' 
+                placement={expanView == true ? "left" : "top"} arrow={false} title="filter"></CRXTooltip>
             </IconButton>
             {/* <ClickAwayListener onClickAway={() => setAnchorEl(filterOuter)}> */}
             <Menu

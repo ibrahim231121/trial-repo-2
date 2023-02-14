@@ -2,10 +2,8 @@
   padding-top: 58px !important;
   .create_category_form_area {
     .formDetailInfo {
-      // padding-bottom: 25px;
-      //padding-top: 12px;
       position: relative;
-      top: 58px;
+      top: 55px;
       width: calc(100% - 535px);
       margin: 0 auto;
       z-index: 9;
@@ -75,7 +73,7 @@
       padding-bottom: 25px;
       padding-top: 25px;
       position: sticky;
-      top: 128px;
+      top: 111px;
       background-color: #fff;
       z-index: 8;
 
@@ -85,9 +83,8 @@
     }
     .create_category_Content {
       position: sticky;
-      top: 208px;
-    //   width: 90.2%;
-    // margin: auto;
+      top: 191px;
+      z-index: 9;
       .create_category_rows {
         .create_category_column {
           border-right: 1px solid #d1d2d4;
@@ -96,7 +93,7 @@
           text-align: center;
           place-items: center;
           justify-content: center;
-          height: 50px;
+          height: 36px;
           font-size: 14px;
           font-family: var(--base-font-family);
         }

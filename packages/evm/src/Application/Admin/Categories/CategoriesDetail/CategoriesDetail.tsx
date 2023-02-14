@@ -3,7 +3,7 @@ import { CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField, CRXToas
 import { useTranslation } from "react-i18next";
 import './categoriesDetail.scss';
 import { useDispatch, useSelector } from "react-redux";
-import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CategoryModel, DropdownModel, RequestCategoryModel } from "../../../../utils/Api/models/CategoryModels";
 import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
@@ -234,6 +234,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       dispatch(getAllRetentionPolicies());
       dispatch(getAllUploadPolicies());
       dispatch(getAllCategoryForms());
+      RemoveSidePanelClass()
     }, []);
   
     const getBase64 = async (payload: CategoryModel) => {

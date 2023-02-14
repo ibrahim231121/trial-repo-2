@@ -69,6 +69,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
   onReorder,
   onChange,
   onHeadCellChange,
+  expanView
 }) => {
   const { t } = useTranslation<string>();
   const chkStyle = checkboxStyle();
@@ -198,7 +199,8 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
           onClick={customizeColumnOpen}
           disableRipple={true}
         >
-          <CRXTooltip iconName='fas fa-columns' title="Customize Columns" arrow={false} placement="top-start"></CRXTooltip>
+          <CRXTooltip iconName='fas fa-columns' title="Customize Columns" arrow={false} 
+          placement={expanView == true ? "left" : "left-end"}></CRXTooltip>
           {/* <i className="fas fa-columns"></i> */}
         </IconButton>
       <Popper

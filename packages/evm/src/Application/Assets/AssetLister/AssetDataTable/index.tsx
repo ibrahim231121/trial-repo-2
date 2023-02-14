@@ -754,9 +754,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={239}
+          offsetY={1}
           stickyToolbar={117}
-          searchHeaderPosition={201}
+          searchHeaderPosition={199}
           dragableHeaderPosition={166}
           //End here
           page={page}

@@ -135,7 +135,6 @@
           vertical-align: middle;
           line-height: 21px;
           text-indent: 0px;
-          height: inherit;
           position: relative;
           &:last-child {
             border-right: 0px solid var(--color-ccc);
@@ -1070,23 +1069,27 @@ td.CellCheckBox {
   position: absolute;
   left: 0;
   .stickyPos {
-      top: 68px !important;
+      top: 57px !important;
       position: fixed !important;
       left: 0px;
       width: 100% !important;
       padding-left: 25px;
       border-bottom: 1px solid #dedede;
-  
+      z-index: 1200;
+      height: 69px;
           &.crxClearfilter{
               &::before {
                   display : none;
               }
           }
-      
+      .toolbar-button {
+        position: relative;
+        top: 11px;
+      }
   }
   .AssetsDataGrid {
       border: 0px;
-      padding-bottom: 74px !important;
+      padding-bottom: 87px !important;
       padding-right: 0px !important;
       .CRXDataTableCustom{
           .drag_header {

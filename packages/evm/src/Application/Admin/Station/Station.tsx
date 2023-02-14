@@ -377,7 +377,7 @@ const Station: React.FC = () => {
           setSortOrder={(sort:any) => sortingOrder(sort)}
           //Please dont miss this block.
           offsetY={50}
-          stickyToolbar={138}
+          stickyToolbar={130}
           searchHeaderPosition={223}
           dragableHeaderPosition={188}
           //End here

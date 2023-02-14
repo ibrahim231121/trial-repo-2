@@ -91,7 +91,7 @@ const CategoryFormsAndFields = () => {
         : ""}
       <CRXToaster ref={groupMsgRef} />
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130} />
       <CrxTabPanel value={value} index={0}>
         <div
           className={`${showMessageError} ${alertType == "inline" ? "" : "errorGroupInfo"

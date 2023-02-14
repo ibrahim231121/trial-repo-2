@@ -50,16 +50,16 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
         
         handle = setTimeout(callback, timeout || 100); 
         
-        if(offsetY && element.pageYOffset > offsetY ) {
+        if(offsetY && element.pageYOffset >= offsetY ) {
          
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 117px)";
         }
-        else if (offsetY && element.pageYOffset < offsetY && element.pageXOffset > 1) {
+        else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1) {
           
           ToolBarRefs.current.style.position = "fixed",
-          // footer && (footer.style.position = "fixed") 
-          ToolBarRefs.current.style.width = "calc(100%)";
+          ToolBarRefs.current.style.width = "calc(100% - 117px)";
+         
         }
 
         
@@ -107,17 +107,18 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           aria-controls="viewControle"
           className="viewControleButton"
           aria-haspopup="true"
-          onClick={toggleExpanView}
+          onClick={() => toggleExpanView()}
           disableRipple={true}
       >
-          <CRXTooltip iconName={expanView == true ? "fa-solid fa-down-left-and-up-right-to-center " : "fa-solid fa-up-right-and-down-left-from-center"} className='crxTooltipFilter' placement="top-left" arrow={false} title={expanView == true ? "Collapse view" : "Expand view"}></CRXTooltip>
+          <CRXTooltip iconName={expanView == true ? "fa-solid fa-down-left-and-up-right-to-center " : "fa-solid fa-up-right-and-down-left-from-center"} className='crxTooltipFilter' placement={expanView == true ? "left" : "top"} arrow={false} title={expanView == true ? "Collapse view" : "Expand view"}></CRXTooltip>
       </IconButton>
       </div> : ""
       }
       <DataTableClearFilter
         columnVisibilityBar={columnVisibilityBar}
         filterClose={showCustomize}
-        onClearAll={() => onClearAll()} />
+        onClearAll={() => onClearAll()}
+        expanView={expanView} />
        {(showCustomizeIcon || showCountText === undefined) &&
         <DataTableCustomizeColumns
           id={id}
@@ -128,6 +129,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           onChange={onChange}
           onHeadCellChange={onHeadCellChange}
           showCustomizeIcon={showCustomizeIcon}
+          expanView={expanView}
         />
       }
 

@@ -25,7 +25,7 @@ const CRXUseStyles = makeStyles(() => ({
       padding:"16px",
       boxShadow:"20% 0 5px #000000",
       borderRadius : "0px",
-      maxWidth:"250px",
+      maxWidth:"350px",
     },
 
 }));
@@ -42,6 +42,7 @@ function CRXCustomizedTooltip(props : any, {arrow} : tooltipProps) {
   
     return <Tooltip arrow = {arrow}
     classes={{
+        
         arrow :  classes.arrow,
         tooltip :  classes.tooltip
     }} 

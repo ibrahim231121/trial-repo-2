@@ -248,23 +248,23 @@ else {
   }, [responseError]);
 
   React.useEffect(() => {
-    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
-    const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
-    const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
-    const altRef = alertRef.current;
+    // const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
+    // const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
+    // const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
+    // const altRef = alertRef.current;
 
-    if (alert === false && altRef === null) {
+    // if (alert === false && altRef === null) {
 
-      alertClx[0].style.display = "none";
-      crxIndicate[0].style.top = "42px";
-      modalEditCrx[0].style.paddingTop = "42px";
+    //   alertClx[0].style.display = "none";
+    //   crxIndicate[0].style.top = "42px";
+    //   modalEditCrx[0].style.paddingTop = "42px";
       
-    } else {
-      alertClx[0].setAttribute("style", "margin-top:42px;margin-bottom:42px");
-      crxIndicate[0].style.top = "83px";
-      modalEditCrx[0].style.paddingTop = "2px";
+    // } else {
+    //   alertClx[0].setAttribute("style", "margin-top:42px;margin-bottom:42px");
+    //   crxIndicate[0].style.top = "83px";
+    //   modalEditCrx[0].style.paddingTop = "2px";
       
-    }
+    // }
   }, [alert]);
 
   var current_date;

@@ -450,7 +450,7 @@ const RetentionPoliciesList: React.FC = () => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={137}
+            stickyToolbar={130}
             searchHeaderPosition={224}
             dragableHeaderPosition={189}
           //End here
