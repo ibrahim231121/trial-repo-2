@@ -212,13 +212,13 @@ const DefaultUnitTemplate: React.FC = () => {
               });
         })
             .catch((error: any) => {
-                toasterRef.current.showToastMsg({
+                toasterRef.current.showToaster({
                     message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
-                    variant: "error",
+                    variant: 'error',
                     duration: 5000,
                     clearButtton: true
                   });
-                console.error(error.response.data);
+                console.error(error.message);
             });
     }
 

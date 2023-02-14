@@ -108,7 +108,7 @@ export const resources = {
         "Yes":"Yes",
         "No,_do_not_close":"No, do not close",
         "You_have_saved_the_asset_categorization":"Success: You have saved the asset categorization",
-        "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator":"Error: We're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator",
+        "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator":"We're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator",
         "Indicates_required_field":"Indicates required field",
         "Please_enter_the_reason_for_editing_the_form.":"Please enter the reason for editing the form.",
         "Category_form_edit_reason":"Category form edit reason",
