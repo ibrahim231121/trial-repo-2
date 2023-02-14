@@ -17,11 +17,16 @@ let GetAssetsByState = (status: string, decoded: IDecoded) => {
 };
 
 let GetAssetsByUserName = (userName: string) => {
+    let trimmedUserName: string;
+    if (userName.includes('@'))
+        trimmedUserName = userName.split('@')[0];
+    else
+        trimmedUserName = userName;
     return {
         bool: {
             must: [
                 {
-                    match: { "asset.owners": userName }
+                    match: { "asset.owners": trimmedUserName }
                 }
             ]
         }
