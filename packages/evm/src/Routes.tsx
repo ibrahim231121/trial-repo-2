@@ -46,6 +46,9 @@ import MicroservicesBuildVersion from "./Application/MicroservicesBV";
 import CasesList from "./Application/Cases/CasesLister/CasesList";
 import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
 import ImageViewer from "./components/MediaPlayer/ImageViewer/ImageViewer";
+import CategoriesDetail from "./Application/Admin/Categories/CategoriesDetail/CategoriesDetail";
+import FormFieldDetailPage from "./Application/Admin/CategoryForms/FormFieldsLister/FormFieldsDetail";
+import RetentionPoliciesDetailPage from "./Application/Admin/RetentionPolicies/RetentionPoliciesDetail/RetentionPoliciesDetail";
 
 
 
@@ -150,7 +153,20 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createCase)[0].url}  exact={true} component={CaseDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editCase)[0].url}  exact={true} component={CaseDetail} />
 
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createCategory)[0].url} exact={true} component={CategoriesDetail} />
+
                 
+
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.categoryEdit)[0].url} exact={true} component={CategoriesDetail} />
+
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createRetentionPolicies)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
+
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editRetentionPolicy)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
+
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createFormField)[0].url} exact={true} component={FormFieldDetailPage} />
+
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url} exact={true} component={FormFieldDetailPage} />
+
                 <Route path="/notfound" component={ErrorPage} />
                 <Route path="*" component={ErrorPage} />
                

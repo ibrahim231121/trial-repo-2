@@ -15,14 +15,11 @@
     margin-left: 16px;
   }
 }
-
 .CrxRetentionPoliciesTable .dataTableColumnShoHide {
   display: none;
 }
-
 .settingsContent {
   margin-top: 30px;
-
   .text-field .gridFilterTextBox {
     margin: 25px 0px;
     display: flex;
@@ -54,7 +51,6 @@
     margin-top: 50px;
     align-items: flex-end;
   }
-
   .days-hours .gridFilterTextBox {
     display: flex !important;
     align-items: inherit;
@@ -87,7 +83,6 @@
     color: var(--color-333333);
     padding-top: 13px;
     font-family: var(--base-font-family);
-
     &.__crx__Please__confirm__modal {
       margin-bottom: 40px;
       .__crx__please_confirm_ {
@@ -103,153 +98,54 @@
     }
   }
 }
+.retention-policies {
+  .tp15 {
+    position: fixed;
+    top: 155px;
+    height: 35px;
+    background-color: #ffffff;
 
+    width: calc(100% - 237px);
+    border-bottom: 1px solid #dedede;
+    margin-left: 62px;
+    font-size: 14px;
+    font-style: italic;
+    z-index: 1;
+    b {
+      line-height: 17px;
+      font-size: 20px;
+      margin-right: 9px;
+      font-weight: var(--Font-style-bold);
+      margin-top: 7px;
+      position: relative;
+      top: -5px;
+    }
+    &::before {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 79%;
+      background: white;
+      top: -20px;
+      right: 0;
+    }
+  }
 .CRXRetentionPolicies {
-  &.crx-model {
-    .MuiDialog-scrollPaper {
-      .MuiDialog-paperScrollPaper {
-        min-width: 600px;
-        .CRXContent_user {
-          &::-webkit-scrollbar-button:vertical:decrement {
-          height: 63px;
-          background-position: 0px 47px !important;
-          }
-          .CRXSettingContent {
-            &.settingsContent {
-              margin-top: 49px;
+  width: 600px;
+  margin: auto;
 
-              .gridFilterTextBox {
-                padding-right: 1px;
-                padding-left: 0;
-                .text-field {
-                  .gridFilterTextBox {
-                    h6 {
-                      flex-grow: 0;
-                      width: 144px;
-                      .requiredLable {
-                        .inputLabelReq {
-                          left: 9px;
-                          font-size: 20px;
-                          font-weight: bold;
-                          color: #333333 !important;
-                        }
-                      }
-                      .inputLabelNoReq {
-                        font-size: 14px;
-                      }
-                    }
-                  }
-                  &:last-child {
-                    .gridFilterTextBox {
-                      margin-bottom: 18px;
-                      textarea {
-                        width: 100%;
-                        border: none;
-                        min-height: 57px;
-                        max-height: 57px;
-                        resize: none;
-                        padding: 12px 16px;
-                        text-indent: 0;
-                        overflow: auto !important;
-                        &::placeholder {
-                          color: var(--color-333333);
-                          font-size: 14px;
-                          font-family: var(--Arial-font-family);
-                        }
-                        &::-webkit-scrollbar {
-                          width: 1em;
-                          height: 15px;
-                        }
-
-                        &::-webkit-scrollbar-track {
-                          border-radius: 0px;
-                          margin-left: 0px;
-                          border-right: 0px;
-                        }
-
-                        &::-webkit-scrollbar-thumb {
-                          border-radius: 0px;
-                          background-color: var(--color-c8c8c8);
-                          outline: 0px solid var(--color-slategrey);
-                          border: 2px solid var(--color-black-3);
-                          background-clip: content-box;
-                        }
-
-                        &::-webkit-scrollbar-track-piece {
-                          background-color: var(--color-f1f1f1);
-                          border: 1px solid var(--color-d1d2d4) !important;
-                          border-right: 0px;
-                          border-left: 0px;
-                        }
-
-                        &::-webkit-scrollbar-button:vertical:decrement {
-                          width: 30px;
-                          height: 15px;
-                          border: 0px solid var(--color-transparent);
-                          background: url("../../../../Assets/Images/scrollBarVerTop.jpg")
-                            no-repeat center center;
-                          background-size: contain;
-                          background-clip: border-box;
-                          position: relative;
-                          background-position: 0 0 !important;
-                          top: 0 !important;
-                        }
-
-                        &::-webkit-scrollbar-button:vertical:increment {
-                          width: 30px;
-                          height: 15px;
-                          border: 1px solid var(--color-d1d2d4);
-
-                          background: url("../../../../Assets/Images/scrollVerBottom.png")
-                            no-repeat center top var(--color-f1f1f1);
-                          background-size: contain;
-
-                          background-clip: border-box;
-                          position: relative;
-                          background-position: 0 0 !important;
-                          left: 0 !important;
-                        }
-
-                        &::-webkit-scrollbar:vertical {
-                          display: block !important;
-                        }
-                        &::-webkit-scrollbar:horizontal {
-                          display: none !important;
-                        }
-                      }
-                    }
-                  }
-                }
-                &.retentionPolicyError {
-                  .text-field {
-                    .gridFilterTextBox {
-                      h6 {
-                        .requiredLable {
-                          .inputLabelReq {
-                            color: var(--color-aa1d1d) !important;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                .errors {
-                  input {
-                    outline: 2px solid var(--color-aa1d1d);
-                    border: none;
-                  }
-                  & ~ {
-                    .errorStateContent {
-                      margin-bottom: 0;
-                    }
-                  }
-                }
-              }
-            }
-          }
-          .retention-type {
+  .CRXSettingContent {
+    &.settingsContent {
+      margin-top: 76px;
+      .gridFilterTextBox {
+        padding-right: 1px;
+        padding-left: 0;
+        .text-field {
+          .gridFilterTextBox {
             h6 {
-              width: 143px;
+              flex-grow: 0;
+              width: 144px;
+              width: 130px;
               .requiredLable {
                 .inputLabelReq {
                   left: 9px;
@@ -258,130 +154,311 @@
                   color: #333333 !important;
                 }
               }
-            }
-            margin-top: 26px;
-            .retentionPoliciesField {
-              display: flex;
-
-              margin-top: 0;
-              .number_retention_field_ui {
-                display: flex;
-                .number_field_textBox {
-                  h6 {
-                    width: 143px;
-                  }
-                }
-                .number_field_textBox {
-                  display: flex;
-                  margin-top: 0;
-                  .Crx_defaultText {
-                    max-width: 150px;
-                    input {
-                      width: 100%;
-                      font-size: 14px;
-                      &.errors {
-                        outline: 2px solid var(--color-aa1d1d);
-                        border: none;
-                      }
-                      &:disabled {
-                        background-color: var(--color-e5e5e5);
-                        border: none;
-                        color: var(--color-979797);
-                      }
-                      &::placeholder {
-                         color: var(--color-74767c);
-                      }
-                    }
-                  }
-                }
-                .number_retention_label_gb {
-                  margin-left: 10px;
-                  margin-top: 7px;
-                }
-                .dayRetentionLabel {
-                  margin: 7px 30px 7px 10px;
-                }
+              .inputLabelNoReq {
+                font-size: 14px;
               }
-              .days_retention_field_ui {
-                display: flex;
-
-                .number_field_textBox {
-                  margin-top: 0;
-                  h6 {
-                    display: none;
-                  }
-                  .number_field_child {
-                    input {
-                      min-width: 135px;
-                      &:disabled {
-                        background-color: var(--color-e5e5e5);
-                        border: none;
-                        color: var(--color-979797);
-                      }
-                      &::placeholder {
-                         color: var(--color-74767c);
-                      }
-                    }
-                  }
-                }
-                label {
-                  margin: 7px 11px;
-                }
-              }
-              .indefinite_checkBox_ui {
-                margin-left: 0;
-                label {
-                  margin-left: 0;
-                  span {
-                    margin-left: 9px;
-                  }
-                }
-              }
-            }
-            &.radioRententionPolicies {
-              margin-top: 18px;
-              margin-bottom: -3px;
-              h6 {
-                width: 145px;
-              }
-              fieldset {
-                margin-right: 17px;
-                .crxEditRadioBtn {
-                  span {
-                    &:hover {
-                      background: transparent;
-                    }
-                  }
-                }
-              }
-            }
-            &.retentionTypeCheck {
-              margin-top: 16px;
-              margin-bottom: 69px;
-            }
-            &.retentionTypeCheckGb {
-              margin-bottom: 72px;
             }
           }
-          .retentionPolicyError {
-            h6 {
-              .requiredLable {
-                .inputLabelReq {
-                  color: var(--color-aa1d1d) !important;
+          &:last-child {
+            .gridFilterTextBox {
+              margin-bottom: 18px;
+              textarea {
+                width: 100%;
+                border: none;
+                min-height: 57px;
+                max-height: 57px;
+                resize: none;
+                padding: 12px 16px;
+                text-indent: 0;
+                overflow: auto !important;
+                &::placeholder {
+                  color: var(--color-333333);
+                  font-size: 14px;
+                  font-family: var(--Arial-font-family);
                 }
-              }
-            }
-            &.retentionTimeError {
-              .number_field_child  {
-                max-width: 174px;
+                &::-webkit-scrollbar {
+                  width: 1em;
+                  height: 15px;
+                }
+                &::-webkit-scrollbar-track {
+                  border-radius: 0px;
+                  margin-left: 0px;
+                  border-right: 0px;
+                }
+                &::-webkit-scrollbar-thumb {
+                  border-radius: 0px;
+                  background-color: var(--color-c8c8c8);
+                  outline: 0px solid var(--color-slategrey);
+                  border: 2px solid var(--color-black-3);
+                  background-clip: content-box;
+                }
+                &::-webkit-scrollbar-track-piece {
+                  background-color: var(--color-f1f1f1);
+                  border: 1px solid var(--color-d1d2d4) !important;
+                  border-right: 0px;
+                  border-left: 0px;
+                }
+                &::-webkit-scrollbar-button:vertical:decrement {
+                  width: 30px;
+                  height: 15px;
+                  border: 0px solid var(--color-transparent);
+                  background: url("../../../../Assets/Images/scrollBarVerTop.jpg")
+                    no-repeat center center;
+                  background-size: contain;
+                  background-clip: border-box;
+                  position: relative;
+                  background-position: 0 0 !important;
+                  top: 0 !important;
+                }
+                &::-webkit-scrollbar-button:vertical:increment {
+                  width: 30px;
+                  height: 15px;
+                  border: 1px solid var(--color-d1d2d4);
+                  background: url("../../../../Assets/Images/scrollVerBottom.png")
+                    no-repeat center top var(--color-f1f1f1);
+                  background-size: contain;
+                  background-clip: border-box;
+                  position: relative;
+                  background-position: 0 0 !important;
+                  left: 0 !important;
+                }
+                &::-webkit-scrollbar:vertical {
+                  display: block !important;
+                }
+                &::-webkit-scrollbar:horizontal {
+                  display: none !important;
+                }
               }
             }
           }
         }
-        .optionalSticky {
-          height: 47px;
+        &.retentionPolicyError {
+          .text-field {
+            .gridFilterTextBox {
+              h6 {
+                .requiredLable {
+                  .inputLabelReq {
+                    color: var(--color-aa1d1d) !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .errors {
+          input {
+            outline: 2px solid var(--color-aa1d1d);
+            border: none;
+          }
+          & ~ {
+            .errorStateContent {
+              margin-bottom: 0;
+            }
+          }
         }
       }
     }
   }
+  .retention-type {
+    h6 {
+      width: 143px;
+      width: 117px;
+      .requiredLable {
+        .inputLabelReq {
+          left: 9px;
+          font-size: 20px;
+          font-weight: bold;
+          color: #333333 !important;
+        }
+      }
+    }
+    margin-top: 26px;
+    margin-top: 7px;
+    margin-left: 63px;
+    .retentionPoliciesField {
+      display: flex;
+      margin-top: 0;
+      margin-bottom: 17px;
+      .number_retention_field_ui {
+        display: flex;
+
+        .number_field_textBox {
+          display: flex;
+          margin-top: 0;
+          .Crx_defaultText {
+            input {
+              width: 100%;
+              font-size: 14px;
+              min-width: 94px;
+              max-width: 94px;
+              &.errors {
+                outline: 2px solid var(--color-aa1d1d);
+                border: none;
+              }
+              &:disabled {
+                background-color: var(--color-e5e5e5);
+                border: none;
+                color: var(--color-979797);
+              }
+              &::placeholder {
+                color: var(--color-74767c);
+              }
+            }
+          }
+        }
+        .number_retention_label_gb {
+          margin-left: 10px;
+          margin-top: 7px;
+          color: var(--color-333333);
+          font-size: 14px;
+        }
+        .dayRetentionLabel {
+          margin: 7px 30px 7px 10px;
+          color: var(--color-333333);
+          font-size: 14px;
+        }
+      }
+      .days_retention_field_ui {
+        display: flex;
+        .number_field_textBox {
+          margin-top: 0;
+          h6 {
+            display: none;
+          }
+          .number_field_child {
+            input {
+              min-width: 135px;
+              min-width: 60px;
+              max-width: 60px;
+              &:disabled {
+                background-color: var(--color-e5e5e5);
+                border: none;
+                color: var(--color-979797);
+              }
+              &::placeholder {
+                color: var(--color-74767c);
+              }
+            }
+          }
+        }
+        label {
+          margin: 7px 0 0 11px;
+          color: var(--color-333333);
+          font-size: 14px;
+        }
+      }
+      .indefinite_checkBox_ui {
+        margin-left: 0;
+        label {
+          margin-left: 0;
+          margin-left: 5px;
+          span {
+            margin-left: 9px;
+            display: none;
+          }
+        }
+        span {
+          margin-left: 0;
+          padding-left: 0;
+        }
+      }
+      .number_retention_field_ui {
+        h6 {
+          width: 144px;
+        }
+      }
+    }
+    &.radioRententionPolicies {
+      margin-top: 18px;
+      margin-left: 0;
+      margin-bottom: -3px;
+      display: flex;
+      place-content: baseline;
+      h6 {
+        width: 117px;
+        display: flex;
+        flex-direction: row;
+      }
+      .rententionPoliciesField {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 70px;
+      }
+      fieldset {
+        margin-right: 17px;
+        width: 132px;
+        &:first-child {
+          margin-bottom: 17px;
+        }
+        .crxEditRadioBtn {
+          span {
+            &:hover {
+              background: transparent;
+            }
+          }
+        }
+        .crx-radio-btn {
+          label {
+            margin-left: 3px;
+          }
+        }
+      }
+    }
+    &.retentionTypeCheck {
+      margin-top: 0;
+      margin-bottom: 69px;
+      margin-bottom: -2px;
+      margin-left: 23px;
+      display: flex;
+      place-content: center;
+    }
+    &.retentionTypeCheckGb {
+      margin-bottom: 72px;
+      margin-bottom: -12px;
+      margin-top: 24px;
+      .retentionPoliciesField {
+        .number_retention_field_ui {
+          .number_field_textBox {
+            h6 {
+              width: 143px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .retentionPolicyError {
+    h6 {
+      .requiredLable {
+        .inputLabelReq {
+          color: var(--color-aa1d1d) !important;
+        }
+      }
+    }
+    &.retentionTimeError {
+    
+        .number_field_child {
+          max-width: 94px;
+          min-width: 94px;
+        }
+      
+    }
+  }
+  .optionalSticky {
+    height: 47px;
+  }
+
+}
+.crxFooterEditFormBtn {
+  place-content: space-between;
+.__crxFooterBtnUser__ {
+  &:first-child {
+    button {
+      &:first-child {
+        margin-right: 31px;
+      }
+    }
+  }
+  }
+}
 }

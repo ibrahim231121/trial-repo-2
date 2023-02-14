@@ -57,12 +57,13 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
+        portal={true}
         position="auto"
-        offsetX={25}
-        offsetY={12}
-        className="menuCss"
+        offsetX={-25}
+        offsetY={0}
+        className="menuCss categoryListerAction"
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
@@ -73,7 +74,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         {selectedItems && selectedItems?.length <= 1 ? (
           <MenuItem onClick={editFormFields}>
             <Restricted moduleId={0}>
-              <div className="crx-meu-content   crx-spac"  >
+              <div className="crx-meu-content groupingMenu  crx-spac"  >
                 <div className="crx-menu-icon">
                   <i className="far fa-pencil"></i>
                 </div>

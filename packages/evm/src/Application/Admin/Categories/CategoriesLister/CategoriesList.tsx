@@ -6,7 +6,7 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import './categoriesList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable, CRXTooltip } from "@cb/shared";
-import CategoriesDetail from "../CategoriesDetail/CategoriesDetail";
+import CategoriesDetail from "../CategoriesDetail/CategoriesDetail_remove";
 import {
   SearchObject,
   ValueString,
@@ -30,6 +30,9 @@ import { renderCheckMultiselect } from "../../../Assets/AssetLister/AssetDataTab
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import CategoriesTemplateActionMenu from "./CategoriesTemplateActionMenu";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
+import Restricted from "../../../../ApplicationPermission/Restricted";
 
 type CategoriesTemplate = {
   id: number;
@@ -103,6 +106,12 @@ const CategoriesList: React.FC = () => {
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
     
   }, []);
+
+  const history = useHistory();
+
+  const CreateCategories = () => {
+    history.push(urlList.filter((item:any) => item.name === urlNames.createCategory)[0].url);
+  }
 
   const setCategoriesData = () => {
     let CategoriesTemplateRows: CategoriesTemplate[] = [];
@@ -268,6 +277,11 @@ const CategoriesList: React.FC = () => {
     }
   };
 
+  const editCategolries = (categoryId: number) => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.categoryEdit)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + categoryId, t("Edit_Category"));
+  };
+
   const NonField = () => {
 
   }
@@ -290,7 +304,7 @@ const CategoriesList: React.FC = () => {
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => openEditForm(id)} className={"dataTableText txtStyle"}>{e}</div>
+        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editCategolries(id)} className={"dataTableText txtStyle"}>{e}</div>
       },
       sort: true,
       searchFilter: true,
@@ -467,11 +481,14 @@ const sortingOrder = (sort: any) => {
             toolBarButton={
               <>
 
-
-                <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
+ {/* <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
+                  {t("Create_Category")}
+                </CRXButton>  */}
+           <Restricted moduleId={0}>
+                <CRXButton color="primary" className="primary CategoriesBtn" onClick={CreateCategories}>
                   {t("Create_Category")}
                 </CRXButton>
-
+          </Restricted>
               </>
             }
             showTotalSelectedText={false}
@@ -514,10 +531,10 @@ const sortingOrder = (sort: any) => {
 
           )
         }
-      {
+      {/* {
         openModel &&
         (<CategoriesDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)
-      }
+      } */}
     </div>
     </ClickAwayListener>
   );

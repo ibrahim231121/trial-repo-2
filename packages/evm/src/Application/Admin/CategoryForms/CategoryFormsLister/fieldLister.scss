@@ -1,10 +1,13 @@
 .add_exisiting_form_modal {
+        margin-bottom: 70px;
     .MuiDialog-scrollPaper{
         .MuiDialog-paperScrollPaper{
             min-width: 1279px;
             .CRXContent{
                 padding-bottom: 0px;
+                padding-top: 32px;
                 .add_ex_datatable {
+                    margin-bottom: 65px;
                     .overlayPanel_Right, .overlayPanel, .overlayPanel_bottom{
                         display: none;
                     }
@@ -54,22 +57,37 @@
                         }
                     }
                 }
+                .modalFooter {
+                    z-index: 3;
+                }
+                &::-webkit-scrollbar-button:vertical:decrement { 
+                    height: 88px; 
+                    background-position: 0px 72px !important;
+                }
             }
             .modelTitle {
-                padding-bottom: 26px;
+                padding-bottom: 0;
             }
         }
     }
-    .add_exisiting_field_modal_footer {
-        position: sticky;
-        bottom: 0;
-        background: #fff;
-        z-index: 999;
-        padding-bottom: 26px;
-        padding-top: 26px;
-        border-top: 1px solid #d1d3d4;
-        .save_button_addEx {
-            margin-right: 30px;
+.stickyPos  {
+    padding-bottom: 27px;
+    .dataTableShowHideFilter {
+        .MuiTooltip-popper {
+            transform: translate3d(-18px, -43px, 0) !important;
         }
     }
+}
+.MuiDialog-paperScrollPaper {
+    &::before {
+        content: "";
+        position: absolute;
+        top: 40px;
+        background: white;
+        width: 100%;
+        height: 30px;
+        z-index: 3;
+    }
+}
+
 }

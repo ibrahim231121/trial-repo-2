@@ -9,8 +9,8 @@ import Dialogbox from '../../UnitConfiguration/ConfigurationTemplates/Dialogbox'
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import { SetupConfigurationAgent } from '../../../../utils/Api/ApiAgent';
-
-
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   selectedItems?: any;
@@ -24,7 +24,7 @@ type Props = {
 
 const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
   const { t } = useTranslation<string>();
-
+  const history = useHistory()
   const [nondefault, setnondefault] = useState(false);
   const [policyName, setPolicyName] = useState<any[]>([]);
 
@@ -79,8 +79,15 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
   }
 
   const openCreateRetentionPoliciesForm = () => {
-    onClickOpenModel(true, Number(row?.id), row?.name);
+    //onClickOpenModel(true, Number(row?.id), row?.name);
 
+  };
+
+  const EditRetentionPolicy = () => {
+   
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editRetentionPolicy)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id);
+    
   };
 
 
@@ -111,7 +118,7 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
     
     >
         {selectedItems.length <=1 ? (
-      <MenuItem onClick={openCreateRetentionPoliciesForm}>
+      <MenuItem onClick={() => EditRetentionPolicy()}>
       <Restricted moduleId={0}>
           <div className="crx-meu-content groupingMenu  crx-spac"  >
             <div className="crx-menu-icon">

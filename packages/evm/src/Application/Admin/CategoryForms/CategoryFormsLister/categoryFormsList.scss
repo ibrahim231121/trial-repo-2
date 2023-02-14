@@ -8,10 +8,10 @@
     padding-bottom: 0px;
     padding-right: 0;
     .CRXDataTableCustom {
-      thead{
-        &.drag_header{
-          tr{
-            th{
+      thead {
+        &.drag_header {
+          tr {
+            th {
               &:first-child {
                 left: 0px !important;
               }
@@ -21,9 +21,9 @@
             }
           }
         }
-        &.searchable_header{
-          tr{
-            th{
+        &.searchable_header {
+          tr {
+            th {
               &:first-child {
                 left: 0px !important;
               }
@@ -34,16 +34,43 @@
           }
         }
       }
-      tbody{
-        &.table_body_{
-          tr{
-            td{
+      tbody {
+        &.table_body_ {
+          tr {
+            td {
               &:first-child {
                 left: 0px !important;
               }
               &:nth-child(2) {
                 left: 60px !important;
               }
+            }
+            &.Mui-selected {
+              .dataTableText {
+                color: var(--color-ff6e20) !important;
+              }
+            }
+            &:hover {
+              .dataTableText {
+                color: var(--color-ff6e20) !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.rc-menu-container {
+  ul {
+    &.rc-menu {
+      &.categoryListerAction {
+        width: 200px;
+        .rc-menu__item {
+          .crx-spac {
+            width: 100%;
+            .crx-menu-list {
+              width: 100%;
             }
           }
         }

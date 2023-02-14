@@ -11,6 +11,8 @@ import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
 import { FormFieldsTemplate } from "../TypeConstant/types";
 import { useDispatch } from "react-redux";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   selectedItems?: FormFieldsTemplate[];
@@ -22,9 +24,13 @@ type Props = {
 const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, onClickOpenModel, pageGrid }) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const editFormFields = () => {
-    onClickOpenModel(true, Number(row?.id), t("Edit_Form_Fields"));
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Form_Fields"));
   };
+
 
   const deleteFormFields = () => {
     let formFieldIds: string = row?.id;
@@ -53,7 +59,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         portal={true}
         offsetX={-28}
         offsetY={-5}
-        className="menuCss"
+        className="menuCss formFieldListerAction"
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
@@ -63,7 +69,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         {selectedItems && selectedItems?.length <= 1 ? (
           <MenuItem onClick={editFormFields}>
             <Restricted moduleId={0}>
-              <div className="crx-meu-content   crx-spac"  >
+              <div className="crx-meu-content groupingMenu crx-spac"  >
                 <div className="crx-menu-icon">
                   <i className="far fa-pencil"></i>
                 </div>

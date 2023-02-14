@@ -26,7 +26,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
             
        }else {
           stickyForm && (stickyForm.current.style.position = "relative");
-          stickyForm && (stickyForm.current.style.top = "58px")
+          stickyForm && (stickyForm.current.style.top = "55px")
        }
     });
 },[])
@@ -49,9 +49,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
                 key="name"
                 className="name-field"
               />
-              
-            </div>
-            {errors.name !== undefined &&
+                  {errors.name !== undefined &&
                 touched.name ? (
                 <div className="errorTenantStyle">
                   <i className="fas fa-exclamation-circle"></i>
@@ -60,6 +58,8 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
               ) : (
                 <></>
               )}
+            </div>
+        
           </div>
           <div className="text-field">
               <label htmlFor="Description">

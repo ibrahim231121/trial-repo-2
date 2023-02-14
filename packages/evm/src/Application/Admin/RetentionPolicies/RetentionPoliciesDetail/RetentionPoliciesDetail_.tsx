@@ -24,10 +24,9 @@ import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRetentionPoliciesInfoAsync } from "../../../../Redux/RetentionPolicies";
 
-import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { urlList, urlNames } from "../../../../utils/urlList";
+import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
-type RetentionPoliciesDetail = {
+type RetentionPoliciesDetailProps = {
   id: number;
   title: string;
   pageiGrid: PageiGrid;
@@ -36,8 +35,8 @@ type RetentionPoliciesDetail = {
 
 const DataRetention = "DataRetention";
 
-const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
-  props: RetentionPoliciesDetail
+const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (
+  props: RetentionPoliciesDetailProps
 ) => {
   const defaultRetentionPolicies: RetentionPoliciesModel = {
     id: 0,
@@ -54,8 +53,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
       version: "",
     },
   };
- 
-  const { id } = useParams<{ id: string }>();
+  const [id, setId] = useState<number>(props.id);
   const [name, setName] = useState<string>("");
   const [retentionType, setRetentionType] = useState<string>(
     retentionTypeTimePeriod
@@ -74,39 +72,34 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   const [unlimitedRetention, setUnlimitedRetention] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
 
-  const [disableRetentionTimeDays, setDisableRetentionTimeDays] = useState(false);
+  const [disableRetentionTimeDays, setDisableRetentionTimeDays] =
+    useState(false);
   const [disableHours, setDisableHours] = useState(false);
-  const [disableSoftDeleteTimeDays, setDisableSoftDeleteTimeDays] = useState(false);
+  const [disableSoftDeleteTimeDays, setDisableSoftDeleteTimeDays] =
+    useState(false);
   const [disableGracePeriodHours, setDisableGracePeriodHours] = useState(false);
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
-  const history = useHistory();
 
+  const [openModal, setOpenModal] = React.useState(false);
   const [isDeleted, setIsDeleted] = React.useState<boolean>(false);
-  const [retentionPolicy, setRetentionPolicies] = useState<RetentionPoliciesModel>(defaultRetentionPolicies);
+  const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
+  const [retentionPolicy, setRetentionPolicies] =
+    useState<RetentionPoliciesModel>(defaultRetentionPolicies);
   const [isOpen, setIsOpen] = React.useState(false);
   const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
   const isFirstRenderRef = useRef<boolean>(true);
   const deletedParamValuesIdRef = useRef<number[]>([]);
   const dataToEdit = useRef<RetentionPoliciesModel>(null);
+  const history = useHistory();
   const dispatch = useDispatch();
   const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
     nameErr: "",
     retentionTimeDaysErr: "",
     retentionSizeErr: "",
   });
-  
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-    gridFilter: {
-      logic: "and",
-      filters: []
-    },
-    page: 1,
-    size: 25
-  })
   const regexForNumberOnly = new RegExp("^[0-9]+$");
 
   const { t } = useTranslation<string>();
-  
   const onRetentionTypeChange = (type: string) => {
     let isDiskSpace = type == "Space";
     onSetDiskSpace(isDiskSpace);
@@ -345,7 +338,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   }, [name, retentionTimeDays, retentionHours, retentionSize]);
 
   useEffect(() => {
-    
     dispatch(enterPathActionCreator({ val: "" }));
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
@@ -353,14 +345,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     };
   }, []);
 
-  const ChangData = () => {
-    
-  }
-
   useEffect(() => {
     isFirstRenderRef.current = false;
-    if (id != undefined && id != null && parseInt(id) > 0) {
-      SetupConfigurationAgent.getRetentionPolicies(parseInt(id))
+    if (id != undefined && id != null && id > 0) {
+      SetupConfigurationAgent.getRetentionPolicies(id)
         .then((response: any) => {
           let retentionPoliciesObj = { ...retentionPolicy };
           setName(response.name);
@@ -373,7 +361,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
           setRetentionSize(response.detail.space);
 
           setRetentionPolicies(response);
-          dispatch(enterPathActionCreator({  val: `Retention Policy:  ${response?.description }` }));
+          dispatch(enterPathActionCreator({ val: response?.description }));
 
           const temp = {
             retentionPolicies: { ...retentionPoliciesObj },
@@ -406,7 +394,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   };
 
   const setAddPayload: any = () => {
-   
     const limit = {
       isInfinite: unlimitedRetention,
       hours: Number(retentionHours) + Number(retentionTimeDays * 24),
@@ -435,15 +422,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     return retention;
   };
 
-  useEffect(() => {
-    setAddPayload()
-  },[])
-
-  
   const onSave = async () => {
     const payload = setAddPayload();
 
-    if (parseInt(id) > 0) {
+    if (id > 0) {
       const urlEditRetentionPolicies = "Policies/" + id;
       SetupConfigurationAgent.putRetentionPoliciesTemplate(
         urlEditRetentionPolicies,
@@ -452,7 +434,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
         .then(() => {
           setRetentionPolicies(defaultRetentionPolicies);
           onMessageShow(true, t("Success_You_have_saved_the_Retention_Policy"));
-          dispatch(getAllRetentionPoliciesInfoAsync(pageiGrid));
+          dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
           setTimeout(() => {
             handleClose();
           }, 500);
@@ -474,10 +456,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
         .then(() => {
           setRetentionPolicies(defaultRetentionPolicies);
           onMessageShow(true, t("Success_You_have_saved_the_Retention_Policy"));
-          // dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
-          // setTimeout(() => {
-          //   handleClose();
-          // }, 500);
+          dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
+          setTimeout(() => {
+            handleClose();
+          }, 500);
         })
         .catch((e: any) => {
           if (e.request.status == 409) {
@@ -496,8 +478,12 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   };
 
   const handleClose = () => {
-    history.goBack();
-}
+    setOpenModal(false);
+    props.openModel(false);
+  };
+  React.useEffect(() => {
+    setOpenModal(true);
+  }, []);
 
   const getFormatedLabel = (label: string) => {
     return (
@@ -554,13 +540,19 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     });
   };
 
-
-
   return (
-    <div className="searchComponents retention-policies">
+    <div className="retention-policies">
       <CRXToaster ref={retentionMsgFormRef} />
-      <div className="indicatestext tp15"><b>*</b> Indicates required field</div> 
-      <div className="CRXRetentionPolicies">
+      <CRXModalDialog
+        maxWidth="gl"
+        title={props.title != '' ? props.title:name}
+        className={"CRXModal CRXRetentionPolicies"}
+        modelOpen={openModal}
+        onClose={closeDialog}
+        defaultButton={false}
+        showSticky={true}
+        closeWithConfirm={closeWithConfirm}
+      >
         <div className="settingsContent CRXSettingContent">
           <span
             className={`gridFilterTextBox ${
@@ -605,188 +597,183 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
           <CRXHeading variant="subtitle1" className="label">
             {getFormatedLabel(t("Retention_Type"))}
           </CRXHeading>
-          <div className="rententionPoliciesField">
-            <CRXRadio
-              className="crxEditRadioBtn"
-              content={RadioTimePeriodBtnValues}
-              value={retentionType}
-              setValue={(e: any) =>
-                onRetentionTypeChange(RadioTimePeriodBtnValues[0].Name)
-              }
-              checked={true}
-              name="radio-buttons"
-            />
-            {radioTimePeriod && (
-              <div className="retention-type">
-                <div className="retentionPoliciesField">
-                  <div
-                    className={`number_retention_field_ui ${
-                      UploadPolicyDetailErr.retentionTimeDaysErr
-                        ? "retentionPolicyError retentionTimeError"
-                        : ""
-                    }`}
-                  >
-                    <NumberField
-                      required={true}
-                      value={retentionTimeDays == 0 ? "" : retentionTimeDays}
-                      label={t("Retention_Time")}
-                      className="retention-policies-input"
-                      onChange={(e: any) =>
-                        onRetentionDaysChange(retentionHours, e.target.value)
-                      }
-                      disabled={disableRetentionTimeDays}
-                      type="number"
-                      name="retentionTimeDays"
-                      regex=""
-                      onBlur={() => checkRententionValidation()}
-                      error={!!UploadPolicyDetailErr.retentionTimeDaysErr}
-                      errorMsg={UploadPolicyDetailErr.retentionTimeDaysErr}
-                    />
-                    <label className="dayRetentionLabel">
-                      {t("days")}
-                      <span></span>
-                    </label>
-                  </div>
-                  <div className="days_retention_field_ui">
-                    <NumberField
-                      value={retentionHours == 0 ? "" : retentionHours}
-                      className="retention-policies-input"
-                      onChange={(e: any) =>
-                        onRetentionHoursChange(
-                          e.target.value,
-                          retentionTimeDays
-                        )
-                      }
-                      disabled={disableHours}
-                      type="number"
-                      name="retentionHours"
-                      regex=""
-                      min={0}
-                      max={23}
-                    />
-                    <label>
-                      {t("hours")}
-                      <span></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-            {radioTimePeriod && (
-              <div className="retention-type">
-                <div className="retentionPoliciesField">
-                  <div className="number_retention_field_ui">
-                    <NumberField
-                      required={false}
-                      value={softDeleteTimeDays == 0 ? "" : softDeleteTimeDays}
-                      label={t("Soft_Delete_Time")}
-                      className="retention-policies-input"
-                      onChange={(e: any) =>
-                        onGraceDaysChange(gracePeriodHours, e.target.value)
-                      }
-                      disabled={disableSoftDeleteTimeDays}
-                      type="number"
-                      name="softDeleteTimeDays"
-                      regex=""
-                      min={0}
-                    />
-                    <label className="dayRetentionLabel">
-                      {t("days")}
-                      <span></span>
-                    </label>
-                  </div>
 
-                  <div className="days_retention_field_ui  ">
-                    <NumberField
-                      required={false}
-                      value={gracePeriodHours == 0 ? "" : gracePeriodHours}
-                      className="retention-policies-input"
-                      onChange={(e: any) =>
-                        onGraceHoursChange(e.target.value, softDeleteTimeDays)
-                      }
-                      disabled={disableGracePeriodHours}
-                      type="number"
-                      name="gracePeriodHours"
-                      regex=""
-                      min={0}
-                      max={23}
-                    />
-                    <label>
-                      {t("hours")}
-                      <span></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-            {radioTimePeriod && (
-              <div className="retention-type retentionTypeCheck">
-                <div className="retentionPoliciesField">
-                  <div className="indefinite_checkBox_ui">
-                    <CRXCheckBox
-                      checked={unlimitedRetention}
-                      lightMode={true}
-                      className="crxCheckBoxCreate "
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        onIndefiniteChange(e, "indefinite")
-                      }
-                    />
-                    <label>
-                      {t("Indefinite")}
-                      <span></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-            <CRXRadio
-              className="crxEditRadioBtn"
-              content={RadioDiskSpaceBtnValues}
-              value={retentionType}
-              setValue={(e: any) =>
-                onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)
-              }
-              name="radio-buttons"
-            />
+          <CRXRadio
+            className="crxEditRadioBtn"
+            content={RadioTimePeriodBtnValues}
+            value={retentionType}
+            setValue={(e: any) =>
+              onRetentionTypeChange(RadioTimePeriodBtnValues[0].Name)
+            }
+            checked={true}
+            name="radio-buttons"
+          />
 
-            {radioDiskSpace && (
-              <div className="retention-type retentionTypeCheckGb">
-                <div
-                  className={`retentionPoliciesField ${
-                    UploadPolicyDetailErr.retentionSizeErr
-                      ? "retentionPolicyError"
-                      : ""
-                  }`}
-                >
-                  <div className="number_retention_field_ui">
-                    <NumberField
-                      required={true}
-                      value={retentionSize == 0 ? "" : retentionSize}
-                      label={t("Retention_Size")}
-                      className="retention-policies-input"
-                      onChange={(e: any) => onDiskSpaceChange(e.target.value)}
-                      disabled={false}
-                      type="number"
-                      name="retentionSize"
-                      regex=""
-                      onBlur={() => checkRetentionSizeValidation()}
-                      error={!!UploadPolicyDetailErr.retentionSizeErr}
-                      errorMsg={UploadPolicyDetailErr.retentionSizeErr}
-                    />
-                    <label className="number_retention_label_gb">
-                      {t("GB")}
-                      <span></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <CRXRadio
+            className="crxEditRadioBtn"
+            content={RadioDiskSpaceBtnValues}
+            value={retentionType}
+            setValue={(e: any) =>
+              onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)
+            }
+            name="radio-buttons"
+          />
         </div>
-       
-      </div>
-      <div className="crxFooterEditFormBtn stickyFooter_Tab">
-          <div className="__crxFooterBtnUser__">
+        {radioTimePeriod && (
+          <div className="retention-type">
+            <div className="retentionPoliciesField">
+              <div
+                className={`number_retention_field_ui ${
+                  UploadPolicyDetailErr.retentionTimeDaysErr
+                    ? "retentionPolicyError retentionTimeError"
+                    : ""
+                }`}
+              >
+                <NumberField
+                  required={true}
+                  value={retentionTimeDays == 0 ? "" : retentionTimeDays}
+                  label={t("Retention_Time")}
+                  className="retention-policies-input"
+                  onChange={(e: any) =>
+                    onRetentionDaysChange(retentionHours, e.target.value)
+                  }
+                  disabled={disableRetentionTimeDays}
+                  type="number"
+                  name="retentionTimeDays"
+                  regex=""
+                  onBlur={() => checkRententionValidation()}
+                  error={!!UploadPolicyDetailErr.retentionTimeDaysErr}
+                  errorMsg={UploadPolicyDetailErr.retentionTimeDaysErr}
+                />
+                <label className="dayRetentionLabel">
+                  {t("days")}
+                  <span></span>
+                </label>
+              </div>
+              <div className="days_retention_field_ui">
+                <NumberField
+                  value={retentionHours == 0 ? "" : retentionHours}
+                  className="retention-policies-input"
+                  onChange={(e: any) =>
+                    onRetentionHoursChange(e.target.value, retentionTimeDays)
+                  }
+                  disabled={disableHours}
+                  type="number"
+                  name="retentionHours"
+                  regex=""
+                  min={0}
+                  max={23}
+                />
+                <label>
+                  {t("hours")}
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+        {radioTimePeriod && (
+          <div className="retention-type">
+            <div className="retentionPoliciesField">
+              <div className="number_retention_field_ui">
+                <NumberField
+                  required={false}
+                  value={softDeleteTimeDays == 0 ? "" : softDeleteTimeDays}
+                  label={t("Soft_Delete_Time")}
+                  className="retention-policies-input"
+                  onChange={(e: any) =>
+                    onGraceDaysChange(gracePeriodHours, e.target.value)
+                  }
+                  disabled={disableSoftDeleteTimeDays}
+                  type="number"
+                  name="softDeleteTimeDays"
+                  regex=""
+                  min={0}
+                />
+                <label className="dayRetentionLabel">
+                  {t("days")}
+                  <span></span>
+                </label>
+              </div>
+
+              <div className="days_retention_field_ui  ">
+                <NumberField
+                  required={false}
+                  value={gracePeriodHours == 0 ? "" : gracePeriodHours}
+                  className="retention-policies-input"
+                  onChange={(e: any) =>
+                    onGraceHoursChange(e.target.value, softDeleteTimeDays)
+                  }
+                  disabled={disableGracePeriodHours}
+                  type="number"
+                  name="gracePeriodHours"
+                  regex=""
+                  min={0}
+                  max={23}
+                />
+                <label>
+                  {t("hours")}
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+        {radioTimePeriod && (
+          <div className="retention-type retentionTypeCheck">
+            <div className="retentionPoliciesField">
+              <div className="indefinite_checkBox_ui">
+                <label>
+                  {t("Indefinite")}
+                  <span></span>
+                </label>
+                <CRXCheckBox
+                  checked={unlimitedRetention}
+                  lightMode={true}
+                  className="crxCheckBoxCreate "
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onIndefiniteChange(e, "indefinite")
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {radioDiskSpace && (
+          <div className="retention-type retentionTypeCheckGb">
+            <div
+              className={`retentionPoliciesField ${
+                UploadPolicyDetailErr.retentionSizeErr
+                  ? "retentionPolicyError"
+                  : ""
+              }`}
+            >
+              <div className="number_retention_field_ui">
+                <NumberField
+                  required={true}
+                  value={retentionSize == 0 ? "" : retentionSize}
+                  label={t("Retention_Size")}
+                  className="retention-policies-input"
+                  onChange={(e: any) => onDiskSpaceChange(e.target.value)}
+                  disabled={false}
+                  type="number"
+                  name="retentionSize"
+                  regex=""
+                  onBlur={() => checkRetentionSizeValidation()}
+                  error={!!UploadPolicyDetailErr.retentionSizeErr}
+                  errorMsg={UploadPolicyDetailErr.retentionSizeErr}
+                />
+                <label className="number_retention_label_gb">
+                  {t("GB")}
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="modalFooter CRXFooter">
+          <div className="nextBtn">
             <CRXButton
               variant="contained"
               className="primeryBtn"
@@ -795,6 +782,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
             >
               {t("Save")}
             </CRXButton>
+          </div>
+          <div className="cancelBtn">
             <CRXButton
               className="groupInfoTabButtons secondary"
               color="secondary"
@@ -804,17 +793,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
               {t("Cancel")}
             </CRXButton>
           </div>
-          <div className="__crxFooterBtnUser__">
-            <CRXButton
-              className="groupInfoTabButtons secondary"
-              color="secondary"
-              variant="outlined"
-              onClick={closeDialog}
-            >
-              {t("Close")}
-            </CRXButton>
-          </div>
         </div>
+      </CRXModalDialog>
       <CRXConfirmDialog
         setIsOpen={() => setIsOpen(false)}
         onConfirm={handleClose}

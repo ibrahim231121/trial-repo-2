@@ -7,6 +7,8 @@ import {
 import "@szhsin/react-menu/dist/index.css";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   selectedItems?: any;
@@ -14,13 +16,16 @@ type Props = {
   onClickOpenModel: (modelOpen: boolean, id: number, title: string) => void;
 };
 
-const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, onClickOpenModel }) => {
+const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
 
   const { t } = useTranslation<string>();
-  const openEditCategoryForm = () => {
-    onClickOpenModel(true, Number(row?.id), t("Edit_Category"));
-  };
+  const history = useHistory();
 
+  const editCategolries = () => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.categoryEdit)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Category"));
+  };
+  
   return (
     <div className="table_Inner_Action">
 
@@ -41,7 +46,7 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, onC
         }
       >
         {selectedItems.length <= 1 ? (
-          <MenuItem onClick={openEditCategoryForm}>
+          <MenuItem onClick={editCategolries}>
             <Restricted moduleId={54}>
               <div className="crx-meu-content   crx-spac"  >
                 <div className="crx-menu-icon">

@@ -86,8 +86,14 @@ export const urlNames: any = {
     categories: 'categories',
     categoryForms: 'categoryForms',
     about: 'about',
+    createCategory: 'createCategory',
+    categoryEdit: 'categoryEdit',
     categoryFormsCreate: 'categoryFormsCreate',
-    categoryFormsEdit: 'categoryFormsEdit'
+    categoryFormsEdit: 'categoryFormsEdit',
+    createFormField: 'createFormField',
+    editFormField: 'editFormField',
+    createRetentionPolicies: 'createRetentionPolicies',
+    editRetentionPolicy : 'editRetentionPolicy'
 };
 
 export const urlList: any = [
@@ -403,9 +409,34 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/retentionPolicies', type: 'text', label: 'Retention Policies' }
         ],
-    }
-    ,
+    },
     {
+        name: urlNames.createRetentionPolicies,
+        url: "/admin/retentionPolicies/createRetentionPolicies",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/retentionPolicies', type: 'link', label: 'Retention Policies' },
+            { routeTo: '/admin/retentionPolicies/createRetentionPolicies', type: 'text', label: 'Create Retention Policy' }
+        ],
+    },
+    {
+        name: urlNames.editRetentionPolicy,
+        url: '/admin/retentionPolicies/editRetentionPolicy/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/retentionPolicies/', type: 'link', label: 'Retention Policies' }
+        ]
+    },
+    {
+        name: urlNames.createFormField,
+        url: "/admin/createFormField",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/createFormField', type: 'text', label: 'Create Form Field' }
+        ],
+    },
+   
+   {
         name: urlNames.defaultUnitTemplate,
         url: "/admin/defaultUnitTemplate",
         details: [
@@ -447,6 +478,27 @@ export const urlList: any = [
             { routeTo: '/admin/categories', type: 'text', label: 'Categories' }
         ],
     },
+
+    {
+        name: urlNames.createCategory,
+        url: '/admin/categories/createCategory',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categories/', type: 'link', label: 'Categories' },
+            { routeTo: '/admin/categories/createCategory', type: 'text', label: 'Create Category' }
+           
+        ]
+    },
+    {
+        name: urlNames.categoryEdit,
+        url: '/admin/categories/editCategory/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categories/editCategory', type: 'link', label: 'Edit Category' },
+            
+        ]
+    },
+    
     {
         name: urlNames.categoryForms,
         url: "/admin/categoryForms",
@@ -464,7 +516,7 @@ export const urlList: any = [
     },
     {
         name: urlNames.categoryFormsCreate,
-        url: '/admin/categoryForms/categoryForm',
+        url: '/admin/categoryForms/CreateCategoryForm',
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
@@ -476,8 +528,23 @@ export const urlList: any = [
         url: '/admin/categoryForms/categoryForm/:id',
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' },
+            { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
         ]
-    }
-
+    }, {
+        name: urlNames.createFormField,
+        url: "/admin/categoryFormField/createFormField",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categoryFormField', type: 'link', label: 'form field Detail' },
+            { routeTo: '/admin/categoryFormField/createFormField', type: 'text', label: 'Create Form Field' }
+        ],
+    },
+    {
+        name: urlNames.editFormField,
+        url: '/admin/categoryFormField/editFormField/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categoryFormField/editFormField/', type: 'link', label: 'Edit Form Field' }
+        ]
+    },
 ];

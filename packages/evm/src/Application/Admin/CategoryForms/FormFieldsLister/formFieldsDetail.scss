@@ -1,63 +1,261 @@
 .create_form_fields_form {
-    .CRXContent {
-        padding-bottom: 26px;
-        .create_category_form_field_content{
-            .cc_form_label{
-                font-size: 14px;
-                color: var(--color-333333);
-                font-family: var(--base-font-family);
-                span{
-                    font-size: 18px;
-                    position: relative;
-                    font-weight: var(--Font-style-bold);
-                    top: -5px;
-                    &.error_staric{
-                        color: var(--color-aa1d1d);
-                    }
-                }
-            }
-            .controle_type_select {
-                width: 100%;
-            }
-            .crx_form_group_row {
-                padding-bottom: 28px;
-                .crx_formik_field {
-                    width: 100%;
-                    border:1px solid var(--color-d1d2d4);
-                    outline: 2px solid transparent;
-                    height: 30px;
-                    border-radius: 0px;
-                    text-indent: 12px;
-                    color: var(--color-333333);
-                    font-family:  var(--base-font-family);
-                    &:hover {
-                        border-color: var(--color-888787);
-                    }
-                    &:focus {
-                        outline: 2px solid var(--color-888787);
-                        border:1px solid var(--color-888787);
-                    }
-                }
-                .errorTenantStyle {
-                    color: var(--color-aa1d1d);
-                    font-size: 14px;
-                    font-weight: var(--Font-style-normal);
-                    font-family: var(--Arial-font-family);
-                    position: relative;
-                    left: 0px;
-                    top: 6px;
-                    i{
-                        margin-right: 4px;
-                    }
-                }
-            }
-        }
-        .create_form_modal_footer {
-            padding-top: 26px;
-            border-top: 1px solid #dedede;
-            .save_button_cc{
-                margin-right: 30px;
-            }
-        }
+
+ 
+    padding-bottom: 85px;
+    // padding-top: 99px;
+    .crx-message-alert {
+      .formFieldError {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 35px;
+      }
     }
+
+    .tp15 {
+      position: fixed;
+      top: 155px;
+      height: 35px;
+      background-color: #ffffff;
+  
+      width: calc(100% - 237px);
+      border-bottom: 1px solid #dedede;
+      margin-left: 62px;
+      font-size: 14px;
+      font-style: italic;
+      z-index: 1;
+      b {
+        line-height: 17px;
+        font-size: 20px;
+        margin-right: 9px;
+        font-weight: var(--Font-style-bold);
+        margin-top: 7px;
+        position: relative;
+        top: -5px;
+      }
+      &::before {
+        position: absolute;
+        content: "";
+        height: 100%;
+        width: 79%;
+        background: white;
+        top: -20px;
+        right: 0;
+      }
+    }
+    .create_category_form_field_content {
+      width: 700px;
+      margin: 74px auto;
+     
+      .cc_form_label {
+        font-size: 14px;
+        color: var(--color-333333);
+        font-family: var(--base-font-family);
+        vertical-align: -webkit-baseline-middle;
+        span {
+          font-size: 18px;
+          position: relative;
+          font-weight: var(--Font-style-bold);
+          top: -5px;
+          left: 6px;
+        }
+      }
+      .controle_type_select {
+        width: 100%;
+        margin-left: -25px;
+      }
+      .crx_form_group_row {
+        padding-bottom: 28px;
+        margin-top: 0;
+        .crx_formik_field {
+          width: 100%;
+          border: 1px solid var(--color-d1d2d4);
+          outline: 2px solid transparent;
+          height: 30px;
+          border-radius: 0px;
+          text-indent: 12px;
+          color: var(--color-333333);
+          font-family: var(--base-font-family);
+          margin-left: -25px;
+          &:hover {
+            border-color: var(--color-888787);
+          }
+          &:focus {
+            outline: 2px solid var(--color-888787);
+            border: 1px solid var(--color-888787);
+          }
+        }
+        .errorTenantStyle {
+          color: var(--color-aa1d1d);
+          font-size: 14px;
+          font-weight: var(--Font-style-normal);
+          font-family: var(--Arial-font-family);
+          position: relative;
+          left: -25px;
+          top: 6px;
+          margin-bottom: 6px;
+          i {
+            font-size: 12px;
+            margin-right: 4px;
+          }
+        }
+        .crxDropdownValidationError {
+          margin-left: -25px;
+          i {font-size: 12px;}
+        }
+        &.error_staric {
+          input {
+            outline: 2px solid var(--color-aa1d1d);
+            border: none;
+            &:focus {
+              outline: 2px solid var(--color-aa1d1d);
+              border: none;
+            }
+          }
+          .controle_type_select {
+            outline: 2px solid var(--color-aa1d1d);
+            border: none;
+            &:focus {
+              outline: 2px solid var(--color-aa1d1d);
+              border: none;
+            }
+          }
+          .cc_form_label {
+            span {
+              color: var(--color-aa1d1d);
+            }
+          }
+        }
+        .CRXCheckBox {
+          padding-top: 0;
+          padding-left: 0;
+          margin-left: -6px;
+        }
+      }
+      .formikCheckboxField {
+        margin-left: -25px;
+        margin-bottom: 10px;
+        input[type="checkbox"] {
+          position: relative;
+          cursor: pointer;
+          margin-left: 0;
+          &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            top: 0;
+            left: 0;
+            border: 2px solid var(--color-d1d2d4);
+            border-radius: 2px;
+            background-color: var(--color-White);
+          }
+          &:checked {
+            &::before {
+              content: "";
+              display: block;
+              position: absolute;
+              width: 12px;
+              height: 12px;
+              top: 0;
+              left: 0;
+              background-color: var(--color-333333);
+              border: 2px solid var(--color-333333);
+            }
+          }
+          &::after {
+            content: "";
+            display: block;
+            width: 4px;
+            height: 9px;
+            border: solid var(--color-White);
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg);
+            position: absolute;
+            top: 1px;
+            left: 5px;
+          }
+
+          &:hover {
+            color: var(--color-333333);
+          }
+        }
+      }
+    }
+    .create_form_modal_footer {
+      padding-top: 26px;
+      border-top: 1px solid #dedede;
+      .save_button_cc {
+        margin-right: 30px;
+      }
+    }
+    .errorFormField {
+      .tp15 {
+        top: 189px;
+      }
+      .crx-message-alert {
+        margin-top: -8px;
+        position: relative;
+        z-index: 9999;
+        width: 389px;
+        .formFieldError {
+          height: 35px;
+          .MuiAlert-icon {
+            top: 0px;
+          }
+        }
+   .MuiAlert-action {
+    padding-left: 0;
+   }
+      }
+      &.create_category_form_modal {
+        .createCategory_form {
+          margin: 93px auto;
+        }
+      }
+  
+    }
+  // &.errorFormField {
+  //   .CrxIndicates {
+  //     position: relative;
+  //     margin-top: 84px;
+  //     padding-bottom: 5px;
+  //   }
+  //   .CRXContent {
+  //     padding-bottom: 85px;
+  //     .crx-message-alert {
+  //       top: 84px;
+  //       z-index: 9999999;
+  //       position: absolute;
+  //       width: 91%;
+  //       .MuiAlert-icon {
+  //         top: 0;
+  //       }
+  //     }
+  //     &::-webkit-scrollbar-button:vertical:decrement {
+  //       height: 15px;
+  //       background-position: 0px 0 !important;
+  //     }
+  //     .create_category_form_field_content {
+  //       padding-top: 27px;
+  //     }
+  //   }
+  // }
+  .CrxIndicates {
+    position: absolute;
+    margin-top: 20px;
+    padding-bottom: 0;
+  }
+  .crxFooterEditFormBtn {
+    place-content: space-between;
+  .__crxFooterBtnUser__ {
+    &:first-child {
+      button {
+        &:first-child {
+          margin-right: 31px;
+        }
+      }
+    }
+    }
+  }
 }

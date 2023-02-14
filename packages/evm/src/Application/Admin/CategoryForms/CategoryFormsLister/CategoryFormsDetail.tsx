@@ -17,8 +17,9 @@ import * as Yup from "yup";
 import FormFieldInfo from "./FormFieldInfo";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { controlTypes } from '../TypeConstant/constants';
-import FormFieldsDetail from '../FormFieldsLister/FormFieldsDetail';
+import FormFieldsDetail from '../FormFieldsLister/FormFieldsDetail_remove';
 import { getAllCategyFormsFilter } from '../../../../Redux/CategoryForms';
+
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
@@ -65,9 +66,9 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
         setOpenModel(modelOpen);
     }
 
-    const onCreateFormFields = (modelOpen: boolean) => {
-        setCreateFormFieldOpenModel(modelOpen);
-    }
+  const FormFieldDetail = () => {
+    history.push(urlList.filter((item:any) => item.name === urlNames.createFormField)[0].url);
+  }
 
     const updateOpenModel = (modelOpen: boolean) => {
         setOpenModel(modelOpen);
@@ -230,7 +231,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                         }
                         {
                             createFormFieldOpenModel &&
-                            (<FormFieldsDetail id={0} title={t("Create_Form_Fields")} pageiGrid={pageiGrid} openModel={onCreateFormFields} isCategoryForms={true} setSelectedFields={setSelectedFields} selectedFields={selectedFields} setFieldValue={setFieldValue}/>)
+                            (<FormFieldsDetail id={0} title={t("Create_Form_Fields")} pageiGrid={pageiGrid} openModel={onAddFormFields} isCategoryForms={true} setSelectedFields={setSelectedFields} selectedFields={selectedFields} setFieldValue={setFieldValue}/>)
                         }
                         <div className="addFormFields formFieldBtn">
                             <CRXButton
@@ -242,7 +243,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                             </CRXButton>
                             <CRXButton
                                 className='create_form_field_button'
-                                onClick={onCreateFormFields}
+                                onClick={FormFieldDetail}
                                 color='primary'
                                 variant='contained'
                             > {t("Create_Form_Fields")}
@@ -253,11 +254,12 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("required")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={2} spacing={0}>{t("required")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={1} spacing={0}>{t("Remove")}</CRXColumn>
                             </CRXRows>
                         </div>
                         <FieldRowLister selectedFields={selectedFields} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FieldRowLister>
-                        <div className="formFieldFooterButton">
+                        <div className="formFieldFooterButton stickyFooter_Tab">
                             <div className="submit_cancel_btn">
                                 <CRXButton
                                     disabled={!(isValid && dirty)}
@@ -296,15 +298,15 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
           setIsOpen={() => setIsOpen(false)}
           onConfirm={handleClose}
           isOpen={isOpen}
-          className="CategoriesConfirm"
+          className="CategoriesConfirm Category_Forms_ConFirm_Modal"
           primary={t("Yes_close")}
           secondary={t("No,_do_not_close")}
           text="retention policy form"
         >
           <div className="confirmMessage">
             {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-            <strong>{t("Category_Forms_And_Fields")}</strong>. {t("If_you_close_the_form")},
-            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <strong>{t("Category_Forms_And_Fields")}</strong>. {t("If_you_close_the_form")}{""},
+            {t("any_changes_you_ve_made_will_not_be_saved .")} {t("You_will_not_be_able_to_undo_this_action.")}
             <div className="confirmMessageBottom">
               {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
             </div>

@@ -444,13 +444,17 @@ useEffect(() => {
                   showCustomizeIcon={false}
                   showTotalSelectedText={true}
                   lightMode={false}
-                  offsetY={44}
+              
                   page={page}
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={filterFormFields?.totalCount}
                   setSortOrder={(sort: any) => sortingOrder(sort)}
+                     //Please dont miss this block.
+                    offsetY={44}
+                  
+                  //End here
                   
                 />
               )
@@ -458,8 +462,8 @@ useEffect(() => {
             </div>
           </ClickAwayListener>
 
-          <div className="add_exisiting_field_modal_footer">
-           
+          <div className="modalFooter CRXFooter">
+           <div className="nextBtn">
               <CRXButton
                 variant="contained"
                 className="primary save_button_addEx"
@@ -468,6 +472,8 @@ useEffect(() => {
               >
                 {t("Save")}
               </CRXButton>
+              </div>
+              <div className="cancelBtn">
               <CRXButton
                 className="secondary"
                 color="secondary"
@@ -476,7 +482,7 @@ useEffect(() => {
               >
                 {t("Cancel")}
               </CRXButton>
-
+              </div>
           </div>
         </CRXModalDialog>
         <CRXConfirmDialog

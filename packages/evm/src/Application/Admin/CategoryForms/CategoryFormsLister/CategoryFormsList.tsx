@@ -144,7 +144,7 @@ const CategoryFormsList: React.FC = () => {
       maxWidth: "150",
     },
     {
-      label: `${t("Category_Name")}`,
+      label: `${t("Category_Form_Name")}`,
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
@@ -153,7 +153,7 @@ const CategoryFormsList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "660",
+      minWidth: "666",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -166,7 +166,7 @@ const CategoryFormsList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "670",
+      minWidth: "665",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"

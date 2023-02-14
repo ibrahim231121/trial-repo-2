@@ -29,6 +29,8 @@ import { FormFieldsTemplate } from "../TypeConstant/types";
 import { controlTypes } from "../TypeConstant/constants";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 interface renderCheckMultiselect {
   value: string,
@@ -67,6 +69,14 @@ const FormFieldsList: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<FormFieldsTemplate[]>([]);
   const filterFormFields: any = useSelector((state: RootState) => state.FormFieldsSlice.filterFormFields);
 
+  const history = useHistory();
+
+  const FormFieldDetail = () => {
+    history.push(urlList.filter((item:any) => item.name === urlNames.createFormField)[0].url);
+  }
+
+
+
   useEffect(() => {
     setFormFields();
     isFirstRenderRef.current = false;
@@ -79,6 +89,11 @@ const FormFieldsList: React.FC = () => {
     headCells[colIdx].headerArray = valuesObject;
     onSelection(valuesObject, colIdx);
   }
+
+  const editFormFields = (fieldId : number) => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + fieldId, t("Edit_Form_Fields"));
+  };
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -142,7 +157,8 @@ const FormFieldsList: React.FC = () => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-          width = {400} 
+          width = {97} 
+          percentage={true}
           option={options} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -176,12 +192,12 @@ const FormFieldsList: React.FC = () => {
       id: "displayName",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e}</div>
+        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editFormFields(id)} className={"dataTableText txtStyle"}>{e}</div>
       },
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "450",
+      minWidth: "300",
       attributeName: "caption",
       attributeType: "String",
       attributeOperator: "contains"
@@ -212,7 +228,7 @@ const FormFieldsList: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
-      minWidth: "408",
+      minWidth: "300",
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
@@ -225,8 +241,7 @@ const FormFieldsList: React.FC = () => {
       searchFilter: false,
       dataComponent: (e: string) => textDisplay(e, " "),
       searchComponent: () => null,
-      minWidth: "100",
-      maxWidth: "800",
+      minWidth: "200",
       attributeName: "IsRequired",
       attributeType: "String",
       attributeOperator: "contains"
@@ -278,11 +293,6 @@ const FormFieldsList: React.FC = () => {
     setId(id);
     setTitle(title);
     setOpenModel(modelOpen);
-  }
-
-  const updateOpenModel = (modelOpen: boolean) => {
-    setOpenModel(modelOpen);
-    dispatch(getAllCategoriesFilter(pageiGrid))
   }
 
   const getFilteredFormFieldsData = () => {
@@ -356,7 +366,7 @@ const FormFieldsList: React.FC = () => {
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
+                  <CRXButton color="primary" className="primary CategoriesBtn" onClick={FormFieldDetail}>
                     {t("Create_Form_Fields")}
                   </CRXButton>
                 </Restricted>
@@ -394,10 +404,6 @@ const FormFieldsList: React.FC = () => {
           />
 
         )
-      }
-      {
-          openModel &&
-          (<FormFieldsDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} isCategoryForms={false} setSelectedFields={null} selectedFields={null} setFieldValue={null}/>)
       }
     </div>
     </ClickAwayListener>

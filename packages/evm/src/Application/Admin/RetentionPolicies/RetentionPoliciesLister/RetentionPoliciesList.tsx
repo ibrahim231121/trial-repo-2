@@ -10,7 +10,7 @@ import { Link, useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton, CRXIcon } from "@cb/shared";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
-import RetentionPoliciesDetail from "../RetentionPoliciesDetail/RetentionPoliciesDetail";
+import RetentionPoliciesDetail from "../RetentionPoliciesDetail/RetentionPoliciesDetail_";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {
   SearchObject,
@@ -31,6 +31,8 @@ import {getAllRetentionPoliciesInfoAsync} from '../../../../Redux/RetentionPolic
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { number } from "yup/lib/locale";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import anchorDisplay from '../../../../utils/AnchorDisplay';
 
 
 
@@ -65,6 +67,17 @@ const RetentionPoliciesList: React.FC = () => {
   const [paging, setPaging] = React.useState<boolean>();
   const [openModel, setOpenModel] = React.useState<boolean>(false);
 
+  const AnchorDisplay = (e: string) => {
+    if(getModuleIds().includes(63)) {
+    return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.editRetentionPolicy)[0].url)
+    }
+    else{
+    let lastid = e.lastIndexOf("_");
+    let text =  e.substring(0,lastid)
+    return textDisplay(text,"")
+    }
+  }
+
 
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -87,24 +100,34 @@ const RetentionPoliciesList: React.FC = () => {
     onSaveHeadCellData(headCells, "RetentionPoliciesTemplateDataTable");
   }, []);
 
+  const history = useHistory();
+
+  const CreateRetentionPolicy = () => {
+    history.push(urlList.filter((item:any) => item.name === urlNames.createRetentionPolicies)[0].url);
+  }
+
   const setRetentionPoliciesData = () => {
     let RetentionPoliciesTemplateRows: RetentionPoliciesTemplate[] = []
     if (filterRetentionPolicies?.data && filterRetentionPolicies?.data.length > 0) {
       RetentionPoliciesTemplateRows = filterRetentionPolicies?.data.map((template: any) => {
         return { 
             id: template.id,
-            name:template.name ,
+            name:template.name + "_" + template.id,
             retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
             softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
             description: template.description , 
             isInfinite  : template.detail.limit.isInfinite          
-
         }
       })
     }
-
     setRows(RetentionPoliciesTemplateRows);
     setReformattedRows({...reformattedRows, rows: RetentionPoliciesTemplateRows});
+  }
+
+  const getData = () => {
+    filterRetentionPolicies && filterRetentionPolicies?.data.map((x:any)=>{
+      return x.id
+    })
   }
   
   React.useEffect(() => {
@@ -185,16 +208,18 @@ const RetentionPoliciesList: React.FC = () => {
       label: `${t("Policy_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string, id: number) => {
-        if (getModuleIds().includes(63)) {
-          return <Restricted moduleId={63}>
-            <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => openEditForm(id)} className={"dataTableText txtStyle"}>{e}</div>
-          </Restricted>
-        }
-        else {
-          return textDisplay(e, "")
-        }
-      },
+      // dataComponent: (e: string, id: number) => {
+      //   if (getModuleIds().includes(63)) {
+      //     return <Restricted moduleId={63}>
+      //       <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => openEditForm(id)} className={"dataTableText txtStyle"}>{e}</div>
+      //     </Restricted>
+      //   }
+      //   else {
+      //     return textDisplay(e, "")
+      //   }
+      // },
+      // dataComponent(e:string) =>  (e,Text)},
+      dataComponent: (e: string) => AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -388,7 +413,7 @@ const RetentionPoliciesList: React.FC = () => {
               <>
                 <Restricted moduleId={62}>
 
-                  <CRXButton className="RetentionPoliciesBtn" primary={true} color="primary" onClick={() => { onClickOpenModel(true, 0, "Create Retention Policy") }}>
+                  <CRXButton color="primary" className="RetentionPoliciesBtn" onClick={() => CreateRetentionPolicy()}>
                     {t("Create_Retention_Policies")}
                   </CRXButton>
                 </Restricted>

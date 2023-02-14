@@ -13,7 +13,8 @@ type tooltipProps = {
 };
 const CRXUseStyles = makeStyles(() => ({
   arrow: {
-    
+    color: "#333"
+
   },
   tooltip: {
     backgroundColor: "#333333",
