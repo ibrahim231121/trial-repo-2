@@ -620,6 +620,18 @@
     }
   }
 
+  .First_Name_Field , .Last_Name_Field {
+    .errorStateContent  {
+      .crxErrorMsg {
+        display: inline-flex;
+        width: 432px;
+        margin-left: 5px;
+      }
+    }
+  }
+  .FirstNameField_ErrorEnabled {
+    margin-bottom: 44px;
+  }
   .crxFooterEditFormBtn {
     &::after {
       content: "";

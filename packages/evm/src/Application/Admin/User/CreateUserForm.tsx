@@ -1055,6 +1055,8 @@ else {
     });
   },[radioValue])
   
+  const firstNameFieldError = (!!formpayloadErr.firstNameErr && formpayloadErr.firstNameErr.length > 70 ) ? "FirstNameField_ErrorEnabled" : "FirstNameField_ErrorDisabled";
+  const lastNameFieldError = (!!formpayloadErr.lastNameErr && formpayloadErr.lastNameErr.length > 70 ) ? "LastNameField_ErrorEnabled" : "LastNameField_ErrorDisabled";
   return (
     <div className='createUser CrxCreateUser CreateUserUi searchComponents'>
       <CRXToaster ref={userMsgFormRef} />
@@ -1096,20 +1098,22 @@ else {
                 // }}
                 onBlur={() => checkUserName()}
               />
-              <TextField
-                error={!!formpayloadErr.firstNameErr}
-                errorMsg={formpayloadErr.firstNameErr}
-                required={true}
-                label={t("First_Name")}
-                className='users-input'
-                value={formpayload.firstName}
-                onChange={(e: any) => {
-                  setFormPayload({ ...formpayload, firstName: e.target.value })
-                  checkFirstName(e.target.value)
-                }
-                }
-                onBlur={() => checkFirstName()}
-              />
+              <div className={`First_Name_Field ${firstNameFieldError}`}>
+                <TextField
+                  error={!!formpayloadErr.firstNameErr}
+                  errorMsg={formpayloadErr.firstNameErr}
+                  required={true}
+                  label={t("First_Name")}
+                  className='users-input'
+                  value={formpayload.firstName}
+                  onChange={(e: any) => {
+                    setFormPayload({ ...formpayload, firstName: e.target.value })
+                    checkFirstName(e.target.value)
+                  }
+                  }
+                  onBlur={() => checkFirstName()}
+                />
+              </div>
               <TextField
                 error={!!formpayloadErr.middleInitialErr}
                 errorMsg={formpayloadErr.middleInitialErr}
@@ -1123,18 +1127,21 @@ else {
                 }
                 onBlur={()=>checkMiddleInitial()}
               />
-              <TextField
-                error={!!formpayloadErr.lastNameErr}
-                errorMsg={formpayloadErr.lastNameErr}
-                required={true}
-                value={formpayload.lastName}
-                label={t("Last_Name")}
-                className='users-input'
-                onChange={(e: any) =>  { setFormPayload({ ...formpayload, lastName: e.target.value })
-                checkLastName(e.target.value)  
-              }}
-                onBlur={() => checkLastName()}
-              />
+              <div className={`Last_Name_Field ${lastNameFieldError}`}>
+                <TextField
+                  error={!!formpayloadErr.lastNameErr}
+                  errorMsg={formpayloadErr.lastNameErr}
+                  required={true}
+                  value={formpayload.lastName}
+                  label={t("Last_Name")}
+                  className='users-input'
+                  onChange={(e: any) =>  { setFormPayload({ ...formpayload, lastName: e.target.value })
+                  checkLastName(e.target.value)  
+                }}
+                  onBlur={() => checkLastName()}
+                />
+              </div>
+       
             </Grid>
             <div className='grid_spacer'>
             </div>

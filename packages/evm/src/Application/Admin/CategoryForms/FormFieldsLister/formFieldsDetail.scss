@@ -181,6 +181,14 @@
           }
         }
       }
+      .defaultFieldValuePlaceholder {
+        font-size: 14px;
+        font-family: var(--Arial-font-family);
+        font-style: italic;
+        color: var(--color-74767c);
+        padding-top: 4px;
+        margin-left: -25px;
+      }
     }
     .create_form_modal_footer {
       padding-top: 26px;

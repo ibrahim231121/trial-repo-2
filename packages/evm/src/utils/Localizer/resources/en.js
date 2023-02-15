@@ -513,7 +513,7 @@ export const resources = {
         "Are_you_sure_you_would_like_to_delete_upload_policies?":"Are you sure you would like to delete upload policies?",
         "Create_Category": "Create Category",
         "Create_Category_Form": "Create Category Form",
-        "Category_Form_Name" : "Category form name",
+        "Category_Form_Name" : "Category Form Name",
         "Evidence_Retention_Policy" : "Evidence Retention Policy",
         "Upload_Policy" : "Upload Policy",
         "Edit_Category" : "Edit Category",

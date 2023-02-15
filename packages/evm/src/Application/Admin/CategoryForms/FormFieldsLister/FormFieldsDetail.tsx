@@ -407,6 +407,7 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
                         name="defaultFieldValue"
                         className={`crx_formik_field`}
                       />
+                        <div className="defaultFieldValuePlaceholder">(Use pipe separator "|" for multiple values)</div>
                       {errors.defaultFieldValue !== undefined &&
                         touched.defaultFieldValue ? (
                         <div className="errorTenantStyle">
