@@ -86,8 +86,8 @@ const downloadExeFileByFileResponse = (
   response: any,
   assetName: string
 ) => {
-  let fileStream =  response.data;
-  const fileName = assetName+".exe";
+  let fileStream = response.data;
+  const fileName = assetName + ".exe";
   const blob = new Blob([fileStream], { type: "application/octet-stream" });
   const link = document.createElement("a");
   link.href = window.URL.createObjectURL(blob);
@@ -299,28 +299,29 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
-      let _requestBody: LockUnlockAsset = { evidenceId: 0, assetLockObject: [] };
-      let groupRecIdArray = AssignedGroups.split(",").map((item) => {
+      let _requestBody: Array<LockUnlockAsset> = [];
+      const groupRecIdArray = AssignedGroups.split(",").map((item) => {
         return parseInt(item, 10);
       });
       if (isSelectedItem) {
         selectedItems.map((x: any) => {
-            _requestBody.evidenceId = x.evidence.id;
-            _requestBody.assetLockObject.push({
-              assetId: x.assetId,
-              groupRecIdList: groupRecIdArray,
-              operation: operation,
-            });
+          _requestBody.push({
+            evidenceId: x.evidence.id,
+            assetId: x.assetId,
+            groupRecIdList: groupRecIdArray,
+            operation: operation
+          } as LockUnlockAsset);
         });
       } else {
-        _requestBody.evidenceId = row?.evidence.id;
-        _requestBody.assetLockObject.push({
+        _requestBody.push({
+          evidenceId: row?.evidence.id,
           assetId: row.assetId,
           groupRecIdList: groupRecIdArray,
-          operation: operation,
-        });
+          operation: operation
+        } as LockUnlockAsset);
       }
       const _body = JSON.stringify(_requestBody);
+      debugger
       EvidenceAgent.LockOrUnLockAsset(_body)
         .then(() => {
           showToastMsg && showToastMsg({
@@ -368,51 +369,51 @@ const ActionMenu: React.FC<Props> = React.memo(
         });
     };
 
-    const handleDownloadAssetClick = () => {      
-      
-      if (selectedItems !== undefined && selectedItems !== null && selectedItems.length > 1){ // multi asset export
-              
-        let  totalFiles  = selectedItems.map((e:any) => {   
-             
-          let filesArr  =  e.evidence.asset.map((a:any)  =>{
-              let files =   a.files;               
-            return files.map((x:any)  => {
-                  return { fileRecId: x.filesId, accessCode : "accessCode" };
-                 })           
-                       
-            });   
-           
+    const handleDownloadAssetClick = () => {
+
+      if (selectedItems !== undefined && selectedItems !== null && selectedItems.length > 1) { // multi asset export
+
+        let totalFiles = selectedItems.map((e: any) => {
+
+          let filesArr = e.evidence.asset.map((a: any) => {
+            let files = a.files;
+            return files.map((x: any) => {
+              return { fileRecId: x.filesId, accessCode: "accessCode" };
+            })
+
+          });
+
           return filesArr;
         });
-        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
+        let me = { fileRequest: totalFiles.flat(1).flat(1), operationType: 1 }
         showToastMsg?.({
           message: t("files will be downloaded shortly"),
           variant: "success",
           duration: 5000,
         });
         createMultiExportRequest(me);
-      }else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length > 1 && (row.assetId === null || row.assetId === undefined)){ // multi asset export
-              
-        let  totalFiles  = row.map((e:any) => {   
-             
-          let filesArr  =  e.evidence.asset.map((a:any)  =>{
-              let files =   a.files;               
-            return files.map((x:any)  => {
-                  return { fileRecId: x.filesId, accessCode : "accessCode" };
-                 })           
-                       
-            });   
-           
+      } else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset != null && row.evidence.asset.length > 1 && (row.assetId === null || row.assetId === undefined)) { // multi asset export
+
+        let totalFiles = row.map((e: any) => {
+
+          let filesArr = e.evidence.asset.map((a: any) => {
+            let files = a.files;
+            return files.map((x: any) => {
+              return { fileRecId: x.filesId, accessCode: "accessCode" };
+            })
+
+          });
+
           return filesArr;
         });
-        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }        
+        let me = { fileRequest: totalFiles.flat(1).flat(1), operationType: 1 }
         showToastMsg?.({
           message: t("files will be downloaded shortly"),
           variant: "success",
           duration: 5000,
         });
         createMultiExportRequest(me);
-      }else  if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null){// single asset export
+      } else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset != null) {// single asset export
         const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
         const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
         if (!assetFileId) {
@@ -423,7 +424,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           });
           return;
         }
-  
+
         FileAgent.getDownloadFileUrl(assetFileId)
           .then((response) => {
             downloadFileByURLResponse(response);
@@ -435,28 +436,28 @@ const ActionMenu: React.FC<Props> = React.memo(
               duration: 5000,
             });
           });
-        }else{
-          showToastMsg?.({
-            message: t("There_is_no_File_against_this_Asset"),
-            variant: "error",
-            duration: 5000,
-          });
-        }
+      } else {
+        showToastMsg?.({
+          message: t("There_is_no_File_against_this_Asset"),
+          variant: "error",
+          duration: 5000,
+        });
+      }
 
     };
 
     const createMultiExportRequest = (
       multiFilesRequest: any) => {
-        FileAgent.getMultiDownloadFileUrl(multiFilesRequest)
+      FileAgent.getMultiDownloadFileUrl(multiFilesRequest)
         .then((response) => {
-        
-          downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
+
+          downloadExeFileByFileResponse(response, "getacvideo-multidownloader");
           showToastMsg?.({
             message: t("file downloaded successfully"),
             variant: "success",
             duration: 5000,
           });
-        })       
+        })
         .catch(() => {
           showToastMsg?.({
             message: t("Unable_to_download_file"),
@@ -1579,4 +1580,4 @@ const ActionMenu: React.FC<Props> = React.memo(
 );
 
 export default ActionMenu;
-export {downloadExeFileByFileResponse};
+export { downloadExeFileByFileResponse };
