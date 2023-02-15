@@ -34,13 +34,16 @@ import {
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { urlList, urlNames } from "../../../utils/urlList";
-import ActionMenu, {downloadExeFileByFileResponse} from "../AssetLister/ActionMenu";
+import ActionMenu, { downloadExeFileByFileResponse } from "../AssetLister/ActionMenu";
 import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, EvidenceReformated } from "./AssetDetailsTemplateModel";
 import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
 import PDFViewer from "./PDFViewer";
+import { BlockLockedAssets } from "../utils/constants";
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 
 const AssetDetailsTemplate = () => {
   const { state } = useLocation<AssetDetailRouteStateType>();
@@ -79,6 +82,8 @@ const AssetDetailsTemplate = () => {
   };
 
   const dispatch = useDispatch();
+  const cookies = new Cookies();
+  const decoded: any = jwt_decode(cookies.get("access_token"));
   const [value, setValue] = React.useState(0);
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [pdfMasterData, setPdfMasterData] = React.useState<any[]>([]);
@@ -135,7 +140,11 @@ const AssetDetailsTemplate = () => {
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       let assetListTemp: Asset[] = [response.assets.master];
       assetListTemp = [...assetListTemp, ...response.assets.children];
-      setAssetList(assetListTemp);
+      /**
+       *! Locked child asset only be rendered if user has 'Permission' or asset is owned by user as 'Search Type' is 'ViewOwnAssets'.
+        */
+      const assets = BlockLockedAssets(decoded, '', assetListTemp, "AssetDetailsTemplate");
+      setAssetList(assets);
       setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
     }).catch(() => {
@@ -195,16 +204,15 @@ const AssetDetailsTemplate = () => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && 
-    fileData.length == masterasset?.filter(x => ((x.type == res?.typeOfAsset) || (x.type == "Audio" && res?.typeOfAsset == "AudioOnly")) && x.filesId > 0).length && 
-    getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0 && ((x?.files[0]?.type == res?.typeOfAsset) || (x?.files[0]?.type == "Audio" && res?.typeOfAsset == "AudioOnly"))).length == childFileData.length) 
-    { // temp condition     
+    if (getAssetData &&
+      fileData.length == masterasset?.filter(x => ((x.type == res?.typeOfAsset) || (x.type == "Audio" && res?.typeOfAsset == "AudioOnly")) && x.filesId > 0).length &&
+      getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0 && ((x?.files[0]?.type == res?.typeOfAsset) || (x?.files[0]?.type == "Audio" && res?.typeOfAsset == "AudioOnly"))).length == childFileData.length) { // temp condition     
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
         let formDatas: any[] = [];
         x.formData.forEach((y: any) => {
-          
+
           y.fields.map((z: any) => {
             let formData = {
               key: z.key,
@@ -385,7 +393,7 @@ const AssetDetailsTemplate = () => {
   }
 
   const getMasterAssetFile = (dt: any) => {
-    if(dt?.some((x:any)=> x.type == "GPS")) {
+    if (dt?.some((x: any) => x.type == "GPS")) {
       setOpenMap(true);
     }
     dt?.map((template: any, i: number) => {
@@ -406,15 +414,15 @@ const AssetDetailsTemplate = () => {
             downloadUri: response
           }])
         }
-        else if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")){
-            setFileData([...fileData, {
-              filename: template.name,
-              fileurl: template.url,
-              fileduration: template.duration,
-              downloadUri: response
-            }])
+        else if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")) {
+          setFileData([...fileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          }])
         }
-        else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc"){
+        else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc") {
           setPdfMasterData([...fileData, {
             filename: template.name,
             fileurl: template.url,
@@ -440,7 +448,7 @@ const AssetDetailsTemplate = () => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")){
+          if ((template.type == res?.typeOfAsset) || (template.type == "Audio" && res?.typeOfAsset == "AudioOnly")) {
             fileDownloadUrls.push({
               filename: template.name,
               fileurl: template.url,
@@ -449,7 +457,7 @@ const AssetDetailsTemplate = () => {
             })
             setChildFileData([...fileDownloadUrls])
           }
-          else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc"){
+          else if (res?.typeOfAsset == "Doc" && template.type == "PDFDoc") {
             filePdfDownloadUrls.push({
               filename: template.name,
               fileurl: template.url,
@@ -626,7 +634,7 @@ const AssetDetailsTemplate = () => {
 
       return {
         id: template.id,
-        files: childFileData.filter((x: any) =>template.name == x.filename),
+        files: childFileData.filter((x: any) => template.name == x.filename),
         assetduration: template.duration,
         assetbuffering: template.buffering,
         recording: template.recording,
@@ -848,51 +856,52 @@ const AssetDetailsTemplate = () => {
 
   const DownloadFile = () => {
 
-    if(GroupedFilesId !== null && GroupedFilesId !== undefined ){
-      if(GroupedFilesId.length == 1){
-        console.log("1 download");  
-        console.log(GroupedFilesId);       
-          FileAgent.getDownloadFileUrl(GroupedFilesId[0].filesId)
-            .then((response) => {
-              downloadFileByURLResponse(response);
-            })
-            .catch(() => {
-              targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
-            });
-       
-      }else {
+    if (GroupedFilesId !== null && GroupedFilesId !== undefined) {
+      if (GroupedFilesId.length == 1) {
+        console.log("1 download");
+        console.log(GroupedFilesId);
+        FileAgent.getDownloadFileUrl(GroupedFilesId[0].filesId)
+          .then((response) => {
+            downloadFileByURLResponse(response);
+          })
+          .catch(() => {
+            targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
+          });
+
+      } else {
         console.log("multi download");
         let fileRequest = GroupedFilesId.map((x: any) => {
-         return {fileRecId : x.filesId, accessCode : "access code"}
-      });
-      let multiExport = {fileRequest : fileRequest,operationType : 1 }
-      console.log(fileRequest);
-      targetRef.current.showToastMsg?.({
-        message: t("files will be downloaded shortly"),
-        variant: "success",
-        duration: 5000,
-      });
-      FileAgent.getMultiDownloadFileUrl(multiExport)
-      .then((response) => {
-      
-        downloadExeFileByFileResponse(response,"getacvideo-multidownloader");
+          return { fileRecId: x.filesId, accessCode: "access code" }
+        });
+        let multiExport = { fileRequest: fileRequest, operationType: 1 }
+        console.log(fileRequest);
         targetRef.current.showToastMsg?.({
-          message: t("file downloaded successfully"),
+          message: t("files will be downloaded shortly"),
           variant: "success",
           duration: 5000,
         });
-      })       
-      .catch(() => {
-        targetRef.current.showToastMsg?.({
-          message: t("Unable_to_download_file"),
-          variant: "error",
-          duration: 5000,
-        });
-      });
+        FileAgent.getMultiDownloadFileUrl(multiExport)
+          .then((response) => {
 
-    }  
+            downloadExeFileByFileResponse(response, "getacvideo-multidownloader");
+            targetRef.current.showToastMsg?.({
+              message: t("file downloaded successfully"),
+              variant: "success",
+              duration: 5000,
+            });
+          })
+          .catch(() => {
+            targetRef.current.showToastMsg?.({
+              message: t("Unable_to_download_file"),
+              variant: "error",
+              duration: 5000,
+            });
+          });
 
-  }}
+      }
+
+    }
+  }
 
 
   const downloadFileByURLResponse = (url: string) => {
@@ -944,7 +953,7 @@ const AssetDetailsTemplate = () => {
           return <audio controls={true} src={availableAssets[0]?.files[0]?.downloadUri}></audio>
         case 'Doc':
           return <>
-            {(pdfMasterData.length>0 || pdfChildData.length>0) &&<PDFViewer pdfMasterData={pdfMasterData} pdfChildData={pdfChildData} />}
+            {(pdfMasterData.length > 0 || pdfChildData.length > 0) && <PDFViewer pdfMasterData={pdfMasterData} pdfChildData={pdfChildData} />}
           </>
         default:
           return <></>;
@@ -992,7 +1001,7 @@ const AssetDetailsTemplate = () => {
       </div>
 
       {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
-      
+
       {detailContent
         && <div className="topBorderForDetail"></div>
       }
@@ -1062,7 +1071,7 @@ const AssetDetailsTemplate = () => {
                             </Grid>
                             <Grid item xs={9}>
                               {x.formDatas.map((x: any) =>
-                                <Grid item xs={9}> 
+                                <Grid item xs={9}>
                                   <span> {x.key + " : " + x.value} </span>
                                 </Grid>
                               )}

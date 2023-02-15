@@ -55,16 +55,15 @@
 
 //const AssetUnCategorized  = i18n.t("UnCategorized");
 
-
 const SearchType = {
     SimpleSearch: "SimpleSearch",
     AdvanceSearch: "AdvanceSearch",
     ShortcutSearch: "ShortcutSearch",
     ViewOwnAssets: "ViewOwnAssets"
-}
+};
+const Allowed_Access_To_Restricted_Assets = "29";
 
 const GenerateLockFilterQuery = (decoded) => {
-    const Allowed_Access_To_Restricted_Assets = "29";
     const shouldGroup = [];
     const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
     if (!isAllowed) {
@@ -108,6 +107,27 @@ const GenerateLockFilterQuery = (decoded) => {
     }
 }
 
-export { SearchType, GenerateLockFilterQuery }
+const BlockLockedAssets = (decoded, searchType, response, actionPlacement) => {
+    const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
+    if ((!isAllowed) && searchType !== 'ViewOwnAssets') {
+        let blockedAssets;
+        if (actionPlacement === "getAssetSearchInfoAsync") {
+            blockedAssets = response.map((evidence) => {
+                return {
+                    ...evidence,
+                    asset: evidence.asset.filter((x) => x.lock == undefined)
+                }
+            });
+            return blockedAssets;
+        } else if (actionPlacement === "AssetDetailsTemplate") {
+            blockedAssets = response.filter((x) => x.lock == undefined);
+            return blockedAssets
+        }
+        else { }
+    }
+    return response;
+}
+
+export { SearchType, GenerateLockFilterQuery, BlockLockedAssets }
 
 //export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}

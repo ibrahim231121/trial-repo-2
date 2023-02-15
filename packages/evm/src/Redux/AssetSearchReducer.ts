@@ -5,6 +5,7 @@ import { SearchModel } from '../utils/Api/models/SearchModel';
 import { setLoaderValue } from './loaderSlice';
 import jwt_decode from "jwt-decode";
 import Cookies from 'universal-cookie';
+import { BlockLockedAssets } from '../Application/Assets/utils/constants';
 
 interface assetSearchType{
     QUERRY:any,
@@ -27,25 +28,14 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
      *! It block to render child asset if they are locked.
      */
     const cookies = new Cookies();
-    let decoded : any = jwt_decode(cookies.get("access_token"));
-    const Allowed_Access_To_Restricted_Assets = "29";
-    const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
-    
+    const decoded : any = jwt_decode(cookies.get("access_token"));
     return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}]).then((response: SearchModel.Evidence[]) => {
         thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }));
         /**
-         *! Child asset only be rendered if 'Permission is missing' or 'Search Type' is not 'ViewOwnAssets'.
+         *! Locked child asset only be rendered if user has 'Permission' or asset is owned by user as 'Search Type' is 'ViewOwnAssets'.
          */
-        if((!isAllowed) && searchType !== 'ViewOwnAssets') {
-           const evidenceResponse = response.map((evidence: any) => {
-            return {
-                ...evidence,
-                asset : evidence.asset.filter((x: any) => x.lock == undefined)
-            }
-           });
-           return evidenceResponse;
-        }
-        return response;
+        const assets = BlockLockedAssets(decoded, searchType, response, 'getAssetSearchInfoAsync');
+        return assets;
     }).catch((error: any) => {
         thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
         return error.response.status;
