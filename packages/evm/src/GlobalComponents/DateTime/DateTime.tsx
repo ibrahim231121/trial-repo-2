@@ -175,6 +175,14 @@ const DateTime = () => {
     return assetDateTime;
   }
 
+  function SetStartAndEndDateValue(newDateTime: any) {
+    if (newDateTime[0] == undefined && newDateTime[1] == undefined) {
+      return newDateTime = convertDateTime(moment().endOf("day").set("second", 0).format());
+    }
+
+    return newDateTime;
+  }
+
   const onOptionChange = (e: any, startDate : string = "", endDate : string = "", isCustomRange : boolean = false) => {
     const { value } = e.target;
     if (value === "custom" && !openContainerState ) {
@@ -182,8 +190,10 @@ const DateTime = () => {
     }
     else if (isCustomRange ) {
       const filterDataValues = dateOptionsValues.filter((x: DateTimeProp | undefined) => x?.value !== customRange);
-      const newStartDateTime = startDate &&  convertDateTime(startDate);
-      const newEndDateTime = endDate &&  convertDateTime(endDate);
+      let newStartDateTime = startDate &&  convertDateTime(startDate);
+      let newEndDateTime = endDate &&  convertDateTime(endDate);
+      newStartDateTime = SetStartAndEndDateValue(newStartDateTime);
+      newEndDateTime = SetStartAndEndDateValue(newEndDateTime);
 
       var dateTime = {
         value: customRange,
