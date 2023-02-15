@@ -184,7 +184,7 @@ const MultiSelectBoxCategory = ({
         disableCloseOnSelect={true}
         closeText=""
         openText=""
-        style={{ height: styelHeight }}
+        style={{ minHeight: styelHeight, height : "auto" }}
         className={"crxMultiAutocomplete " + className + " " + classes.root}
         classes={{
           paper: classes.paper,

@@ -427,14 +427,14 @@ export const urlList: any = [
             { routeTo: '/admin/retentionPolicies/', type: 'link', label: 'Retention Policies' }
         ]
     },
-    {
-        name: urlNames.createFormField,
-        url: "/admin/createFormField",
-        details: [
-            { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/createFormField', type: 'text', label: 'Create Form Field' }
-        ],
-    },
+    // {
+    //     name: urlNames.createFormField,
+    //     url: "/admin/createFormField",
+    //     details: [
+    //         { type: 'text', label: 'Admin' },
+    //         { routeTo: '/admin/createFormField', type: 'text', label: 'Create Form Field' }
+    //     ],
+    // },
    
    {
         name: urlNames.defaultUnitTemplate,
@@ -530,13 +530,15 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
         ]
-    }, {
+    }, 
+    
+    {
         name: urlNames.createFormField,
         url: "/admin/categoryFormField/createFormField",
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/categoryFormField', type: 'link', label: 'form field Detail' },
-            { routeTo: '/admin/categoryFormField/createFormField', type: 'text', label: 'Create Form Field' }
+            { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' },
+            { type: 'text', label: 'Create Form Field' }
         ],
     },
     {
@@ -544,7 +546,7 @@ export const urlList: any = [
         url: '/admin/categoryFormField/editFormField/:id',
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/categoryFormField/editFormField/', type: 'link', label: 'Edit Form Field' }
+            { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' }
         ]
     },
 ];

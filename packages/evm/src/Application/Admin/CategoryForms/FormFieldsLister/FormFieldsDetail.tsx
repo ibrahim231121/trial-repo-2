@@ -20,6 +20,7 @@ import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import { controlTypes, controlTypesForValidation } from "../TypeConstant/constants";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 type FormFieldsDetailProps = {
   id: number;
@@ -211,6 +212,9 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
   React.useEffect(() => {
     setOpenModal(true);
     setControlTypes();
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, []);
 
   useEffect(() => {
@@ -227,6 +231,7 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
               defaultFieldValue: response?.defaultFieldValue,
               isRequired: response?.isRequired,
             });
+            dispatch(enterPathActionCreator({ val: response?.display?.caption }));
           }
         })
         .catch((err: any) => {

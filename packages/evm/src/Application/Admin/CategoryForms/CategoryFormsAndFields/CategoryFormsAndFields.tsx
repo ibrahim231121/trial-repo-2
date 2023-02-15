@@ -19,6 +19,7 @@ import CategoryFormsList from "../CategoryFormsLister/CategoryFormsList";
 import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
 import FormFieldsList from "../FormFieldsLister/FormFieldsList";
 
+
 const CategoryFormsAndFields = () => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
@@ -50,10 +51,6 @@ const CategoryFormsAndFields = () => {
 
   const { id } = useParams<{ id: string }>();
   const [ids, setIds] = useState<string>(id);
-
-  React.useEffect(() => {
-    // dispatch(getAllCategyFormsFilter(pageiGrid));
-  }, []);
 
   useEffect(() => {
     if (ids !== undefined)
