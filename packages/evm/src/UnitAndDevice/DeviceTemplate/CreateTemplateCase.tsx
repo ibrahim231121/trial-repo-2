@@ -600,15 +600,6 @@ export const CreateTempelateCase = (props: any) => {
                 />) : (<></>)}
             </div>
             <Restricted moduleId={52}>
-              {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
-                <CRXButton onClick={sensorsEvent}>
-                  {t("Create Sensor & Trigger")}
-                </CRXButton>
-              </div>) : (<></>)}
-            </Restricted>
-          </div>
-    
-        <Restricted moduleId={52}>
             {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
                   <CRXButton     
                      color='primary'
@@ -618,6 +609,9 @@ export const CreateTempelateCase = (props: any) => {
                   </CRXButton>
             </div>) :(<></>)}
           </Restricted>
+          </div>
+    
+    
         </div>
      
       );

@@ -35,14 +35,14 @@
   }
 
   .hideVolumeBar {
-    display: none;
+    visibility: hidden;
 
 
 
   }
 
   .showVolumeBar {
-    display: block;
+    visibility:visible;
 
   }
 }
