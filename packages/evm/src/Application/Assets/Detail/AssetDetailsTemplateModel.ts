@@ -1,3 +1,5 @@
+import { FileData } from "./AssetDetailsTemplate";
+
 export type DateTimeProps = {
     dateTimeObj: DateTimeObject;
     colIdx: number;
@@ -10,7 +12,7 @@ export type DateTimeObject = {
 };
 export type assetdata = {
     name: string;
-    files: any;
+    files: FileData[];
     assetduration: number;
     assetbuffering: any;
     recording: any;
