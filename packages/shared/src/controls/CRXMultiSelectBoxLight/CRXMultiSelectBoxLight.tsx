@@ -169,6 +169,7 @@ interface multiSelectProps {
   multiple?: boolean,
   options: renderCheck[],
   onChange: (e: any, v: any) => void,
+  onOpen: (e: any) => void,
   id: string,
   defaultValue?: any[],
   className?: string,
@@ -190,6 +191,7 @@ const CRXMultiSelectBoxLight = ({
   multiple,
   options,
   onChange,
+  onOpen,
   defaultValue,
   className,
   value,
@@ -298,6 +300,9 @@ const CRXMultiSelectBoxLight = ({
         inputValue = {getSaveValue}
         onChange={(e: any, val:any) => {
           return onChange(e,val)
+        }}
+        onOpen={(e: any) => {
+          return onOpen(e)
         }}
         options={options}
         getOptionLabel={option => option.label || option.inputValue}

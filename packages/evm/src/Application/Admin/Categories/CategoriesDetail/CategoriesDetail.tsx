@@ -51,7 +51,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     const dispatch = useDispatch();
     const [evidenceRetentionPoliciesOptions, setEvidenceRetentionPoliciesOptions] = React.useState<any[]>([]);
     const [categoryFormsOptions, setCategoryFormsOptions] = React.useState<DropdownModel[]>([]);
-    const [uploadPolicesOptions, setUploadPolicesOptions] = React.useState<DropdownModel[]>([]);
+    const [uploadPolicesOptions, setUploadPolicesOptions] = React.useState<any[]>([]);
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
       gridFilter: {
         logic: "and",
@@ -67,8 +67,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   
         RetentionPoliciesTemplateRows = retentionPoliciesList?.data.map((template: any) => {
           return {
-            value: template.id,
-            displayText: template.name,
+            id: template.id,
+            label: template.name,
           }
         })
       }
@@ -95,8 +95,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       if (uploadPoliciesList?.data && uploadPoliciesList?.data.length > 0) {
         UploadPoliciesTemplateRows = uploadPoliciesList?.data.map((template: any) => {
           return {
-            value: template.id,
-            displayText: template.name,
+            id: template.id,
+            label: template.name,
           }
         })
       }
@@ -328,19 +328,19 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   return (
     <div className="searchComponents">
       <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={categoryPayLoad}
-        validationSchema={categoriesFromValidationSchema}
-        onSubmit={(values) => {
-          console.log("SUBMIT : " + values);
-        }}
-      >
-        {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
-          <>
-            <div className={`create_category_form_modal categories ${error ? "errorFormField1":""}`}>
-              <CRXToaster ref={categoriesFormRef} />
-       
+        <Formik
+          enableReinitialize={true}
+          initialValues={categoryPayLoad}
+          validationSchema={categoriesFromValidationSchema}
+          onSubmit={(values) => {
+            console.log("SUBMIT : " + values);
+          }}
+        >
+          {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
+            <>
+              <div className={`create_category_form_modal categories ${error ? "errorFormField1":""}`}>
+                <CRXToaster ref={categoriesFormRef} />
+
                 {error && (
                   <CRXAlert
                     className="formFieldError"
@@ -351,139 +351,147 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     open={true}
                   />
                 )}
-    <div className="indicatestext tp15"><b>*</b> Indicates required field</div> 
+                <div className="indicatestext tp15"><b>*</b> Indicates required field</div>
                 <div className="createCategory_form">
-             
-                <div className="category_form_fields">
+
+                  <div className="category_form_fields">
                     <div className="CBX-input">
                       <label htmlFor="name">
                         Name <span className={`${errors.name !== undefined &&
                           touched.name ? " error_staric" : " "}`}>*</span>
                       </label>
                       <div className="">
-                      <Field
-                        id="name"
-                        key="name"
-                        name="name"
-                        className={`name_field ${errors.name !== undefined &&
-                          touched.name ? " error_filed" : " "}`}
-                      />
-                      {errors.name !== undefined &&
-                        touched.name ? (
-                        <div className="errorTenantStyle">
-                          <i className="fas fa-exclamation-circle"></i>
-                          {errors.name}
-                        </div>
-                      ) : (
-                        <></>
-                      )}
+                        <Field
+                          id="name"
+                          key="name"
+                          name="name"
+                          className={`name_field ${errors.name !== undefined &&
+                            touched.name ? " error_filed" : " "}`}
+                        />
+                        {errors.name !== undefined &&
+                          touched.name ? (
+                          <div className="errorTenantStyle">
+                            <i className="fas fa-exclamation-circle"></i>
+                            {errors.name}
+                          </div>
+                        ) : (
+                          <></>
+                        )}
                       </div>
-                  
-                     
+
+
                     </div>
-                
-                </div>
-                <div className="category_form_fields">
 
-                  <TextField
-                    id="description"
-                    required={false}
-                    value={values.description}
-                    label={t("Description")}
-                    className="categories-input"
-                    onChange={(e: any) => setFieldValue("description", e.target.value)}
-                    disabled={false}
-                    type="text"
-                    multiline={true}
-                  />
-                </div>
+                  </div>
+                  <div className="category_form_fields">
 
-                
-                <div className="category_form_fields">
-                  <label className="form_label">
-                    {t("Evidence_Retention_Policy")} <span className={`${errors.evidenceRetentionPolicy !== undefined  && touched.evidenceRetentionPolicy ?  " error_staric" : ""}`}>*</span>
-                  </label>
-                  <CRXSelectBox
-                    name="evidenceRetentionPolicy"
-                    id="evidenceRetentionPolicy"
-                    className={`evidence_rentention_select wd450 ${errors.evidenceRetentionPolicy !== undefined  && touched.evidenceRetentionPolicy ? "error_select" : "" }`}
-                    value={values.evidenceRetentionPolicy}
-                    onChange={(e: any) => {
-                      setFieldValue("evidenceRetentionPolicy", e.target.value)
-                    }
-                    }
-                    options={evidenceRetentionPoliciesOptions}
-                    onClose={(e: any) => {
-                      handleBlur(e);
-                      setTouched({
-                        ...touched,
-                        ["evidenceRetentionPolicy"]: true,
-                      });
-                    }}
-                    isRequried={touched.evidenceRetentionPolicy && ((errors.evidenceRetentionPolicy?.length ?? 0) > 0)}
-                    error={!((errors.evidenceRetentionPolicy?.length ?? 0) > 0)}
-                    errorMsg={errors.evidenceRetentionPolicy}
-                  />
-                </div>
+                    <TextField
+                      id="description"
+                      required={false}
+                      value={values.description}
+                      label={t("Description")}
+                      className="categories-input"
+                      onChange={(e: any) => setFieldValue("description", e.target.value)}
+                      disabled={false}
+                      type="text"
+                      multiline={true}
+                    />
+                  </div>
 
-                <div className="category_form_fields">
-                  <label className="form_label">
-                    {t("Upload_Policy")} <span className={`${errors.uploadPolicy !== undefined  && touched.uploadPolicy ? " error_staric" : ""}`}>*</span>
-                  </label>
-                  <CRXSelectBox
-                    id="uploadPolicy"
-                    name="uploadPolicy"
-                    className={`wd450 ${errors.uploadPolicy !== undefined  && touched.uploadPolicy ? " error_select" : ""}`}
-                    value={values.uploadPolicy}
-                    onChange={(e: any) => {
-                      setFieldValue("uploadPolicy", e.target.value)
-                    }
-                    }
-                    options={uploadPolicesOptions}
-                    onClose={(e: any) => {
-                      handleBlur(e);
-                      setTouched({
-                        ...touched,
-                        ["uploadPolicy"]: true,
-                      });
-                      
-                    }}
-                    isRequried={touched.uploadPolicy && ((errors.uploadPolicy?.length ?? 0) > 0)}
-                    error={!((errors.uploadPolicy?.length ?? 0) > 0)}
-                    errorMsg={errors.uploadPolicy}
-                  />
-                </div>
 
-                <div className="category_form_fields">
+                  <div className="category_form_fields">
+                    <CRXMultiSelectBoxLight
+                      name="evidenceRetentionPolicy"
+                      id="evidenceRetentionPolicy"
+                      className={`evidence_rentention_select wd450 ${errors.evidenceRetentionPolicy !== undefined && touched.evidenceRetentionPolicy ? "error_select" : ""}`}
+                      label={t("Evidence_Retention_Policy")}
+                      multiple={false}
+                      CheckBox={true}
+                      required={true}
+                      options={evidenceRetentionPoliciesOptions}
+                      value={values.evidenceRetentionPolicy === 0 ? "" : { id: values.evidenceRetentionPolicy, label: evidenceRetentionPoliciesOptions.find(o => o.id == values.evidenceRetentionPolicy)?.label }}
+                      isSearchable={true}
+                      onChange={(
+                        e: React.SyntheticEvent,
+                        value: any
+                      ) => {
+                        setFieldValue("evidenceRetentionPolicy", value === null ? -1 : Number.parseInt(value?.id))
+                      }
+                      }
+                      onOpen={(e: any) => {
+                        handleBlur(e);
+                        setTouched({
+                          ...touched,
+                          ["evidenceRetentionPolicy"]: true,
+                        });
+                      }}
+                      error={ touched?.evidenceRetentionPolicy && (errors.evidenceRetentionPolicy ?? "").length > 0}
+                      errorMsg={errors.evidenceRetentionPolicy}
+                    />
+                  </div>
 
-                  <CRXMultiSelectBoxLight
-                    label={t("Category_Formss")}
-                    id="categoryForms"
-                    className="category_form_multiSelect wd450"
-                    multiple={true}
-                    value={values.categoryForms}
-                    options={categoryFormsOptions}
-                    onChange={(_e: React.SyntheticEvent, value: DropdownModel[]) => {
-                      let filteredValues = value.filter((x: any) => x.inputValue !== x.label);
-                      setFieldValue("categoryForms", filteredValues);
-                    }}
-                  />
-                </div>
-                <div className={`file_upload_button ${errors.audioprompt ? "fileErrorbtn" : ""}`}>
-                  <input
-                    type="file"
-                    accept=".wav"
-                    id="audioprompt"
-                    name="audioprompt"
-                    className="audio_file_upload"
-                    onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
-                  />
-                  {errors.audioprompt &&
-                    <div className="fileError">
-                      <i className='fas fa-exclamation-circle'/>
-                      {errors.audioprompt}
-                    </div>}
-                </div>
+                  <div className="category_form_fields">
+
+                    <CRXMultiSelectBoxLight
+                      id="uploadPolicy"
+                      name="uploadPolicy"
+                      className={`wd450 ${errors.uploadPolicy !== undefined && touched.uploadPolicy ? " error_select" : ""}`}
+                      label={t("Upload_Policy")}
+                      multiple={false}
+                      CheckBox={true}
+                      required={true}
+                      options={uploadPolicesOptions}
+                      value={values.uploadPolicy === 0 ? "" : { id: values.uploadPolicy, label: uploadPolicesOptions.find(o => o.id == values.uploadPolicy)?.label }}
+                      isSearchable={true}
+                      onChange={(
+                        e: React.SyntheticEvent,
+                        value: any
+                      ) => {
+                        setFieldValue("uploadPolicy", value === null ? -1 : Number.parseInt(value?.id))
+                      }
+                      }
+                      onOpen={(e: any) => {
+                        handleBlur(e);
+                        setTouched({
+                          ...touched,
+                          ["uploadPolicy"]: true,
+                        });
+                      }}
+                      error={ touched?.uploadPolicy && (errors.uploadPolicy ?? "").length > 0}
+                      errorMsg={errors.uploadPolicy}
+                    />
+                  </div>
+
+                  <div className="category_form_fields">
+
+                    <CRXMultiSelectBoxLight
+                      label={t("Category_Formss")}
+                      id="categoryForms"
+                      className="category_form_multiSelect wd450"
+                      multiple={true}
+                      value={values.categoryForms}
+                      options={categoryFormsOptions}
+                      onChange={(_e: React.SyntheticEvent, value: DropdownModel[]) => {
+                        let filteredValues = value.filter((x: any) => x.inputValue !== x.label);
+                        setFieldValue("categoryForms", filteredValues);
+                      }}
+                    />
+                  </div>
+                  <div className={`file_upload_button ${errors.audioprompt ? "fileErrorbtn" : ""}`}>
+                    <input
+                      type="file"
+                      accept=".wav"
+                      id="audioprompt"
+                      name="audioprompt"
+                      className="audio_file_upload"
+                      onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
+                    />
+                    {errors.audioprompt &&
+                      <div className="fileError">
+                        <i className='fas fa-exclamation-circle'/>
+                        {errors.audioprompt}
+                      </div>}
+                  </div>
                 </div>
                 <div className="crxFooterEditFormBtn stickyFooter_Tab">
                   <div className="__crxFooterBtnUser__">
@@ -496,7 +504,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     >
                       {t("Save")}
                     </CRXButton>
-                  
+
                     <CRXButton
                       className="groupInfoTabButtons"
                       color="secondary"
@@ -507,7 +515,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     </CRXButton>
                   </div>
                   <div className="__crxFooterBtnUser__">
-                  <CRXButton
+                    <CRXButton
                       className=""
                       color="secondary"
                       variant="outlined"
@@ -518,31 +526,31 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                   </div>
 
                 </div>
-        
-              <CRXConfirmDialog
-                setIsOpen={() => setIsOpen(false)}
-                onConfirm={handleClose}
-                isOpen={isOpen}
-                className="Categories_Confirm"
-                primary={t("Yes_close")}
-                secondary={t("No,_do_not_close")}
-                text="retention policy form"
-              >
-                <div className="confirmMessage">
-                  {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                  <strong>{props.title}</strong>. {t("If_you_close_the_form")},
-                  {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-                  <div className="confirmMessageBottom">
-                    {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-                  </div>
-                </div>
-              </CRXConfirmDialog>
 
-            </div>
-          </>
-        )}
-      </Formik>
-    </>
+                <CRXConfirmDialog
+                  setIsOpen={() => setIsOpen(false)}
+                  onConfirm={handleClose}
+                  isOpen={isOpen}
+                  className="Categories_Confirm"
+                  primary={t("Yes_close")}
+                  secondary={t("No,_do_not_close")}
+                  text="retention policy form"
+                >
+                  <div className="confirmMessage">
+                    {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+                    <strong>{props.title}</strong>. {t("If_you_close_the_form")},
+                    {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+                    <div className="confirmMessageBottom">
+                      {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+                    </div>
+                  </div>
+                </CRXConfirmDialog>
+
+              </div>
+            </>
+          )}
+        </Formik>
+      </>
     </div>
   )
 }
