@@ -40,7 +40,7 @@ import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, 
 import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
-import PDFViewer from "./PDFViewer";
+import PDFViewer from "../../../components/MediaPlayer/PdfViewer/PDFViewer";
 import { BlockLockedAssets } from "../utils/constants";
 import jwt_decode from "jwt-decode";
 import Cookies from 'universal-cookie';
