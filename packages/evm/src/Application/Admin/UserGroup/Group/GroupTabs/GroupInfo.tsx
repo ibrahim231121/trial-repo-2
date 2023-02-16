@@ -47,14 +47,14 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
       setIsSaveButtonDisabled(true)
     }
     else {
-      const chracterRegx = /^[a-zA-Z0-9-_.\s]+$/.test(String(name).toLowerCase());
+      const chracterRegx = /^[a-zA-Z0-9-.\s]+$/.test(String(name).toLowerCase());
       if (!chracterRegx) {
         setErrorMessage("Please Provide a Valid Group Name");
         setIsSaveButtonDisabled(true)
       }
       else {
         setErrorMessage("");
-        setIsSaveButtonDisabled(false)
+        // setIsSaveButtonDisabled(false)
       }
     }
   }
