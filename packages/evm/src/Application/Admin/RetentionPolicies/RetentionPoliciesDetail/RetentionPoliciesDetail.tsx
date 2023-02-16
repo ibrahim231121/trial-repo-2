@@ -373,7 +373,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
           setRetentionSize(response.detail.space);
 
           setRetentionPolicies(response);
-          dispatch(enterPathActionCreator({  val: `Retention Policy:  ${response?.description }` }));
+          dispatch(enterPathActionCreator({  val: `Retention Policy:  ${response?.name }` }));
 
           const temp = {
             retentionPolicies: { ...retentionPoliciesObj },
