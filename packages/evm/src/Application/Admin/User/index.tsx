@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { CRXDataTable, 
   CRXColumn, 
   CRXToaster, 
@@ -42,6 +42,9 @@ import { NotificationMessage } from "../../Header/CRXNotifications/notifications
 import moment from "moment";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import "./userIndex.scss";
+import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import anchorDisplay from '../../../utils/AnchorDisplay';
+
 
 type User = {
   id: string;
@@ -99,6 +102,8 @@ const User: React.FC = () => {
   const toasterRef = useRef<typeof CRXToaster>(null);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const { getModuleIds} = useContext(ApplicationPermissionContext);
+
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
       gridFilter: {
         logic: "and",
@@ -124,6 +129,12 @@ const User: React.FC = () => {
     
   }, []);
 
+  const openEditUser = (rowId: number) => {
+    let urlPathName = urlList.filter((item: any) => item.name === urlNames.editUser)[0].url;
+    history.push(
+      urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + rowId
+    );
+  }
   const setData = () => {
     let userRows: User[] = [];
     if (users.data && users.data.length > 0) {
@@ -344,7 +355,18 @@ const User: React.FC = () => {
       label: `${t("LoginId")}`,
       id: "loginId",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string, id: number) => {
+        if (getModuleIds().includes(10)) {
+          return <Restricted moduleId={10}>
+            <div className="linkColor" onClick={
+              (e) => openEditUser(id)}>{e}</div>
+          </Restricted>
+        }
+        else 
+        {
+          return textDisplay(e, "")
+        }
+      },
       sort: true,
       searchFilter: true,
       searchComponent: searchText,

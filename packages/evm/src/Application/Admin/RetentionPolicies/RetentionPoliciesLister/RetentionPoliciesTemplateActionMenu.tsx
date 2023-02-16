@@ -119,7 +119,7 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
     >
         {selectedItems.length <=1 ? (
       <MenuItem onClick={() => EditRetentionPolicy()}>
-      <Restricted moduleId={0}>
+      <Restricted moduleId={63}>
           <div className="crx-meu-content groupingMenu  crx-spac"  >
             <div className="crx-menu-icon">
             <i className="far fa-pencil"></i>
@@ -134,7 +134,7 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
           <div></div>
           )}  
       <MenuItem >
-      <Restricted moduleId={0}>
+      <Restricted moduleId={64}>
         <div className="crx-meu-content crx-spac" onClick={deleteConfirm} >
           <div className="crx-menu-icon">
             <i className="far fa-trash-alt"></i>
