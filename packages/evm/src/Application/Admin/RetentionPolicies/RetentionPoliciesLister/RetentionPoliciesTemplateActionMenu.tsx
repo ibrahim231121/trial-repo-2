@@ -29,24 +29,31 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
   const [policyName, setPolicyName] = useState<any[]>([]);
 
   const deleteRetentionPolicies = () => {
+    debugger;
+    let retentionIds: number[] = [];
     if (Array.isArray(selectedItems) && selectedItems.length > 0) {
-      const retentionIds: number[] = selectedItems.map((data: any) => {
+      retentionIds = selectedItems.map((data: any) => {
         return data.id;
       });
-      SetupConfigurationAgent.deleteAllRetentionPoliciesTemplate(retentionIds)
-        .then(function (response: any) {
-          let { AssignIdName, UnAssignsIds } = response;
-          deleteUploadPoliciesHandler(AssignIdName, UnAssignsIds);
-          getRowData();
-          getSelectedData();
-        })
-        .catch(function (error) {
-          if (error) {
-            onMessageShow(false, error?.response?.data?.toString());
-            return error;
-          }
-        });
     }
+    else {
+      retentionIds.push(row.id);
+    }
+    if (retentionIds.length > 0) {
+      SetupConfigurationAgent.deleteAllRetentionPoliciesTemplate(retentionIds)
+      .then(function (response: any) {
+        let { AssignIdName, UnAssignsIds } = response;
+        deleteUploadPoliciesHandler(AssignIdName, UnAssignsIds);
+        getRowData();
+        getSelectedData();
+      })
+      .catch(function (error) {
+        if (error) {
+          onMessageShow(false, error?.response?.data?.toString());
+          return error;
+        }
+        });
+      }
 
     const deleteUploadPoliciesHandler = (AssignIdName: any, UnAssignsIds: any) => {
       if (AssignIdName.length > 0) {

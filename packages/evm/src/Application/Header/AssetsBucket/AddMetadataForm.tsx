@@ -1110,6 +1110,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const stationSelectClose = (e: any) => {
     if (e.target.value == undefined || e.target.value != 0) {
+      formpayload.station = ""; 
       setMetaDataErrMsg({
         ...meteDataErrMsg,
         required: "Station is required",
