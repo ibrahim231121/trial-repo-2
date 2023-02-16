@@ -14,7 +14,13 @@ export interface Unit {
     primaryDeviceIdentifier: string,
     key: string
 }
-
+export interface UnitAndDevice  {
+    deviceName: string;
+    deviceType: string;
+    serialNumber: string;
+    version: string
+  };
+  
 export interface License {
     key: string,
     status: string,

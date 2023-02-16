@@ -46,6 +46,7 @@ type Unit = {
   description: string,
   serialNumber: string,
   template: string,
+  deviceType: string;
   version: string,
   key: string,
   station: string,
@@ -163,7 +164,8 @@ const UnitAndDevices: React.FC = () => {
               unitName : unit.unitId,
               unitId : unit.recId,
               stationId : unit.stationRecId,
-              template : unit.template
+              template : unit.template,
+              deviceType: unit.deviceType
             }
             let objUnit={
               id: unit.recId,
@@ -172,6 +174,7 @@ const UnitAndDevices: React.FC = () => {
               station: unit.station,
               serialNumber: unit.serialNumber,
               template: unit.template,
+              deviceType: unit.deviceType,
               key: unit.key,
               version: unit.version,
               //assignedTo: unit.assignedTo,

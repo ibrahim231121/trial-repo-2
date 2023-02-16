@@ -498,6 +498,7 @@ const onSelectedClear = (colIdx: number) => {
               orderByParam={orderBy}
               searchHeader={true}
               columnVisibilityBar={true}
+              showCheckBoxesCol={false}
               allowDragableToList={false}
               className="unit_detail_tab_events_data_table"
               onClearAll={clearAll}
@@ -519,7 +520,7 @@ const onSelectedClear = (colIdx: number) => {
               rowsPerPage={rowsPerPage}
               setPage= {(page:any) => setPage(page)}
               setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-              totalRecords={500}
+              totalRecords={rows.length}
               stickyToolbar={0}
           />
       )}

@@ -59,6 +59,7 @@ import {
     DeviceType,
     GetPrimaryDeviceInfo,
     QueuedAssets,
+    UnitAndDevice,
     Unit,
     UnitInfo,
     UnitTemp,
@@ -362,7 +363,7 @@ export const UnitsAndDevicesAgent = {
     getAllUnits: (url: string, extraHeader?: Headers[]) => {
         return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
-    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config),
+    getUnit: (url: string) => requests.get<UnitAndDevice[]>(BASE_URL_UNIT_SERVICES, url, config),
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),

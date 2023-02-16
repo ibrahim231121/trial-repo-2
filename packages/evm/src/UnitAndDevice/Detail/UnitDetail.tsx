@@ -32,7 +32,7 @@ import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
 import QueuedAsstsDataTable from "./AssetQueuedDataTable";
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { Device, GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
+import { Device, GetPrimaryDeviceInfo, Unit,UnitAndDevice, UnitTemp, UnitTemplateConfigurationInfo,  } from "../../utils/Api/models/UnitModels";
 import { Station } from "../../utils/Api/models/StationModels";
 import UnitDeviceEvents from "./UnitDeviceEvents";
 import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
@@ -58,17 +58,12 @@ export type UnitInfoModel = {
   lastCheckedIn: any
 };
 
-type UnitAndDevice = {
-  deviceNames: string;
-  deviceTypes: string;
-  deviceSerialNumbers: string;
-  deviceVersions: string
-};
 
 type stateProps = {
   template: any;
   unitId: any;
   stationId: any;
+  deviceType: any;
 };
 
 type locationProps = {
@@ -144,7 +139,8 @@ const UnitCreate = (props: historyProps) => {
   }
 
   const unitID = location.state.unitId;
-  const inCarTab: any = location.state.template;
+  const inCarTab: any = location.state.deviceType;
+ 
 
   const tabs1 = [
     { label: t("Configuration"), index: 0 },
@@ -191,13 +187,17 @@ const UnitCreate = (props: historyProps) => {
       setAllconfigTemplateList(result)
     });
     dispatch(getStationsInfoAllAsync());
-    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response: Unit) => {
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response: UnitAndDevice[]) => {
       let unitAndDevicesRows: UnitAndDevice[] = [];
       if (response != undefined) {
-        unitAndDevicesRows = response.devices.map((data) => {
+
+    
+        unitAndDevicesRows = response.map((data) => {
           return {
-            id: data.id, deviceNames: "", deviceTypes: data.publicKey.format, deviceSerialNumbers: data.identifier,
-            deviceVersions: data.version.current.version  
+            deviceName: data.deviceName,
+            deviceType: data.deviceType,
+            serialNumber: data.serialNumber,
+            version: data.version
           };
         });
         setRows(unitAndDevicesRows);
@@ -431,7 +431,7 @@ const UnitCreate = (props: historyProps) => {
 
     {
       label: `${t("Device_Name")}`,
-      id: "deviceNames",
+      id: "deviceName",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
@@ -439,7 +439,7 @@ const UnitCreate = (props: historyProps) => {
     },
     {
       label: `${t("Device_Type")}`,
-      id: "deviceTypes",
+      id: "deviceType",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
@@ -447,7 +447,7 @@ const UnitCreate = (props: historyProps) => {
     },
     {
       label: `${t("Serial_Number")}`,
-      id: "deviceSerialNumbers",
+      id: "serialNumber",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
@@ -455,7 +455,7 @@ const UnitCreate = (props: historyProps) => {
     },
     {
       label: `${t("Version")}`,
-      id: "deviceVersions",
+      id: "version",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
@@ -686,8 +686,8 @@ const UnitCreate = (props: historyProps) => {
                     setSelectedActionRow(val)
                   }
                   showToolbar={true}
-                  showCountText={true}
-                  columnVisibilityBar={true}
+                  showCountText={false}
+                  columnVisibilityBar={false}
                   showHeaderCheckAll={false}
                   initialRows={reformattedRows}
                   dragVisibility={false}
@@ -701,7 +701,7 @@ const UnitCreate = (props: historyProps) => {
                   allowDragableToList={true}
                   showTotalSelectedText={false}
                   showActionSearchHeaderCell={true}
-                  showCustomizeIcon={true}
+                  showCustomizeIcon={false}
                   className="unit_detail_tab_events_data_table"
                   onClearAll={clearAll}
                   getSelectedItems={(v: UnitAndDevice[]) => setSelectedItems(v)}
@@ -714,7 +714,7 @@ const UnitCreate = (props: historyProps) => {
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-                  totalRecords={500}
+                  totalRecords={rows.length}
                 />
               )}
             </div>
