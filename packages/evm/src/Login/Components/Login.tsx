@@ -26,9 +26,9 @@ export default function Login (){
                   {t('Login To Getac Enterprise using Getac Authentication')}
                   </p>
 
-                  <p className="box_paper_h3">
+                  {/* <p className="box_paper_h3">
                   {t('Inspiring statement about Getac / Getac product that is relevant to user')}
-                  </p>
+                  </p> */}
                   
                   <p className="box_paper_span">
                   {t('You are accessing a restricted information system. Your usage may be monitored, recorded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalties. By using this system and clicking “Log In”, you consent to your usage being monitored and recorded.')}

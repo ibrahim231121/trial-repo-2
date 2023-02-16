@@ -1,4 +1,4 @@
-import React,{useEffect, useLayoutEffect, useState} from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Field, FieldArray, ErrorMessage } from 'formik';
 import { CRXTooltip, CRXSelectBox, CRXRadio, CRXMultiSelectBoxLight } from '@cb/shared';
 import { CRXButton, CRXConfirmDialog } from '@cb/shared';
@@ -196,20 +196,33 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
 
 
 
-const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, index: any) => {
+const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, index: any, FormSchema: any) => {
   let parentSplittedKey = formObj.key.split('_');
 
   let validationOnCurrentValue = formObj.optionAppendOnChange?.filter((x: any) => x.value == e);
   validationOnCurrentValue?.map((x: any) => {
     let splittedKey = x.selectKey.split('_');
-    if (splittedKey.length > 0) {
+    if (splittedKey.length > 1) {
       let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
       let select = values["CameraSetup/Camera/FieldArray"]
         ?.feilds[index]
         .find((feild: any) => feild.key == key);
 
       if (x.options.length > 0) {
-        select.options.map((y: any) => {
+        select?.options.map((y: any) => {
+          if (!x.options.includes(y.value)) {
+            y.hidden = true;
+          }
+          else {
+            y.hidden = false;
+          }
+        })
+      }
+    }
+    else {
+      let select = FormSchema[x.tab].find((x: any) => x.key == splittedKey);
+      if (x.options.length > 0) {
+        select?.options.map((y: any) => {
           if (!x.options.includes(y.value)) {
             y.hidden = true;
           }
@@ -220,7 +233,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
       }
     }
   });
-  if (validationOnCurrentValue.length === 0) {
+  if (validationOnCurrentValue?.length === 0) {
     let x = formObj.optionAppendOnChange?.[0];
     if (x) {
       let splittedKey = x.selectKey.split('_');
@@ -230,6 +243,12 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
           ?.feilds[index]
           .find((feild: any) => feild.key == key);
 
+        select?.options.filter((y: any) => y.hidden == true).map((y: any) => {
+          y.hidden = false;
+        })
+      }
+      else {
+        let select = FormSchema[x.tab].find((x: any) => x.key == splittedKey);
         select?.options.filter((y: any) => y.hidden == true).map((y: any) => {
           y.hidden = false;
         })
@@ -270,39 +289,39 @@ export const CreateTempelateCase = (props: any) => {
   let LocationPath: any = useLocation();
 
 
-  useLayoutEffect(()=>{
+  useLayoutEffect(() => {
 
     if (LocationPath?.state?.deviceType === "Incar") {
       document.querySelector("main")?.classList.add("IncarTemplatePage")
-    }  else {
+    } else {
       document.querySelector("main")?.classList.remove("IncarTemplatePage")
     }
 
     if (LocationPath?.state?.deviceType === "BC03") {
       document.querySelector("main")?.classList.add("BC03TemplatePage")
-    }  else {
+    } else {
       document.querySelector("main")?.classList.remove("BC03TemplatePage")
     }
 
     if (LocationPath?.state?.deviceType === "BC02") {
       document.querySelector("main")?.classList.add("BC02TemplatePage")
-    }  else {
+    } else {
       document.querySelector("main")?.classList.remove("BC02TemplatePage")
     }
- 
+
     if (LocationPath?.state?.deviceType === "BC04") {
       document.querySelector("main")?.classList.add("BC04TemplatePage")
-    }  else {
+    } else {
       document.querySelector("main")?.classList.remove("BC04TemplatePage")
     }
 
     if (LocationPath?.state?.deviceType === "BC03 LTE") {
       document.querySelector("main")?.classList.add("LTETemplatePage")
-    }  else {
+    } else {
       document.querySelector("main")?.classList.remove("LTETemplatePage")
     }
-  
-   
+
+
   })
 
 
@@ -339,6 +358,11 @@ export const CreateTempelateCase = (props: any) => {
     let validationError = validations.some(x => errorAccured.includes(x));
     setValidationFailed(validationError);
   }, [errors]);
+
+
+  React.useEffect(() => {
+    optionAppendOnChange(formObj.value, formObj, values, setValues, index, FormSchema);
+  }, []);
 
 
 
@@ -520,7 +544,7 @@ export const CreateTempelateCase = (props: any) => {
                         valueSetOnChange(e.target.value, formObj, setFieldValue);
                       }
                       if (formObj.optionAppendOnChange) {
-                        optionAppendOnChange(e.target.value, formObj, values, setValues, index);
+                        optionAppendOnChange(e.target.value, formObj, values, setValues, index, FormSchema);
                       }
                       setFieldValue(formObj.key, e.target.value);
                     }}
@@ -601,19 +625,19 @@ export const CreateTempelateCase = (props: any) => {
             </div>
             <Restricted moduleId={52}>
             {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
-                  <CRXButton     
-                     color='primary'
-                     variant='contained'
-                     onClick={sensorsEvent}>
-                      {t("Create Sensor & Trigger")}
-                  </CRXButton>
-            </div>) :(<></>)}
+              <CRXButton
+                color='primary'
+                variant='contained'
+                onClick={sensorsEvent}>
+                {t("Create Sensor & Trigger")}
+              </CRXButton>
+            </div>) : (<></>)}
           </Restricted>
           </div>
     
     
         </div>
-     
+
       );
     case "checkbox":
 
