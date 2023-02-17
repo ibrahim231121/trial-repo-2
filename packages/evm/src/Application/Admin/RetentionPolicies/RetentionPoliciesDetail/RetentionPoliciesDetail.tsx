@@ -254,12 +254,17 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
 
   const checkNameValidation = () => {
     let isDisable = true;
+    const isPolicyNameValid = validatePolicyName(name);
     if (!name) {
       setUploadPolicyDetailErr({
         ...UploadPolicyDetailErr,
         nameErr: t("Policy_Name_is_required"),
       });
-    } else {
+    }else if (isPolicyNameValid.error) {
+      setUploadPolicyDetailErr({
+      ...UploadPolicyDetailErr,
+      nameErr: isPolicyNameValid.errorMessage,
+    }) }  else {
       setUploadPolicyDetailErr({ ...UploadPolicyDetailErr, nameErr: "" });
       isDisable = false;
     }
@@ -385,6 +390,24 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
         });
     }
   }, []);
+
+  const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
+    const chracterRegx = /^^[a-zA-Z]+[a-zA-Z0-9-_ \b]*$/.test(String(name).toLowerCase());
+    if (!chracterRegx) {
+      return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
+    } else if (name.length < 3) {
+      return {
+        error: true,
+        errorMessage: t("Policy_Name_must_contains_atleast_three_characters"),
+      };
+    } else if (name.length > 128) {
+      return {
+        error: true,
+        errorMessage: t("Policy_Name_must_not_exceed_128_characters"),
+      };
+    }
+    return { error: false, errorMessage: "" };
+  };
 
   const onIndefiniteChange = (e: any, fieldName: string) => {
     let isIndefinite = e.currentTarget.checked;
