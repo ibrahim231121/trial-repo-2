@@ -227,9 +227,10 @@ type SelectProps = {
     onSelectedClear : (e : any) => void,
     isCheckBox? : boolean,
 	  isduplicate? : boolean
-    multiple? : boolean
+    multiple? : boolean,
+    percentage? : boolean
 }
-export default function CBXMultiSelectForDatatable({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
+export default function CBXMultiSelectForDatatable({onChange, percentage, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()
@@ -290,7 +291,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
 
   return (
     <ClickAwayListener onClickAway={OnCloseHandler}>
-    <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
+    <div  ref={selectRefs} style={{width : props.width + `${percentage == true ?"%" : "px"}`}} className={"cbx_multi_data_filter " + classes.root}>
     
     <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
         <InnerButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
@@ -367,7 +368,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
           ));
         }}
         renderInput={(params) => (
-          <TextField className={'select_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params}  variant="outlined" />
+          <TextField className={'select_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width + `${percentage == true ?"%" : "px"}`}} {...params}  variant="outlined" />
         )}
       />
       

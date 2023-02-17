@@ -99,39 +99,7 @@ iframe {
     font-size: 14px;
     line-height: 20px;
   }
-  .textDisplayStatus {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .statusDot {
-      background: var(--color-rosybrown);
-      height: 18px;
-      width: 18px;
-      border-radius: 100px;
-    }
-    .Unregistered {
-      background-color: var(--color-red);
-    }
-    .Suspended {
-      background-color: var(--color-blue) !important;
-    }
-
-    .Online {
-      background-color: var(--color-2d6fcc) !important;
-    }
-
-    .Active {
-      background-color: var(--color-02a200) !important;
-    }
-
-    .Recording {
-      background-color: var(--color-ff1410) !important;
-    }
-
-    .Offline {
-      background-color: var(--color-d1d2d4) !important;
-    }
-  }
+  
   .SelectedActionMenu {
     td {
       &:nth-child(2) {
@@ -175,7 +143,7 @@ iframe {
   }
 }
 
-#multiSelect-popup {
+.statusFilter {
   // width: 324px !important;
   .statusIcon {
     background-color: var(--color-d1d2d4);
@@ -270,6 +238,45 @@ iframe {
           }
         }
       }
+    }
+  }
+  .textDisplayStatus {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .statusDot {
+      background: var(--color-rosybrown);
+      height: 18px;
+      width: 18px;
+      border-radius: 100px;
+    }
+    .Unregistered {
+      background-color: var(--color-red);
+    }
+    .Suspended {
+      background-color: var(--color-blue) !important;
+    }
+
+    .Online {
+      background-color: var(--color-2d6fcc) !important;
+    }
+
+    .Active {
+      background-color: var(--color-02a200) !important;
+    }
+
+    .Recording {
+      background-color: var(--color-ff1410) !important;
+    }
+
+    .Offline {
+      background-color: var(--color-d1d2d4) !important;
+    }
+    .OnlineWithIrsa {
+      background-color: var(--color-2d6fcc) !important
+    }
+    .Live {
+
     }
   }
 }

@@ -384,6 +384,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           multiple={true}
           isduplicate={true}
           selectAllLabel="All"
+          className="statusFilter"
         />
       </div>
     )

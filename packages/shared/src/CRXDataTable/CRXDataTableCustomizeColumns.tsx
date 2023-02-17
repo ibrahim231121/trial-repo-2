@@ -211,7 +211,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
         role={undefined}
         placement="top-end"
         transition
-        disablePortal
+        
         style={{zIndex : 99999}}
       >
         {({ TransitionProps, placement }) => (

@@ -15,8 +15,8 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingTop : "0px",
       minHeight : "unset !important",
       height : "unset",
-      position : "sticky",
-      width : "100%",
+      position : "fixed",
+      width : "-webkit-fill-available",
       alignItems: "self-end",
       gap:"16px"
     },

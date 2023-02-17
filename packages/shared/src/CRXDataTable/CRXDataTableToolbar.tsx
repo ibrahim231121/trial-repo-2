@@ -37,6 +37,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   const { t } = useTranslation<string>();
 
   const [showCustomize,setShowCustomize] = useState<any>();
+  const [paddingRightWebkit, setPaddingRight] = useState<number>(25)
   const ToolBarRefs:any = useRef()
 
    
@@ -54,12 +55,14 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
          
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 117px)";
+          setPaddingRight(0)
         }
        
         else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1 ) {
           window.pageXOffset = 1;
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 117px)";
+          setPaddingRight(0)
         }
     };
 
@@ -72,16 +75,17 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   useEffect(() => {
     createScrollStopListener(window, function() {
       if(offsetY && window.pageYOffset < offsetY && window.pageXOffset < 1) {
-          ToolBarRefs.current.style.position = "sticky",
-          ToolBarRefs.current.style.width = "100%";
+          ToolBarRefs.current.style.position = "fixed",
+          ToolBarRefs.current.style.width = "-webkit-fill-available";
+          setPaddingRight(25)
       }
     },50);
 
   },[])
   
   return (
-
-    <Toolbar ref={ToolBarRefs} style={{"top" : stickyToolbar + "px", position : "sticky"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
+    <>
+    <Toolbar ref={ToolBarRefs} style={{"top" : stickyToolbar + "px", position : "fixed", paddingRight : paddingRightWebkit + "px"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
       
       <div className='toolbar-button'>
         
@@ -132,7 +136,8 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
       }
 
     </Toolbar>
-
+    <div className='overlaySticky-content'></div>
+    </>
   );
 };
 

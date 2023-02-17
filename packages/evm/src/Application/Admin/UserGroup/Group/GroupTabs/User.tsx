@@ -165,7 +165,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         
             return (
                 <CBXMultiSelectForDatatable 
-                    width = {430} 
+                    width = {98} 
+                    percentage={true}
                     option={status} 
                     value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
                     onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
@@ -250,8 +251,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "380",
-            maxWidth: "381",
+            minWidth: "360",
             visible: true,
             attributeName: "LName",
             attributeType: "String",
@@ -265,7 +265,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:any) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-            minWidth: "400",
+            minWidth: "380",
             visible: true,
             attributeName: "UserGroups",
             attributeType: "List",

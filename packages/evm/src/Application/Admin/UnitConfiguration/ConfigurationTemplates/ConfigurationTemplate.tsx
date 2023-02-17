@@ -693,12 +693,14 @@ const ConfigurationTemplates: React.FC = () => {
             toolBarButton={
               getModuleIds().includes(23) ? (
                 <div className="menu_List_Button">
+                  
                   <Menu
-                    style={{ backgroundColor: "#FFFFFF" }}
                     align="start"
-                    viewScroll="initial"
+                    viewScroll="close"
                     direction="bottom"
                     position="auto"
+                    portal={true}
+                    className="create-template-menu"
                     arrow
                     menuButton={<MenuButton>{t("Create_Template")}</MenuButton>}
                   >
@@ -721,7 +723,7 @@ const ConfigurationTemplates: React.FC = () => {
                               },
                             }}
                           >
-                            <div style={{ backgroundColor: "#FFFFFF" }}>
+                            <div>
                               {t("Create")} {x.name}
                             </div>
                           </Link>

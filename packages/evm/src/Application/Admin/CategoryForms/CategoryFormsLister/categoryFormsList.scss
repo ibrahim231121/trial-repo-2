@@ -60,6 +60,7 @@
         }
       }
     }
+
   }
   .AssetsDataGrid{
     &::after, &::before {
@@ -73,6 +74,13 @@
   .dataTablePages {
     width: calc(100% - 99px) !important;
     left: 89px !important;
+  }
+  .stickyPos {
+    position: relative !important; 
+    padding-bottom: 21px !important;
+  }
+  .overlaySticky-content {
+    display: none;
   }
 }
 .rc-menu-container {
