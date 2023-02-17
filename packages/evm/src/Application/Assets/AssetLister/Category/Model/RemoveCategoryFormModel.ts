@@ -11,7 +11,7 @@ export type RemoveCategoryFormProps = {
     setOpenForm: () => void;
     setSelectedCategoryValues: Dispatch<SetStateAction<Array<SelectedCategoryModel>>>;
     closeModal: (param: boolean) => void;
-    setDifferenceOfDays: (param: number) => void;
+    setDifferenceOfHours: (param: number) => void;
     setRemovedOption: (param: any) => void;
     setIsformUpdated: (param: boolean) => void;
     setModalTitle: (param: string) => void;

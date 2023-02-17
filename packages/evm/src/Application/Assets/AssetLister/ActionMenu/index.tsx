@@ -196,58 +196,20 @@ const ActionMenu: React.FC<Props> = React.memo(
       }
 
       calculateSecurityDescriptor();
-      if (selectedItems.length > 1) {
-        setMultiAssetDisabled(true);
-      } else {
-        setMultiAssetDisabled(false);
-      }
-      if (selectedItems.length > 0) {
-        setIsSelectedItem(true);
-      } else {
-        setIsSelectedItem(false);
-      }
+      checkIsMultiAssetDisabled();
+      checkIsSelectedItem();
       /**
       ** Check for Lock property in Evidence response,
       ** look for every asset in evidence row, to show message in Action Menu Item.
       */
-      const assetId = row?.assetId;
-      if (assetId) {
-        for (const asset of row?.evidence?.asset) {
-          if (asset.assetId === assetId) {
-            if (asset.lock)
-              setIsLockedAccess(true);
-            else
-              setIsLockedAccess(false);
-          }
-        }
-      }
+      checkIsAssetLock();
       /**
        ** Category Window Depends on Evidence Response Provided from Parent Element,
        ** as response is different for every screen,
        ** we need to check from which screen action menu is opened.
        */
-      if (actionMenuPlacement === ActionMenuPlacement.AssetLister) {
-        if (row?.categories.length == 0) {
-          setIsCategoryEmpty(true);
-        }
-
-      } else {
-        if (row?.evidence.categories.length == 0) {
-          setIsCategoryEmpty(true);
-        }
-      }
-      if (row?.onlyforlinkedasset == "link") {
-        setisAssetLinkedOrMoved("");
-
-      }
-      else if (row?.onlyforlinkedasset == "move") {
-        setisAssetLinkedOrMoved("");
-
-      }
-      else {
-        setisAssetLinkedOrMoved(groupedSelectedAssetsActions[0]?.actionType?.toString());
-
-      }
+      checkIsAssetCategorize();
+      checkIsAssetLinkedOrMove();
     }, [row, selectedItems]);
     React.useEffect(() => {
       if (openAssetAction.length > 0) {
@@ -286,6 +248,61 @@ const ActionMenu: React.FC<Props> = React.memo(
       });
       setAssetLinks(assetsList);
     }, [groupedSelectedAssets]);
+
+    const checkIsAssetLock = () => {
+      const assetId = row?.assetId;
+      if (assetId) {
+        for (const asset of row?.evidence?.asset) {
+          if (asset.assetId == assetId) {
+            if (asset.lock)
+              setIsLockedAccess(true);
+            else
+              setIsLockedAccess(false);
+          }
+        }
+      }
+    }
+
+    const checkIsAssetCategorize = () => {
+      if (actionMenuPlacement === ActionMenuPlacement.AssetLister) {
+        if (row?.categories.length == 0) {
+          setIsCategoryEmpty(true);
+        }
+
+      } else {
+        if (row?.evidence.categories.length == 0) {
+          setIsCategoryEmpty(true);
+        }
+      }
+    }
+
+    const checkIsAssetLinkedOrMove = () => {
+      if (row?.onlyforlinkedasset == "link") {
+        setisAssetLinkedOrMoved("");
+      }
+      else if (row?.onlyforlinkedasset == "move") {
+        setisAssetLinkedOrMoved("");
+      }
+      else {
+        setisAssetLinkedOrMoved(groupedSelectedAssetsActions[0]?.actionType?.toString());
+      }
+    }
+
+    const checkIsMultiAssetDisabled = () => {
+      if (selectedItems.length > 1) {
+        setMultiAssetDisabled(true);
+      } else {
+        setMultiAssetDisabled(false);
+      }
+    }
+
+    const checkIsSelectedItem = () => {
+      if (selectedItems.length > 0) {
+        setIsSelectedItem(true);
+      } else {
+        setIsSelectedItem(false);
+      }
+    }
 
     const handleOpenAssignUserChange = () => setOpenAssignUser(true);
     const handleOpenManageRetention = () => setOpenManageRetention(true);

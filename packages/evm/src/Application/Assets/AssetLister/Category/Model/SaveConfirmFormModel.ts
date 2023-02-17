@@ -6,7 +6,7 @@ export type SaveConfirmFormProps = {
     removedOption: any;
     setremoveClassName: any;
     evidence : Evidence | undefined;
-    differenceOfDays: number;
+    differenceOfHours: number;
     removalType: number;
     removeMessage: string;
     holdUntill: string;

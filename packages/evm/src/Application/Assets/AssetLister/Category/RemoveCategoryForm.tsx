@@ -66,6 +66,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       /** 
        * * This was the last category 
        * */
+      props.setDifferenceOfHours(sortedArray[0].hours);
       props.setRemovalType(2);
       props.setActiveForm(4);
       return;
@@ -76,22 +77,16 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
        * * Selected Category have Highest Hours 
        * */
       const recordingStarted = props.evidence?.assets?.master?.recording.started;
-      const expiryDate = moment(recordingStarted)
-        .add(highestRetention.hours, 'hours').utc();
+      const expiryDate = moment(recordingStarted).add(highestRetention.hours, 'hours').utc();
       const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
-      const duration = Math.floor(moment.duration(newExpiryDate.diff(expiryDate)).asHours());
+      const duration = Math.floor(moment.duration(expiryDate.diff(newExpiryDate)).asHours());
       props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
-      props.setDifferenceOfDays(duration);
+      props.setDifferenceOfHours(duration);
       /** Incase Retention is effected */
       props.setRemovalType(1);
       props.setActiveForm(4);
-    } else if (props.selectedCategoryValues?.length === 0) {
-      /** 
-       * * This is the last category 
-       * */
-      props.setRemovalType(2);
-      props.setActiveForm(4);
-    } else {
+    }
+    else {
       /** 
        * * Normal Removal 
        * */

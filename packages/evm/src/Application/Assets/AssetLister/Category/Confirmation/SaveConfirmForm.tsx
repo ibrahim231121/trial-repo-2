@@ -26,13 +26,10 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
 
   React.useEffect(() => {
     if (props.removalType === 1) {
-      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire")}${props.differenceOfDays > 0 ? ` ${t("in")}
-      ${props.differenceOfDays} ${t("Hours.")}` : '.'} `);
-
-
+      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")} ${props.differenceOfHours} ${t("Hours.")}`);
     } else if (props.removalType === 2) {
       setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")}
-        ${props.differenceOfDays} ${t("Hours.")} ${t("Unclassified_retention_policy_of_station_will_be_applied_on_this_evidence_group.")}`);
+        ${props.differenceOfHours} ${t("Hours.")} ${t("Uncategorized_retention_policy_of_station_will_be_applied_on_this_evidence_group.")}`);
     }
   }, [props.removalType]);
 

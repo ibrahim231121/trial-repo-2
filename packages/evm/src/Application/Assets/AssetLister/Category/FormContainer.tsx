@@ -18,7 +18,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [activeForm, setActiveForm] = React.useState<number>(0);
   const [selectedCategoryValues, setSelectedCategoryValues] = React.useState<Array<SelectedCategoryModel>>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
-  const [differenceOfDays, setDifferenceOfDays] = React.useState<number>(0);
+  const [differenceOfHours, setDifferenceOfHours] = React.useState<number>(0);
   const [modalTitle, setModalTitle] = React.useState('');
   const [removeClassName, setremoveClassName] = React.useState('');
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
@@ -156,7 +156,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removedOption={removedOption}
             evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            setDifferenceOfDays={(v: number) => setDifferenceOfDays(v)}
+            setDifferenceOfHours={(v: number) => setDifferenceOfHours(v)}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setRemovalType={(e: number) => setRemovalType(e)}
@@ -176,7 +176,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removedOption={removedOption}
             evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            differenceOfDays={differenceOfDays}
+            differenceOfHours={differenceOfHours}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
             removalType={removalType}
