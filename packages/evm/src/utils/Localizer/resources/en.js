@@ -926,6 +926,7 @@ export const resources = {
         "Sensors_and_triggers_name" : "Sensor & Trigger Name",
         "Email alert" : "Email Alert",
         "Add_device_parameters":"+ Add device parameters",
+        "SensorsAndTriggers_Deleted_Sucessfully":"Sensors and Triggers Deleted Sucessfully ",
       
       
         //----------  Cases  ---------       

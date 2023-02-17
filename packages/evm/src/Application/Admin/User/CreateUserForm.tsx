@@ -140,15 +140,17 @@ const CreateUserForm = () => {
   }, []);
 
   React.useEffect(() => {
-if(radioValue == 'sendAct'){
-  setDisableSave(false)
-}
-else if(radioValue == 'genTemp' && generatePassword){
-  setDisableSave(false)
-}
-else {
-  setDisableSave(true)
-}
+    if(formpayload) {
+      if(radioValue == 'sendAct'){
+        setDisableSave(false)
+      }
+      else if(radioValue == 'genTemp' && generatePassword !== ""){
+        setDisableSave(false)
+      }
+      else {
+        setDisableSave(true)
+      }
+    }
   },[disableLink,radioValue,generatePassword])
 
   React.useEffect(() => {

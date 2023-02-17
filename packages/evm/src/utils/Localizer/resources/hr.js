@@ -797,62 +797,63 @@ export const resources = {
 
     
            // --------- Share Asset ----------
-           "Link_Expiration":"Link Expiration",
-           "Link_Permissions":"Link Permissions",
-           "Comments":"Comments",
-           "Reason_for_Sharing":"Reason for Sharing",
+           "Link_Expiration":"hr-Link Expiration",
+           "Link_Permissions":"hr-Link Permissions",
+           "Comments":"hr-Comments",
+           "Reason_for_Sharing":"hr-Reason for Sharing",
 
             //---------- Retention Policies -------------------
-        "retention_policy_Form":"Retention Policy Form",
-        "Retention_Size":"Retention Size",
-        "Retention_Type":"Retention Type",
-        "Retention_Time":"Retention Time",
+        "retention_policy_Form":"hr-Retention Policy Form",
+        "Retention_Size":"hr-Retention Size",
+        "Retention_Type":"hr-Retention Type",
+        "Retention_Time":"hr-Retention Time",
         "Policy_Name":"Policy Name",
-        "Upload_Policy_Name":"Upload Policy Name",
-        "Upload_Connection_Criteria": "Upload Connection Criteria",
-        "Retention_Time_Or_Space" : "Retention Time / Space",
-        "Soft_Delete_Time" : "Soft Delete Time",        
-        "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",
-        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully",
-        "Edit_retention_policy": "Edit retention policy",
-        "Delete_retention_policy": "Delete retention policy",
+        "Upload_Policy_Name":"hr-Upload Policy Name",
+        "Upload_Connection_Criteria": "hr-Upload Connection Criteria",
+        "Retention_Time_Or_Space" : "hr-Retention Time / Space",
+        "Soft_Delete_Time" : "hr-Soft Delete Time",        
+        "Success_You_have_saved_the_Retention_Policy":"hr-You have saved the Retention Policy Successfully",
+        "Retention_Policy_Deleted_Successfully" :"hr-Retention Policy Deleted Sucessfully",
+        "Edit_retention_policy": "hr-Edit retention policy",
+        "Delete_retention_policy": "hr-Delete retention policy",
            //----------  Upload Policies  ---------
         
-          "Upload" :"Upload",
-          "Metadata_Upload_Connection":"Metadata Upload Connection",
-          "Asset_Upload_Priority":"Asset Upload Priority",
-          "Asset_Upload_Connection":"Asset Upload Connection",
-          "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
-          "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
+          "Upload" :"hr-Upload",
+          "Metadata_Upload_Connection":"hr-Metadata Upload Connection",
+          "Asset_Upload_Priority":"hr-Asset Upload Priority",
+          "Asset_Upload_Connection":"hr-Asset Upload Connection",
+          "Success_You_have_saved_the_Upload_Policy":"hr-You have saved the Upload Policy Successfully",        
+          "Upload_Policy_Deleted_Successfully" :"hr-Upload Policy Deleted Sucessfully",
 
-          "Unit_Default_Templates":"Default Unit Templates",
-          "Manage_Default_Unit_Templates": "Manage Default Unit Templates",
+          "Unit_Default_Templates":"hr-Default Unit Templates",
+          "Manage_Default_Unit_Templates": "hr-Manage Default Unit Templates",
 
           //---------- Sensors and Triggers -------------------
-          "Settings" : "SETTINGS",
-          "Device_Parameters" : "DEVICE PARAMETERS",
-          "Sensors_and_triggers_name" : "Sensor & Trigger Name",
-          "Email alert" : "Email Alert",
-          "Add_device_parameters":"+ Add device parameters",
+          "Settings" : "hr-SETTINGS",
+          "Device_Parameters" : "hr-DEVICE PARAMETERS",
+          "Sensors_and_triggers_name" : "hr-Sensor & Trigger Name",
+          "Email alert" : "hr-Email Alert",
+          "Add_device_parameters":"hr- + Add device parameters",
+          "SensorsAndTriggers_Deleted_Sucessfully":"hr-Sensors and Triggers Deleted Sucessfully ",
 
           //----------  Cases  ---------       
-          "Create_Case" :"Create Case",
-          "Case_Summary":"Case Summary",
-          "Prosecutor":"Prosecutor",
-          "Lead_Officer":"Lead Officer",
-          "Created_On":"Created On",
-          "State":"State",
+          "Create_Case" :"hr-Create Case",
+          "Case_Summary":"hr-Case Summary",
+          "Prosecutor":"hr-Prosecutor",
+          "Lead_Officer":"hr-Lead Officer",
+          "Created_On":"hr-Created On",
+          "State":"hr-State",
           
 
-          "Case_deleted":"Case deleted",
-          "Delete_case":"Delete case",
-          "Edit_case":"Edit case",
+          "Case_deleted":"hr-Case deleted",
+          "Delete_case":"hr-Delete case",
+          "Edit_case":"hr-Edit case",
 
-          "Case":"Case",
-          "Case_Detail":"Case Detail",
-          "Title":"Title",
-          "You_have_saved_the_Case_successfully":"You have saved the Case successfully",
-          "You_have_updated_the_Case_successfully":"You have updated the Case successfully"
+          "Case":"hr-Case",
+          "Case_Detail":"hr-Case Detail",
+          "Title":"hr-Title",
+          "You_have_saved_the_Case_successfully":"hr-You have saved the Case successfully",
+          "You_have_updated_the_Case_successfully":"hr-You have updated the Case successfully"
       }
     }
   };

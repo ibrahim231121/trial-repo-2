@@ -42,7 +42,19 @@ const deleteSensorAndTrigger = () => {
     .then(() => {
       getRowData();
       getSelectedData();
-      onMessageShow(true,t("Success_You_have_deleted_the_Sensors_And_Triggers"));
+      onMessageShow(true,t("SensorsAndTriggers_Deleted_Sucessfully"));
+    })
+    .catch(function(error) {      
+        onMessageShow(false,error?.response?.data?.toString());
+        return error;
+    });
+  }
+  if(!selectedItems.includes(row)) {
+    SetupConfigurationAgent.deleteSensorsAndTriggersTemplate(row.id)
+    .then(() => {
+      getRowData();
+      getSelectedData();
+      onMessageShow(true,t("SensorsAndTriggers_Deleted_Sucessfully"));
     })
     .catch(function(error) {      
         onMessageShow(false,error?.response?.data?.toString());
@@ -52,9 +64,7 @@ const deleteSensorAndTrigger = () => {
 }
 
 const deleteConfirm = () => {
-  if(selectedItems) {   
       setnondefault(true);  
-  }
 }
 
 const openCreateSensorsAndTriggersForm = () => {

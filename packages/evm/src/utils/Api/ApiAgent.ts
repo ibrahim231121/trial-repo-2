@@ -223,6 +223,7 @@ export const SetupConfigurationAgent = {
     putSensorsAndTriggersTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getSensorsAndTriggersEvents: (url: string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" + url, config),
     deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),
+    deleteSensorsAndTriggersTemplate: (id: number) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteEvent/"+ id, config),
     getAllFiltersSensorsAndTriggersEvents: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
