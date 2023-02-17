@@ -52,7 +52,7 @@ export namespace SearchModel {
     };
 
     export type Lock = {
-        groupRecId: (number | null)[];
+        groupRecId?: (number | null)[];
     };
 
     export type File = {

@@ -324,7 +324,7 @@ const ActionMenu: React.FC<Props> = React.memo(
       debugger
       EvidenceAgent.LockOrUnLockAsset(_body)
         .then(() => {
-          showToastMsg && showToastMsg({
+          showToastMsg?.({
             message:
               operation === AssetRestriction.Lock
                 ? t("Access_Restricted")
@@ -343,6 +343,15 @@ const ActionMenu: React.FC<Props> = React.memo(
             setOpenRestrictAccessDialogue(false);
             setOpenUnlockAccessDialogue(false);
           }, 2000);
+
+          if(actionMenuPlacement === ActionMenuPlacement.AssetDetail){
+            const isAllowedToAccessLockAsset = AssignedGroups.split(',').includes('29');
+            if(isAllowedToAccessLockAsset){
+              setSelectedItems?.([row]);
+            } else {
+              window.location.href = urlList.filter((item: any) => item.name === urlNames.assets)[0].url;
+            }
+          }
         })
         .catch((error) => {
           const err = error as AxiosError;

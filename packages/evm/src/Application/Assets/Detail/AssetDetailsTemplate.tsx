@@ -1,51 +1,38 @@
 import {
-  CBXLink, CrxAccordion, CRXAlert, CRXColumn,
-  CRXDataTable, CrxTabPanel, CRXTabs, CRXToaster, CRXTooltip
+  CBXLink, 
+  CRXTooltip
 } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
-import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
-import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
-import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import { RootState } from "../../../Redux/rootReducer";
 import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
-import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
-import { dateOptionsTypes } from '../../../utils/constant';
-import { AssetThumbnail } from "../AssetLister/AssetDataTable/AssetThumbnail";
+import { Asset, Evidence } from "../../../utils/Api/models/EvidenceModels";
 import "./AssetDetailTabsMenu.scss";
 import "./assetDetailTemplate.scss";
-
 import { BlobServiceClient } from "@azure/storage-blob";
-import { CRXCheckBox } from "@cb/shared";
-import { Grid } from "@material-ui/core";
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
-import {
-  HeadCellProps, onClearAll, onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, Order, PageiGrid, SearchObject, ValueString
-} from "../../../GlobalFunctions/globalDataTableFunctions";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { urlList, urlNames } from "../../../utils/urlList";
-import ActionMenu, { downloadExeFileByFileResponse } from "../AssetLister/ActionMenu";
-import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
-import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, EvidenceReformated } from "./AssetDetailsTemplateModel";
-import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
+import ActionMenu from "../AssetLister/ActionMenu";
+import { ActionMenuPlacement } from "../AssetLister/ActionMenu/types";
+import { assetdata, AssetReformated } from "./AssetDetailsTemplateModel";
+import { AssetDetailRouteStateType, EvidenceObjectToPassInActionMenu } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
 import PDFViewer from "../../../components/MediaPlayer/PdfViewer/PDFViewer";
 import { BlockLockedAssets } from "../utils/constants";
 import jwt_decode from "jwt-decode";
 import Cookies from 'universal-cookie';
-import AuditTrailLister from "./AuditTrailLister";
 import AssetDetailTabs from "./AssetDetailTabs";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
+import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
+import { CRXToaster } from "@cb/shared";
 
 export type FileData = {
   filename: string,
@@ -55,14 +42,12 @@ export type FileData = {
   typeOfAsset: string
 };
 
-
 const AssetDetailsTemplate = () => {
   const { state } = useLocation<AssetDetailRouteStateType>();
   const evidenceId: number = state.evidenceId;
   const assetId: string = state.assetId.toString();
   const assetName: string = state.assetName;
   const evidenceSearchObject: SearchModel.Evidence = state.evidenceSearchObject;
-
   let assetObj: AssetReformated = {
     categories: [],
     owners: [],
@@ -78,15 +63,14 @@ const AssetDetailsTemplate = () => {
     camera: ""
   };
 
+  const toasterRef = React.useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const decoded: any = jwt_decode(cookies.get("access_token"));
   const [detailContent, setDetailContent] = useState<boolean>(false);
-
   const [openMap, setOpenMap] = React.useState<boolean>(false);
   const [uploadedOn, setUploadedOn] = React.useState<string>("");
-
   const [apiKey, setApiKey] = React.useState<string>("");
   const [allDataRetrieved, setAllDataRetrieved] = React.useState<boolean>(false);
   const typeOfVideoAssetToInclude = ["Video", "WMVVideo", "BBvideo", "AvenueSource"];
@@ -94,9 +78,6 @@ const AssetDetailsTemplate = () => {
   const typeOfImageAssetToInclude = ["Image"];
   const typeOfAudioAssetToInclude = ["Audio", "AudioOnly"];
   const typeOfAssetToInclude = [...typeOfVideoAssetToInclude, ...typeOfDocAssetToInclude, ...typeOfImageAssetToInclude, ...typeOfAudioAssetToInclude];
-
-
-
   const [masterFileData, setMasterFileData] = React.useState<FileData[]>([]);
   const [childFileData, setChildFileData] = React.useState<FileData[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
@@ -108,39 +89,12 @@ const AssetDetailsTemplate = () => {
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [assetsList, setAssetList] = React.useState<Asset[]>([]);
   const [fileState, setFileState] = React.useState<string>("");
-
-
-  
-  
-
+  const [objPassedFromActionMenu, setObjPassedFromActionMenu] = React.useState<any[]>([]);
   const assetBucketBasketIsOpen: any = useSelector((state: RootState) => state.assetBucketBasketSlice.isOpen);
 
   useEffect(() => {
-    dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
-    dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
-    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
-
-    dispatch(setLoaderValue({ isLoading: true }))
-    EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
-      let assetListTemp: Asset[] = [response.assets.master];
-      assetListTemp = [...assetListTemp, ...response.assets.children];
-      /**
-       *! Locked child asset only be rendered if user has 'Permission' or asset is owned by user as 'Search Type' is 'ViewOwnAssets'.
-        */
-      const assets = BlockLockedAssets(decoded, '', assetListTemp, "AssetDetailsTemplate");
-      setAssetList(assets);
-      setEvidence(response);
-    }).catch(() => {
-      dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
-    });
-
-    const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
-    EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setCurrentAsset(response));
-
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
-    }
-  }, []);
+    fetchEvidenceAgentApi();
+  }, [objPassedFromActionMenu]);
 
   useEffect(() => {
     if (gpsFileData && gpsFileData.length > 0) {
@@ -402,8 +356,6 @@ const AssetDetailsTemplate = () => {
     return time;
   }
 
- 
-
   const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
     if (holdUntil) {
       return AssetRetentionFormat(holdUntil);
@@ -437,25 +389,12 @@ const AssetDetailsTemplate = () => {
     return numberFormatting + " (" + nameFormatting + ")";
   }
 
-
-  
-
-  
-
-
   const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);
     document.getElementById(targetId)?.scrollIntoView({
       behavior: 'smooth'
     });
   }
-
-  
-
-
- 
-
- 
 
   const dummyViewForVideoPlayer = () => {
     return <div className="_player_video_uploading">
@@ -521,6 +460,94 @@ const AssetDetailsTemplate = () => {
     }
   }
 
+  const fetchEvidenceAgentApi = () => {
+    dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
+    dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
+    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
+
+    dispatch(setLoaderValue({ isLoading: true }))
+    EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
+      let assetListTemp: Asset[] = [response.assets.master];
+      assetListTemp = [...assetListTemp, ...response.assets.children];
+      /**
+       *! Locked child asset only be rendered if user has 'Permission' or asset is owned by user as 'Search Type' is 'ViewOwnAssets'.
+        */
+      const assets = BlockLockedAssets(decoded, '', assetListTemp, "AssetDetailsTemplate");
+      setAssetList(assets);
+      setEvidence(response);
+    }).catch(() => {
+      dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
+    });
+
+    const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
+    EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setCurrentAsset(response));
+
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
+  }
+
+  const rowReformationMethodToPassInActionMenu = (): EvidenceObjectToPassInActionMenu => {
+    const modifiedAssetArray: SearchModel.Asset[] = [];
+    for (const i of assetsList) {
+      const ownersArray: string[] = [];
+      for (const owner of i.owners) {
+        if (typeof owner !== "number") {
+          ownersArray.push(owner.record.find(x => x.key === "UserName")?.value || "");
+        }
+      }
+      const assetObj: SearchModel.Asset = {
+        assetId: i.id,
+        assetName: i.name,
+        assetType: i.typeOfAsset,
+        audioDevice: i.audioDevice!,
+        camera: i.camera!,
+        duration: i.duration,
+        files: i.files,
+        isOverlaid: i.isOverlaid,
+        isRestrictedView: i.isRestrictedView,
+        lock: i.lock,
+        owners: ownersArray,
+        postBuffer: i.buffering?.pre && 0,
+        preBuffer: i.buffering?.pre && 0,
+        recordedBy: [i.recordedByCSV || ""],
+        recordingEnded: i.recording?.started.toString(),
+        recordingStarted: i.recording?.ended && "",
+        segmentCount: 1,
+        size: 0,
+        state: i.state,
+        status: i.status,
+        thumbnailUri: "",
+        unit: ""
+      };
+      modifiedAssetArray.push(assetObj);
+    }
+    let objectToPass: any = { ...evidenceSearchObject };
+    objectToPass.asset = [];
+    objectToPass.asset = modifiedAssetArray;
+    return ReFormatPropsForActionMenu(objectToPass, Number(assetId));
+  }
+
+  const showToastMsg = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+    if (obj.message !== undefined && obj.message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("Asset_Detail"),
+        message: obj.message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  }; 
+
   const actionBucketClass = assetBucketBasketIsOpen ? "actionBucketIndex" : "";
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
@@ -531,8 +558,10 @@ const AssetDetailsTemplate = () => {
             </div> */}
         {/** maria told me the its not showing here its should be come in meta data see panel */}
         <ActionMenu
-          row={ReFormatPropsForActionMenu(evidenceSearchObject, Number(assetId))}
+          row={rowReformationMethodToPassInActionMenu()}
           actionMenuPlacement={ActionMenuPlacement.AssetDetail}
+          setSelectedItems={(v: any[]) => setObjPassedFromActionMenu(v)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
         />
 
         <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assets)[0].url}`} />
