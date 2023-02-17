@@ -417,7 +417,7 @@ input:-webkit-autofill {
   position: fixed;
   left: 62px;
   top: 60px;
-  z-index: 8;
+  z-index: 99;
 }
 
 .overlayPanel_bottom {

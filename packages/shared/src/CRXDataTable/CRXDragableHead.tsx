@@ -7,7 +7,7 @@ import { SortableContainer } from "react-sortable-hoc";
 const DragableHead = SortableContainer(( props: any) => {
 
     return (
-      <TableHead style={{"top" : props.dragableHeaderPosition +  "px", zIndex : 999}} className="drag_header">
+      <TableHead style={{"top" : props.dragableHeaderPosition +  "px"}} className="drag_header">
         <TableRow>
           {props.children}
         </TableRow>

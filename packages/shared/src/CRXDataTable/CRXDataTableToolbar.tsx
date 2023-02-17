@@ -42,6 +42,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
    
   function createScrollStopListener(element : any, callback : any, timeout : number) {
     let handle: any = null;
+   
     const onScroll = function() {
         
         if (handle) {
@@ -49,20 +50,17 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
         }
         
         handle = setTimeout(callback, timeout || 100); 
-        
-        if(offsetY && element.pageYOffset >= offsetY ) {
+        if(offsetY && element.pageYOffset >= offsetY) {
          
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 117px)";
         }
-        else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1) {
-          
+       
+        else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1 ) {
+          window.pageXOffset = 1;
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 117px)";
-         
         }
-
-        
     };
 
     element.addEventListener('scroll', onScroll);

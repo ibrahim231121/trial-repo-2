@@ -360,13 +360,9 @@ html {
             background: transparent;
         }
     }
-    .overlayPanel_Right {
-        left: -3px;
-    }
+ 
     &.makeStyles-contentShift-10 {
-        .overlayPanel_Right {
-            left: 62px;
-        }
+       
         .AssetsDataGrid {
             &::before {
                 background: var(--color-ccc);
@@ -450,7 +446,21 @@ html {
         }
       }
     }
+   
+    .dataTableECollapseView {
+      .overlayPanel_Right {
+        left: -3px;
+        z-index: 999;
+      }
+      .overlayPanel_bottom {
+        left: 0px;
+      }
+    }
+    .footerDiv {
+      padding-left: 0px;
+    }
     .stickyPos {
-      width: calc(100% - 53px) !important;
+     width: -webkit-fill-available !important;
+     padding-right: 25px;
     }
   }

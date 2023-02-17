@@ -50,7 +50,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   },[page,checkAllPageWise])
 
   return (
-    <TableHead style={{"top" : searchHeaderPosition + "px", zIndex : 998}} className="searchable_header">
+    <TableHead style={{"top" : searchHeaderPosition + "px"}} className="searchable_header">
       <TableRow>
         {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell
