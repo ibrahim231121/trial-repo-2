@@ -649,12 +649,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
   ) => {
 
     dataRows = dataRows.filter((x: any) => {
-      return el.value.includes((x[headCells[el.colIdx].id] !== "Expired" &&
-        x[headCells[el.colIdx].id] !== "" &&
-        x[headCells[el.colIdx].id] !== null &&
-        x[headCells[el.colIdx].id].length > 2)
+      return el.value.includes((x[headCells[el.colIdx].id][0] !== "Expired" &&
+        x[headCells[el.colIdx].id][0] !== "" &&
+        x[headCells[el.colIdx].id][0] !== null &&
+        x[headCells[el.colIdx].id].length >= 2) 
         ?  "Available"
-        : x[headCells[el.colIdx].id]);
+        : x[headCells[el.colIdx].id][0]);
     });
 
     return dataRows;
