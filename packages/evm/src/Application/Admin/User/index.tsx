@@ -43,7 +43,6 @@ import moment from "moment";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import "./userIndex.scss";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
-import anchorDisplay from '../../../utils/AnchorDisplay';
 
 
 type User = {

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef } from "react";
-import { CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField, CRXToaster, CRXMultiSelectBoxLight } from "@cb/shared";
+import { CRXButton, CRXConfirmDialog, CRXAlert, TextField, CRXToaster, CRXMultiSelectBoxLight } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './categoriesDetail.scss';
 import { useDispatch, useSelector } from "react-redux";
