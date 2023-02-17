@@ -47,6 +47,8 @@ export interface Bookmark {
     description: string;
     madeBy: string;
     version: string;
+    user: CMTEntityRecord;
+    userInfo?: CMTEntityRecord;
 }
 export interface Note {
     id: number;
@@ -56,7 +58,8 @@ export interface Note {
     description: string;
     madeBy: string;
     version: string;
-    userId: CMTEntityRecord;
+    user: CMTEntityRecord;
+    userInfo?: CMTEntityRecord;
 }
 export interface File {
     id: number;

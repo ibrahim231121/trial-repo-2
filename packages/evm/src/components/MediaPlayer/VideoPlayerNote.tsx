@@ -117,7 +117,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                 description: description,
                 madeBy: "User",
                 version: "",
-                userId: userIdBody
+                user: userIdBody
             };
             setopenNoteForm(false);
             const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
@@ -166,7 +166,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                 version: note.version,
                 noteTime: note.noteTime,
                 madeBy: note.madeBy,
-                userId: userIdBody
+                user: userIdBody
             };
             setopenNoteForm(false);
             EvidenceAgent.updateNote(url, body).then(() => {
@@ -182,10 +182,10 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                     version: body.version
                 }
                 setNotesInTimelineDetail("Update", responseObj);
-                toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "success", duration: 5000, clearButtton: true});
             })
             .catch((err: any) => {
-                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "error", duration: 5000, clearButtton: true});
 
             });
         }

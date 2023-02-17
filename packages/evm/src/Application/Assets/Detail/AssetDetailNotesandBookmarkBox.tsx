@@ -57,6 +57,14 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [numberOfLine, setNumberOfLine] = useState<any>("")
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+  const [userName, setUserName] = useState<string>(stateObj.madeBy);
+
+  const userIdBody: CMTEntityRecord = {
+    id: "",
+    cmtFieldValue: parseInt(localStorage.getItem("User Id") ?? "0"),
+    record: [],
+  };
+
   React.useEffect(() => {
     if (!editDescription) {
       let des: any = document.querySelector('textarea')?.getClientRects().length
@@ -70,6 +78,25 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       setMadeByName(stateObj.madeBy);
     }
   });
+
+  React.useEffect(() => {
+    if (stateObj.madeBy == "User") {
+      let listOfKeyValue = stateObj?.userInfo?.record;
+      let FName = "";
+      let LName = "";
+      if (listOfKeyValue && listOfKeyValue.length > 0) {
+        listOfKeyValue.forEach((x: any) => {
+          if (x.key == "FName") {
+            FName = x.value;
+          }
+          if(x.key == "LName"){
+            LName = x.value;
+          }
+        });
+        setUserName(FName + " " + LName)
+      }
+    }
+  }, []);
 
 
   React.useEffect(() => {
@@ -165,6 +192,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       description: description,
       madeBy: stateObj.madeBy,
       version: stateObj.version,
+      user: userIdBody,
     };
     EvidenceAgent.updateBookmark(url, body)
       .then(() => {
@@ -197,11 +225,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       stateObj.assetId +
       "/Notes/" +
       stateObj.id;
-    const userIdBody: CMTEntityRecord = {
-      id: "",
-      cmtFieldValue: parseInt(localStorage.getItem("User Id") ?? "0"),
-      record: [],
-    };
+
     const body: Note = {
       assetId: stateObj.assetId,
       id: stateObj.id,
@@ -210,7 +234,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       version: stateObj.version,
       noteTime: stateObj.noteTime,
       madeBy: stateObj.madeBy,
-      userId: userIdBody,
+      user: userIdBody,
     };
     EvidenceAgent.updateNote(url, body)
       .then(() => {
@@ -408,7 +432,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
             </div>
             <div className={`${editDevice ? "_bookmark_detail_user_box _bookmark_detail_user_box_editabled " : "_bookmark_detail_user_box"}`} onClick={() => { isReadMore ? setIsReadMore(false) : setIsReadMore(true) }}>
               <div className="_bookmark_users">
-                {` ${t("From")}: `}<span>{stateObj.madeBy}</span>
+                {` ${t("From")}: `}<span>{userName}</span>
               </div>
               <div className={`${editDevice ? "textToggler textField_Edited" : "textToggler"} ${isReadMore ? 'displayBlock' : ''}  `}>
                 <TextField

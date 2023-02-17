@@ -40,6 +40,12 @@ const BookmarkNotePopup = ({
   const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false)
   const dispatch = useDispatch();
 
+  const userIdBody: CMTEntityRecord = {
+    id: "",
+    cmtFieldValue: parseInt(localStorage.getItem("User Id") ?? "0"),
+    record: [],
+  };
+
   React.useEffect(() => {
     if (!editDescription) {
       setDescription(bookmarkNotePopupObj.description);
@@ -48,7 +54,7 @@ const BookmarkNotePopup = ({
 
   React.useEffect(() => {//check this
     if (bookmarkNotePopupObj.objtype == "Note") {
-      let listOfKeyValue = bookmarkNotePopupObj?.userId?.record;
+      let listOfKeyValue = bookmarkNotePopupObj?.user?.record;
       if (listOfKeyValue && listOfKeyValue.length > 0) {
         listOfKeyValue.forEach((x: any) => {
           if (x.key == "UserName") {
@@ -168,6 +174,7 @@ const BookmarkNotePopup = ({
       description: description,
       madeBy: bookmarkNotePopupObj.madeBy,
       version: bookmarkNotePopupObj.version,
+      user: userIdBody,
     };
     EvidenceAgent.updateBookmark(url, body)
       .then(() => {
@@ -198,11 +205,7 @@ const BookmarkNotePopup = ({
       bookmarkNotePopupObj.assetId +
       "/Notes/" +
       bookmarkNotePopupObj.id;
-    const userIdBody: CMTEntityRecord = {
-      id: "",
-      cmtFieldValue: parseInt(localStorage.getItem("User Id") ?? "0"),
-      record: [],
-    };
+
     const body: Note = {
       assetId: bookmarkNotePopupObj.assetId,
       id: bookmarkNotePopupObj.id,
@@ -211,7 +214,7 @@ const BookmarkNotePopup = ({
       version: bookmarkNotePopupObj.version,
       noteTime: bookmarkNotePopupObj.noteTime,
       madeBy: bookmarkNotePopupObj.madeBy,
-      userId: userIdBody,
+      user: userIdBody,
     };
     EvidenceAgent.updateNote(url, body)
       .then(() => {

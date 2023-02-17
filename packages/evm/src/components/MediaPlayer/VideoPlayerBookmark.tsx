@@ -10,6 +10,7 @@ import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
 import { useDispatch } from 'react-redux';
 import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
+import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
 declare const window: any;
 
 type VideoPlayerSnapshotProps = {
@@ -39,6 +40,12 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     const [snapshotImage, setSnapshotImage] = useState<File>();
     const [formpayloadDescription, setFormPayloadDescription] = React.useState<string>(editBookmarkForm ? bookmark.description:"");
     const dispatch = useDispatch();
+
+    const userIdBody: CMTEntityRecord = {
+        id: "",
+        cmtFieldValue: parseInt(localStorage.getItem("User Id") ?? "0"),
+        record: [],
+    };
 
     const [bookmarkobj, setbookmarkobj] = React.useState<any>({
         assetId: editBookmarkForm ? bookmarkAssetId : AssetData.dataId,
@@ -157,7 +164,8 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 position: BookmarktimePositon ?? 0,
                 description: formpayloadDescription,
                 madeBy: "User",
-                version: ""
+                version: "",
+                user: userIdBody
             };
             const bookmarkaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Bookmarks";
             setopenBookmarkForm(false);
@@ -305,7 +313,8 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 position: bookmark.position,
                 description: formpayloadDescription,
                 madeBy: bookmark.madeBy,
-                version: bookmark.version
+                version: bookmark.version,
+                user: userIdBody
             };
             setopenBookmarkForm(false);
             EvidenceAgent.updateBookmark(url, body).then(() => {
