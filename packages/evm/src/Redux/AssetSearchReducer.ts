@@ -9,7 +9,7 @@ import { BlockLockedAssets } from '../Application/Assets/utils/constants';
 
 interface assetSearchType{
     QUERRY:any,
-    searchType:string
+    searchType:any
 }
 export const getAssetSearchInfoAsync: any = createAsyncThunk(
     'getAssetSearchInfo',
@@ -17,6 +17,10 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
         thunkAPI.dispatch(setLoaderValue({isLoading: true}))
     if (QUERRY === '') {
         let assetSearchQueeryGet = localStorage.getItem('assetSearchQuerry');
+        let assetEvidenceSearchType: any = localStorage.getItem('evidenceSearchType');
+        searchType = JSON.parse(assetEvidenceSearchType).searchValue;
+        
+        
         if (assetSearchQueeryGet !== null) {
             QUERRY = JSON.parse(assetSearchQueeryGet);
         }
@@ -58,13 +62,13 @@ export const getAssetSearchNameAsync: any = createAsyncThunk(
                  querry_string =  QUERRY.bool.must[0].query_string.query
             }
             else{
-                querry_string = assetEvidenceSearchType
+                querry_string = JSON.parse(assetEvidenceSearchType).searchValueType
             }   
                 return [dateTime,querry_string]
         }
     } else {
         localStorage.setItem('assetSearchDate', JSON.stringify(dateTime));
-        localStorage.setItem('evidenceSearchType', searchType);
+        localStorage.setItem('evidenceSearchType', JSON.stringify(searchType));
         return ""
     }
 });

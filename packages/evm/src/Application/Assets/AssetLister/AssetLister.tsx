@@ -199,7 +199,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if(props.isopen){
-      dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.ViewOwnAssets }));
+      dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: "" }));
       dispatch(getAssetSearchNameAsync({ QUERRY: "",dateTime: dateTimeDropDown,SearchType: "" }));
       setShowShortCutSearch(false);
       if (addvancedOptions && addvancedOptions.options) {
@@ -459,7 +459,7 @@ const SearchComponent = (props: any) => {
     setIsEmptySearch(true);
     setSearchResult(false)
     dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchValue }));
-    dispatch(getAssetSearchNameAsync({ QUERRY: QUERRY,dateTime: dateTimeDropDown,searchType: searchValueType }));
+    dispatch(getAssetSearchNameAsync({ QUERRY: QUERRY,dateTime: dateTimeDropDown,searchType: {searchValue,searchValueType} }));
 
     if (searchValue === SearchType.SimpleSearch || searchValue === SearchType.ShortcutSearch) {
       setShowShortCutSearch(false);
