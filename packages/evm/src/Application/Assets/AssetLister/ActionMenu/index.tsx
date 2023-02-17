@@ -38,11 +38,12 @@ import jwt_decode from "jwt-decode";
 import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 import {
+  AssetAction,
   AssetRestriction,
   Evidence,
   EvidenceChildSharingModel,
   MetadataFileType,
-  PersmissionModel,
+  PersmissionModel, 
   securityDescriptorType,
 } from "../../../../utils/Api/models/EvidenceModels";
 import { getAssetTrailInfoAsync } from "../../../../Redux/AssetDetailsReducer";
@@ -52,6 +53,7 @@ import moment from "moment";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
 import { clearAddGroupedSelectedAssetsActions, clearAllGroupedSelectedAssetsActions } from "../../../../Redux/groupedSelectedAssetsActions";
+import AssetLinkConfirm from "../AssetLinkConfirm/AssetLinkConfirm";
 
 type Props = {
   row: any;
@@ -69,17 +71,23 @@ type Props = {
 type AssetLink = {
   masterId: number,
   assetId: number,
-  evidenceId: number
-};
-type AssetAction = {
-  masterId: number,
-  assetId: number,
   evidenceId: number,
-  actionType: string,
-}
+  assetName?: string,
+  assetType?: any,
+  fileType?: any,
+};
+// type AssetAction = {
+//   masterId: number,
+//   assetId: number,
+//   evidenceId: number,
+//   actionType: string,
+// }
 type MasterAssetEvidence = {
   masterId: number,
-  evidenceId: number
+  evidenceId: number,
+  assetName?: string,
+  assetType?: any,
+  fileType?: any,
 };
 
 const downloadExeFileByFileResponse = (
@@ -135,6 +143,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [openForm, setOpenForm] = React.useState(false);
     const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+    const [isAssetLinkConfirm, setIsAssetLinkConfirm] = React.useState<boolean>(false);
+
     const [assetlinks, setAssetLinks] = React.useState<AssetLink[]>([]);
 
     const [assetLockUnLockError, setAssetLockUnLockError] =
@@ -150,6 +160,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [openAssignUser, setOpenAssignUser] = React.useState(false);
     const [openManageRetention, setOpenManageRetention] = React.useState(false);
     const [openAssetShare, setOpenAssetShare] = React.useState(false);
+    const [openAssetLink, setOpenAssetLink] = React.useState(false);
+
     const [openAssetAction, setOpenAssetAction] = React.useState<AssetAction[]>([]);
 
     const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
@@ -175,9 +187,11 @@ const ActionMenu: React.FC<Props> = React.memo(
           masterIds.push({
             masterId: obj.assetId,
             evidenceId: obj.evidence.id,
+            assetName: obj.assetName,
+            assetType: obj.assetType,
+            fileType: obj.evidence.asset.find((x: any) => x.assetId == obj.assetId).files[0].type,
           });
         });
-
         setSelectedMaster(masterIds);
       }
 
@@ -238,6 +252,11 @@ const ActionMenu: React.FC<Props> = React.memo(
     React.useEffect(() => {
       if (openAssetAction.length > 0) {
         dispatch(clearAddGroupedSelectedAssetsActions(openAssetAction));
+        showToastMsg?.({
+          message: t("Asset " + openAssetAction[0].actionType + " ready"),
+          variant: "success",
+          duration: 5000,
+        });
       }
 
     }, [openAssetAction]);
@@ -248,7 +267,10 @@ const ActionMenu: React.FC<Props> = React.memo(
           assetsList.push({
             masterId: obj.masterId,
             assetId: obj.assetId,
-            evidenceId: obj.evidenceId
+            evidenceId: obj.evidenceId,
+            assetName: obj.assetName,
+            assetType: obj.assetType,
+            fileType: obj.fileType,
           });
         }
       });
@@ -256,7 +278,10 @@ const ActionMenu: React.FC<Props> = React.memo(
         assetsList.push({
           masterId: obj.masterId,
           assetId: obj.masterId,
-          evidenceId: obj.evidenceId
+          evidenceId: obj.evidenceId,
+          assetName: obj.assetName,
+          assetType: obj.assetType,
+          fileType: obj.fileType,
         });
       });
       setAssetLinks(assetsList);
@@ -265,6 +290,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     const handleOpenAssignUserChange = () => setOpenAssignUser(true);
     const handleOpenManageRetention = () => setOpenManageRetention(true);
     const handleOpenAssetShare = () => setOpenAssetShare(true);
+    const handleAssetLinkOpen = () => setOpenAssetLink(true);
     const handleOpenAssignSubmission = () => setOpenSubmitAnalysis(true);
     const handlePrimaryAsset = () => setIsPrimaryOptionOpen?.(true);
     const handleChange = () => setOpenForm(true);
@@ -321,7 +347,6 @@ const ActionMenu: React.FC<Props> = React.memo(
         } as LockUnlockAsset);
       }
       const _body = JSON.stringify(_requestBody);
-      debugger
       EvidenceAgent.LockOrUnLockAsset(_body)
         .then(() => {
           showToastMsg?.({
@@ -726,6 +751,7 @@ const ActionMenu: React.FC<Props> = React.memo(
       setIsModalOpen(false);
       setOpenManageRetention(false);
       setOpenAssignUser(false);
+      setIsAssetLinkConfirm(false);
       history.push(
         urlList.filter((item: any) => item.name === urlNames.assets)[0].url
       );
@@ -991,7 +1017,10 @@ const ActionMenu: React.FC<Props> = React.memo(
             masterId: x.masterId,
             assetId: x.assetId,
             evidenceId: x.evidenceId,
-            actionType: "link"
+            actionType: "link",
+            assetName: x.assetName,
+            assetType: x.assetType,
+            fileType: x.fileType,
           });
 
         });
@@ -1001,15 +1030,19 @@ const ActionMenu: React.FC<Props> = React.memo(
           masterId: row.evidence.masterAssetId,
           assetId: row.assetId,
           evidenceId: row.evidence.id,
-          actionType: "link"
+          actionType: "link",
+          assetName: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetName,
+          assetType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetType,
+          fileType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).files[0].type,
         });
       }
       setOpenAssetAction(tempLinkedAssets);
 
     }
     const linkToAssetHandler = () => {
+      handleAssetLinkOpen();
       let tempLinkedAssets: AssetAction[] = [];
-      dispatch(clearAllGroupedSelectedAssetsActions());
+      //dispatch(clearAllGroupedSelectedAssetsActions());
 
     }
     const moveAssetHandler = () => {
@@ -1020,7 +1053,10 @@ const ActionMenu: React.FC<Props> = React.memo(
             masterId: x.masterId,
             assetId: x.assetId,
             evidenceId: x.evidenceId,
-            actionType: "move"
+            actionType: "move",
+            assetName: x.assetName,
+            assetType: x.assetType,
+            fileType: x.fileType,
           });
         });
       }
@@ -1029,7 +1065,10 @@ const ActionMenu: React.FC<Props> = React.memo(
           masterId: row.evidence.masterAssetId,
           assetId: row.assetId,
           evidenceId: row.evidence.id,
-          actionType: "move"
+          actionType: "move",
+          assetName: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetName,
+          assetType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetType,
+          fileType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).files[0].type,
         });
       }
       setOpenAssetAction(tempLinkedAssets);
@@ -1324,6 +1363,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           {actionMenuPlacement == ActionMenuPlacement.AssetLister
             && groupedSelectedAssetsActions.length > 0
             //&& selectedAssetActionType == "link" 
+            //&& multiAssetDisabled == false
             && isAssetLinkedOrMoved == "link"
             ? (
 
@@ -1355,6 +1395,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           {actionMenuPlacement == ActionMenuPlacement.AssetLister
             && groupedSelectedAssetsActions.length > 0
             //&& selectedAssetActionType == "move" 
+            && multiAssetDisabled == false
             && isAssetLinkedOrMoved == "move"
             ? (
               <MenuItem>
@@ -1561,7 +1602,25 @@ const ActionMenu: React.FC<Props> = React.memo(
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
           />
         </CRXModalDialog>
-
+        <CRXModalDialog
+          maxWidth="lg"
+          title={t("Link_to_this_group")}
+          className={"CRXModal __Crx__Share__asset"}
+          modelOpen={openAssetLink}
+          onClose={() => setOpenAssetLink(false)}
+          defaultButton={false}
+          indicatesText={true}
+          showSticky={true}
+        >
+          <AssetLinkConfirm
+            filterValue={filterValue}
+            rowData={row}
+            items={selectedItems} //{assetlinks}
+            setRemovedOption={(e: any) => { }}
+            setOnClose={() => setOpenAssetLink(false)}
+            showToastMsg={(obj: any) => showToastMsg?.(obj)}
+          />
+        </CRXModalDialog>
         <CRXConfirmDialog
           setIsOpen={() => setIsModalOpen(false)}
           onConfirm={closeDialog}

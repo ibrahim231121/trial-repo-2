@@ -11,6 +11,16 @@ export interface FormData {
     record: CMTEntityRecord;
     fields: Field[];
 }
+export interface AssetAction {
+    masterId: number,
+    assetId: number,
+    evidenceId: number,
+    actionType: string,
+    assetName?: string,
+    assetType?: any,
+    fileType?: any,
+}
+
 export interface Category {
     id: number;
     name: string;
@@ -159,10 +169,10 @@ export interface Form {
 export interface categoriesModel {
     categoryName: string;
     form: Field[];
-    
+
 }
 export interface SharedAssetLister {
-    assetId:number;
+    assetId: number;
     downloadLink: string[];
     assetName: string;
     unitName: string;
@@ -172,13 +182,15 @@ export interface SharedAssetLister {
     categories: string;
     fields: string;
     //categories: categoriesModel[];
-    
+
 }
 export interface AssetShareLink {
     assetId: number;
     masterId: number;
     evidenceId: number;
-
+    assetName?: string,
+    assetType?: any,
+    fileType?: any,
 }
 export interface EvidenceChildSharingModel {
     masterId: number;
@@ -231,7 +243,7 @@ export interface EvdenceCategoryAssignment {
     unAssignCategories: Category[];
     assignedCategories: Category[];
     updateCategories: Category[];
-    categorizedBy : number | null;
+    categorizedBy: number | null;
 }
 
 export type securityDescriptorType = {

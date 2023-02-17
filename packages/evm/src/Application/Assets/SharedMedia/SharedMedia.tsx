@@ -354,9 +354,8 @@ const SharedMedia = () => {
     let dataList: assetdata[] = [];
     const cookies = new Cookies();
     const url = EVIDENCE_SERVICE_URL + '/OpenSharedMedia?E=' + `${token}`;
-    // debugger;
-    setLoadingValue(true);
     
+    setLoadingValue(true);
     const res = await fetch(url, {
       method: 'Get',
       headers: { 'Content-Type': 'application/json' },
@@ -364,7 +363,6 @@ const SharedMedia = () => {
     let response = await res.json();
     setLoadingValue(false);
     document.documentElement.style.overflow = "visible !important";
-    //setDataResponse(response);
     let tempRec: SharedAssetLister[] = [];
     let formsfields: Field[] = [];
     let formfieldstring = '';
