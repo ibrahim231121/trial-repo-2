@@ -1261,7 +1261,13 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
         }}
       >
         <div className="assetName">
-        <CRXTruncation placement="top" content={assetName} />
+       
+        <CRXTruncation placement="top" content= {assetName.length >
+                                            25
+                                              ? assetName.substring(0,
+                                                   25
+                                                 ) + "..."
+                                              : assetName} />
         </div>
       </Link>
       {assets  && evidence.masterAsset.lock &&
@@ -1567,19 +1573,13 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                             
                                           </div>
                                           <div className="bucketListRec">
-                                            {selectedAsset[0].assetType}
+                                            {selectedAsset[0].assetType} 
                                           </div>
                                         </>
                                       ) : (
                                         <>
                                           <div className="bucketListAssetName">
-                                            {selectedAsset[0].assetName.length >
-                                            25
-                                              ? selectedAsset[0].assetName.substr(
-                                                  0,
-                                                  25
-                                                ) + "..."
-                                              : assetNameTemplate(selectedAsset[0].assetName,x.evidence)}
+                                            {assetNameTemplate(selectedAsset[0].assetName,x.evidence)}
                                           </div>
                                           <div className="bucketListRec">
                                             {selectedAsset[0].assetType}

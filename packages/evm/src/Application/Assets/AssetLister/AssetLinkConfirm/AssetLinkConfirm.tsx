@@ -72,13 +72,24 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
 
         });
         setassetsToBeLink(confirmAssets);
+      
+        (props.items.length > 0)?
         props.items.map((obj: any, index: number) => {
             confirmAssetsLinkIn.push({
                 isChecked: true,
                 assetId: obj.assetId,
                 index: index
             });
+        })
+        :
+        confirmAssetsLinkIn.push({
+            isChecked: true,
+            assetId: props.rowData.assetId,
+            index: 0
         });
+       
+        
+        
         setassetsLinkIn(confirmAssetsLinkIn);
         var row = props.rowData;
         var selectedItems = props.items;
@@ -154,7 +165,41 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
     const cancelBtn = () => {
         props.setOnClose();
     };
+    const masterAssetList =(obj: any, index: number) => {
+                                                const id = `checkBox'+${index}`;
+                                                return (
+                                                    <>
+                                                        <div className="_asset_group_list_row" key={index}>
+                                                            <div className="_asset_group_single_check">
+                                                                <CRXCheckBox
+                                                                    inputProps={id}
+                                                                    className="relatedAssetsCheckbox"
+                                                                    checked={(assetsLinkIn[index]?.isChecked == undefined) ? true:assetsLinkIn[index].isChecked}//{assetsLinkIn[index].isChecked}
+                                                                    onChange={(
+                                                                        e: React.ChangeEvent<HTMLInputElement>
+                                                                    ) => handleCheckMaster(e, assetsLinkIn[index].assetId)}
+                                                                    lightMode={true}
+                                                                />
+                                                            </div>
+                                                            <div className="_asset_group_list_thumb">
+                                                                <AssetThumbnail
+                                                                    assetName={obj.assetName}
+                                                                    assetType={obj.assetType}
+                                                                    fileType={obj.evidence.asset[0].files[0].type}
+                                                                    className={"CRXPopupTableImage"}
+                                                                />
+                                                            </div>
+                                                            <div className="_asset_group_list_detail">
 
+                                                                <div className="_asset_group_list_link">
+                                                                    {obj.assetName}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </>
+                                                );
+    }
     return (
         <>
             <div className="__Crx__Share__Asset__Modal" style={{ height: '600px' }}>
@@ -205,45 +250,14 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                                         }
                                         <br></br>
                                         The Assets will be linked to the following Primary Asset(s) <br></br>
-
                                         {
-                                            props.items.map((obj: any, index: number) => {
-                                                const id = `checkBox'+${index}`;
-                                                return (
-                                                    <>
-                                                        <div className="_asset_group_list_row" key={index}>
-                                                            <div className="_asset_group_single_check">
-                                                                <CRXCheckBox
-                                                                    inputProps={id}
-                                                                    className="relatedAssetsCheckbox"
-                                                                    checked={(assetsLinkIn[index]?.isChecked == undefined) ? true:assetsLinkIn[index].isChecked}//{assetsLinkIn[index].isChecked}
-                                                                    onChange={(
-                                                                        e: React.ChangeEvent<HTMLInputElement>
-                                                                    ) => handleCheckMaster(e, assetsLinkIn[index].assetId)}
-                                                                    lightMode={true}
-                                                                />
-                                                            </div>
-                                                            <div className="_asset_group_list_thumb">
-                                                                <AssetThumbnail
-                                                                    assetName={obj.assetName}
-                                                                    assetType={obj.assetType}
-                                                                    fileType={obj.evidence.asset[0].files[0].type}
-                                                                    className={"CRXPopupTableImage"}
-                                                                />
-                                                            </div>
-                                                            <div className="_asset_group_list_detail">
-
-                                                                <div className="_asset_group_list_link">
-                                                                    {obj.assetName}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </>
-                                                );
-                                                //}
-                                            })
+                                            
+                                            (props.items.length > 0)?props.items.map((obj: any, index: number) => {
+                                                masterAssetList(obj,index);
+                                            }):masterAssetList(props.rowData,0)
+                                        
                                         }
+                                        
                                     </div>
                                 </div>
 
