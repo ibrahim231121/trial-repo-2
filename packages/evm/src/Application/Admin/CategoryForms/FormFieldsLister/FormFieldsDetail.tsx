@@ -251,7 +251,8 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
 
   const formFieldsValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    type: Yup.string().required("Control Type is required"),
+    type: Yup.string().required("Field Type is required"),
+    displayName: Yup.string().required("Display Name is Required"),
     defaultFieldValue: Yup.string().when("type", {
       is: (key: any) => controlTypesForValidation.some((x => x.value === key)),
       then: Yup.string().required("Field Values is required")
@@ -306,7 +307,7 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
                   >
                     <CRXColumn item={true} xs={3}>
                       <label className="cc_form_label">
-                        {t("Control_Type")} <span>*</span>
+                        {t("Field_Type")} <span>*</span>
                       </label>
                     </CRXColumn>
                     <CRXColumn item={true} xs={9}>
@@ -380,7 +381,7 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
                   >
                     <CRXColumn item={true} xs={3}>
                       <label htmlFor="displayName" className="cc_form_label">
-                        {t("Field_Display_Name")}
+                        {t("Field_Display_Name")} <span>*</span>
                       </label>
                     </CRXColumn>
                     <CRXColumn item={true} xs={9}>
@@ -390,6 +391,14 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
                         name="displayName"
                         className={`crx_formik_field`}
                       />
+                      {errors.displayName !== undefined && touched.displayName ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.displayName}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </CRXColumn>
                   </CRXRows>
                  

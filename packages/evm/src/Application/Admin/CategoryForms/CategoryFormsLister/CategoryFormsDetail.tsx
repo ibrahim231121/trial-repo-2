@@ -253,7 +253,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                             <CRXRows container="container" spacing={0} className="create_category_rows">
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Type")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={2} spacing={0}>{t("required")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={1} spacing={0}>{t("Remove")}</CRXColumn>
                             </CRXRows>

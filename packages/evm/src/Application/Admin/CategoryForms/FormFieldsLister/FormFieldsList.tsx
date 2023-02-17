@@ -216,7 +216,7 @@ const FormFieldsList: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Control_Type")}`,
+      label: `${t("Field_Type")}`,
       id: "controlType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
