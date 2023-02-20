@@ -6,7 +6,7 @@
       margin-top: 0 !important;
       margin-left: 0 !important;
       position: sticky;
-      top: 139px;
+      top: 130px;
       background: #fff;
       z-index: 999;
     }
@@ -85,6 +85,7 @@ iframe {
       font-family:var(--base-font-family);
       font-weight: var(--Font-style-normal);
       padding-bottom: 18px;
+      white-space: nowrap;
     }
     p {
       color: var(--color-f2f2f2);

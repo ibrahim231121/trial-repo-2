@@ -47,7 +47,6 @@ import CasesList from "./Application/Cases/CasesLister/CasesList";
 import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
 import ImageViewer from "./components/MediaPlayer/ImageViewer/ImageViewer";
 import CategoriesDetail from "./Application/Admin/Categories/CategoriesDetail/CategoriesDetail";
-import FormFieldDetailPage from "./Application/Admin/CategoryForms/FormFieldsLister/FormFieldsDetail";
 import RetentionPoliciesDetailPage from "./Application/Admin/RetentionPolicies/RetentionPoliciesDetail/RetentionPoliciesDetail";
 
 
@@ -162,10 +161,6 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createRetentionPolicies)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
 
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editRetentionPolicy)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
-
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createFormField)[0].url} exact={true} component={FormFieldDetailPage} />
-
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url} exact={true} component={FormFieldDetailPage} />
 
                 <Route path="/notfound" component={ErrorPage} />
                 <Route path="*" component={ErrorPage} />

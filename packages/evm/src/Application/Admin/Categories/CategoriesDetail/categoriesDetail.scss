@@ -118,6 +118,17 @@
         font-size: 14px;
         color: var(--color-333333);
         font-family: var(--base-font-family);
+        span {
+          &.requiredLable {
+            span {
+              font-size: 20px;
+              position: relative;
+              font-weight: var(--Font-style-bold);
+              top: -8px;
+              left: 0px;
+            }
+          }
+        }
       }
       .wd450 {
         width: 400px;
@@ -178,10 +189,9 @@
       &.fileErrorbtn {
         input {
           &.audio_file_upload {
-            &::file-selector-button { 
+            &::file-selector-button {
               border: 2px solid var(--color-aa1d1d);
             }
-
           }
         }
         .fileError {
@@ -195,7 +205,6 @@
           }
         }
       }
- 
     }
   }
   .create_category_form_btns {
@@ -260,14 +269,12 @@
           top: 0px;
         }
       }
- 
     }
     &.create_category_form_modal {
       .createCategory_form {
         margin: 93px auto;
       }
     }
-
   }
   .crxFooterEditFormBtn {
     place-content: space-between;
@@ -280,7 +287,6 @@
         }
       }
     }
-
   }
 }
 @media only screen and (max-width: 1024px) {
@@ -302,9 +308,8 @@
         z-index: 1;
       }
     }
-  } 
+  }
 }
-
 
 // .settingsContent
 // {

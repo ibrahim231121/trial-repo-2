@@ -17,6 +17,7 @@ import { NotificationMessage } from "../../../Header/CRXNotifications/notificati
 import moment from "moment";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 
 type CategoriesDetailProps = {
     id: number,
@@ -235,6 +236,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       dispatch(getAllUploadPolicies());
       dispatch(getAllCategoryForms());
       RemoveSidePanelClass()
+      return () => {
+        dispatch(enterPathActionCreator({ val: "" }));
+      }
     }, []);
   
     const getBase64 = async (payload: CategoryModel) => {
@@ -278,6 +282,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               audioprompt: ""
             };
             setCategoryPayLoad(category);
+            dispatch(enterPathActionCreator({ val: `${response.name}`}));
           }
         })
           .catch((err: any) => {

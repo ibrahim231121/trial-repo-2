@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import FormFieldInfo from "./FormFieldInfo";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { controlTypes } from '../TypeConstant/constants';
-import FormFieldsDetail from '../FormFieldsLister/FormFieldsDetail_remove';
+import FormFieldsDetail from '../FormFieldsLister/FormFieldsDetail';
 import { getAllCategyFormsFilter } from '../../../../Redux/CategoryForms';
 
 
@@ -66,9 +66,10 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
         setOpenModel(modelOpen);
     }
 
-  const FormFieldDetail = () => {
-    history.push(urlList.filter((item:any) => item.name === urlNames.createFormField)[0].url);
-  }
+
+    const onCreateFormFields = (modelOpen: boolean) => {
+        setCreateFormFieldOpenModel(modelOpen);
+    }
 
     const updateOpenModel = (modelOpen: boolean) => {
         setOpenModel(modelOpen);
@@ -224,14 +225,14 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
 
 
                     <div className="create_category_form_area">
-                        <FormFieldInfo setFieldValue={setFieldValue} name={values.name} description={values.description} errors={errors} touched={touched}></FormFieldInfo>
+                     <FormFieldInfo setFieldValue={setFieldValue} name={values.name} description={values.description} errors={errors} touched={touched}></FormFieldInfo>
                         {
                             openModel &&
                             (<FieldLister categoryFormId={categoryFormId} title={t("Create_Category_Forms")} pageiGrids={pageiGrid} selectedFields={selectedFields} setSelectedFields={setSelectedFields} openModel={updateOpenModel} setFieldValue={setFieldValue} />)
                         }
                         {
                             createFormFieldOpenModel &&
-                            (<FormFieldsDetail id={0} title={t("Create_Form_Fields")} pageiGrid={pageiGrid} openModel={onAddFormFields} isCategoryForms={true} setSelectedFields={setSelectedFields} selectedFields={selectedFields} setFieldValue={setFieldValue}/>)
+                            (<FormFieldsDetail id={0} title={t("Create_Form_Fields")} pageiGrid={pageiGrid} openModel={onCreateFormFields} isCategoryForms={true} setSelectedFields={setSelectedFields} selectedFields={selectedFields} setFieldValue={setFieldValue}/>)
                         }
                         <div className="addFormFields formFieldBtn">
                             <CRXButton
@@ -243,7 +244,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                             </CRXButton>
                             <CRXButton
                                 className='create_form_field_button'
-                                onClick={FormFieldDetail}
+                                onClick={onCreateFormFields}
                                 color='primary'
                                 variant='contained'
                             > {t("Create_Form_Fields")}

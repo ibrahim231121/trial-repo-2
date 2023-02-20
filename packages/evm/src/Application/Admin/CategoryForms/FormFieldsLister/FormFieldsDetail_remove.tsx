@@ -1,8 +1,6 @@
-import React, { FC, useEffect, useState, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import {
-  CRXModalDialog,
   CRXButton,
-  CRXCheckBox,
   CRXConfirmDialog,
   CRXAlert,
   CRXSelectBox,
@@ -20,16 +18,19 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import { controlTypes, controlTypesForValidation } from "../TypeConstant/constants";
+import { useHistory, useParams } from "react-router";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 type FormFieldsDetailProps = {
-  id: number;
-  title: string;
-  pageiGrid: PageiGrid;
-  openModel: React.Dispatch<React.SetStateAction<any>>;
-  isCategoryForms: boolean;
-  setSelectedFields: any;
-  selectedFields: any;
-  setFieldValue: any;
+  id?: number;
+  title?: string;
+  pageiGrid?: PageiGrid;
+  openModel?: React.Dispatch<React.SetStateAction<any>>;
+  isCategoryForms?: boolean;
+  setSelectedFields?: any;
+  selectedFields?: any;
+  setFieldValue?: any;
 };
 
 type FormFieldDetailModel = {
@@ -41,18 +42,28 @@ type FormFieldDetailModel = {
   isRequired: boolean;
 };
 
-const FormFieldsDetail: FC<FormFieldsDetailProps> = (
+const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
   props: FormFieldsDetailProps
 ) => {
-  const [id, setId] = useState<number>(props?.id);
+
+  const { id } = useParams<{ id: string }>();
+  const history = useHistory();
+ // const [id, setId] = useState<number>(props?.id);
   const [openModal, setOpenModal] = React.useState(false);
-  const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [isFieldValueEnable, setIsFieldValueEnable] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [error, setError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>("");
   const { t } = useTranslation<string>();
   const toasterRef = useRef<typeof CRXToaster>(null);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 0,
+    size: 25
+  })
   const [formFieldPayLoad, setFormFieldPayLoad] =
     React.useState<FormFieldDetailModel>({
       id: 0,
@@ -81,6 +92,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
   };
 
   const onSave = async (payload: FormFieldDetailModel) => {
+    
     let url = "Fields";
     let body = {
       id: payload.id,
@@ -92,13 +104,13 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
       defaultFieldValue: payload.defaultFieldValue,
       isRequired: payload.isRequired,
     };
-    if (id > 0) {
+    if (body.id > 0) {
       url += "/" + id;
       SetupConfigurationAgent.putFormField(url, body)
         .then(() => {
           onMessageShow(true, t("Form_Field_Edited_Successfully"));
           setError(false);
-          dispatch(getAllFormFieldsFilter(props.pageiGrid));
+          dispatch(getAllFormFieldsFilter(pageiGrid));
           setTimeout(() => {
             handleClose();
           }, 500);
@@ -144,11 +156,11 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
               })
             );
           } else {
-            dispatch(getAllFormFieldsFilter(props.pageiGrid));
+            dispatch(getAllFormFieldsFilter(pageiGrid));
           }
-          setTimeout(() => {
-            handleClose();
-          }, 500);
+          // setTimeout(() => {
+          //   handleClose();
+          // }, 500);
         })
         .catch((e: any) => {
           if (e?.response?.status === 409) {
@@ -190,29 +202,36 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
     }
   };
 
+ 
   const handleClose = () => {
-    setOpenModal(false);
-    props.openModel(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.categoryForms)[0].url
+    );
   };
 
   React.useEffect(() => {
     setOpenModal(true);
     setControlTypes();
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, []);
 
   useEffect(() => {
-    if (id != undefined && id != null && id > 0) {
-      SetupConfigurationAgent.getSingleFormField(id)
+    let fieldId = id;
+    if (fieldId != undefined && fieldId != null ) {
+      SetupConfigurationAgent.getSingleFormField(Number.parseInt(fieldId))
         .then((response: any) => {
           if (response !== undefined && response != null) {
             setFormFieldPayLoad({
-              id: id,
+              id: Number.parseInt(fieldId),
               displayName: response?.display?.caption,
               name: response?.name,
               type: response?.type,
               defaultFieldValue: response?.defaultFieldValue,
               isRequired: response?.isRequired,
             });
+            dispatch(enterPathActionCreator({ val: response?.display?.caption }));
           }
         })
         .catch((err: any) => {
@@ -232,7 +251,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
 
   const formFieldsValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    type: Yup.string().required("Control Type is required"),
+    type: Yup.string().required("Field Type is required"),
+    displayName: Yup.string().required("Display Name is Required"),
     defaultFieldValue: Yup.string().when("type", {
       is: (key: any) => controlTypesForValidation.some((x => x.value === key)),
       then: Yup.string().required("Field Values is required")
@@ -240,7 +260,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
   });
 
   return (
-    <>
+    <div className="searchComponents create_form_fields_form">
       <CRXToaster ref={toasterRef} className="formFieldToaster" />
       <Formik
         enableReinitialize={true}
@@ -261,19 +281,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
           setTouched,
         }) => (
           <>
-            <div className="FormFields">
-              <CRXModalDialog
-                maxWidth="gl"
-                title={props.title}
-                className={`create_form_fields_form ${error ? "errorFormField":""}`}
-                modelOpen={openModal}
-                onClose={() => closeDialog(dirty)}
-                defaultButton={false}
-                showSticky={true}
-                subTitleText="Indicates required field"
+            <div className={`FormFields ${error ? "errorFormField" : "" }`}>
              
-                closeWithConfirm={closeWithConfirm}
-              >
                 {error && (
                   <CRXAlert
                     className="formFieldError"
@@ -283,10 +292,9 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     open={true}
                   />
                 )}
+                 {/* <div className="indicatestext tp15"><b>*</b> Indicates required field</div>  */}
                 <div className="create_category_form_field_content">
-                  {/* <div className="indicatestext tp15">
-                    <b>*</b> Indicates required field
-                  </div> */}
+               
 
                   <CRXRows
                     container={true}
@@ -297,12 +305,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         : " "
                     }`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={3}>
                       <label className="cc_form_label">
-                        {t("Control_Type")} <span>*</span>
+                        {t("Field_Type")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={9}>
                       <CRXSelectBox
                         name="type"
                         id="type"
@@ -343,12 +351,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         : ""
                     }`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={3}>
                       <label htmlFor="name" className="cc_form_label">
                         {t("Field_Name")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={9}>
                       <Field
                         id="name"
                         key="name"
@@ -371,18 +379,26 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     spacing={1}
                     className="crx_form_group_row"
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={3}>
                       <label htmlFor="displayName" className="cc_form_label">
-                        {t("Field_Display_Name")}
+                        {t("Field_Display_Name")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={9}>
                       <Field
                         id="displayName"
                         key="displayName"
                         name="displayName"
                         className={`crx_formik_field`}
                       />
+                      {errors.displayName !== undefined && touched.displayName ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.displayName}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </CRXColumn>
                   </CRXRows>
                  
@@ -393,18 +409,19 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     className={`crx_form_group_row ${errors.defaultFieldValue !== undefined &&
                       touched.defaultFieldValue ? "error_staric" : ""}`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={3}>
                       <label htmlFor="defaultFieldValue" className="cc_form_label">
                         {t("Field_Values")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={9}>
                       <Field
                         id="defaultFieldValue"
                         key="defaultFieldValue"
                         name="defaultFieldValue"
                         className={`crx_formik_field`}
                       />
+                        <div className="defaultFieldValuePlaceholder">(Use pipe separator "|" for multiple values)</div>
                       {errors.defaultFieldValue !== undefined &&
                         touched.defaultFieldValue ? (
                         <div className="errorTenantStyle">
@@ -418,12 +435,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                   </CRXRows>
                   )}
                   <CRXRows container={true} spacing={1} className="crx_form_group_row">
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={3}>
                       <label htmlFor="isReuired" className="cc_form_label">
-                        {t("isRequired")}
+                        {t("required")}
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={9}>
                       <div className="formikCheckboxField">
                         <Field
                         type="checkbox"
@@ -436,21 +453,19 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     </CRXColumn>
                   </CRXRows>
                 </div>
-                <div className="modalFooter CRXFooter">
-                  <div className="nextBtn">
+                <div className="crxFooterEditFormBtn">
+                  <div className="__crxFooterBtnUser__">
                     <CRXButton
                       color="primary"
                       variant="contained"
-                      className=" save_button_cc"
+                      className="groupInfoTabButtons"
                       onClick={() => onSave(values)}
                       disabled={!isValid || !dirty}
                     >
                       {t("Save")}
                     </CRXButton>
-                  </div>
-                  <div className="cancelBtn">
                     <CRXButton
-                      className="secondary"
+                      className="groupInfoTabButtons"
                       color="secondary"
                       variant="outlined"
                       onClick={handleClose}
@@ -458,8 +473,19 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                       {t("Cancel")}
                     </CRXButton>
                   </div>
+                  <div className="__crxFooterBtnUser__">
+               
+                    <CRXButton
+                      className=""
+                      color="secondary"
+                      variant="outlined"
+                      onClick={()=> closeDialog(dirty)}
+                    >
+                      {t("Close")}
+                    </CRXButton>
+                  </div>
                 </div>
-              </CRXModalDialog>
+            
               <CRXConfirmDialog
                 setIsOpen={() => setIsOpen(false)}
                 onConfirm={handleClose}
@@ -471,7 +497,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
               >
                 <div className="confirmMessage">
                   {t("You_are_attempting_to")} <strong> {t("close")}</strong>{" "}
-                  {t("the")} <strong>{t("retention_policy_Form")}</strong>.{" "}
+                  {t("the")} <strong>{t("Form_Field")}</strong>.{" "}
                   {t("If_you_close_the_form")},
                   {t("any_changes_you_ve_made_will_not_be_saved.")}{" "}
                   {t("You_will_not_be_able_to_undo_this_action.")}
@@ -485,8 +511,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
           </>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 
-export default FormFieldsDetail;
+export default FormFieldDetailPage;

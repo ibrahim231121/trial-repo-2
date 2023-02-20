@@ -353,24 +353,6 @@ html {
     padding-bottom: 50px;
   }
 
-  .makeStyles-content-9 {
-    .AssetsDataGrid {
-      
-        &::before {
-            background: transparent;
-        }
-    }
- 
-    &.makeStyles-contentShift-10 {
-       
-        .AssetsDataGrid {
-            &::before {
-                background: var(--color-ccc);
-            }
-        }
-    }
-  }
-
   .stickyBorder_Add {
     .stickyPos {
       z-index: 9;
@@ -444,6 +426,9 @@ html {
             }
           }
         }
+      }
+      &::after, &::before {
+        background: transparent;
       }
     }
    

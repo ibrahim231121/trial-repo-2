@@ -663,7 +663,7 @@ const UnitCreate = (props: historyProps) => {
           value={value}
           onChange={handleChange}
           tabitems={inCarTab === "DVR" ? tabs : tabs1}
-          stickyTab={292}
+          stickyTab={283}
         />
         <CrxTabPanel value={value} index={0}>
           <div className={showMessageError}></div>

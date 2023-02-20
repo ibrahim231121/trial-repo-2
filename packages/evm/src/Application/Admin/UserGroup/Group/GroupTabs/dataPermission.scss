@@ -347,6 +347,11 @@
   .stickyPos {
     z-index: 7;
     position: sticky !important;
+    padding-right: 0px !important;
+    width: 100% !important;
+  }
+  .overlaySticky-content {
+    display: none;
   }
 }
 

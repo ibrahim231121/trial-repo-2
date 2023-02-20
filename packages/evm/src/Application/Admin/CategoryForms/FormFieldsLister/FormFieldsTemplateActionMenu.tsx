@@ -27,8 +27,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
   const history = useHistory();
 
   const editFormFields = () => {
-    const path = `${urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Form_Fields"));
+    onClickOpenModel(true, Number(row?.id), t("Edit_Form_Fields"));
   };
 
 

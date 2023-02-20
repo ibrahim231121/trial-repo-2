@@ -69,14 +69,6 @@ const FormFieldsList: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<FormFieldsTemplate[]>([]);
   const filterFormFields: any = useSelector((state: RootState) => state.FormFieldsSlice.filterFormFields);
 
-  const history = useHistory();
-
-  const FormFieldDetail = () => {
-    history.push(urlList.filter((item:any) => item.name === urlNames.createFormField)[0].url);
-  }
-
-
-
   useEffect(() => {
     setFormFields();
     isFirstRenderRef.current = false;
@@ -89,11 +81,6 @@ const FormFieldsList: React.FC = () => {
     headCells[colIdx].headerArray = valuesObject;
     onSelection(valuesObject, colIdx);
   }
-
-  const editFormFields = (fieldId : number) => {
-    const path = `${urlList.filter((item: any) => item.name === urlNames.editFormField)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + fieldId, t("Edit_Form_Fields"));
-  };
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -192,7 +179,7 @@ const FormFieldsList: React.FC = () => {
       id: "displayName",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editFormFields(id)} className={"dataTableText txtStyle"}>{e}</div>
+        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e}</div>
       },
       sort: true,
       searchFilter: true,
@@ -295,6 +282,11 @@ const FormFieldsList: React.FC = () => {
     setOpenModel(modelOpen);
   }
 
+  const updateOpenModel = (modelOpen: boolean) => {
+    setOpenModel(modelOpen);
+    dispatch(getAllCategoriesFilter(pageiGrid))
+  }
+
   const getFilteredFormFieldsData = () => {
     pageiGrid.gridFilter.filters = []
     searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number, id: any) => {
@@ -352,6 +344,7 @@ const FormFieldsList: React.FC = () => {
     <ClickAwayListener onClickAway={handleBlur}>
     <div className="category_tab_parent" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
+
       {
         rows && (
           <CRXDataTable
@@ -366,7 +359,7 @@ const FormFieldsList: React.FC = () => {
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton color="primary" className="primary CategoriesBtn" onClick={FormFieldDetail}>
+                <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
                     {t("Create_Form_Fields")}
                   </CRXButton>
                 </Restricted>
@@ -404,6 +397,10 @@ const FormFieldsList: React.FC = () => {
           />
 
         )
+      }
+           {
+          openModel &&
+          (<FormFieldsDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} isCategoryForms={false} setSelectedFields={null} selectedFields={null} setFieldValue={null}/>)
       }
     </div>
     </ClickAwayListener>
