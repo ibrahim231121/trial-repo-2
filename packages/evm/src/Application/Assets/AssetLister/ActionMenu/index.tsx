@@ -152,7 +152,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         isError: false,
         errorMessage: "",
       });
-    const { AssignedGroups, UserId }: IDecoded = jwt_decode(
+    const { AssignedGroups, UserId, AssignedModules }: IDecoded = jwt_decode(
       cookies.get("access_token")
     );
     const [securityDescriptorsArray, setSecurityDescriptorsArray] =
@@ -387,7 +387,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           }, 2000);
 
           if(actionMenuPlacement === ActionMenuPlacement.AssetDetail){
-            const isAllowedToAccessLockAsset = AssignedGroups.split(',').includes('29');
+            const isAllowedToAccessLockAsset = AssignedModules.split(',').includes('29');
             if(isAllowedToAccessLockAsset){
               setSelectedItems?.([row]);
             } else {

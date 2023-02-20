@@ -9,6 +9,7 @@ export interface IDecoded {
     UserId: string;
     exp: string;
     AssignedGroups: string;
+    AssignedModules : string;
 }
 const cookies = new Cookies();
 let decoded: IDecoded;
