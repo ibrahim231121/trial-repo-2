@@ -34,7 +34,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 disableRipple={true}
             >
                 <CRXTooltip iconName="fas fa-filter" className='crxTooltipFilter' 
-                placement={expanView == true ? "left" : "top"} arrow={false} title="filter"></CRXTooltip>
+                placement={expanView == true ? "left" : "top-end" } arrow={false} title="Table Column Filter"></CRXTooltip>
             </IconButton>
             {/* <ClickAwayListener onClickAway={() => setAnchorEl(filterOuter)}> */}
             <Menu

@@ -200,7 +200,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
           disableRipple={true}
         >
           <CRXTooltip iconName='fas fa-columns' title="Customize Columns" arrow={false} 
-          placement={expanView == true ? "left" : "left-end"}></CRXTooltip>
+          placement={expanView == true ? "left" : "top-end"}></CRXTooltip>
           {/* <i className="fas fa-columns"></i> */}
         </IconButton>
       <Popper

@@ -76,12 +76,7 @@ type AssetLink = {
   assetType?: any,
   fileType?: any,
 };
-// type AssetAction = {
-//   masterId: number,
-//   assetId: number,
-//   evidenceId: number,
-//   actionType: string,
-// }
+
 type MasterAssetEvidence = {
   masterId: number,
   evidenceId: number,
@@ -1059,7 +1054,6 @@ const ActionMenu: React.FC<Props> = React.memo(
     const linkToAssetHandler = () => {
       handleAssetLinkOpen();
       let tempLinkedAssets: AssetAction[] = [];
-      //dispatch(clearAllGroupedSelectedAssetsActions());
 
     }
     const moveAssetHandler = () => {
@@ -1632,7 +1626,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           <AssetLinkConfirm
             filterValue={filterValue}
             rowData={row}
-            items={selectedItems} //{assetlinks}
+            items={selectedItems}
             setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssetLink(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
