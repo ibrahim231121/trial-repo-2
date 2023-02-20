@@ -1086,8 +1086,7 @@ const CreateUserForm = () => {
                 label={t("LoginId")}
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => {
-                  setFormPayload({ ...formpayload, loginId: e.target.value })
-                  checkUserName(e.target.value)
+                  setFormPayload({ ...formpayload, loginId: e.target.value });
                 }}
                 disabled={isADUser}
                 // onBlur={(e: any) => {
@@ -1109,8 +1108,7 @@ const CreateUserForm = () => {
                   className='users-input'
                   value={formpayload.firstName}
                   onChange={(e: any) => {
-                    setFormPayload({ ...formpayload, firstName: e.target.value })
-                    checkFirstName(e.target.value)
+                    setFormPayload({ ...formpayload, firstName: e.target.value });
                   }
                   }
                   onBlur={() => checkFirstName()}
@@ -1137,8 +1135,7 @@ const CreateUserForm = () => {
                   value={formpayload.lastName}
                   label={t("Last_Name")}
                   className='users-input'
-                  onChange={(e: any) =>  { setFormPayload({ ...formpayload, lastName: e.target.value })
-                  checkLastName(e.target.value)  
+                  onChange={(e: any) =>  { setFormPayload({ ...formpayload, lastName: e.target.value });
                 }}
                   onBlur={() => checkLastName()}
                 />
