@@ -2,7 +2,7 @@ GIT_COMMIT = ''
 
 pipeline {
   agent {
-    label 'docker&&linux'
+    label 'frontend'
   }
 
   options {
@@ -21,14 +21,14 @@ pipeline {
             branches: [[name: scm.branches[0].name]],
             doGenerateSubmoduleConfigurations: false,
             extensions: [
-              [$class: 'CloneOption', noTags: false, reference: '/var/lib/git-mirror/crossbones-webui', shallow: false],
+              [$class: 'CloneOption', noTags: false, reference: '/var/lib/git-mirror/evm4-ui-alpr', shallow: false],
               [$class: 'LocalBranch', localBranch: scm.branches[0].name.replaceAll('^origin/', '')],
               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
               [$class: 'CleanCheckout']
             ],
             submoduleCfg: [],
             userRemoteConfigs: [
-              [credentialsId: 'ssh-jenkins', url: 'git@bitbucket.org:irsavideo/crossbones-webui.git']
+              [credentialsId: 'ssh-jenkins', url: 'git@bitbucket.org:irsavideo/evm4-ui-alpr.git']
             ]
           ]).GIT_COMMIT
         }
@@ -38,7 +38,7 @@ pipeline {
       agent {
         docker {
           image 'node:14.17.1-alpine'
-          label 'docker&&linux'
+          label 'frontend'
           args '-v /var/lib/git-mirror:/var/lib/git-mirror'
           reuseNode true
         }
@@ -58,10 +58,10 @@ pipeline {
           echo "export const buildVersionNumber = '1.0.${currentBuild.number}'" > packages/evm/src/version.ts
           """
           sh label: 'check the version file', script: 'cat packages/evm/src/version.ts' 
-		  sh label: 'removing node_module', script: 'rm -rf node_modules/'
-          sh label: 'npm install', script: 'npm install'
+	    	  sh label: 'removing node_module', script: 'rm -rf node_modules/'
+          sh label: 'yarn install', script: 'yarn install'
           sh label: 'lerna bootstrap', script: 'npx lerna bootstrap'
-          sh label: 'npm run build', script: 'npm run build'
+          sh label: 'yarn run build', script: 'yarn run build'
           sh label: 'publish', script: """
           mkdir -p "${WORKSPACE}/publish"
           cp "${WORKSPACE}/src/packages/evm/Dockerfile-jenkins-linux" "${WORKSPACE}/publish/Dockerfile"
@@ -74,7 +74,7 @@ pipeline {
       agent {
         docker {
           image 'sonarsource/sonar-scanner-cli:latest'
-          label 'docker&&linux'
+          label 'frontend'
           args '-v /var/lib/git-mirror:/var/lib/git-mirror'
           reuseNode true
         }
@@ -87,7 +87,7 @@ pipeline {
           withSonarQubeEnv('Sonarqube') {
             sh """
             sonar-scanner \
-              -Dsonar.projectKey="Crossbones-WebUI" \
+              -Dsonar.projectKey="evm4-ui-alpr" \
               -Dsonar.projectVersion="${currentBuild.displayName}"
             """.stripIndent().trim()
           }
@@ -107,11 +107,11 @@ pipeline {
           script {
             def dockerImageName = scm.branches[0].name.replaceAll('^origin/', '').toLowerCase().replaceAll('[^a-z0-9]', '-').replaceAll('-+', '-').replaceAll('(^-+|-+$)', '')
             docker.withRegistry(env.NEXUS_DOCKER_HOSTED_URL, 'nexus-jenkins') {
-              def image = docker.build("crossbones-webui-${dockerImageName}:${currentBuild.displayName}")
+              def image = docker.build("evm4-ui-alpr-${dockerImageName}:${currentBuild.displayName}")
               image.push(currentBuild.displayName)
               image.push('latest')
             }
-            zip archive: true, dir: '', exclude: '', glob: 'evm/**', zipFile: "Crossbones_UI_${currentBuild.displayName}.zip"
+            zip archive: true, dir: '', exclude: '', glob: 'evm/**', zipFile: "evm4-ui-alpr${currentBuild.displayName}.zip"
           }
         }
       }
