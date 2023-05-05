@@ -1,0 +1,580 @@
+.hotListModalEditCrx {
+  padding-right: 11px;
+}
+
+.hotListSearchComponents {
+  padding: 0 4px 0px 65px;
+  padding-top: 96px;
+  transition: 0.5s padding ease-out;
+}
+
+.createHotList {
+  .modalEditCrx {
+    padding-right: 11px;
+  }
+}
+
+.CrxCreateHotList {
+  .modalEditCrx {
+    padding-right: 11px;
+  }
+  .CrxEditForm {
+    //padding: 40px 52px 47px 26px;
+    color: #333333;
+    // height: calc(100% - 97px);
+    // overflow-y: auto;
+    // overflow-x: hidden;
+
+    h6 {
+      width: 168.66px;
+    }
+    > span {
+      margin: 0 0 34px;
+      label.requiredLable {
+        .inputLabelReq {
+          line-height: 24px;
+          margin-left: 7px;
+          font-size: 20px;
+          color: #333333;
+        }
+      }
+      span {
+        font-size: 14px;
+        color: #333333;
+        font-family: var(--Arial-font-family);
+        
+      }
+      .users-input {
+        width: 380px;
+      }
+      .errorStateContent {
+        font-size: 12px;
+        color: #aa1d1d;
+      }
+    }
+  }
+  .CrxIndicates {
+    margin-top: 2px;
+    padding-bottom: 33px;
+    padding-left: 0px;
+    font-style: italic;
+    position: sticky;
+    top: 2px;
+    background: var(--color-White);
+    z-index: 1;
+    font-size: 14px;
+
+    sup {
+      line-height: 17px;
+      /* margin-right: 5px; */
+      font-size: 20px;
+      font-weight: var(--Font-style-bold);
+      margin-top: 7px;
+      position: relative;
+      top: 6px;
+    }
+  }
+}
+
+.CreatHotListUi {
+  margin-left: 62px;
+
+  .grid_spacer {
+    width: 92px;
+  }
+
+  .modalEditCrx {
+    margin-top: 40px;
+    padding: 0 130px 0 130px;
+  }
+
+  .gridFilterTextBox {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+
+    .gridFilterSpanUi {
+      width: 100%;
+    }
+  }
+
+  .inputLabelNoReq {
+    margin-bottom: 8px;
+    display: inline-block;
+    font-size: 14px;
+    color: var(--color-333333);
+  }
+
+  .crxEditFilter {
+    flex-direction: column;
+  }
+
+  .CrxUserEditForm {
+    width: 100% !important;
+  }
+
+  .requiredLable {
+    align-items: baseline;
+  }
+
+  .inputLabelReq {
+    left: 9px !important;
+  }
+
+  .DeactivationDateUi {
+    flex-direction: row;
+    align-items: baseline;
+    padding: 0 5px 0 5px !important;
+    margin-bottom: 3px !important;
+
+    label {
+      margin-bottom: 6px;
+    }
+
+    .users-input {
+      width: 100% !important;
+    }
+  }
+
+  .editFilterUi {
+    padding: 0 5px 0 5px;
+    flex-direction: row;
+
+    .requiredLable {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--color-333333);
+
+      // font-family: var(--Arial-font-family);
+      >span {
+        font-size: 20px;
+        padding-left: 2px !important;
+        margin-left: 8px !important;
+      }
+    }
+
+    .inputError {
+      margin-bottom: 0px !important;
+    }
+
+    >span {
+      width: 167px;
+    }
+
+    .selectInner_content {
+      width: 100%;
+    }
+  }
+
+  .crxRadioBtnUi {
+    display: flex;
+    flex-direction: row;
+    padding-left: 3px;
+
+    .user-radio-group {
+      margin-top: 4px;
+      width: 100% !important;
+
+    }
+
+    &.radioBtnUiSpacer {
+      .user-radio-group {
+        width: 434px !important;
+      }
+    }
+
+    label {
+      font-size: 14px;
+      margin-right: 0px !important;
+      width: 241px !important;
+    }
+  }
+
+  .crxFooterEditFormBtn {
+    padding: 0 28px 0 89px !important;
+    bottom: 55px;
+    position: fixed;
+    border: none;
+    place-content: space-between;
+    display: flex;
+
+    .groupInfoTabButtons-Close {
+      min-width: 80px !important;
+      height: 30px;
+      border: 1px solid #878787;
+      background: #ffffff;
+      color: #333333;
+      box-shadow: none;
+
+      &:focus {
+        border: 1px solid #231f20 !important;
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
+      }
+
+      &:hover {
+        border: 1px solid #878787;
+        background: #f5f5f5 !important;
+        color: #333333 !important;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 50%;
+      background: white;
+      top: 49px;
+      right: 0;
+    }
+
+    .__crxFooterBtnUser__ {
+      display: flex;
+    }
+  }
+
+  .errorStateContent {
+    position: absolute;
+  }
+
+  .errors {
+    .MuiInput-underline {
+      input {
+        border: 2px solid var(--color-aa1d1d);
+        outline: none;
+      }
+    }
+  }
+
+  .radioBtnUiSpacer,
+  .ManualRadioBtn {
+    margin-bottom: 160px;
+  }
+
+  .CrxIndicates {
+    position: fixed !important;
+    top: 87px !important;
+    height: 58px;
+    background-color: #ffffff !important;
+    padding-top: 19px;
+    width: calc(100% - 241px);
+    padding-bottom: 13px;
+    border-bottom: 1px solid #dedede;
+  }
+
+  .crxDropdownValidationError {
+    i {
+      font-size: 12px;
+    }
+  }
+
+  .crx-Generate-pass {
+    .inputLabelNoReq {
+      display: inline;
+    }
+
+    .gridFilterTextBox {
+      margin-bottom: 0px;
+    }
+
+    .copyButton {
+      padding-bottom: 19px !important;
+    }
+  }
+
+  .crx-manually-generate-pass {
+    .errorStateContent {
+      left: 203px;
+      right: 6px !important;
+      margin-top: 38px !important;
+
+      i {
+        font-size: 12px;
+      }
+    }
+
+    .crx-requird-check {
+      position: absolute;
+      left: 203px;
+      margin-top: -10px !important;
+
+      label {
+        width: 320px !important;
+      }
+    }
+
+    .crx-gente-field {
+      width: 100% !important;
+    }
+
+    .inputLabelReq {
+      left: 2px !important;
+    }
+  }
+
+  .crx-gente-field-confrim+.errorStateContent {
+    width: 250px !important;
+    left: 203px;
+    bottom: 22px;
+  }
+
+  .ConfirmCheckUi {
+    width: 430px !important;
+
+    label {
+      width: 300px !important;
+    }
+  }
+
+  .btnCancelAssign {
+    border: 1px solid #878787 !important;
+    color: #333333 !important;
+    font-size: 14px;
+    width: 80px;
+    padding: 6px 0;
+    font-family: var(--Arial-font-family);
+    text-align: center;
+    height: 30px;
+    text-decoration: none;
+
+    &:hover {
+      border: 1px solid #333333 !important;
+      color: #333333 !important;
+    }
+
+    &:active,
+    &:focus {
+      border: 1px solid #231f20 !important;
+      background: #231f20 !important;
+      color: #f5f5f5 !important;
+    }
+  }
+
+  .crxCreateEditDate {
+    margin-top: 23px !important;
+
+    label {
+      width: 220px !important;
+      font-size: 14px;
+    }
+  }
+
+  .CrxEditForm {
+    h6 {
+      width: 220.66px !important;
+    }
+
+    ._create_user_pin_field {
+      margin-top: 30px;
+    }
+  }
+
+  .inputLabelNoReq {
+    margin-top: 7px;
+  }
+
+  .crxGeneratePassword {
+    flex-direction: row;
+    justify-content: space-between;
+
+    .primary {
+      margin-right: 29px !important;
+    }
+
+    button {
+      min-width: 90px;
+    }
+
+    .crx-generate-btn {
+      width: 100% !important;
+    }
+
+    .gridFilterTextBox {
+      display: block !important;
+      width: 100%;
+    }
+  }
+
+  .First_Name_Field,
+  .Last_Name_Field {
+    .errorStateContent {
+      .crxErrorMsg {
+        display: inline-flex;
+        width: 432px;
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .FirstNameField_ErrorEnabled {
+    margin-bottom: 44px;
+  }
+
+  .crxFooterEditFormBtn {
+    &::after {
+      content: "";
+      background: #d1d2d4 !important;
+      width: 93.89%;
+      position: absolute;
+      top: 0;
+      height: 1px;
+      /* padding: 0 49px; */
+      left: 89px;
+    }
+  }
+
+  @media screen and (max-width: 1026px) {
+    .crxFooterEditFormBtn {
+      padding-bottom: 60px;
+
+      &::after {
+        width: 88.89%;
+      }
+    }
+
+  }
+
+  @media screen and (min-width: 2200px) {
+    .grid_spacer {
+      width: 193px;
+    }
+  }
+
+  @media screen and (min-width: 1700px) and (max-width: 2200px) {
+    .grid_spacer {
+      width: 144px;
+    }
+
+  }
+
+  @media screen and (max-width: 1786px) {
+    .CrxEditForm {
+      .crxRadioBtn {
+        flex-direction: column;
+      }
+
+      .crxRadioBtn {
+        .user-radio-group {
+          padding-left: 70px;
+          padding-top: 20px;
+        }
+      }
+    }
+
+    .CrxEditForm {
+      padding-bottom: 40px;
+    }
+
+    .crxFooterEditFormBtn {
+      bottom: 21px;
+    }
+  }
+
+  @media screen and (max-width: 1944px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 36px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1536px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 158px;
+          }
+        }
+      }
+    }
+
+    .CrxEditForm {
+      padding-bottom: 40px;
+    }
+
+    .crxFooterEditFormBtn {
+      bottom: 21px;
+    }
+  }
+
+  @media screen and (max-width: 1346px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 193px;
+          }
+        }
+      }
+    }
+
+    .CrxEditForm {
+      padding-bottom: 60px;
+    }
+
+    .crxFooterEditFormBtn {
+      bottom: 21px;
+    }
+  }
+
+  @media screen and (max-width: 1279px) {
+    .grid_spacer {
+      display: none;
+    }
+
+    .modalEditCrx {
+      padding: 0 185px !important;
+    }
+
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 0px;
+          }
+        }
+      }
+    }
+
+    .user-radio-group {
+      padding-bottom: 90px;
+    }
+
+    .crxFooterEditFormBtn {
+      &::before {
+        width: 100%;
+        top: 70px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1084px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 38px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1035px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 72px;
+          }
+        }
+      }
+    }
+  }
+}

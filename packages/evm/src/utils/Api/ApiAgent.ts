@@ -44,7 +44,8 @@ import {
     BASE_URL_CASES_SERVICE,
     BASE_URL_Configuration_SERVICE,
     BASE_URL_DeviceHeartBeat_SERVICE,
-    BASE_URL_COMMAND_SERVICE
+    BASE_URL_COMMAND_SERVICE,
+    BASE_URL_HOTLIST
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -79,6 +80,7 @@ import { logOutUser } from '../../Logout/API/auth';
 import { url } from 'inspector';
 import { Case } from '../../Application/Cases/CaseTypes';
 import { StationPolicyConfigurationTemplate } from '../../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
+import { HotListTemplate } from './models/HotListModels';
 
 
 
@@ -460,6 +462,13 @@ export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
     }, []);
     return [data];
 };
+
+
+export const HotListAgent = {
+
+    getHotListInfoAsync: (url: string, extraHeader?: Headers[]) => requests.get<HotListTemplate[]>(BASE_URL_HOTLIST, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+        
+    }
 
 
 

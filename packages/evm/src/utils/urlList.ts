@@ -93,7 +93,11 @@ export const urlNames: any = {
     createFormField: 'createFormField',
     editFormField: 'editFormField',
     createRetentionPolicies: 'createRetentionPolicies',
-    editRetentionPolicy : 'editRetentionPolicy'
+    editRetentionPolicy : 'editRetentionPolicy',
+    HotList : 'HotList',
+    HotListDetail : 'HotListDetail',
+    DataSource : 'DataSource',
+    DataSourceTab : 'DataSourceTab'
 };
 
 export const urlList: any = [
@@ -549,5 +553,37 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' },
         ]
-    }
+    } , 
+     {
+        name: urlNames.HotList,
+        url: "/Alpr/HotList",
+        details: [
+            { routeTo: "/Alpr/HotList", type: "link", label: "Manage Hot List", },
+        ],
+    },{
+        name: urlNames.HotListDetail,
+        url: '/ALPR/HotList/HotListDetail/:id',
+        details: [
+            { type: 'text', label: 'Hot List' },
+            { routeTo: 'ALPR/HotList/HotListDetail', type: 'link', label: 'Hot List' },
+            
+        ]
+    },{
+        name: urlNames.DataSource,
+        url: '/ALPR/DataSource',
+        details: [
+            { type: 'text', label: 'ALPR' },
+            { routeTo: '/ALPR/DataSource', type: 'text', label: 'Hot List Data Source' },
+            
+        ]
+    },
+    {
+        name: urlNames.DataSourceTab,
+        url: '/ALPR/DataSourceTab/:id',
+        details: [
+            { type: 'text', label: 'ALPR' },
+            { routeTo: '/ALPR/DataSourceTab', type: 'text', label: 'Hot List Data Source' },
+            
+        ]
+    },
 ];

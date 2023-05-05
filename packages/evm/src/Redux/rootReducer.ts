@@ -7,6 +7,7 @@ import categorySlice from './categoryReducer';
 import CategoryFormSlice from './CategoryFormSlice';
 import unitSlice from './UnitReducer';
 import userSlice from './UserReducer';
+import HotListSlice from './AlprHotListReducer';
 import notificationMessages from './notificationPanelMessages'
 import timerSlice from './timerslice';
 import templateSlice from './TemplateConfiguration';
@@ -32,6 +33,7 @@ import groupedSelectedAssetsActions from './groupedSelectedAssetsActions';
 import fromFieldsSlice from './FormFields';
 import assetBucketBasketSlice from './assetBucketBasketSlice';
 import casesSlice from './CasesReducer';
+import AlprDataSourceSlice from './AlprDataSourceReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -66,6 +68,8 @@ export const reducer = combineReducers({
   FormFieldsSlice : fromFieldsSlice.reducer,
   assetBucketBasketSlice : assetBucketBasketSlice.reducer,
   caseReducer: casesSlice.reducer,
+  hotListReducer: HotListSlice.reducer,
+  alprDataSourceReducer: AlprDataSourceSlice.reducer,
 
 })
 export type RootState = ReturnType<typeof reducer>

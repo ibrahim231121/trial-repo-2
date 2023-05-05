@@ -232,6 +232,37 @@ const CRXLefNavigation = () => {
         }
       ],
     },
+    {
+      moduleId: 0,
+      label: t("ALPR"),
+      icon: "fas fa-car-on NaveIcon",
+      items: [{moduleIds: 5,
+        label: t("Captures"),
+        command: () => {
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
+        },
+      },{
+        moduleIds: 5,
+        label: t("HotList"),
+        command: () => {
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
+        },
+      },
+        {moduleIds: 5,
+        label: t("HotList Data Source"),
+        command: () => {;
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url);
+        },
+      },
+        {moduleIds: 5,
+        label: t("License Plates"),
+        command: () => {
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
+        },
+      },
+        
+    ],
+    },
   ];
 
   var AssetPermission = items.filter((x: any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0);

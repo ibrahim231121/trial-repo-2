@@ -1,6 +1,8 @@
 import { env } from "../../env";
 import { MAX_REQUEST_SIZE_FOR } from '../constant'
 
+export const BASE_URL_HOTLIST = env.REACT_APP_HOTLIST_URL;
+
 
 export const BASE_URL_SOCKET_SERVICE = env.REACT_APP_SOCKET_SERVICE_URL;
 export const BASE_URL_COMMAND_SERVICE = env.REACT_APP_COMMAND_SERVICE_URL;

@@ -48,8 +48,11 @@ import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
 import ImageViewer from "./components/MediaPlayer/ImageViewer/ImageViewer";
 import CategoriesDetail from "./Application/Admin/Categories/CategoriesDetail/CategoriesDetail";
 import RetentionPoliciesDetailPage from "./Application/Admin/RetentionPolicies/RetentionPoliciesDetail/RetentionPoliciesDetail";
-
-
+import CADList from "./Application/CAD/CADLister";
+import HotList from "./Application/ALPR/HotList/Index";
+import HotListDetail from "./Application/ALPR/HotList/HotListDetail";
+import HotListDataSource from "./Application/ALPR/HotListDataSource/Index";
+import DataSourceTab from "./Application/ALPR/HotListDataSource/DataSourcePanel";
 
 const cookies = new Cookies();
 
@@ -103,6 +106,7 @@ const Routes = () => {
                 <PrivateRoute moduleId={5} path={urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url} exact={true} component={UserGroup} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+                
                 <PrivateRoute moduleId={8} path={urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
                 <PrivateRoute moduleId={13} path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
@@ -161,6 +165,13 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createRetentionPolicies)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
 
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editRetentionPolicy)[0].url} exact={true} component={RetentionPoliciesDetailPage} />
+
+                {/* ALPR Start*/}
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.HotList)[0].url} exact={true} component={HotList} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url} exact={true} component={HotListDetail} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url} exact={true} component={HotListDataSource} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url} exact={true} component={DataSourceTab} />
+                {/* ALPR End*/}
 
                 <Route path="/notfound" component={ErrorPage} />
                 <Route path="*" component={ErrorPage} />

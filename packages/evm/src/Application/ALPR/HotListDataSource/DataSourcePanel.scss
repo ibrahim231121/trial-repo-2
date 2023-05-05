@@ -1,0 +1,74 @@
+.crxFooterEditFormBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 25px;
+    height: 75px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid var(--color-d1d2d4);
+    width: 100%;
+    background: var(--color-White);
+
+    button {
+      font-size: 14px;
+      border-radius: 0;
+      height: 30px;
+      text-transform: revert;
+      font-family: var(--base-font-family);
+      width: 80px;
+    }
+
+    button.Mui-disabled {
+      color: var(--color-979797);
+      background: var(--color-e5e5e5);
+      border: none;
+    }
+
+    .primary {
+      background: var(--color-333333);
+      color: var(--color-d1d2d4);
+      margin-right: 32px;
+
+      &:hover {
+        background: var(--color-6e6e6e);
+        color: var(--color-f5f5f5);
+        border: 1px solid var(--color-transparent);
+      }
+
+      &:focus {
+        background: var(--color-231f20);
+        color: var(--color-f5f5f5);
+      }
+    }
+
+    .secondary {
+      border: 1px solid var(--color-878787);
+      background: var(--color-White);
+      color: var(--color-333333);
+      box-shadow: none;
+      margin: 0;
+
+      &:hover {
+        border: 1px solid var(--color-878787);
+        background: var(--color-White) !important;
+        color: var(--color-333333);
+      }
+
+      &:focus {
+        background: var(--color-White) !important;
+        color: var(--color-333333) !important;
+        border: 1px solid var(--color-878787);
+      }
+    }
+  }
+  .save-cancel-button-box {
+    width: 100%;
+    .groupInfoTabButtons {
+      min-width: 80px !important;
+      height: 30px;
+      margin-right: 31px;
+    }
+  }

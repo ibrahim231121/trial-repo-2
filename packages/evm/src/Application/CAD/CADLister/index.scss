@@ -1,0 +1,295 @@
+.anchorStyle {
+    text-decoration: none;
+  }
+  .unitDeviceMenuCss {
+    .crx-menu-icon {
+      border-right: 1px solid var(--color-4c4c4d) !important;
+      i {
+        font-size: 14px;
+      }
+    }
+    li {
+      &:nth-child(2) {
+        .crx-menu-list {
+          border-bottom: 1px solid var(--color-69696a) !important;
+        }
+      }
+    }
+  }
+  iframe {
+    display: none;
+  }
+  
+  .unitDeviceTableConfig {
+    .col-three {
+      position: unset !important;
+    }
+    .unitDeviceMenuCss {
+      margin-left: -34px;
+      margin-top: -50px;
+    }
+  }
+
+  .cadParallelLink {
+    margin-right: 5px;
+  }
+
+  .cadTableHyperLink {
+    color: var(--color-c34400);
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .unitDeviceMain {
+    .gridFilterGlobal {
+      .crx-global-Select {
+        &:hover,
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+    .rc-menu__arrow {
+      top: 61px !important;
+      display: none;
+    }
+    p.statusUnit {
+      position: relative;
+      &::before {
+        position: absolute;
+        content: '';
+        height: 20px;
+        width: 20px;
+        background: var(--color-d1d2d4);
+        border-radius: 39px;
+        right: 11px;
+        top: 13px;
+      }
+    }
+  
+  
+    & > .MuiGrid-item {
+      position: relative;
+      &::before {
+        position: fixed;
+        content: '';
+        background: var(--color-White);
+        height: 75px;
+        width: 100%;
+        top: 120px;
+        z-index: 123;
+        left: 0;
+      }
+    }
+   
+    // div[class*='makeStyles-container-'] {
+    //   height: 729px !important;
+    //   overflow-x: auto !important;
+    // }
+    .dataTableColumnShoHide {
+      // margin-top: -21px;
+      &:nth-child(2) {
+        margin-top: -20px;
+      }
+    }
+    .unitDeviceMenuCss {
+      left: 93px !important;
+    }
+    .col-three {
+      &:hover {
+        .rc-menu-button {
+          background-color: var(--color-transparent) !important;
+        }
+      }
+    }
+    .unitsStatusCounter {
+      position: sticky;
+      top: 150px;
+      z-index: 300;
+      color: var(--color-333333);
+      font-size: 14px;
+      line-height: 20px;
+    }
+    
+    .SelectedActionMenu {
+      td {
+        &:nth-child(2) {
+          // position: relative;
+          // &::before {
+          //   position: absolute;
+          //   z-index: 1;
+          //   content: '';
+          //   background-color: #231f20;
+          //   top: 0;
+          //   left: 0;
+          // }
+          background-color: #231f20 !important;
+  
+          &:hover {
+            .rc-menu-button {
+              background-color: #231f20 !important;
+            }
+          }
+        }
+  
+        &:nth-child(5),
+        &:nth-child(6),
+        &:nth-child(7),
+        &:nth-child(8),
+        &:nth-child(10),
+        &:nth-child(11),
+        &:nth-child(12) {
+          color: #d1d2d4 !important;
+  
+          div {
+            color: #d1d2d4 !important;
+          }
+        }
+  
+        button {
+          position: relative;
+          z-index: 3;
+        }
+      }
+    }
+  }
+  
+  .statusFilter {
+    // width: 324px !important;
+    .statusIcon {
+      background-color: var(--color-d1d2d4);
+      height: 18px;
+      width: 18px;
+      border-radius: 50px;
+      position: absolute;
+      right: 17px;
+    }
+    .No {
+      background-color: var(--color-fd8138);
+    }
+    .Offline {
+      background-color: var(--color-d1d2d4);
+    }
+    .Recording {
+      background-color: var(--color-ff1410);
+    }
+    .Active {
+      background-color: var(--color-02a200);
+    }
+    .Online {
+      background-color: var(--color-2d6fcc);
+    }
+    .Inactive {
+      background-color: var(--color-d1d2d4);
+    }
+    .Unregistered {
+      background-color: var(--color-ffd000);
+    }
+    .Suspended {
+      background-color: var(--color-blue) !important;
+    }
+  }
+  
+  .unitDeviceMainUii {
+    top: 0px;
+    padding: 0 81px;
+    .unitTemplateMultiSelect , .unitVersionMultiSelect, .unitStatusMultiSelect{
+        margin: 0 6px;
+    } 
+  }
+  .PopperTemplate {
+    z-index: 2000;
+    top: 27px !important;
+    left: 37px !important;
+  }
+  
+  .cbxTabsContent {
+    .userDataTableParent{
+  
+        .unitDeviceTabDataTable {
+            display: inline-table !important;
+            position: sticky !important;
+        .CRXDataTableCustom {
+            thead {
+              &:nth-child(1) {
+                top: 44px !important;
+              }
+    
+              &:nth-child(2) {
+                top: 90px !important;
+              }
+            }
+          }
+        }
+      }
+    
+  }.unitDeviceRemoveMuiIcon {
+    padding-top: 0px !important;
+    & > .MuiGrid-item {
+      position: relative;
+      &::before {
+        display: none;
+      }
+    }
+    .crxClearfilter {
+      top: 0px;
+    }
+  }
+  
+  
+  .unitAndDeviceTable {
+    table {
+      tbody {
+        tr {
+          &:first-child {
+            .col-three {
+                .unitDeviceMenuCss {
+                  top : 1px !important
+                }
+            }
+          }
+        }
+      }
+    }
+    .textDisplayStatus {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .statusDot {
+        background: var(--color-rosybrown);
+        height: 18px;
+        width: 18px;
+        border-radius: 100px;
+      }
+      .Unregistered {
+        background-color: var(--color-red);
+      }
+      .Suspended {
+        background-color: var(--color-blue) !important;
+      }
+  
+      .Online {
+        background-color: var(--color-2d6fcc) !important;
+      }
+  
+      .Active {
+        background-color: var(--color-02a200) !important;
+      }
+  
+      .Recording {
+        background-color: var(--color-ff1410) !important;
+      }
+  
+      .Offline {
+        background-color: var(--color-d1d2d4) !important;
+      }
+      .OnlineWithIrsa {
+        background-color: var(--color-2d6fcc) !important
+      }
+      .Live {
+  
+      }
+    }
+  }
