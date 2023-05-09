@@ -169,7 +169,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       "/Evidences/" +
       `${props.rowData.evidence.id}` +
       "/assets/" +
-      `${props.rowData.evidence.masterAssetId}`;
+      `${props?.rowData?.assetId}`;
     EvidenceAgent.getAsset(url).then((response: any) => {
       let result = response.owners.map((x: CMTEntityRecord) => {
         let item: any = {
@@ -262,7 +262,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         "/Evidences/" +
         `${props.rowData.id ? props.rowData.id : props.rowData.evidence.id}` +
         "/assets/" +
-        `${props.rowData.evidence.masterAssetId}` +
+        `${props?.rowData?.assetId}` +
         "/AssignUsersToAssets?IsChildAssetincluded=" +
         `${assignUserCheck}`;
       EvidenceAgent.addUsersToAsset(

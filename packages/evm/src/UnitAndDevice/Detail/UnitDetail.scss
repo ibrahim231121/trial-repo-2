@@ -123,7 +123,11 @@ iframe {
         }
       }
     }
-
+    .ONLINEWITHGETAC {
+      i {
+        color: var(--color-rosybrown);
+      }
+    }
     .Unregistered {
       i {
         color: #FFD000 !important;
@@ -147,13 +151,13 @@ iframe {
       }
     }
 
-    .Recording {
+    .RECORDING {
       i {
         color: #ff1410 !important;
       }
     }
 
-    .Offline {
+    .OFFLINE {
       i {
         color: #d1d2d4;
       }

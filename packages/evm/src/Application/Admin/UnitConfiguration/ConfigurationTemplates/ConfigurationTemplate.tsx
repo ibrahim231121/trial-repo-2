@@ -34,6 +34,7 @@ import {
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 type ConfigTemplate = {
   id: number;
@@ -156,6 +157,7 @@ const ConfigurationTemplates: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable"); // will check this
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   const UnitConfigurationTemplates: any = useSelector(
@@ -377,7 +379,7 @@ const ConfigurationTemplates: React.FC = () => {
             width = {100} 
             percentage={true} 
             option={station} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -425,7 +427,7 @@ const ConfigurationTemplates: React.FC = () => {
             width = {100} 
             percentage={true} 
             option={type} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -469,10 +471,10 @@ const ConfigurationTemplates: React.FC = () => {
             isduplicate={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-             width = {100} 
-             percentage={true}
+            width = {100} 
+            percentage={true}
             option={indicator} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -701,7 +703,7 @@ const ConfigurationTemplates: React.FC = () => {
                     position="auto"
                     portal={true}
                     className="create-template-menu"
-                    arrow
+                    arrow={false}
                     menuButton={<MenuButton>{t("Create_Template")}</MenuButton>}
                   >
                     {createTemplateDropdown.map((x, y) => {
@@ -768,9 +770,9 @@ const ConfigurationTemplates: React.FC = () => {
             setSortOrder={(sort: any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={143}
-            stickyToolbar={122}
-            searchHeaderPosition={228}
-            dragableHeaderPosition={193}
+            stickyToolbar={116}
+            searchHeaderPosition={227}
+            dragableHeaderPosition={192}
             //End here
             showExpandViewOption={true}
           />

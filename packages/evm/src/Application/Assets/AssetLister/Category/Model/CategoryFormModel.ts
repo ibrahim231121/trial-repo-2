@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Category, Evidence } from '../../../../../utils/Api/models/EvidenceModels';
 import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupConfigurations';
 import { FieldTypes } from './FieldTypes';
-import { SelectedCategoryModel } from './FormContainerModel';
+import { CategoryRemovalType, SelectedCategoryModel } from './FormContainerModel';
 export type CategoryFormProps = {
     selectedCategoryValues: Array<SelectedCategoryModel>;
     setremoveClassName: any;
@@ -17,8 +17,12 @@ export type CategoryFormProps = {
     setIsformUpdated: (param: boolean) => void;
     setIndicateTxt: (param: boolean) => void;
     setshowSSticky: (param: boolean) => void;
+    setRemovalType: (param: CategoryRemovalType) => void;
+    setSelectedItems?: (obj: any) => void;
     categorizedBy: number | null;
     isCategorizedBy: boolean;
+    selectedItems : any[];
+    isMultiSelectAssetHaveSameCategory : boolean;
 };
 
 export enum SubmitType {
@@ -31,3 +35,13 @@ export type FormInitialValues = {
     value: string;
     fieldType: FieldTypes;
 };
+
+export enum FormOperationType {
+    Add = 'add',
+    Update = 'update',
+    MultiSelect = 'multiselect',
+    MultiSelectAdd = 'multiselectAdd',
+    MultiSelectUpdate = 'multiselectUpdate',
+    MultiSelectDelete = 'multiselectDelete'
+
+}

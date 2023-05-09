@@ -28,6 +28,9 @@ export type MasterMainProps = {
     dateTimeDetail: DateTimeObject;
     showDateCompact: boolean;
     showAdvanceSearch?: boolean;
+    showSearchPanel? : any,
+    searchResultText ? : Object,
+    advanceSearchText? : any,
 };
 
 export interface AssetDetailRouteStateType {

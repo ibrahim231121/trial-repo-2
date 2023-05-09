@@ -11,13 +11,13 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: "34px",
+      paddingBottom: "25px",
       paddingTop : "0px",
       minHeight : "unset !important",
       height : "unset",
       position : "fixed",
       width : "-webkit-fill-available",
-      alignItems: "self-end",
+      alignItems: "self-end !important",
       gap:"16px"
     },
     highlight:
@@ -183,6 +183,11 @@ export interface HeadCellProps {
   attributeOperator? : string;
 }
 
+interface searchTypeName {
+  type: string;
+  name: string;
+}
+
 export interface DataTableToolbarProps {
   id: string;
   numSelected: number;
@@ -201,8 +206,12 @@ export interface DataTableToolbarProps {
   stickyToolbar? : number,
   offsetY? : number,
   expanView : any,
-  toggleExpanView : () => void;
-  showExpandViewOption : boolean
+  toggleExpanView : () => void,
+  showExpandViewOption : boolean,
+  showSearchPanel?: any,
+  searchResultText? : searchTypeName,
+  advanceSearchText? : any,
+  presetPerUser? : string
 }
 
 export type DataTableProps = {
@@ -250,7 +259,12 @@ export type DataTableProps = {
   stickyToolbar? : number,
   isPaginationRequired?: boolean,
   viewName? : string,
-  showExpandViewOption : boolean
+  showExpandViewOption : boolean,
+  showSearchPanel?: any,
+  searchResultText? : searchTypeName,
+  advanceSearchText? : any
+  presetPerUser? : string
+  selfSorting?: boolean
 };
 
 export type OrderData = {
@@ -297,7 +311,8 @@ export type DataTableContainerProps = {
   topSpaceDrag? : number,
   headerPositionInit? : number,
   viewName? : string,
-  expanViews : boolean
+  expanViews : boolean,
+  totalRecords? : undefined | any
 };
 
 export type DataTableStickyHeadersProps = {
@@ -353,6 +368,7 @@ export type DataTableBodyProps = {
   lightMode?: boolean;
   bodyCellWidth?: any;
   selfPaging?: boolean;
+  totalRecords?: undefined | any
   
 };
 
@@ -410,6 +426,7 @@ export type DataTableCustomizeColumnsProps = {
   showCustomizeIcon?: boolean;
   filterWindow: any;
   expanView : boolean,
+  presetPerUser? : string
 };
 
 export type OrderValue = {

@@ -43,5 +43,6 @@ export interface File{
     download: Download,
     url: string,
     history: History,
-    position: number
+    position: number,
+    accessCode:string
 }

@@ -126,8 +126,10 @@ const CreateTemplate = (props: any) => {
     { device: "NF-21A-146", url: "rtsp://192.168.5.37/live", port: 554, userId: "admin", password: 2100 },
     { device: "NF-21A-180", url: "rtsp://192.168.5.38/live", port: 554, userId: "admin", password: 2100 },
     { device: "NF-21A-146IR", url: "rtsp://192.168.5.35/live", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-22-N", url: "rtsp://192.168.5.47/live/0", port: 554, userId: "admin", password: 2200 },
-    { device: "NF-22-W", url: "rtsp://192.168.5.48/live/1", port: 554, userId: "admin", password: 2200 },
+    { device: "NF-22-N", url: "rtsp://192.168.5.47/live/1", port: 554, userId: "admin", password: 2200 },
+    { device: "NF-22-W", url: "rtsp://192.168.5.47/live/0", port: 554, userId: "admin", password: 2200 },
+    { device: "NF22L-N", url: "rtsp://192.168.5.48/live/1", port: 554, userId: "admin", password: 2200 },
+    { device: "NF22L-W", url: "rtsp://192.168.5.48/live/0", port: 554, userId: "admin", password: 2200 },
     { device: "Zero-Dark", url: "http://192.168.5.8/live/stream1.cgi", port: 81, userId: "admin", password: 8131 },
     { device: "NF-42-N", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
     { device: "NF-42-W", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
@@ -183,6 +185,9 @@ const CreateTemplate = (props: any) => {
       dispatch(getDeviceTypesAsync());
       dispatch(getAllSensorsEvents());
     }
+    if (historyState.deviceType.includes("BC03")) {
+      dispatch(getAllSensorsEvents());
+    }
     dispatch(getRetentionStateAsync());
     dispatch(getCategoryAsync());
     dispatch(getStationsInfoAllAsync());
@@ -221,7 +226,7 @@ const CreateTemplate = (props: any) => {
   }, [stations,FormSchema]);
 
   React.useEffect(() => {
-    if(sensorEvents && sensorEvents.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if(sensorEvents && sensorEvents.length > 0 && FormSchema && (historyState.deviceType == "Incar" || historyState.deviceType.includes("BC03"))) {
       setSensorsAndTriggersDropDown();
     }
   },[sensorEvents,FormSchema])
@@ -362,7 +367,7 @@ const CreateTemplate = (props: any) => {
   }
   
   const SensorsAndTriggersHandler =(sensorsEvents: any,sensorsAndTriggersOptions: any) => {
-    if (historyState.deviceType == "Incar" && sensorsEvents.length > 0) {
+    if (sensorsEvents.length > 0) {
       let sensorEvents = FormSchema["Sensors & Triggers"].find((x: any) => x.key == "SensorsAndTriggers/SensorEvents/Multiselect");
       if (Array.isArray(sensorsAndTriggersOptions)) {
         sensorEvents.options = [...sensorsAndTriggersOptions];

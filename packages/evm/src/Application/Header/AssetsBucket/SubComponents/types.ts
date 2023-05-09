@@ -1,4 +1,5 @@
 export interface AddMetadataFormProps {
+    uploadInfo: any;
     onClose: any;
     uploadFile: any;
     uploadAssetBucket: any;
@@ -37,7 +38,7 @@ export type CategoryNameAndValue = {
 };
 
 export interface addMetadata {
-    station: string;
+    station: object;
     owner: string[];
     category: string[];
     masterAsset: any;
@@ -75,6 +76,7 @@ export type masterAssetFile = {
     id: number;
     assetId: number;
     filesId: number;
+    accessCode: string;
     name: string;
     type: string;
     extension: string;
@@ -86,11 +88,7 @@ export type masterAssetFile = {
         ended: string;
     };
     sequence: number;
-    checksum: {
-        checksum: string;
-        status: boolean;
-        algorithm: string;
-    };
+    checksum: null;
     version: string;
 };
 

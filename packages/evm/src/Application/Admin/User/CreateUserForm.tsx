@@ -29,7 +29,7 @@ import ApplicationPermissionContext from "../../../ApplicationPermission/Applica
 import { useTranslation } from "react-i18next";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { REACT_APP_CLIENT_ID } from '../../../../../evm/src/utils/Api/url'
-import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
+import { UsersAndIdentitiesServiceAgent, AuthenticationAgent } from '../../../utils/Api/ApiAgent';
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
 import { UserStatus } from './UserEnum';
 import {NameAndValue, AutoCompleteOptionType, userStateProps } from './UserTypes';
@@ -140,11 +140,11 @@ const CreateUserForm = () => {
   }, []);
 
   React.useEffect(() => {
-    if(formpayload) {
+    if(checkFormPayload()) {
       if(radioValue == 'sendAct'){
         setDisableSave(false)
       }
-      else if(radioValue == 'genTemp' && generatePassword !== ""){
+      else if(radioValue == 'genTemp' && generatePassword){
         setDisableSave(false)
       }
       else {
@@ -302,7 +302,8 @@ const CreateUserForm = () => {
         password += chars.substring(randomNumber, randomNumber + 1);
       }
       setGeneratePassword(password);
-      setDisableSave(false);
+      if(checkFormPayload())
+        setDisableSave(false);
       
     };
     return (
@@ -358,7 +359,6 @@ const CreateUserForm = () => {
           required={true}
           onChange={(e: any) => {
             setPassword(e.target.value)
-            checkPassword(e.target.value)
           }
           }
           onBlur={() => checkPassword()}
@@ -372,7 +372,6 @@ const CreateUserForm = () => {
           type='password'
           onChange={(e: any) => {
             setConfirmPassword(e.target.value)
-            checkConfirmPassword(e.target.value)
           }}
           onBlur={() => checkConfirmPassword()}
         />
@@ -461,7 +460,7 @@ const CreateUserForm = () => {
         return formpayload.userGroups.some((e: any) => e.id === item.groupId);
 
       })
-      .map((i: any) => i.groupId);
+      .map((i: any) => ({id:i.groupId, permission:null}) );
 
     const name = {
       first: formpayload.firstName,
@@ -506,15 +505,19 @@ const CreateUserForm = () => {
   };
 
   const onAdd = async () => {
+ 
     if (formpayload.userGroups.length === 0) {
       setError(true);
       return;
     }
     if (formpayload.email === "" && radioValue == 'sendAct') {
       setError(true);
-      setAlert(true);
-      setResponseError(t('Please_Fill_out_the_Email_Field_In_case_of_Send_Activation_Link'));
-      return;
+  
+    setFormPayloadErr({
+      ...formpayloadErr,
+      emailErr: t('Email_is_required')
+    });
+    return;
     }
     
 
@@ -584,7 +587,7 @@ const CreateUserForm = () => {
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
             if(radioValue == 'sendAct')
             {        
-               sendEmail(formpayload.email, '', userName);
+               sendEmail(formpayload.email, userName);
             } 
             userFormMessages({
               message: t('You_have_created_the_user_account.'),
@@ -642,7 +645,7 @@ const CreateUserForm = () => {
       ?.filter((item: any) => {
         return formpayload.userGroups.find((e: any) => e === item.groupName || e.label === item.groupName);
       })
-      .map((i: any) => i.groupId);
+      .map((i: any) => ({id:i.groupId, permission:null}) )
 
     const name = {
       first: formpayload.firstName,
@@ -679,14 +682,18 @@ const CreateUserForm = () => {
 
   }
   const onEdit = async () => {
+   
     if (formpayload.userGroups.length === 0) {
       setError(true);
       return;
     }
     if (formpayload.email === "" && radioValue == 'sendAct') {
       setError(true);
-      setAlert(true);
-      setResponseError(t('Please_Fill_out_the_Email_Field_In_case_of_Send_Activation_Link'));
+     
+      setFormPayloadErr({
+        ...formpayloadErr,
+        emailErr: t('Email_is_required')
+      });
       return;
     }
     const urlEdit = USER + '/' + `${id}`;
@@ -695,12 +702,12 @@ const CreateUserForm = () => {
       dispatch(enterPathActionCreator({ val: payload.account.loginId }));
       if (disableLink) {
         const userName = userPayload.name.first + ' ' + userPayload.name.last;
-        sendEmail(payload.email, userPayload.id, userName, true); 
+        sendEmail(payload.email, userName, true); 
         userFormMessages({
           message: t('You_have_resent_the_activation_link.'),
           variant: 'success',
           duration: 7000
-        });
+        }); 
         dispatch(getUsersInfoAsync(pageiGrid));
         setDisableSave(true)
       }
@@ -889,10 +896,21 @@ const CreateUserForm = () => {
       });
       setDisableSave(true)
     }
-    else if (passwordOnChange.length < 6) {
-      setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_six_characters")}` });
+    else if (passwordOnChange.length < 8) {
+      setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_eight_characters")}` });
+      setDisableSave(true)}
+    else if(!passwordOnChange.match("^(?=.*[A-Z])")) {
+        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_upper_case_letter")}` });
       setDisableSave(true)
-    }
+      }
+    else if(!passwordOnChange.match("^(?=.*[0-9])")) {
+        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_digit")}` });
+      setDisableSave(true)
+      }
+    else if(!passwordOnChange.match("^(?=.*[@@!#$%^&*])")) {
+        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_special_character")}` });
+      setDisableSave(true)
+      }
     else {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
     }
@@ -924,16 +942,10 @@ const CreateUserForm = () => {
     }
   };
 
-  const sendEmail = (email: string, clientId: string, applicationName: string, ResendActivation : boolean = false) => {
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        TenantId: '1'
-      }
-    };
-    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${REACT_APP_CLIENT_ID}&applicationName=${applicationName}&resendActivation=${ResendActivation}`;
-    fetch(url, requestOptions);
+  const sendEmail = (email: string, applicationName: string, isResendActivation : boolean = false) => {
+    const url = '/Authentication/ActivateUser';
+    let clientId:string = REACT_APP_CLIENT_ID
+    AuthenticationAgent.sendEmail(url, email,clientId,applicationName,isResendActivation);
   };
 
   const sendActivationLink = () => {
@@ -1088,7 +1100,7 @@ const CreateUserForm = () => {
                 onChange={(e: any) => {
                   setFormPayload({ ...formpayload, loginId: e.target.value });
                 }}
-                disabled={isADUser}
+                disabled={isADUser || id != undefined}
                 // onBlur={(e: any) => {
                 //   !formpayload.userName
                 //     ? setFormPayloadErr({
@@ -1122,7 +1134,6 @@ const CreateUserForm = () => {
                 className='users-input'
                 onChange={(e: any) => {
                   setFormPayload({ ...formpayload, middleInitial: e.target.value })
-                  checkMiddleInitial(e.target.value)
                 }
                 }
                 onBlur={()=>checkMiddleInitial()}
@@ -1154,7 +1165,6 @@ const CreateUserForm = () => {
                 className={'users-input ' + isExtEmail}
                 onChange={(e: any) => {
                   setFormPayload({ ...formpayload, email: e.target.value })
-                  checkEmail(e.target.value)
                 }}
                 onBlur={() => (checkEmail())}
               />
@@ -1165,7 +1175,6 @@ const CreateUserForm = () => {
                 label={t("Mobile_Number")}
                 className='users-input'
                 onChange={(e: any) =>  { setFormPayload({ ...formpayload, mobileNumber: e.target.value })
-                checkPhoneumber(e.target.value)
                 }}
                 onBlur={() => checkPhoneumber()}
               />
@@ -1221,7 +1230,6 @@ const CreateUserForm = () => {
                   value={formpayload.pin}
                   onChange={(e: any) => {
                     setFormPayload({ ...formpayload, pin: e.target.value })
-                    checkPin(e.target.value)
                   }
                   }
                   onBlur={() => checkPin()}

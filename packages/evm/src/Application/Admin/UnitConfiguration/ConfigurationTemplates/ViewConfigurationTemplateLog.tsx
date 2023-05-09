@@ -26,6 +26,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { urlList, urlNames } from '../../../../utils/urlList';
 
+
 type ConfigTemplateLogs = {
     id: number;
     updateddata: string;
@@ -192,16 +193,14 @@ const ViewConfigurationTemplateLog= (props: any) => {
       },[page, rowsPerPage])
 
   return (
-    <div className="CrxConfigTemplate switchLeftComponents">
-     
+    <div className="CrxConfigTemplate switchLeftComponents">    
       {
-        rows && (
+        rows && (    
           <CRXDataTable
             id="unitConfigTemplateLogsDataTable"
-            toolBarButton={
-             
+            toolBarButton={          
               <div className="Button">
-                            <Link to={{ pathname: urlList.filter((item: any) => item.name === urlNames.urladminUnitConfigurationTemplate)[0].url }}>   
+                            <Link to={{ pathname: urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url }}>   
                               <div>X</div>
                             </Link>
                   </div>

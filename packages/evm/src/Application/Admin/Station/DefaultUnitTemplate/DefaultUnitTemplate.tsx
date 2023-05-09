@@ -13,6 +13,10 @@ import { DeviceType } from '../../../../utils/Api/models/UnitModels';
 import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
 import './DefaultUnitTemplate.scss';
 import { CRXToaster } from '@cb/shared';
+import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
+import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
+import moment from 'moment';
+import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -48,6 +52,7 @@ const DefaultUnitTemplate: React.FC = () => {
         if (!(configurationTemplatesFromStore) || Object.keys(configurationTemplatesFromStore).length === 0) {
             dispatch(getConfigurationTemplatesAsync());
         }
+        dispatch(enterPathActionCreator({ val: "" }));
     }, []);
 
     React.useEffect(() => {
@@ -210,7 +215,16 @@ const DefaultUnitTemplate: React.FC = () => {
                 duration: 5000,
                 clearButtton: true
               });
-        })
+                let notificationMessage: NotificationMessage = {
+                  title: t("Default_Unit_Template"),
+                  message: t("Success_You_have_saved_the_Default_Unit_Template"),
+                  type: "success",
+                  date: moment(moment().toDate())
+                    .local()
+                    .format("YYYY / MM / DD HH:mm:ss"),
+                };
+                dispatch(addNotificationMessages(notificationMessage));
+            })
             .catch((error: any) => {
                 toasterRef.current.showToaster({
                     message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
@@ -218,6 +232,15 @@ const DefaultUnitTemplate: React.FC = () => {
                     duration: 5000,
                     clearButtton: true
                   });
+                  let notificationMessage: NotificationMessage = {
+                    title: t("Default_Unit_Template"),
+                    message:t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+                    type: "error",
+                    date: moment(moment().toDate())
+                      .local()
+                      .format("YYYY / MM / DD HH:mm:ss"),
+                  };
+                  dispatch(addNotificationMessages(notificationMessage));
                 console.error(error.message);
             });
     }

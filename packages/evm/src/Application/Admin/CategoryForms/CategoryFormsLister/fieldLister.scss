@@ -7,7 +7,7 @@
                 padding-bottom: 0px;
                 padding-top: 32px;
                 .add_ex_datatable {
-                    margin-bottom: 65px;
+                    margin-bottom: 75px;
                     .overlayPanel_Right, .overlayPanel, .overlayPanel_bottom{
                         display: none;
                     }
@@ -56,6 +56,20 @@
                             }
                         }
                     }
+                    .overlaySticky-content{
+                        display: none !important;
+                    }
+                    .stickyPos  {
+                        padding-bottom: 27px;
+                        padding-right: 0px !important;
+                        width: 100%;
+                        position: relative !important;
+                        .dataTableShowHideFilter {
+                            .MuiTooltip-popper {
+                                transform: translate3d(-18px, -43px, 0) !important;
+                            }
+                        }
+                    }
                 }
                 .modalFooter {
                     z-index: 3;
@@ -70,15 +84,7 @@
             }
         }
     }
-.stickyPos  {
-    padding-bottom: 27px;
-    width: 64%;
-    .dataTableShowHideFilter {
-        .MuiTooltip-popper {
-            transform: translate3d(-18px, -43px, 0) !important;
-        }
-    }
-}
+
 .MuiDialog-paperScrollPaper {
     &::before {
         content: "";
@@ -87,7 +93,7 @@
         background: white;
         width: 100%;
         height: 30px;
-        z-index: 3;
+        z-index: 9999;
     }
 }
 

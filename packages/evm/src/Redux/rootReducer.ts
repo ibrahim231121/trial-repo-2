@@ -29,10 +29,14 @@ import categoriesSlice from './Categories';
 import categoryFromsSlice from './CategoryForms';
 import groupedSelectedAssets from './groupedSelectedAssets';
 import groupedSelectedAssetsActions from './groupedSelectedAssetsActions';
-
 import fromFieldsSlice from './FormFields';
 import assetBucketBasketSlice from './assetBucketBasketSlice';
 import casesSlice from './CasesReducer';
+import UpdateVersionsSlice from './UpdateVersionSlices';
+import FilteredUpdateVersionsSlice, { getAllFilteredUpdateVersionsPagedAsync } from './FilteredUpdateVersionsSlice';
+import VideoPlayerSettingsSlice from './VideoPlayerSettingsReducer';
+import ActionMenuEffectSlice from './ActionMenuEffectReducer';
+import caseSharingSlice from './CaseSharingReducer';
 import AlprDataSourceSlice from './AlprDataSourceReducer';
 //combine Reducers
 export const reducer = combineReducers({
@@ -68,6 +72,11 @@ export const reducer = combineReducers({
   FormFieldsSlice : fromFieldsSlice.reducer,
   assetBucketBasketSlice : assetBucketBasketSlice.reducer,
   caseReducer: casesSlice.reducer,
+  updateVersionsSlice : UpdateVersionsSlice.reducer,
+  filteredUpdateVersionsSlice : FilteredUpdateVersionsSlice.reducer,
+  videoPlayerSettingsSlice : VideoPlayerSettingsSlice.reducer,
+  ActionMenuEffectSlice : ActionMenuEffectSlice.reducer,
+  caseSharingSlice : caseSharingSlice.reducer,
   hotListReducer: HotListSlice.reducer,
   alprDataSourceReducer: AlprDataSourceSlice.reducer,
 

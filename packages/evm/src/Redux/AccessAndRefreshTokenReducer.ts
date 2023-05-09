@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 import { AuthenticationAgent, setAPIAgentConfig } from "../utils/Api/ApiAgent";
 import jwt_decode from 'jwt-decode';
@@ -19,6 +19,7 @@ export const getAccessAndRefreshTokenAsync: any = createAsyncThunk('accessAndRef
     let currentData:any=new Date();
     currentData = Math.floor(currentData.getTime()/1000);
     let accessToken = cookies.get('access_token');
+    let refreshToken = cookies.get('refreshToken');
     if(accessToken)
     {
         let decodedAccessToken : any = jwt_decode(accessToken);
@@ -28,17 +29,20 @@ export const getAccessAndRefreshTokenAsync: any = createAsyncThunk('accessAndRef
         if ( (tokenexpiry-300) < currentData && tokenexpiry > 0 && !isCommandOpen)
         {
             return await AuthenticationAgent.getAccessAndRefreshToken('/Authentication/GetAccessToken'+`?refreshToken=${cookies.get('refreshToken')}`)
-                .then((response:any) => {updatetokens(response.refreshToken, response.accessToken); return true})
+                .then((response:any) => {
+                    updatetokens(response.refreshToken, response.accessToken); 
+                    return {success: true, accessToken: response.accessToken, refreshToken: response.refreshToken};
+                })
                 .catch((error: any) => {
                     console.error(error.response.data);
-                    return false;
+                    return {success: false, accessToken: undefined, refreshToken: undefined};
                 });
         }
         else if ( tokenexpiry < currentData && tokenexpiry > 0)
         {
-            return false;
+            return {success: false, accessToken: undefined, refreshToken: undefined};
         }
-        return true;
+        return {success: true, accessToken: accessToken, refreshToken: refreshToken};
     }
     
 });
@@ -47,16 +51,25 @@ export const getAccessAndRefreshTokenAsync: any = createAsyncThunk('accessAndRef
 
 export const accessAndRefreshTokenSlice = createSlice({
     name: 'accessAndRefreshToken',
-    initialState: { success: true },
-    reducers: {},
+    initialState: { success: true, accessToken: undefined, refreshToken: undefined },
+    reducers: {
+        setAccessAndRefreshToken: (state: any, action: PayloadAction<any>) => {
+            const {payload} = action;
+            state.accessToken = payload.accessToken;
+            state.refreshToken = payload.refreshToken;
+          }
+    },
     extraReducers: (builder) => {
         builder.addCase(getAccessAndRefreshTokenAsync.fulfilled, (state: any, { payload }) => {
-            state.success = payload;
+            state.success = payload.success;
+            state.accessToken = payload.accessToken;
+            state.refreshToken = payload.refreshToken;
         })
     }
 });
 
 export default accessAndRefreshTokenSlice;
+export const { setAccessAndRefreshToken: setAccessAndRefreshToken} = accessAndRefreshTokenSlice.actions;
 
 const updatetokens = (refreshToken : string, accessToken: string)=>
 {

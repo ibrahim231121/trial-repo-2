@@ -1,0 +1,47 @@
+
+export interface Project {
+    id: number,
+    projectName: string,
+    type: any,
+    state: any,
+    status: number,
+    notes?: string,
+    assetId: number,
+    assetName: string,
+    assetUrl?: string,
+    assetFileSize?: number,
+    assetDuration?: number,
+    fileType?: string,
+    localPath?: string,
+    audioPath?: string,
+    audioUrl?: string,
+    audioWavePath?: string,
+    audioWaveUrl?: string,
+    fps?: number,
+    submitBy?: any,
+    reviewedBy?: number,
+    analysisBy?: number,
+    recordedBy?: string,
+    createdOn?: Date,
+    modifiedOn: Date,
+    evidenceId?: number,
+    tenantId?: number,
+    job: Job | undefined,
+    jobs: Array<Job> | []
+}
+
+export interface Job {
+    id: number,
+    type: number,
+    stateId: number,
+    priority: number,
+    progress: number,
+    params: string,
+    resultUrl?: string,
+    resultVal?: string,
+    resultLocalPath?: string,
+    createdOn?: Date,
+    updatedOn?: Date,
+    projectRecId: number,
+    project?: Project
+}

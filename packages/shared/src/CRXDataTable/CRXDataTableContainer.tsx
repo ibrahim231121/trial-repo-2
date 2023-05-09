@@ -42,7 +42,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   dragableHeaderPosition,
   topSpaceDrag,
   viewName,
-  expanViews
+  expanViews,
+  totalRecords
 }) => {
 
   const classes : any = useStyles();
@@ -114,6 +115,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             showActionCol={showActionCol}
             bodyCellWidth={bodyCellWidth}
             selfPaging={selfPaging}
+            totalRecords={totalRecords}
           />
       </Table>
       <div className="scrollControler"></div>

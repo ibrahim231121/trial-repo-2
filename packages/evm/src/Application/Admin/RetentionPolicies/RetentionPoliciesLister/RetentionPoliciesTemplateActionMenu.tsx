@@ -29,7 +29,6 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
   const [policyName, setPolicyName] = useState<any[]>([]);
 
   const deleteRetentionPolicies = () => {
-    debugger;
     let retentionIds: number[] = [];
     if (Array.isArray(selectedItems) && selectedItems.length > 0) {
       retentionIds = selectedItems.map((data: any) => {

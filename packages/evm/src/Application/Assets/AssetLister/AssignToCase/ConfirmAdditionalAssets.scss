@@ -1,0 +1,63 @@
+.confirmAdditionalAssetsContent {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    .additionalAssetsHeading {
+        width: 100%;
+        display: block;
+        font-weight: normal;
+        font-size: 17px;
+    }
+    .additionalAssetsSubHeading {
+        margin-top: 15px;
+        width: 100%;
+        display: block;
+    }
+    .additionalAssetContainer {
+        .additionalAssetSubContainer {
+            margin-top: 15px;
+            display: flex;
+            width: 100%;
+            .additionalAssetCheckbox {
+                width: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .additionalAssetDetail {
+                display: flex;
+                .additionalAssetThumbnail {
+                    padding: 0 10px;
+                }
+            }
+        }
+        .additionalAssetWarningMessage {
+            padding: 7px 12px;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 60px;
+            .MuiAlert-icon {
+                position: inherit;
+            }
+            .MuiAlert-action {
+                padding-left: 10px;
+            }
+        }
+    }
+    .additionalAssetModalFooter {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        padding: 0px;
+        height: 74px;
+        align-items: center;
+        width: 100%;
+        border-top: 1px solid var(--color-d1d2d4);
+        left: 0;
+        padding-left: 25px;
+        background-color: var(--color-White);
+        .additionalAssetAddButton {
+            margin-right: 10px;
+        }
+    }
+}

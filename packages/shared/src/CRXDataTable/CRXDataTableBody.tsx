@@ -23,6 +23,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   lightMode,
   bodyCellWidth,
   selfPaging,
+  totalRecords
+  
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -51,6 +53,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   };
 
   const onMouseEvent = (row: any) => {
+   
     if (selectedItems.length > 0)
       localStorage.setItem("AssetContainer", JSON.stringify(selectedItems));
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
@@ -103,7 +106,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     return cellFinalWidth;
 
   }
-
+ 
   let containerRows = selfPaging ? container.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : container.rows
   
   return (
@@ -270,8 +273,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
        <i
         className="fas fa-chevron-up gotoTop"
         onClick={scrollTop}
-        style={{ display: showScroll ? "flex" : "none" }}
-      ></i> 
+        style={{ display: showScroll &&  totalRecords > 8 ? "flex" : "none" }}
+      ></i>
     </>
   );
 };

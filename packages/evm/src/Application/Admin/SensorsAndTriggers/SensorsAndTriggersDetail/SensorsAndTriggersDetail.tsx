@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router";
 import { CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { defaultDevice, defaultParameter, defaultCriteria, defaultAction, defaultBookmark, defaultCamera,defaultCategory, defaultIcon } from '../TypeConstant/constants';
-import { DeviceParameterModel, SelectBoxType, SwitchParametersModel, DeviceParameterDropdownModel, SwitchParametersDropdownModel, SensorAndTriggerDetailErrorModel, SensorAndTriggerDetailValidationModel } from '../TypeConstant/types';
+import { DeviceParameterModel, SelectBoxType, SwitchParametersModel, DeviceParameterDropdownModel, SwitchParametersDropdownModel, SensorAndTriggerDetailErrorModel, SensorAndTriggerDetailValidationModel, CameraSelectBoxType, SelectBoxTypeExpand, CameraSelectBoxTypeExpand } from '../TypeConstant/types';
 import Grid from "@material-ui/core/Grid";
 import './sensorsAndTriggersDetail.scss';
 import {SensorsAndTriggers} from '../../../../utils/Api/models/SensorsAndTriggers';
@@ -14,6 +14,9 @@ import { getAllSensorsEvents, getAllData } from "../../../../Redux/SensorEvents"
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXTabs, CrxTabPanel } from "@cb/shared";
 import { getByPlaceholderText } from "@testing-library/react";
+import { MultiSelectBoxCategory } from "@cb/shared";
+import { CRXMultiSelectBoxLight } from "@cb/shared";
+import { Camera } from "@material-ui/icons";
 
 type SensorsAndTriggersDetailProps = {
     id: string
@@ -32,32 +35,32 @@ const defaultValidationModel: SensorAndTriggerDetailValidationModel = {
 }
 
 const CAMERAS = [
-    { value: 1, displayText: '1' },
-    { value: 2, displayText: '2' },
-    { value: 3, displayText: '3' },
-    { value: 4, displayText: '4' },
-    { value: 5, displayText: '5' },
-    { value: 6, displayText: '6' },
+    { value: 1, label: '1' },
+    { value: 2, label: '2' },
+    { value: 3, label: '3' },
+    { value: 4, label: '4' },
+    { value: 5, label: '5' },
+    { value: 6, label: '6' },
 ]
 
 const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
 
     const defaultSwitchParameters: SwitchParametersModel = {
-        bookmark: { id: 0, data: { value: 0, displayText: "" } },
-        action: { id: 0, data: { value: 0, displayText: "" } },
-        icon: { id: 0, data: { value: 0, displayText: "" } },
+        bookmark: { id: 0, data: { value: 0, label: "" } },
+        action: { id: 0, data: { value: 0, label: "" } },
+        icon: { id: 0, data: { value: 0, label: "" } },
         overlay: { id: 0, data: "" },
-        category: { id: 0, data: { value: 0, displayText: "" } },
+        category: { id: 0, data: { value: 0, label: "" } },
         description: { id: 0, data: "" },
-        camera: { id: 0, data: { value: 0, displayText: "" } },
+        camera: { id: 0, data: [{ value: 0, label: "" }] },
         emailAlert: { id: 0, data: false },
     }
 
     const defaultDeviceParameter = {
         id: 0,
-        device: { value: 0, displayText: "" },
-        parameter: { value: 0, displayText: "" },
-        criteria: { value: 0, displayText: "" },
+        device: { value: 0, label: "" },
+        parameter: { value: 0, label: "" },
+        criteria: { value: 0, label: "" },
         value: 0
     }
 
@@ -94,6 +97,8 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const getAll: any = useSelector((state: RootState) => state.sensorEventsSlice.getAll);
 
 
+    const [cameraMultiValue,setCameraMultiValue] = useState<any>();
+    const [cameraValue,setcameraValue] = useState<SelectBoxType[]>([{value:0,label:'0'}]);
     
     const { t } = useTranslation<string>(); 
     useEffect(() => {
@@ -171,8 +176,11 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 console.error(err);
             });
         }
+        
     }, []);
-
+    useEffect(() => {
+        setcameraValue(switchParameters.camera.data);
+    },[switchParameters.camera.data])
     const devicesParamsData = (newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
         if (Array.isArray(getAll.devicesParams)) {
             newDeviceParametersDropdownData.deviceParamsList = getAll.devicesParams;
@@ -232,14 +240,32 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
             newSettingsDropdownData.actionList = Array.isArray(newActions) === true ? newActions : [];
         }
     }
-
+const setCamera = (obj:string) => {
+    let objList = obj.split(',');
+    let data:any[] = [];
+    objList.forEach((x) => {
+        data.push({
+            value:parseInt(x),
+            label:CAMERAS.filter(y => y.value == parseInt(x))[0].label,
+        })
+    });
+        return data;
+}
   const switchParametersItem = (property:any,item:any) => {
     if(property != null) {
         property.id = parseInt(item.id);
         if (typeof property.data === 'object') {
-            property.data = {
-                value: parseInt(item.value),
-                displayText: item.key
+            if(item.key == 'camera' )
+            {
+                if(item.value != 0) {
+                    property.data = setCamera(item.value);
+                }
+            }
+            else {
+                property.data = {
+                    value: parseInt(item.value),
+                    displayText: item.key
+                }
             }
         } else if (typeof property.data === 'string') {
             property.data = item.value;
@@ -261,29 +287,30 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
         deviceParameterObj.id = item.id;
         deviceParameterObj.criteria = {
             value: item.matchType.id,
-            displayText: item.matchType.name
+            label: item.matchType.name
         };
         deviceParameterObj.parameter = {
             value: item.deviceParams.id,
-            displayText: item.deviceParams.paramName
+            label: item.deviceParams.paramName
         };
         deviceParameterObj.device = {
-            displayText: item.deviceParams.deviceId,
+            label: item.deviceParams.deviceId,
             value: item.deviceParams.deviceId
         };
         deviceParameterObj.value = item.value;
         deviceParametersArray.push(deviceParameterObj);
         });
     }
-
     const onDeviceSettingChange = (e: any, field: keyof SwitchParametersModel) => {
+        
         let switchParametersObj: SwitchParametersModel = {...switchParameters};
         let switchParameterField = switchParametersObj[field];
         if(isSelectBoxType(switchParameterField)) {
             const value = e.target.value;
             (switchParameterField.data as SelectBoxType).value = parseInt(value);
             checkDeviceSettingsValidation(value, field);
-        } else if(typeof switchParameterField.data === "boolean") {
+        }
+         else if(typeof switchParameterField.data === "boolean") {
             switchParameterField.data = e.target.checked;
         } else if(typeof switchParameterField.data === "string")  {
             const value: string = e.target.value;
@@ -450,6 +477,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
         const listSwitchParameters = [];
         const listParamValues: any[] = [];
         let action;
+        let camera;
         for (var key in switchParameters) {
             if (switchParameters.hasOwnProperty(key)) {
                 const obj = switchParameters[key as keyof SwitchParametersModel];
@@ -461,10 +489,20 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                         name : (actionName) ? String(actionName['displayText']) : ''
                     }
                 }
+                if(key ==='camera'){
+                 let valueList = obj.data as SelectBoxType[];
+                 let tmpList:string[] = [];
+                 valueList.forEach((x:any) => {
+                    tmpList.push(x.value);
+                 })
+                    camera = tmpList.toString();
+                    
+                }
                 const switchParam = {
                     id: obj.id,
                     key: key,
-                    value: isSelectBoxType(obj) ? (obj.data as SelectBoxType).value.toString() : obj.data.toString()
+                    
+                    value: (key === 'camera') ? camera?.toString():isSelectBoxType(obj) ? (obj.data as SelectBoxType).value.toString() : obj.data.toString()
                 }
                 listSwitchParameters.push(switchParam);
             }
@@ -487,7 +525,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
 
     const onSave = async () => {
         const payload = setAddPayload();
-        const urlEditSensorsAndTriggers = 'SensorEvents/UpsertEvent';
+        const urlEditSensorsAndTriggers =  parseInt(id) > 0 ? 'SensorEvents/UpdateEvent' : 'SensorEvents/InsertEvent';
         SetupConfigurationAgent.putSensorsAndTriggersTemplate(urlEditSensorsAndTriggers,payload).then(()=>{        
             setSwitchParameters(defaultSwitchParameters);
             setDeviceParameter([defaultDeviceParameter]);
@@ -582,6 +620,17 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
         { label: t("Settings"), index: 0 },
         { label: t("Device_Parameters"), index: 1 },
       ];
+
+      const categoryDropdownOnChangeHandler = (
+        e: React.SyntheticEvent,
+        data: any[],
+        field: keyof SwitchParametersModel
+      ) => {
+        let tmpData: SelectBoxType[] = data;
+        setSwitchParameters({...switchParameters, camera:{data: tmpData, id:switchParameters.camera.id}});
+        e.isDefaultPrevented();
+
+      };
 
     return (
 
@@ -694,17 +743,19 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 <CRXHeading variant="subtitle1" className="label">
                                     {getFormatedLabel(t("Camera"))}
                                 </CRXHeading>
-                                <CRXSelectBox
-                                    className="select-box"
-                                    id="settingCamera"
-                                    value={switchParameters.camera.data.value > 0 ? switchParameters.camera.data.value : defaultCamera}
-                                    onChange={(e: any) => onDeviceSettingChange(e, 'camera')}
-                                    options={settingsDropdownData.cameraList}
-                                    isRequried={true}
-                                    disabled={false}
-                                    // defaultOption={true}
-                                    
-                                    />
+                                    <CRXMultiSelectBoxLight
+                className="categortAutocomplete CRXmetaData-category"
+                placeHolder=""
+                multiple={true}
+                CheckBox={true}
+                value={[...switchParameters.camera.data].filter(x => x.label != "")}
+                options={settingsDropdownData.cameraList}
+                autoComplete={false}
+                isSearchable={true}
+                disabled={false}
+                onChange={(e: React.SyntheticEvent, value: string[]) =>
+                    categoryDropdownOnChangeHandler(e, value, 'camera')
+                  }/>
                             </span>
                         </div>
                     </Grid>

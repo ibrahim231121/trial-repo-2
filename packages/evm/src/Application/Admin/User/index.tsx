@@ -43,7 +43,11 @@ import moment from "moment";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import "./userIndex.scss";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
-
+import anchorDisplay from '../../../utils/AnchorDisplay';
+import { getToken } from "./../../../Login/API/auth";
+import { TokenType } from "./../../../types";
+import jwt_decode from "jwt-decode";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 type User = {
   id: string;
@@ -78,6 +82,16 @@ interface renderCheckMultiselect {
 const User: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+
+  const userIdPreset = () =>{
+    var token = getToken();
+    if (token) {
+        var accessTokenDecode: any = jwt_decode(token);
+        return accessTokenDecode.LoginId
+    }
+    else
+     return ""
+  }
   
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
@@ -102,7 +116,7 @@ const User: React.FC = () => {
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const { getModuleIds} = useContext(ApplicationPermissionContext);
-
+  const [userId, setUserId] = React.useState<string>(userIdPreset());
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
       gridFilter: {
         logic: "and",
@@ -125,22 +139,16 @@ const User: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "userDataTable");
-    
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
-  const openEditUser = (rowId: number) => {
-    let urlPathName = urlList.filter((item: any) => item.name === urlNames.editUser)[0].url;
-    history.push(
-      urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + rowId
-    );
-  }
   const setData = () => {
     let userRows: User[] = [];
     if (users.data && users.data.length > 0) {
       userRows = users.data.map((user: any) => {
         return {
           id: user.recId,
-          loginId: user.loginId,
+          loginId: user.loginId + "_" + user.recId,
           fName: user.fName,
           lName: user.lName,
           lastLogin: user.lastLogin,
@@ -297,7 +305,8 @@ const User: React.FC = () => {
             width = {100} 
             percentage={true}
             option={status} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -335,6 +344,17 @@ const User: React.FC = () => {
     setIsSearchableOnChange(true)
   };
 
+  const AnchorDisplay = (e: string) => {
+    if(getModuleIds().includes(10)) {
+      return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.editUser)[0].url)
+    }
+    else{
+      let lastid = e.lastIndexOf("_");
+      let text =  e.substring(0,lastid)
+      return textDisplay(text,"")
+    }
+  }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -354,24 +374,13 @@ const User: React.FC = () => {
       label: `${t("LoginId")}`,
       id: "loginId",
       align: "left",
-      dataComponent: (e: string, id: number) => {
-        if (getModuleIds().includes(10)) {
-          return <Restricted moduleId={10}>
-            <div className="linkColor" onClick={
-              (e) => openEditUser(id)}>{e}</div>
-          </Restricted>
-        }
-        else 
-        {
-          return textDisplay(e, "")
-        }
-      },
+      dataComponent: (e: string) => AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "230",
       visible: true,
-      attributeName: "UserName",
+      attributeName: "LoginId",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -509,7 +518,8 @@ const User: React.FC = () => {
         <CBXMultiCheckBoxDataFilter 
             width = {100} 
             option={status} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -782,13 +792,14 @@ const User: React.FC = () => {
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
           totalRecords={users.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
-           //Please dont miss this block.
-           offsetY={119}
-           stickyToolbar={130}
-           searchHeaderPosition={224}
-           dragableHeaderPosition={189}
-           //End here
-           showExpandViewOption={true}
+          //Please dont miss this block.
+          offsetY={119}
+          stickyToolbar={130}
+          searchHeaderPosition={224}
+          dragableHeaderPosition={189}
+          //End here
+          showExpandViewOption={true}
+          presetPerUser={userId}
         />
       )}
       

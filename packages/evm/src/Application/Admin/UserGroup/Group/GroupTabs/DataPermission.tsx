@@ -26,11 +26,13 @@ import { ConsoleLogger } from "@microsoft/signalr/dist/esm/Utils";
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
     onChangeDataPermission: any,
-    onDeletePermission: any
+    onDeletePermission: any,
+    AssignToSelfPermission: any,
+    setassignToSelfPermission: any,
 }
 
 
-const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeDataPermission, onDeletePermission }) => {
+const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeDataPermission, onDeletePermission, AssignToSelfPermission, setassignToSelfPermission }) => {
     let [dataPermissions, setDataPermissions] = useState<PermissionData[]>([])
     const { t } = useTranslation<string>();
     let [categories, setCategories] = useState<PermissionValue[]>([]);
@@ -64,15 +66,24 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
 
     useEffect(() => {
-
         disableAddPermission();
-        // if(dataPermissionsInfo.length <=0 ){
-        //     addDefaultPermission();
-        // }
+        if (dataPermissionsInfo.length > 0) {
+            if (dataPermissions.filter((x: any) => x.type?.value === 3).length == 0) {
+                let assignToSelfPermission = dataPermissionsInfo.find((x: any) => x?.fieldType === 3);
+                if (assignToSelfPermission != undefined) {
+                    setDataPermissions([...dataPermissions,{
+                        id: assignToSelfPermission?.containerMappingId,
+                        type: { value: assignToSelfPermission?.fieldType, label: "" },
+                        permissionValue: { value: assignToSelfPermission?.fieldType, label: "" },
+                        permissionLevel: { value: assignToSelfPermission?.permission, label: "" }
+                    }]);
+                }
+            }
+        }
+
     }, [dataPermissions])
 
     useEffect(()=>{
-
         if(dataPermissionsInfo.length <=0 ){
             addDefaultPermission();
         }
@@ -110,7 +121,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 }
             }
         });
-
+        
         setDataPermissions(prev => {
             return [...prev,
             ...dbDataPermission
@@ -142,6 +153,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             }
 
         });
+
         setDataPermissions(prev => {
             return [...prev,
             ...dbDataPermission
@@ -212,8 +224,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 .map((x: Category) => {
                     return { value: x.id, label: x.name }
                 });
-            categories.push({ value: -2, label: t('All') })
-            categories.push({ value: -1, label: t('Uncategorized') })
+            // categories.push({ value: -2, label: t('All') })
+            // categories.push({ value: -1, label: t('Uncategorized') })
             setCategories(categories);
             LoadCategoryPermissionsByDb(categories);
         }
@@ -227,8 +239,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 .map((x: StationResponse) => {
                     return { value: (x.id), label: x.name };
                 });
-            stationResp.push({ value: -2, label: t('All') })
-            stationResp.push({ value: -1, label: t('No_Station') })
+            // stationResp.push({ value: -2, label: t('All') })
+            // stationResp.push({ value: -1, label: t('No_Station') })
             setStations(stationResp);
             LoadStationPermissionsByDb(stationResp);
         }
@@ -243,6 +255,15 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     id: x.containerMappingId,
                     type: { value: x.fieldType, label: "" },
                         permissionValue: { value: x.mappingId, label: dataPermissionCategory?.label },
+                        permissionLevel: { value: x.permission, label: "" }
+                });
+            }
+            else if(x.fieldType == 3)
+            {
+                dataPermissionInfoString.push({
+                    id: x.containerMappingId,
+                    type: { value: x.fieldType, label: "" },
+                        permissionValue: { value: 3, label: "" },
                         permissionLevel: { value: x.permission, label: "" }
                 });
             }
@@ -278,9 +299,12 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }
     const onPermissionTypeChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
-        permissions[i].type.value = parseInt(e.target.value);
 
-       // permissions[i].permissionValue = { value: 0, label: "" };
+        if(permissions[i].type.value ==3 && parseInt(e.target.value) != 3)
+        {
+            permissions[i].permissionValue = { value: 0, label: "" };
+        }
+        permissions[i].type.value = parseInt(e.target.value);
 
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
@@ -290,6 +314,10 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     const onPermissionLevelChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
         permissions[i].permissionLevel.value = parseInt(e.target.value);
+
+        if (permissions[i].type.value == 3) {
+            permissions[i].permissionValue = { label: "", value: 3 }
+        }
 
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
@@ -321,8 +349,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
         let permission = permissions[i];
 
-
-
         if (permission && permission.id && permission.id > 0) {
             onDeletePermission(permission.id);
         }
@@ -334,6 +360,18 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
         setDataPermissions([...permissions]);
         setDataPermissionInfo(permissions);
+
+        if(permission?.type?.value == 3)
+        {
+            setassignToSelfPermission(
+                {
+                    id: -1,
+                    permissionLevel: { value: 0, label: "" },
+                    permissionValue: { value: 0, label: "" },
+                    type: { value: 0, label: "" }
+                }
+            );
+        }
     }
 
     const filterPermissionValuesBasedonType = (permissionType: number) => {
@@ -373,7 +411,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 id={i}
                                                 value={permission.type.value > 0 ? permission.type.value : t(defaultPermissionType)}
                                                 onChange={(e: any) => onPermissionTypeChange(e, i)}
-                                                options={permissionTypes}
+                                                options={(dataPermissions.filter((x: any) => x.type?.value === 3).length > 0 && permission.type.value != 3) ? permissionTypes.filter((x: any) => x.value != 3) : permissionTypes}
                                                 icon={true}
                                                 popover={"crxSelectPermissionGroup"}
                                                 defaultOptionText={t(defaultPermissionType)}
@@ -382,8 +420,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                         <CRXColumn className="permissionCol" container="container" item="item" xs={6} spacing={0}>
                                             <CRXMultiSelectBoxAutocomplete
                                                 className="adVSelectBox "
-                                                disabled={permission.type.value > 0 ? false : true}
-                                                options={filterPermissionValuesBasedonType(permission.type.value)}
+                                                disabled={(permission.type.value > 0 ? false : true)}
+                                                options={permission.type.value == 3 ? [] : filterPermissionValuesBasedonType(permission.type.value)}
                                                 multiple={false}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>, v: any) => {
 
@@ -392,7 +430,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                     onPermissionValueChange(e, v, i)
                                                 }}
                                                 value={permission.permissionValue}
-                                                placeHolder={defaultPermissionValue}
+                                                placeHolder={permission.type.value == 3 ? "N/A" :defaultPermissionValue}
                                             />
                                         </CRXColumn>
                                         <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>

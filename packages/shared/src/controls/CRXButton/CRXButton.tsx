@@ -11,7 +11,8 @@ interface buttonProps {
   variant?: "contained" | "outlined" | "text";
   className?: string;
   disabled?: boolean;
-  primary?: boolean
+  primary?: boolean;
+  dataTarget? : string
 }
 const theme = createTheme({
   palette: {
@@ -38,6 +39,7 @@ const CRXButton = ({
   disabled,
   onClick,
   primary,
+  dataTarget,
   ...props
 }: buttonProps) => {
   const disabledClass = className === "tertiary" && disabled && "tertiaryDisabled"
@@ -52,6 +54,7 @@ const CRXButton = ({
         onClick={onClick}
         disabled={disabled}
         disableRipple={true}
+        data-target={dataTarget}
         {...props}
       >
         {children}

@@ -215,3 +215,24 @@ export const RemoveSidePanelClass:any = () => {
   let sideMenu : any = document.querySelector(".CRXLeftPanel");
   return sideMenu && (sideMenu.style.display = "block")
 }
+
+export const AssetStatus = {
+  Queued: "Queued",
+  Uploading: "Uploading",
+  Processing: "Processing",
+  VerifiedHash : "VerifiedHash",
+  Failed : "Failed",
+  Available : "Available",
+  MetadataOnly : "MetadataOnly",
+  RequestUpload : "RequestUpload",
+  ManuallyUploaded : "ManuallyUploaded"
+};
+
+export const AssetState = {
+  Normal : "Normal",
+  Removing : "Removing",
+  Trash : "Trash",
+  Deleted : "Deleted",
+  Hold : "Hold"
+
+}

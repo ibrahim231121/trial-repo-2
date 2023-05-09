@@ -34,6 +34,11 @@
       }
     }
   }
+  .assetDataTableMultiSelect {
+   .cbx_multi_data_filter  {
+    width: 96% !important;
+   }
+  }
 }
 
 .assetThumb {
@@ -175,6 +180,19 @@
       .asset_lister_thumb {
         background: var(--color-d1d2d4);
         color: var(--color-333333);
+      }
+      .divImg {
+        .assetThumb {
+          &.onDraggingThumb{
+            .asset_lister_thumb{
+              background: var(--color-333333);
+              color: var(--color-d1d2d4);
+              i{
+                color: var(--color-d1d2d4);
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -336,6 +354,26 @@
 
 }
 
+.dataTableText  {
+  .truncation_button{width: 100%;display: flex;}
+  
+  width: 100%;
+  display: inline-flex;
+  .CRXLockTextIcon {
+    width: 90%;
+  }
+  .CRXLockIcon {
+    width: 10%;
+  
+    .CRXLock {
+      margin-top: 0;
+      &:hover {
+        color: var(--color-d1d2d4);
+      }
+    }
+  }
+}
+
 // .overlayPanel {
 //   position: fixed;
 //   height: 25px;
@@ -364,3 +402,11 @@
 //     left: 4px;
 //   } 
 // }
+
+.assetThumb {
+  &:hover {
+    ._video_play_icon {
+      display: block;
+    }
+  }
+}

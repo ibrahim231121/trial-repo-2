@@ -314,7 +314,6 @@
                     .MuiButton-label {
                         margin-left: 45px;
                         padding-top: 4px;
-
                         &:hover {
                             outline: none;
                             border: none;
@@ -324,6 +323,8 @@
                     .CRXButton {
                         border: none;
                         color: #D1D2D4 ;
+                        background-color: transparent !important;
+
                         &:hover {
                             outline: none;
                             border: none;
@@ -566,7 +567,7 @@
         left: unset !important;
         top: unset !important;
         right: 199px;
-        bottom: 180px;
+        bottom: 166px;
     }
     .SettingBackMenu {
         right: 187px;
@@ -576,7 +577,7 @@
 }
 .enabledMultiLine  {
     .MuiMenu-paper { 
-        bottom: 205px;
+        bottom: 161px;
     }
 }
 

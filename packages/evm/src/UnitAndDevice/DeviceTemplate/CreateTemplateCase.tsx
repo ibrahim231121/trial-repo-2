@@ -361,7 +361,7 @@ export const CreateTempelateCase = (props: any) => {
 
 
   React.useEffect(() => {
-    optionAppendOnChange(formObj.value, formObj, values, setValues, index, FormSchema);
+    optionAppendOnChange(values[formObj.key], formObj, values, setValues, index, FormSchema);
   }, []);
 
 
@@ -723,7 +723,9 @@ export const CreateTempelateCase = (props: any) => {
                     <Field
                       name={formObj.key}
                       id={formObj.id}
-                      type={formObj.type}
+                      type="number"
+                      className="numberField"
+                      onWheel={(e : any) => e.target.blur()}
                     />
                     <label className="timeShow">
                       {formObj.postFieldText ? t(formObj.postFieldText) : ""}

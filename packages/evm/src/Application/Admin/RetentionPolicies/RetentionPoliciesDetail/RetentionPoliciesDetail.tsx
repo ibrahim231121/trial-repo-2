@@ -307,23 +307,16 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
 
   useEffect(() => {
     if (!isFirstRenderRef.current) {
-      if (!checkNameValidation()) {
+      if (!checkNameValidation() && !checkRententionValidation() && 
+      (name.length > 0 &&
+        ((radioTimePeriod && (retentionTimeDays > 0 || retentionHours > 0)) ||
+          (radioDiskSpace && retentionSize > 0)))) {
         setIsSaveDisable(false);
       } else {
         setIsSaveDisable(true);
       }
     }
-  }, [name]);
-
-  useEffect(() => {
-    if (!isFirstRenderRef.current) {
-      if (!checkRententionValidation()) {
-        setIsSaveDisable(false);
-      } else {
-        setIsSaveDisable(true);
-      }
-    }
-  }, [retentionTimeDays]);
+  }, [name,retentionTimeDays,retentionHours, retentionSize]);
 
   useEffect(() => {
     if (!isFirstRenderRef.current) {
@@ -334,20 +327,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
       }
     }
   }, [retentionSize]);
-
-  useEffect(() => {
-    if (!isFirstRenderRef.current) {
-      if (
-        name.length > 0 &&
-        ((radioTimePeriod && (retentionTimeDays > 0 || retentionHours > 0)) ||
-          (radioDiskSpace && retentionSize > 0))
-      ) {
-        setIsSaveDisable(false);
-      } else {
-        setIsSaveDisable(true);
-      }
-    }
-  }, [name, retentionTimeDays, retentionHours, retentionSize]);
 
   useEffect(() => {
     
@@ -497,10 +476,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
         .then(() => {
           setRetentionPolicies(defaultRetentionPolicies);
           onMessageShow(true, t("Success_You_have_saved_the_Retention_Policy"));
-          // dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
-          // setTimeout(() => {
-          //   handleClose();
-          // }, 500);
+          dispatch(getAllRetentionPoliciesInfoAsync(pageiGrid));
+          setTimeout(() => {
+            handleClose();
+          }, 500);
         })
         .catch((e: any) => {
           if (e.request.status == 409) {
@@ -577,6 +556,14 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     });
   };
 
+  useEffect(() =>{
+    if(unlimitedRetention){
+      setDisableGracePeriodHours(true)
+      setDisableHours(true)
+      setDisableRetentionTimeDays(true)
+      setDisableSoftDeleteTimeDays(true)
+    }
+  },[unlimitedRetention])
 
 
   return (
@@ -662,8 +649,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
                       name="retentionTimeDays"
                       regex=""
                       onBlur={() => checkRententionValidation()}
-                      error={!!UploadPolicyDetailErr.retentionTimeDaysErr}
-                      errorMsg={UploadPolicyDetailErr.retentionTimeDaysErr}
+                      error={unlimitedRetention ? false : !!UploadPolicyDetailErr.retentionTimeDaysErr}
+                      errorMsg={unlimitedRetention ? "" : UploadPolicyDetailErr.retentionTimeDaysErr}
                     />
                     <label className="dayRetentionLabel">
                       {t("days")}

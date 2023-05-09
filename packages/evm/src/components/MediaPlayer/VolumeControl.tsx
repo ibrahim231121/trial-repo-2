@@ -11,11 +11,12 @@ interface VolumecontrolProp {
   setIsMute : any;
   isMute: boolean;
   handleVoumeClick: any;
+  viewScreen: boolean
 }
 
   const VolumeControl = (props: VolumecontrolProp) => {
 
-  const{setVolumeHandle, setMuteHandle, volume, setVolume, setIsMute, isMute, handleVoumeClick} = props;
+  const{setVolumeHandle, setMuteHandle, volume, setVolume, setIsMute, isMute, handleVoumeClick ,viewScreen} = props;
 
   const [volumeBar, setvolumeBar] = useState("hideVolumeBar");
 
@@ -94,6 +95,7 @@ interface VolumecontrolProp {
             }
             arrow={false}
             className="VolumeBarHover"
+            disablePortal={!viewScreen ? true : false}
           />
         </span>
       </div>

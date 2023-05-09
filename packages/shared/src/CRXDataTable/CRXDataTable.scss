@@ -1,5 +1,3 @@
-
-
 /*** updated css for data table *****/
 .AssetsDataGrid {
   border: 1px solid var(--color-ccc);
@@ -11,7 +9,6 @@
   table {
     border: 0px solid var(--color-ccc);
     tr {
-    
       th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
         // padding-left: 15px !important;
         .CRXCheckBox {
@@ -37,30 +34,35 @@
       }
       td {
         &:hover {
-         a{
-             &.linkColor {
-                 text-decoration: underline;
-             }
-           }
-         }
-     }
+          a {
+            &.linkColor {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
       &.SelectedActionMenu {
         td {
-            color: var(--color-d1d2d4) !important;
-            &.col-three {
-                background-color: #333333 !important;
-            }
-            .truncation_button {
-                color: var(--color-d1d2d4);
-            }
+          color: var(--color-d1d2d4) !important;
+          &.col-three {
+            background-color: #333333 !important;
+          }
+          .truncation_button {
+            color: var(--color-d1d2d4);
+          }
         }
-     }
+      }
     }
 
     thead {
-      transition:transform 0s;
+      transition: transform 0s;
       position: sticky;
-      z-index: 99;
+      &.drag_header {
+        z-index: 99;
+      }
+      &.searchable_header {
+        z-index: 98;
+      }
       tr {
         th.CRXDataTableLabelCell {
           border-bottom: 1px solid var(--color-ccc);
@@ -92,24 +94,29 @@
             }
           }
           .rc-menu-button {
-              background: none;
-              border: none;
-              font-size: 23px;
-              color: var(--color-b3b4b6);
-              width: 80px;
-              height: 100%;
-              cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 23px;
+            color: var(--color-b3b4b6);
+            width: 80px;
+            height: 100%;
+            cursor: pointer;
           }
-          .disableHeaderActionMenu{
-              pointer-events: none;
-              opacity: .4;
+          .disableHeaderActionMenu {
+            pointer-events: none;
+            opacity: 0.4;
+          }
+          .number_field_textBox{
+            margin-top: 0px;
+            width:100%;
+            display: block;
           }
         }
         .gridFilterTextBox {
           span {
             .CBX-input {
               div {
-                input[id^='CRX_'] {
+                input[id^="CRX_"] {
                   background: var(--color-d1d2d4);
                 }
               }
@@ -123,7 +130,7 @@
         height: 1px;
         td.MuiTableCell-root {
           color: var(--color-333333);
-          &:first-child{
+          &:first-child {
             border-left: 1px solid var(--color-ccc);
           }
         }
@@ -143,30 +150,30 @@
             z-index: -1 !important;
           }
           &.col-two {
-              vertical-align: middle;
-              position: sticky !important;
-              border-left: 1px solid var(--color-ccc);
+            vertical-align: middle;
+            position: sticky !important;
+            border-left: 1px solid var(--color-ccc);
           }
           &.col-three {
-              position: sticky !important;
-              .row_anchor_point{
-                  .rc-menu-button{
-                      background: none;
-                      border: none;
-                      font-size: 23px;
-                      color: var(--color-333333);
-                      width: 100%;
-                      height: 100%;
-                      cursor: pointer;
-                  }
+            position: sticky !important;
+            .row_anchor_point {
+              .rc-menu-button {
+                background: none;
+                border: none;
+                font-size: 23px;
+                color: var(--color-333333);
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
               }
+            }
           }
         }
-        
+
         &:nth-child(even) {
           background: var(--color-f2f2f2);
           td {
-            &.col-three{
+            &.col-three {
               background-color: var(--color-f2f2f2);
             }
             &.col-two {
@@ -176,7 +183,7 @@
         }
         &:nth-child(odd) {
           td {
-            &.col-three{
+            &.col-three {
               background-color: var(--color-White);
             }
             &.col-two {
@@ -185,49 +192,81 @@
           }
         }
         &:hover {
-            background-color: #333;
-            .dataTableText {
-                color: var(--color-d1d2d4);
-                .truncation_button {
+          background-color: #333;
+          .dataTableText {
+            color: var(--color-d1d2d4);
+            .truncation_button {
+              color: var(--color-d1d2d4);
+            }
+          }
+          .linkColor {
+            color: var(--color-ff6e20);
+            .truncation_button {
+              color: var(--color-ff6e20);
+            }
+          }
+          .DataTableBodyCell {
+            &:not(.col-two, .col-three) {
+              background: var(--color-333333);
+              color: var(--color-d1d2d4);
+            }
+          }
+          .col-three {
+            &:hover {
+              background: var(--color-333333);
+              color: var(--color-d1d2d4) !important;
+              .rc-menu-button {
+                color: var(--color-d1d2d4) !important;
+              }
+            }
+          }
+          .CellCheckBox {
+            &:hover {
+              background: var(--color-333333);
+              .draggableCellIcon {
+                .grid-grip-icon {
+                  display: block;
+                }
+              }
+              ~ .col-three {
+                background: var(--color-333333);
+                .rc-menu-button {
                   color: var(--color-d1d2d4);
                 }
+              }
             }
-            .linkColor {
-                color: var(--color-ff6e20);
-                .truncation_button {
-                  color: var(--color-ff6e20);
-                }
+          }
+          .dataTableEllipsesText {
+            .truncation_button {
+              color: var(--color-d1d2d4);
             }
-            .DataTableBodyCell {
-                &:not(.col-two, .col-three) {
-                    background: var(--color-333333);
-                    color: var(--color-d1d2d4);
-                }
+          }
+        }
+        &.Mui-selected {
+          background-color: var(--color-231f20);
+          .dataTableText {
+            color: var(--color-d1d2d4);
+            .truncation_button {
+              color: var(--color-d1d2d4);
             }
-            .col-three {
-                &:hover {
-                    background: var(--color-333333);
-                    color: var(--color-d1d2d4) !important; 
-                    .rc-menu-button {
-                        color: var(--color-d1d2d4) !important; 
-                    }
-                }
+          }
+          .linkColor {
+            color: var(--color-ff6e20);
+            .truncation_button {
+              color: var(--color-ff6e20);
             }
-            .CellCheckBox {
-                &:hover{
-                    background: var(--color-333333);
-                    .draggableCellIcon {
-                        .grid-grip-icon {
-                            display: block;
-                        }
-                    }
-                    ~ .col-three {
-                        background: var(--color-333333);
-                        .rc-menu-button {
-                            color: var(--color-d1d2d4); 
-                        }
-                    }
-                }
+          }
+          .DataTableBodyCell {
+            color: var(--color-d1d2d4);
+            &.col-three {
+              color: var(--color-d1d2d4) !important;
+              background-color: var(--color-231f20);
+              .rc-menu-button {
+                color: var(--color-d1d2d4) !important;
+              }
+            }
+            &.col-two {
+              background-color: var(--color-231f20);
             }
             .dataTableEllipsesText {
               .truncation_button {
@@ -235,70 +274,38 @@
               }
             }
           }
-          &.Mui-selected {
-            background-color: var(--color-231f20);
-            .dataTableText {
-                color: var(--color-d1d2d4) ;
-                .truncation_button {
-                  color: var(--color-d1d2d4);
-                }
+          &:hover {
+            &:not(.col-two, .col-three) {
+              background: var(--color-333333);
+              color: var(--color-d1d2d4);
             }
-            .linkColor {
-                color: var(--color-ff6e20);
-                .truncation_button {
-                  color: var(--color-ff6e20);
-                }
-            }
-            .DataTableBodyCell {
-                color: var(--color-d1d2d4);
-                &.col-three {
-                    color: var(--color-d1d2d4) !important;
-                    background-color: var(--color-231f20);
-                    .rc-menu-button {
-                        color: var(--color-d1d2d4) !important; 
-                    }
-                }
-                &.col-two {
-                  background-color: var(--color-231f20);
-              }
-              .dataTableEllipsesText {
-                .truncation_button {
-                  color: var(--color-d1d2d4);
-                }
-              }
-            }
-            &:hover {
-                &:not(.col-two, .col-three) {
-                    background: var(--color-333333);
-                    color: var(--color-d1d2d4);
-                }
-                .dataTableEllipsesText {
-                  .truncation_button {
-                    color: var(--color-d1d2d4);
-                  }
-                }
-            }
-          } 
-          td {
-            &:hover {
-              a {
-                &.linkColor {
-                  text-decoration: underline;
-                }
-              }
-            }
-          }
-          &.SelectedActionMenu {
-            td {
-              color: var(--color-d1d2d4) !important;
-              &.col-three {
-                background-color: #333333 !important;
-              }
+            .dataTableEllipsesText {
               .truncation_button {
                 color: var(--color-d1d2d4);
               }
             }
           }
+        }
+        td {
+          &:hover {
+            a {
+              &.linkColor {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+        &.SelectedActionMenu {
+          td {
+            color: var(--color-d1d2d4) !important;
+            &.col-three {
+              background-color: #333333 !important;
+            }
+            .truncation_button {
+              color: var(--color-d1d2d4);
+            }
+          }
+        }
       }
     }
 
@@ -352,13 +359,13 @@
     }
   }
   .dragableCellCustomize {
-      position: absolute;
-      left: 3px;
-      top: -5px;
-      display: flex;
-      height: 100%;
-      place-items: center;
-    }
+    position: absolute;
+    left: 3px;
+    top: -5px;
+    display: flex;
+    height: 100%;
+    place-items: center;
+  }
 
   .draggableCellIcon {
     padding: 13px 0px 0 0;
@@ -376,6 +383,11 @@
       }
     }
   }
+  .CRXLock {
+    &:hover {
+      color: var(--color-d1d2d4);
+    }
+  }
 }
 
 .linkColor {
@@ -391,7 +403,7 @@
 
 .linkColor:hover {
   text-decoration: underline;
-  color: var(--color-ff6e20) !important; 
+  color: var(--color-ff6e20) !important;
 }
 
 .data_table_fixedWidth_wrapText {
@@ -410,7 +422,7 @@
     background-color: var(--color-White);
     box-shadow: 0px 3px 6px #00000029;
   }
-  div[class*='MuiTablePagination-actions-'] {
+  div[class*="MuiTablePagination-actions-"] {
     button {
       width: 36px;
       height: 36px;
@@ -424,18 +436,18 @@
       }
       &:first-child {
         &:before {
-          font-family: 'Font Awesome 5 Pro';
+          font-family: "Font Awesome 5 Pro";
           font-weight: 900;
-          content: '\f104';
+          content: "\f104";
           font-size: 18px !important;
           padding-right: 2px;
         }
       }
       &:last-child {
         &:before {
-          font-family: 'Font Awesome 5 Pro';
+          font-family: "Font Awesome 5 Pro";
           font-weight: 900;
-          content: '\f105';
+          content: "\f105";
           font-size: 18px !important;
           padding-left: 2px;
         }
@@ -449,7 +461,7 @@
       }
     }
   }
-  div[class*='MuiTablePagination-input-'] {
+  div[class*="MuiTablePagination-input-"] {
     svg {
       fill: var(--color-333333);
     }
@@ -505,12 +517,12 @@
     padding-left: 8px;
   }
   .footerDRP {
-    border-top: none ;
+    border-top: none;
   }
-  .closeDRP  {
+  .closeDRP {
     height: 30px;
   }
-  .clearAllFilterBtn  {
+  .clearAllFilterBtn {
     margin-left: 15px;
   }
 }
@@ -607,6 +619,9 @@
   .closePopup {
     padding-right: 7px;
     padding-top: 16px;
+    &:hover {
+      background-color: transparent !important;
+    }
   }
 }
 
@@ -660,7 +675,7 @@
 .DragHandle {
   cursor: col-resize;
   color: var(--color-337e05);
-  height: calc(100vh - 254px);
+  height: calc(100vh - 230px);
   width: 5px;
   background: var(--color-transparent);
   position: absolute;
@@ -711,7 +726,7 @@
   width: 480px;
   left: -6px;
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     top: -11px;
     left: 0px;
@@ -760,7 +775,6 @@
   width: 129px;
 }
 
-
 td.CellCheckBox {
   &:hover {
     .CRXCheckBox {
@@ -785,7 +799,6 @@ td.CellCheckBox {
   }
 }
 
-
 #resetCheckBox {
   border: 0px;
   margin-right: 46px;
@@ -800,7 +813,6 @@ td.CellCheckBox {
     background: var(--color-f5f5f5) !important;
   }
 }
-
 
 .sortDragHide {
   display: none;
@@ -824,7 +836,7 @@ td.CellCheckBox {
 
 .crxClearfilter {
   place-content: flex-end;
-  
+
   .toolbar-button {
     flex: 2;
     padding-top: 2px;
@@ -833,76 +845,75 @@ td.CellCheckBox {
 
 .crx_popover_customized {
   .MuiPopover-paper {
-      box-shadow: var(--Box-shadow-2);
-      background: var(--color-333333);
-      padding: 12px 10px 11px 19px;
-      border-radius: 0px;
-      overflow: visible;
-      min-width: 250px;
-      max-width: 275px;
-      &::before {
-          position: absolute;
-          content: "";
-          width: 0; 
-          height: 0; 
-          border-top: 10px solid var(--color-333333);
-          border-bottom: 10px solid transparent;
-          border-left: 10px solid transparent;
-          border-right: 10px solid transparent;
-          bottom: -18px;
-          left: 44%;
-      }
-   
-      .CRXPopupOuterDiv {
-          display: none !important;
-      }
-      .popover_header {
-              padding-bottom: 19px;
-              display: flex;
-              position: relative;
-          .popover_Title {
-              font-size: 18px;
-              color: var(--color-f5f5f5);
-              font-family: var(--base-font-family);
-          }
-          .popover_close {
-              display: flex;
-              align-items: center;
-              justify-content: right;
-              position: absolute;
-              right: -12px;
-              top: -14px;
-              font-size: 18px;
-              cursor: pointer;
-              a{
-                  display: block;
-                  padding: 12px;
-                  span {
-                      color: var(--color-333333);
-                  }
-              }
-          }
-      }
+    box-shadow: var(--Box-shadow-2);
+    background: var(--color-333333);
+    padding: 12px 10px 11px 19px;
+    border-radius: 0px;
+    overflow: visible;
+    min-width: 250px;
+    max-width: 275px;
+    &::before {
+      position: absolute;
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 10px solid var(--color-333333);
+      border-bottom: 10px solid transparent;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      bottom: -18px;
+      left: 44%;
+    }
 
-      .popover_content {
-          padding-right: 0px;
-          .linkColor {
-            color: var(--color-d1d2d4) !important;
-            font-size: 14px;
-            font-family: var(--base-font-family);
-            line-height: 18px;
-            &:hover {
-              color: var(--color-d1d2d4) !important;
-              cursor: text !important;
-            }
-              div {
-                  line-height: 19px;
-                  display: block;
-                  font-size: 14px;
-              }
-          }
+    .CRXPopupOuterDiv {
+      display: none !important;
+    }
+    .popover_header {
+      padding-bottom: 19px;
+      display: flex;
+      position: relative;
+      .popover_Title {
+        font-size: 18px;
+        color: var(--color-f5f5f5);
+        font-family: var(--base-font-family);
       }
-      
+      .popover_close {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        position: absolute;
+        right: -12px;
+        top: -14px;
+        font-size: 18px;
+        cursor: pointer;
+        a {
+          display: block;
+          padding: 12px;
+          span {
+            color: var(--color-333333);
+          }
+        }
+      }
+    }
+
+    .popover_content {
+      padding-right: 0px;
+      .linkColor {
+        color: var(--color-d1d2d4) !important;
+        font-size: 14px;
+        font-family: var(--base-font-family);
+        line-height: 18px;
+        &:hover {
+          color: var(--color-d1d2d4) !important;
+          cursor: text !important;
+        }
+        div {
+          line-height: 19px;
+          display: block;
+          font-size: 14px;
+        }
+      }
+    }
   }
 }
 
@@ -910,27 +921,28 @@ td.CellCheckBox {
   z-index: 999;
   border-radius: 0;
   width: 521px;
+  left: -5px !important;
   .MuiPaper-elevation1 {
     box-shadow: 0 0 5px 0 var(--Box-shadow-1);
   }
   .MuiPaper-rounded {
     border-radius: 0px;
   }
-  .popupFreezTitle{
+  .popupFreezTitle {
     position: relative;
     padding-left: 15px;
     padding-top: 18px;
     background: var(--color-White);
     z-index: 4;
     .DRPTitle {
-      font-size: 18px!important;
+      font-size: 18px !important;
       padding-bottom: 40px;
       padding-left: 11px;
       color: var(--color-333333);
     }
   }
   .subTItle {
-    font-size: 14px!important;
+    font-size: 14px !important;
     color: var(--color-333333);
     padding-bottom: 27px;
     padding-left: 11px;
@@ -943,27 +955,27 @@ td.CellCheckBox {
       padding-left: 0;
       margin-top: 0;
       li {
-          display: block;
-          padding: 2px 0;
-          border: 3px solid var(--color-transparent);
-          margin-bottom: 0;
-          transform: translateZ(0)!important;
+        display: block;
+        padding: 2px 0;
+        border: 3px solid var(--color-transparent);
+        margin-bottom: 0;
+        transform: translateZ(0) !important;
+        cursor: move;
+        .MuiFormControlLabel-root {
+          margin-left: 0 !important;
           cursor: move;
-          .MuiFormControlLabel-root {
-            margin-left: 0!important;
-            cursor: move;
-            .customizeCheckBox {
-              padding: 11px 15px 9px 9px;
-            }
-            .MuiFormControlLabel-label {
-              font-size: 14px;
-              color: var(--color-333333);
-            }
-                      
+          .customizeCheckBox {
+            padding: 11px 15px 9px 9px;
+          }
+          .MuiFormControlLabel-label {
+            font-size: 14px;
+            color: var(--color-333333);
+          }
+
           .MuiIconButton-label {
             span.crxSelectedDark {
               font-size: 18px;
-              color: var(--color-333333)!important;
+              color: var(--color-333333) !important;
             }
           }
         }
@@ -971,12 +983,12 @@ td.CellCheckBox {
           cursor: move;
           z-index: 9999;
           list-style: none;
-          border: 3px solid var(--color-ccc)!important;
+          border: 3px solid var(--color-ccc) !important;
           background: var(--color-f2f2f2);
-          width: 469px!important;
-          opacity: .9;
+          width: 469px !important;
+          opacity: 0.9;
           position: relative;
-          &::after{
+          &::after {
             position: absolute;
             right: 13px;
             top: 10px;
@@ -1018,8 +1030,8 @@ td.CellCheckBox {
       height: 30px;
       padding: 6px 0;
       margin-right: 32px;
-      background-color: var(--color-333333)!important;
-      box-shadow: none!important;
+      background-color: var(--color-333333) !important;
+      box-shadow: none !important;
     }
     #resetCheckBox {
       border: 0;
@@ -1051,105 +1063,133 @@ td.CellCheckBox {
   position: relative;
   top: 4px;
   right: 5px;
-  .viewControleButton{
+  .viewControleButton {
+    background: transparent;
+    border: 0px;
+    font-size: 18px;
+    padding: 0 12px;
+    color: var(--color-333333);
+    &:hover {
       background: transparent;
-      border:0px;
-      font-size: 18px;
-      padding: 0 12px ;
-      color: var(--color-333333);
-      &:hover {
-          background: transparent;
-      }
+    }
   }
-  
 }
-
+.stickyBorder_Add {
+  .dataTableExpandView {
+    .stickyPos {
+      z-index: 99999 !important;
+      height: 59px;
+    }
+  }
+}
 .dataTableExpandView {
   width: 100%;
   position: absolute;
   left: 0;
+  z-index: 1;
   .stickyPos {
-      top: 57px !important;
-      position: fixed !important;
-      left: 0px;
-      width: 100% !important;
-      padding-left: 25px;
-      border-bottom: 1px solid #dedede;
-      z-index: 1200;
-      height: 69px;
-          &.crxClearfilter{
-              &::before {
-                  display : none;
-              }
-          }
-      .toolbar-button {
-        position: relative;
-        top: 11px;
+    top: 57px !important;
+    position: fixed !important;
+    left: 0px;
+    width: 100% !important;
+    padding-left: 25px;
+    padding-right: 9px !important;
+    border-bottom: 1px solid #dedede;
+    z-index: 99999;
+    height: 69px;
+    &.crxClearfilter {
+      &::before {
+        display: none;
       }
+    }
+    .toolbar-button {
+      position: relative;
+      top: 11px;
+    }
   }
   .AssetsDataGrid {
-      border: 0px;
-      padding-bottom: 87px !important;
-      padding-right: 0px !important;
-      .CRXDataTableCustom{
-          .drag_header {
-              top: 116px !important;
-              z-index: 9999 !important;
-          }
-          .searchable_header{
-              top:151px !important
-          }
-          thead {
-              tr{
-                  th{
-                      &.dataTableActionColumn {
-                          left: 0px !important;
-                      }
-                      
-                      &.dataTableCheckBoxColumn {
-                          left: 60px !important;
-                      }
-                      &:first-child {
-                          left: 0px !important;
-                      }
-                      &:nth-child(2) {
-                          left: 60px !important;
-                      }
-                  }
-              }
-          }
-          tbody {
-              tr{
-                  td{
-                      &.dataTableActionColumn {
-                          left: 0px !important;
-                      }
-                      &.dataTableCheckBoxColumn {
-                          left: 60px !important;
-                      }
-                      &:first-child {
-                          left: 0px !important;
-                      }
-                      &:nth-child(2) {
-                          left: 60px !important;
-                      }
-                  }
-              }
-          }
+    border: 0px;
+    padding-bottom: 87px !important;
+    padding-right: 0px !important;
+    .CRXDataTableCustom {
+      .drag_header {
+        top: 116px !important;
+        z-index: 9999 !important;
       }
-      &::after, &::before {
-          display: none;
+      .searchable_header {
+        top: 151px !important;
       }
+      thead {
+        tr {
+          th {
+            &.dataTableActionColumn {
+              left: 0px !important;
+            }
+
+            &.dataTableCheckBoxColumn {
+              left: 60px !important;
+            }
+            &:first-child {
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              left: 60px !important;
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            &.dataTableActionColumn {
+              left: 0px !important;
+            }
+            &.dataTableCheckBoxColumn {
+              left: 60px !important;
+            }
+            &:first-child {
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              left: 60px !important;
+            }
+          }
+        }
+      }
+    }
+    &::after,
+    &::before {
+      display: none;
+    }
   }
-  .overlayPanel_Right, .overlayPanel {
-      background: transparent;
+  .overlayPanel_Right,
+  .overlayPanel {
+    background: transparent;
   }
   .overlayPanel_bottom {
-      width: 100% !important;
-      left: 0;
+    width: 100% !important;
+    left: 0;
   }
-  .dataTablePages{
-     
-      width: 100% !important;
+  .dataTablePages {
+    width: 100% !important;
+  }
+}
+.MuiMenu_Modal_Ui {
+  left: 1565px !important;
+}
+
+@media screen and (max-width: 1440px), screen and (max-height: 768px) {
+  .MuiMenu_Modal_Ui {
+    left: 1183px !important;
+  }
+}
+@media screen and (max-width: 1440px){
+  .MuiMenu_Modal_Ui {
+    left: 1097px !important;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .MuiMenu_Modal_Ui {
+    left: 673px !important;
   }
 }

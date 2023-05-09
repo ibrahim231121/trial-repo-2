@@ -34,7 +34,9 @@ const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT)
     const [activeItem, setActiveItem] = useState<any>(null);
     let MeuRef : React.RefObject<any> = createRef();
     const ref : any = useRef();
-    
+    const subRef: any = useRef()
+    const [subList, setSubList] = useState("");
+
     const renderSeparator = (index : number) => {
         return (
             <li key={'separator_' + index} className="p-menu-separator" role="separator"></li>
@@ -106,17 +108,31 @@ const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT)
         //     //setActiveItem(item);
         // }
     //}
+
+    useEffect(() => {
+      const checkIfClickedOutside = (e: any) => {
+        if ( subRef.current && !subRef.current.contains(e.target)) {
+            onLeafClick()
+        }
+      }
+        document.addEventListener("mousedown", checkIfClickedOutside)
+      return () => {
+        document.removeEventListener("mousedown", checkIfClickedOutside)
+      }
+    },[])
   
     const renderSubmenu = (item : itemsProps) => {
         if(item.items) {
             return (
-                <CRXMenuSub 
+                <div ref={subRef}>
+                     <CRXMenuSub 
                     model={item.items}
                     onLeafClick={onLeafClick}
                     popup={false}
                     onKeyDown={onChildItemKeyDown} 
                     parentActive={parentActive === activeItem}
                 />
+                </div>     
             );
         }
 
@@ -142,10 +158,10 @@ const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT)
                 
             </a>
         );
-
+        const subListStatus = (subList == item.label) ? "activeSubList" : "inActiveSubList"
         return (
             !disabled &&
-            <li ref={ref} key={item.label + '_' + index} className={className}  style={item.style} role="none">
+            <li ref={ref} key={item.label + '_' + index} className={`${className}  ${subListStatus}`}  style={item.style} role="none" onClick={() => setSubList(item.label)}>
                 {content}
                {submenu}
             </li>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Typography } from "@material-ui/core";
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import "./numberField.scss"
 
 
@@ -59,7 +58,6 @@ const CRXNumberField = ({
   const [_errorMsg, setErrorMsg] = React.useState<string>('');
   const [isTypeInputNumber, setIsTypeInputNumber] = useState<string>("")
   const [isEyeIconClass, setIsEyeIconClass] = useState<string>("")
-  const [isActive, setIsActive] = useState<string>(" ");
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
   const inputRefs = useRef(null)
@@ -143,18 +141,18 @@ const CRXNumberField = ({
   }
 
 
-  const removeActiveClass = (e : any) => {
-    const current: any | undefined = inputRefs.current;
-    if(e.target.className == 'fas fa-sort-down' || e.target.className == 'fas fa-sort-up'){
-      if(current !== undefined && current.target) {
-        setIsActive("inputNumberIsActive");
-      }
+  // const removeActiveClass = (e : any) => {
+  //   const current: any | undefined = inputRefs.current;
+  //   if(e.target.className == 'fas fa-sort-down' || e.target.className == 'fas fa-sort-up'){
+  //     if(current !== undefined && current.target) {
+  //       setIsActive("inputNumberIsActive");
+  //     }
            
-    }else {
-      setIsActive("");
-    }
+  //   }else {
+  //     setIsActive("");
+  //   }
     
-  }
+  // }
 
   return (
     <>
@@ -163,7 +161,7 @@ const CRXNumberField = ({
           {reformatedLabel()}
         </Typography>
         <span className={`number_field_child  ${isTypeInputNumber}  ${isEyeIconClass}`}>
-          <ClickAwayListener onClickAway={(e : any) => removeActiveClass(e)}>
+          
          
           <input
             id={id}
@@ -184,12 +182,12 @@ const CRXNumberField = ({
               checkError(e.target.value);
             }}
             className={
-              "CBX-Number-input " + disableds + " " + errors + " " + className + " " + isActive
+              "CBX-Number-input " + disableds + " " + errors + " " + className + " "
             }
             
             {...others}
           />
-         </ClickAwayListener>
+        
            
           {error && (
             <Typography

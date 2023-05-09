@@ -32,7 +32,7 @@ import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
+import { ActionMenuPlacement, AssetBucket } from "../../Assets/AssetLister/ActionMenu/types";
 import {
   updateDuplicateFound,
   loadFromLocalStorage,
@@ -51,7 +51,7 @@ import {
 import { CRXModalDialog } from "@cb/shared";
 import AddMetadataForm from "./AddMetadataForm";
 import Cookies from "universal-cookie";
-import { EVIDENCE_SERVICE_URL, FILE_SERVICE_URL } from "../../../utils/Api/url";
+import { EVIDENCE_SERVICE_URL, FILE_SERVICE_URL, FILE_SERVICE_URL_V2 } from "../../../utils/Api/url";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { FileAgent } from "../../../utils/Api/ApiAgent";
 import "./overrideMainBucket.scss";
@@ -64,6 +64,9 @@ import { urlList, urlNames } from "../../../utils/urlList";
 import { CRXTruncation } from "@cb/shared";
 import { AssetDetailRouteStateType } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
 import DetailedAssetPopup from "../../Assets/AssetLister/AssetDataTable/DetailedAssetPopup";
+import jwt_decode from "jwt-decode";
+import { BlockLockedAssets } from "../../Assets/utils/constants";
+import { IDecoded } from './../../../Login/API/auth';
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 // window.onRecvError = new CustomEvent("onUploadError");
@@ -71,21 +74,13 @@ window.URL = window.URL || window.webkitURL;
 const cookies = new Cookies();
 //for asset upload--
 
-interface AssetBucket {
-  id: number;
-  assetId: number;
-  assetName: string;
-  assetType: string;
-  recordingStarted: string;
-  categories: string[];
-}
-
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
-  let {assetType, assetName} = evidence.masterAsset;
+  let { assetType, assetName } = evidence.masterAsset;
   let fileType = evidence.masterAsset?.files[0]?.type;
+  let accessCode = evidence.masterAsset?.files[0]?.accessCode;
 
   return (
-    <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} fontSize="61pt" />
+    <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} accessCode={accessCode} fontSize="61pt" />
   );
 };
 
@@ -102,6 +97,11 @@ type isBucket = {
 };
 
 const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
+  let accessToken = cookies.get('access_token');
+  let decoded: IDecoded | undefined = undefined;
+  if (accessToken) {
+    decoded = jwt_decode(cookies.get("access_token"));
+  }
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isOpenMeta, setIsOpenMeta] = React.useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
@@ -110,7 +110,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket.assetBucketData
   );
-  
+  const [isEvidenceUploaded, setIsEvidenceUploaded] = React.useState<boolean>(true)
+
   useEffect(() => {
     setIsOpen(isOpenBucket);
   }, [isOpenBucket]);
@@ -123,7 +124,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (isOpen) {
       dataTableStickyPos?.classList.add("dataTableStickyPos");
-    } 
+    }
     else {
       dataTableStickyPos?.classList.remove("dataTableStickyPos");
     }
@@ -146,6 +147,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [errorCount, setErrorCount] = React.useState<number>(0);
   const [onAddEvidence, setonAddEvidence] = React.useState<boolean>(false);
   const [onSaveEvidence, setonSaveEvidence] = React.useState<number>(0);
+  const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
 
   const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
@@ -188,17 +190,18 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   //--for asset upload
   const dispatch = useDispatch();
 
+
+
   useEffect(() => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
     setCheckedAll(false);
     var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
     uploadInfoFromLocalStorage(uploadItem);
-    if(uploadItem.length>0)
-    {
+    if (uploadItem.length > 0) {
       setMessageRedisplay(true);
     }
- 
+
   }, []);
 
   window.onbeforeunload = () => {
@@ -206,7 +209,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       return "";
     }
   };
-  const uploadInfoFromLocalStorage = (uploadItem:any) => {   
+  const uploadInfoFromLocalStorage = (uploadItem: any) => {
     if (uploadItem.length > 0) {
       let totalPercentage = 0;
       let files: any[] = [];
@@ -222,8 +225,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         _uploadInfo = {
           fileName: x.fileName,
           fileId: x.file.uploadedFileId,
+          accessCode: x.file.accessCode,
           isCompleted: loadedBytes == x.file.size,
-          state:x.file.state,
+          state: x.file.state,
           uploadInfo: {
             uploadValue: Math.round(
               (Math.ceil(loadedBytes) / x.file.size) * 100
@@ -252,8 +256,11 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       fileCountRef.current = uploadItem.length;
       setTotalFilePer(Math.round(totalPercentage / uploadItem.length));
       setFiles(files);
+      setIsSubProgressBarOpen(true);
     }
   };
+
+  const filterLockedAssets = (_asset: AssetBucket[]): AssetBucket[] => decoded ? BlockLockedAssets(decoded, '', _asset, 'AssetBucket') : [];
 
   useEffect(() => {
     if (
@@ -299,22 +306,22 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       showToastMsg();
     } else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
-        toasterRef.current.showToaster({
-          message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-          variant: "success",
-          duration: 7000,
-        });
+      toasterRef.current.showToaster({
+        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+        variant: "success",
+        duration: 7000,
+      });
 
-        let notificationMessage: NotificationMessage = {
-          title: t("Asset_Lister"),
-          message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-          type: "success",
-          date: moment(moment().toDate())
-            .local()
-            .format("YYYY / MM / DD HH:mm:ss"),
-        };
-        dispatch(addNotificationMessages(notificationMessage));
-      }
+      let notificationMessage: NotificationMessage = {
+        title: t("Asset_Lister"),
+        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
   }, [assetBucketData]);
 
   const showToastMsg = () => {
@@ -350,9 +357,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     // };
   }, [isDuplicateFound == true]);
 
-  const bucketIconByState =
-    assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2";
-  const totalAssetBucketCount = assetBucketData.length + fileCount;
+  const bucketIconByState = assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2";
+  const totalAssetBucketCount = filterLockedAssets(assetBucketData).length + fileCount;
   const onFileUploadErrorBdage = () => {
     return (
       <>
@@ -494,11 +500,31 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     e.target.value = null;
   };
 
+  function removeExtension(filename: string) {
+    return filename.substring(0, filename.lastIndexOf('.')) || filename;
+  }
+
   const handleOnUpload = async (e: any) => {
+    window.evidenceUploaded = false
+    window.EvidenceSaved = false
+    setIsEvidenceUploaded(false)
+    // if(!isEvidenceUploaded){
+    // }
+
     setMessageRedisplay(false)
     var av = [];
     for (let i = 0; i < e.target.files.length; i++) {
       let fileName = e.target.files[i].name.replaceAll(" ", "_");
+
+      if (e.target.files[i].size <= 10) {
+        toasterRef.current.showToaster({
+          message: t("File_Size_Must_Be"),
+          variant: "error",
+          duration: 7000,
+          clearButtton: true,
+        });
+        return false;
+      }
 
       if (fileName.length < 3 || fileName.length > 128) {
         toasterRef.current.showToaster({
@@ -509,11 +535,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         });
         return false;
       } else {
-        var pattern = new RegExp("^([A-Z]|[a-z]){1}[A-Za-z0-9._-]*$");
+        fileName = removeExtension(fileName);
+        var pattern = new RegExp("^([a-zA-Z0-9._-]){1}[A-Za-z0-9._-]*$");
         if (!pattern.test(fileName)) {
           toasterRef.current.showToaster({
             message: t(
-              "Only_alphabets_digits_and_,_-_are_allowed._Must_start_with_an_alphabet_only"
+              "Error_File_name_is_invalid_please_use_only_alphanumeric_and_dot_dash_Underscore_characters",
             ),
             variant: "error",
             duration: 7000,
@@ -521,6 +548,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           });
           return false;
         }
+
       }
 
       //for getting duration
@@ -553,9 +581,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setFiles((prev) => {
       return [...prev, ...e.target.files];
     });
-    
-    AddFilesToFileService(e.target.files, window.onRecvBucketData);
 
+    AddFilesToFileService(e.target.files, window.onRecvBucketData);
     av.forEach(async (x) => {
       await getDuration(x.file)
         .then
@@ -584,18 +611,26 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const uploadStatusUpdate = (data: any) => {
     let _uploadInfo: FileUploadInfo;
     setUploadInfo((prevState) => {
+      const newUploadInfo = [...prevState];
+      const rec = newUploadInfo.find((x) => x.fileName == data.data.fileName);
       if (prevState.length > 0) {
-        const newUploadInfo = [...prevState];
-        const rec = newUploadInfo.find((x) => x.fileName == data.data.fileName);
         if (rec != undefined || rec != null) {
           return uploadStatusCase(data, rec, newUploadInfo);
         } else {
-          _uploadInfo = getUploadInfo(data);
+          _uploadInfo = getUploadInfo(data)
           return [...prevState, _uploadInfo];
         }
       } else {
-        _uploadInfo = getUploadInfo(data);
-        return [...prevState, _uploadInfo];
+        if (window.evidenceUploaded) {
+          return prevState
+        }
+        else {
+
+          _uploadInfo = getUploadInfo(data);
+          return [...prevState, _uploadInfo];
+
+        }
+
       }
     });
   };
@@ -606,7 +641,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   ) => {
     if (data.data.error) {
       //Fire Patch request to change the status of File.
-      updateStatusOfFile(data.data.fileId);
+      updateStatusOfFile(data.data.fileId, data.data.accessCode);
       onFileUploadError();
       rec.uploadInfo.error = true;
       return [...newUploadInfo];
@@ -616,11 +651,15 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       return [...newUploadInfo];
     }
     const checkValue = () => {
-      if(data.data.loadedBytes == data.data.fileSize){
-       
+      if (data.data.loadedBytes == data.data.fileSize) {
+        if (!window.EvidenceSaved) {
+
+          saveFileToLocalStorage(data.data.fileName)
+        }
+
         return true
       }
-      else{
+      else {
         return false
       }
     }
@@ -644,7 +683,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     return [...newUploadInfo];
   };
 
-  const updateStatusOfFile = (id: string) => {
+  const updateStatusOfFile = (id: string, accessCode: string) => {
     const body = [
       {
         op: "replace",
@@ -660,7 +699,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       },
       body: JSON.stringify(body),
     };
-    fetch(FILE_SERVICE_URL + `/Files/` + id, requestOptions)
+    var url: any = FILE_SERVICE_URL_V2 + `/Files/${id}/${accessCode}`
+    fetch(url, requestOptions)
       .then((resp: any) => {
         console.info(resp);
       })
@@ -703,10 +743,11 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   interface FileUploadInfo {
     uploadInfo: UploadInfo;
     fileName: string;
+    accessCode: string;
     fileId: string;
     isPause: boolean;
     isCompleted: boolean;
-    state:string;
+    state: string;
   }
 
   const handleClickOpen = () => {
@@ -718,7 +759,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     var eCount = 0;
     if (totalFilePer === 100 && files.length == 0) {
       setUploadInfo([]);
-      setTotalFilePer(0);
+      setFiles([])
+      setTotalFilePer(0)
+
     }
 
     uploadInfo.forEach((x) => {
@@ -738,7 +781,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       setIsMetaDataOpen(false);
       setShowUploadAttention(false);
     }
-
     if (totalPercentage != 0 && fileCountRef.current != 0) {
       setTotalFilePer(Math.round(totalPercentage / fileCountRef.current));
       totalPercentage = Math.round(totalPercentage / fileCountRef.current);
@@ -763,6 +805,13 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         setIsSubProgressBarOpen(true);
         // setFileCount(files.length)
       }
+
+      uploadInfo.forEach((x: any) => {
+        if (x.isPause) {
+          setIsMetaDataOpen(false);
+        }
+      })
+
       //this is the case of auto retry if any error occur
       if (eCount > 0 && window.Timer == null) {
         window.Timer = setInterval(function () {
@@ -778,7 +827,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                 window.clearInterval(window.Timer);
               }
             })
-            .catch((ex: any) => {});
+            .catch((ex: any) => { });
         }, 5000);
       } else if (eCount == 0) {
         window.clearInterval(window.Timer);
@@ -787,14 +836,23 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
 
     if (uploadInfo.length > 0 && totalPercentage == 100) {
-      if (!isCheckTrue) {
+      if (isCheckTrue) {
+        setIsMetaDataOpen(false);
+        setFiles([])
+        setUploadInfo([])
+        window.evidenceUploaded = true
+      }
+      else {
         setIsMetaDataOpen(true);
+        setIsMainProgressBarOpen(true);
         setShowUploadAttention(true);
       }
     }
+
   }, [uploadInfo]);
 
   const setUploadInfoRemoveCase = (fileName: string) => {
+
     setUploadInfo((prevState) => {
       if (prevState.length > 0) {
         const newUploadInfo = [...prevState];
@@ -804,67 +862,71 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     });
   };
 
-  const onUploadingComplete = async(evidenceId:number,assetName: string) => {
+  const onUploadingComplete = async (evidenceId: number, assetName: string) => {
+
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${cookies.get("access_token")}`,
-      TenantId: "1"
-        
+        TenantId: "1"
+
       },
     };
-     await fetch(
-      EVIDENCE_SERVICE_URL + `/Evidences/` + evidenceId + `/Assets/`+ assetName + `/UploadingComplete` ,
+    await fetch(
+      EVIDENCE_SERVICE_URL + `/Evidences/` + evidenceId + `/Assets/` + assetName + `/UploadingComplete`,
       requestOptions
     );
   }
 
   useEffect(() => {
-// This case execute when there is a delay in response from evidence and the progress bar reaches to 100%
-if(onSaveEvidence > 0 && totalFilePer == 100){
-  files.map((x:any) => {
-    onUploadingComplete(onSaveEvidence,x.uploadedFileName.substring(0,  x.uploadedFileName.lastIndexOf(".")));
-  })
-  setonSaveEvidence(0);
-}
-  },[onSaveEvidence])
-
-  const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
-  useEffect(() => {
-    if (totalFilePer === 100 ) {
-      if(onSaveEvidence > 0){
-  files.forEach((x:any) => {
-    onUploadingComplete(onSaveEvidence,x.uploadedFileName.substring(0,  x.uploadedFileName.lastIndexOf(".")))
-  })
-  setonSaveEvidence(0);
-      }
-      if(!isMessageRedisplay)
-      {
-      toasterRef.current.showToaster({
-        message: t("File(s) uploaded"),
-        variant: "success",
-        duration: 7000,
-        clearButtton: true,
-      });
+    // This case execute when there is a delay in response from evidence and the progress bar reaches to 100%
+    if (onSaveEvidence > 0 && totalFilePer == 100) {
+      files.map((x: any) => {
+        onUploadingComplete(onSaveEvidence, x.uploadedFileName);
+      })
     }
+  }, [onSaveEvidence])
+
+
+  useEffect(() => {
+    if (totalFilePer === 100) {
+
+      if (!isMessageRedisplay) {
+        toasterRef.current.showToaster({
+          message: t("File(s) uploaded"),
+          variant: "success",
+          duration: 7000,
+          clearButtton: true,
+        });
+      }
+      if (onSaveEvidence > 0) {
+        files.forEach((x: any) => {
+          onUploadingComplete(onSaveEvidence, x.uploadedFileName)
+        })
+        setonSaveEvidence(0);
+
+      }
+
       if (isCheckTrue) {
         setIsMainProgressBarOpen(false);
         setIsFileUploadHide(false);
+        setShowUploadAttention(true)
         setIsSubProgressBarOpen(false);
         setIsCheckTrue(false);
-        setUploadInfo([]);
-        setFiles([]);
+
         setFileCount(0);
+        setTotalFilePer(0)
       } else {
-        setIsMainProgressBarOpen(true);
-        setIsSubProgressBarOpen(true);
         setIsFileUploadHide(false);
+        setShowUploadAttention(true)
       }
 
       if (!onAddEvidence) {
         setIsFileUploadHide(false);
+        setShowUploadAttention(true)
       }
+
     }
 
     if (uploadInfo.length > 0 && totalFilePer < 100) {
@@ -875,6 +937,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
         setFileCount(files.length);
       }
     }
+
   }, [totalFilePer]);
 
   useEffect(() => {
@@ -892,6 +955,10 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
         duration: 7000,
         clearButtton: true,
       });
+
+      window.EvidenceSaved = true
+      localStorage.removeItem("uploadedFiles");
+      setIsEvidenceUploaded(false);
       setIsMetaDataOpen(false);
       setShowUploadAttention(false);
       setonAddEvidence(false);
@@ -900,13 +967,15 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
 
       setIsFileUploadHide(true);
       if (totalFilePer == 100) {
+
         setIsFileUploadHide(false);
         if (onAddEvidence) {
           setFiles([]);
           setUploadInfo([]);
+          setTotalFilePer(0)
         }
         setFileCount(0);
-        
+
       } else {
         setIsCheckTrue(true);
       }
@@ -915,19 +984,55 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
     }
   }, [onAddEvidence]);
 
+
+
+  const saveFileToLocalStorage = async (fileName: any) => {
+
+    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+    var index = uploadItem.findIndex((x: any) => x.fileName == fileName);
+
+    var selectedItem = {
+      fileName: fileName,
+      blockIds: window.tasks[fileName].blockIds,
+      file: {
+        duration: window.tasks[fileName].file.duration,
+        uploadUri: window.tasks[fileName].file.uploadUri,
+        uploadedFileId: window.tasks[fileName].file.uploadedFileId,
+        uploadedFileName: window.tasks[fileName].file.uploadedFileName,
+        url: window.tasks[fileName].file.url,
+        lastModified: window.tasks[fileName].file.lastModified,
+        lastModifiedDate: window.tasks[fileName].file.lastModifiedDate,
+        name: window.tasks[fileName].file.name,
+        size: window.tasks[fileName].file.size,
+        type: window.tasks[fileName].file.type,
+        state: "Uploaded",
+      }
+    };
+    if (index == -1)
+      uploadItem.push(selectedItem);
+    else
+      uploadItem[index] = selectedItem;
+
+    localStorage.setItem("uploadedFiles", JSON.stringify(uploadItem));
+  }
+
+
   const getUploadInfo = (data: any) => {
     const checkValue = () => {
-      if(data.data.loadedBytes == data.data.fileSize){
-        
+      if (data.data.loadedBytes == data.data.fileSize) {
+        if (!window.EvidenceSaved) {
+          saveFileToLocalStorage(data.data.fileName)
+        }
         return true
       }
-      else{
+      else {
         return false
       }
     }
     return {
       fileName: data.data.fileName,
       fileId: data.data.fileId,
+      accessCode: data.data.accessCode,
       isCompleted: checkValue(),
       state: data.data.state,
       uploadInfo: {
@@ -1024,9 +1129,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
     });
     return prog;
   };
-  
 
-  
   const retryFile = (file: FileUploadInfo) => {
     resumeFile(file);
   };
@@ -1126,10 +1229,8 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
       },
       body: JSON.stringify(body),
     };
-    const resp = await fetch(
-      FILE_SERVICE_URL + `/Files/` + file.uploadedFileId,
-      requestOptions
-    );
+    var url: any = FILE_SERVICE_URL_V2 + `/Files/${file.uploadedFileId}/${file.accessCode}`
+    const resp = await fetch(url, requestOptions);
     if (resp.ok) {
       toasterRef.current.showToaster({
         message: t("File_has_been_removed_successfully"),
@@ -1232,52 +1333,69 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
   };
 
   const onCloseCrossMeta = (e: any) => {
-    if (IsformUpdated) 
+    if (IsformUpdated)
       setIsOpenMeta(true);
-    else 
+    else
       setIsModalOpen(false);
-    
+
   }
 
   const onCloseCancelMeta = (e: any) => {
     setActiveScreen(0);
     setIsModalOpen(false);
   }
-  const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
+  const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence, assetId: number) => {
     let masterAsset = evidence.masterAsset;
     let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
-    let dataLink = 
-    <>
-      <Link
-        className="linkColor"
-        to={{
-          pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
-          state: {
-            evidenceId: evidence.id,
-            assetId: masterAsset.assetId,
-            assetName: assetName,
-            evidenceSearchObject: evidence
-          } as AssetDetailRouteStateType,
-        }}
-      >
-        <div className="assetName">
-       
-        <CRXTruncation placement="top" content= {assetName.length >
-                                            25
-                                              ? assetName.substring(0,
-                                                   25
-                                                 ) + "..."
-                                              : assetName} />
-        </div>
-      </Link>
-      {assets  && evidence.masterAsset.lock &&
-      <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
-      }
-      <DetailedAssetPopup asset={assets} row={evidence} />
-    </>
+    let dataLink =
+      <>
+        <Link
+          className="linkColor"
+          to={{
+            pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
+            state: {
+              evidenceId: evidence.id,
+              assetId: masterAsset.assetId,
+              assetName: assetName,
+              evidenceSearchObject: evidence
+            } as AssetDetailRouteStateType,
+          }}
+        >
+          <div className="assetName">
+
+            <CRXTruncation placement="top" content={assetName.length >
+              25
+              ? assetName.substring(0,
+                25
+              ) + "..."
+              : assetName} />
+          </div>
+        </Link>
+        {isLockIconShow(evidence, assetId) &&
+          <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock" />
+        }
+        <DetailedAssetPopup asset={assets} row={evidence} />
+      </>
     return dataLink;
-      
   };
+
+  const isLockIconShow = (evidence: SearchModel.Evidence, assetId: number): boolean => {
+    const isLock = evidence.asset.find(x => x.assetId == assetId)?.lock;
+    if (isLock) {
+      return true;
+    }
+    return false;
+  }
+
+  const showToastMsgFromActionMenu = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+
   return (
     <>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
@@ -1408,8 +1526,9 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                               onCloseCancelMeta(e)
                             }
                             uploadFile={files}
+                            uploadInfo={uploadInfo}
                             setAddEvidence={setonAddEvidence}
-                            setEvidenceId = {setonSaveEvidence}
+                            setEvidenceId={setonSaveEvidence}
                             uploadAssetBucket={assetBucketData}
                             activeScreen={activeScreen}
                             setActiveScreen={setActiveScreen}
@@ -1461,22 +1580,22 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                               loadingText={
                                 fileCount > 1
                                   ? fileCount +
-                                    ` ${t("assets")} ` +
-                                    "(" +
-                                    totalFileSize +
-                                    ")"
+                                  ` ${t("assets")} ` +
+                                  "(" +
+                                  totalFileSize +
+                                  ")"
                                   : fileCount +
-                                    ` ${t("asset")} ` +
-                                    "(" +
-                                    totalFileSize +
-                                    ")"
+                                  ` ${t("asset")} ` +
+                                  "(" +
+                                  totalFileSize +
+                                  ")"
                               }
                               value={totalFilePer}
                               error={mainProgressError}
                               maxDataSize={true}
                               width={100}
                               widthInPercentage={true}
-                              // loadingCompleted={"uploadFileSize"}//"5.0Mb"
+                            // loadingCompleted={"uploadFileSize"}//"5.0Mb"
                             />
                           </div>
                         </>
@@ -1515,27 +1634,28 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                             {/* {t("View_on_assets_bucket_page")}{" "}
                             <i className="icon icon-arrow-up-right2"></i>{" "} */}
                             <div className="bucketActionMenuAll">
-                            <div 
-                              className={
+                              <div
+                                className={
                                   selectedItems.length > 1 ? "" : " disableHeaderActionMenu"
                                 }>
-                              <ActionMenu
-                                row={undefined}
-                                className=""
-                                selectedItems={selectedItems}
-                                setSelectedItems={setSelectedItems}
-                                actionMenuPlacement={
-                                  ActionMenuPlacement.AssetBucket
-                                }
-                              />
-                            </div> 
+                                <ActionMenu
+                                  row={undefined}
+                                  className=""
+                                  selectedItems={selectedItems}
+                                  setSelectedItems={setSelectedItems}
+                                  actionMenuPlacement={
+                                    ActionMenuPlacement.AssetBucket
+                                  }
+                                  showToastMsg={(obj: any) => showToastMsgFromActionMenu(obj)}
+                                />
+                              </div>
                             </div>
 
                           </div>
                           <div className="bucketScroll">
                             <div className="bucketList" id="assetBucketLists">
-                              {assetBucketData.map((x: any, index) => {
-                                var selectedAsset = x.evidence.asset.filter(
+                              {filterLockedAssets(assetBucketData).map((x: any, index) => {
+                                let selectedAsset = x.evidence.asset.filter(
                                   (y: any) => x.assetId == y.assetId
                                 );
                                 return (
@@ -1560,6 +1680,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                         fileType={
                                           selectedAsset[0]?.files[0]?.type
                                         }
+                                        accessCode={selectedAsset[0]?.files[0]?.accessCode}
                                         fontSize="61pt"
                                       />
                                     </div>
@@ -1568,18 +1689,18 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                         <>
                                           <div className="bucketListAssetName">
                                             {
-                                              assetNameTemplate(selectedAsset[0].assetName,x.evidence)
+                                              assetNameTemplate(selectedAsset[0].assetName, x.evidence, selectedAsset[0].assetId)
                                             }
-                                            
+
                                           </div>
                                           <div className="bucketListRec">
-                                            {selectedAsset[0].assetType} 
+                                            {selectedAsset[0].assetType}
                                           </div>
                                         </>
                                       ) : (
                                         <>
                                           <div className="bucketListAssetName">
-                                            {assetNameTemplate(selectedAsset[0].assetName,x.evidence)}
+                                            {assetNameTemplate(selectedAsset[0].assetName, x.evidence, selectedAsset[0].assetId)}
                                           </div>
                                           <div className="bucketListRec">
                                             {selectedAsset[0].assetType}
@@ -1596,15 +1717,15 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                         )}
                                     </div>
                                     <div className="bucketActionMenu">
-                                      {
-                                        <ActionMenu
-                                          row={x}
-                                          selectedItems={selectedItems}
-                                          actionMenuPlacement={
-                                            ActionMenuPlacement.AssetBucket
-                                          }
-                                        />
-                                      }
+                                      <ActionMenu
+                                        row={x}
+                                        selectedItems={selectedItems}
+                                        setSelectedItems={setSelectedItems}
+                                        actionMenuPlacement={
+                                          ActionMenuPlacement.AssetBucket
+                                        }
+                                        showToastMsg={(obj: any) => showToastMsgFromActionMenu(obj)}
+                                      />
                                     </div>
                                   </div>
                                 );
@@ -1650,27 +1771,27 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
         </div>
       </CRXConfirmDialog>
       <CRXConfirmDialog
-          setIsOpen={() => setIsOpenMeta(false)}
-          onConfirm={closeDialog}
-          isOpen={isOpenMeta}
-          className="userGroupNameConfirm"
-          primary={t("Yes_close")}
-          secondary={t("No,_do_not_close")}
-          text="user group form"
-        >
-          <div className="confirmMessage">
-            {t("You_are_attempting_to")}{" "}
-            <strong> {t("close")}</strong> {t("the")}{" "}
-            <strong>{t("'asset_metadata'")}</strong>.{" "}
-            {t("If_you_close_the_form")},
-            {t("any_changes_you_ve_made_will_not_be_saved.")}{" "}
-            {t("You_will_not_be_able_to_undo_this_action.")}
-            <div className="confirmMessageBottom">
-              {t("Are_you_sure_you_would_like_to")}{" "}
-              <strong>{t("close")}</strong> {t("the_form?")}
-            </div>
+        setIsOpen={() => setIsOpenMeta(false)}
+        onConfirm={closeDialog}
+        isOpen={isOpenMeta}
+        className="userGroupNameConfirm"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
+        text="user group form"
+      >
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")}{" "}
+          <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'asset_metadata'")}</strong>.{" "}
+          {t("If_you_close_the_form")},
+          {t("any_changes_you_ve_made_will_not_be_saved.")}{" "}
+          {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+            {t("Are_you_sure_you_would_like_to")}{" "}
+            <strong>{t("close")}</strong> {t("the_form?")}
           </div>
-        </CRXConfirmDialog>
+        </div>
+      </CRXConfirmDialog>
     </>
   );
 };

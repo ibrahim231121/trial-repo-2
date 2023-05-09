@@ -92,6 +92,59 @@
    > img {
     width: 79%;
   }
+
+  // Tabs Panel start
+  .MainTabsPanel {
+    position: relative;
+    background: white;
+    width: 100%;
+    .tabsHeaderControl {
+      width: 30%;
+      position: absolute;
+      z-index: 999;
+      top: -58px;
+      right: 110px;
+      display: flex;
+      align-items: baseline;
+      // button {
+      //   min-width: 100px;
+      // }
+      .Mui-selected {
+        color: black;
+      }
+      .TabsMenuHead {
+        display: flex;
+        margin: 0 10px;
+        button {
+          background: transparent;
+          border: none;
+        }
+        .MuiButtonGroup-root {
+          box-shadow: none;
+          button {
+            background-color: transparent;
+            color: black;
+            min-width: 12px;
+            width: 12px;
+          }
+        }
+      }
+    }
+    .tabsBodyControl {
+      width: 100%;
+      // height: 75vh;
+      // padding: 0 28px;
+    }
+    .MuiTabs-indicator {
+      background-color: black;
+    }
+  }
+
+  //panel second
+
+// Tabs Panel End
+
+
 }
 
 ._bottom_arrow_seeMore {
@@ -119,6 +172,9 @@
     cursor: pointer;
     i {
       height: auto;
+      &:hover {
+        color: var(--color-white);
+      }
     }
   }
   a {
@@ -161,6 +217,7 @@
 .makeStyles-content-9,
 .jss9 {
   #_asset_detail_view_idx {
+    position: relative;
     &.switchLeftComponents {
       padding-left: 0px;
       padding-right: 0px;

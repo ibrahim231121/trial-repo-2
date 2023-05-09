@@ -16,4 +16,6 @@ export type DropdownFormProps = {
     setModalTitle: (param: string) => void;
     setIsformUpdated: (param: boolean) => void;
     setIndicateTxt: (param: boolean) => void;
+    isMultiSelectAssetHaveSameCategory : boolean;
+    selectedItems : any[];
 };

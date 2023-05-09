@@ -88,7 +88,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const getRetentionData = () => {
     props.setIsformUpdated(false);
-    EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
+    EvidenceAgent.getEvidence(props.rowData.id ?? props.rowData.evidence.id ).then((response: Evidence) => {
       if (response.expireOn != null) {
         formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
         if(response.holdUntil !=null)
@@ -135,11 +135,11 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   function GetRetentionList(retentionDays: any, holdUntil: any) {
-    let retentionList: { id: any; extendedDays: number; holdUntil: number }[] = [];
+    let retentionList: { evidenceId: any; extendedDays: number; holdUntil: number }[] = [];
     if (props?.items?.length > 1) {
       props.items.forEach((el) => {
         retentionList.push({
-          id: el.id,
+          evidenceId: el.id,
           extendedDays: parseInt(retentionDays),
           holdUntil: holdUntil
         });
@@ -147,7 +147,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     }
     else {
       retentionList.push({
-        id: props?.rowData?.id,
+        evidenceId: props?.rowData?.id == undefined ? props?.rowData?.evidence?.id : props?.rowData?.id,
         extendedDays: parseInt(retentionDays),
         holdUntil: holdUntil
       });

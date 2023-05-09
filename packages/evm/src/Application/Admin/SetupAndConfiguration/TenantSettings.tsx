@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
+import { useDispatch} from "react-redux";
 import "./tenantSettings.scss";
+import timeZonesData from "./Timezones.json";
 import { CRXColumn } from "@cb/shared";
 import * as Yup from "yup";
 import {
@@ -13,13 +15,16 @@ import { Field, Form, Formik } from "formik";
 import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload";
 import Cookies from 'universal-cookie';
 import { TextField } from "@cb/shared";
-import { SetupConfigurationAgent } from "../../../utils/Api/ApiAgent"; 
+import { SetupConfigurationAgent } from "../../../utils/Api/ApiAgent";
+import { setLoaderValue } from "../../../Redux/loaderSlice";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 declare const window: any;
 
 const cookies = new Cookies();
 const regex =
   /smtp\.[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const TenantSettings: React.FC = () => {
+  const dispatch = useDispatch();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
@@ -29,7 +34,7 @@ const TenantSettings: React.FC = () => {
     );
   const [actionVerb, setActionVerb] = React.useState<string>("PUT");
   const [setReasons, setReasonsValue] = React.useState<string[]>([]);
-  const [setTimezone, setTimezoneValue] = React.useState<string[]>([]);
+  const [setTimezone, setTimezoneValue] = React.useState<any[]>([]);
   const cookies = new Cookies();
   const [mapAllFields, setmapAllFieldsValue] = React.useState<any>({
     TenantName: "",
@@ -47,6 +52,8 @@ const TenantSettings: React.FC = () => {
     Latitude: "",
     LiveStreamURL: "",
     LiveStreamPassword: "",
+    CertificatePath: "",
+    CertificatePassword: "",
     LiveStreamUser: "",
     LiveStreamType:"",
     LiveStreamUrlForWeb:"",
@@ -65,7 +72,7 @@ const TenantSettings: React.FC = () => {
     Port: "",
     Name: "",
     Password: "",
-    MesaurementUnit: "",
+    MeasurementUnit: "",
     AlertEmails: "",
     fileDetails: [],
   });
@@ -101,6 +108,7 @@ const TenantSettings: React.FC = () => {
     AddFilesToFileService(e.fileDetails, window.onRecvLogoData);
   };
   React.useEffect(() => {
+    dispatch(setLoaderValue({ isLoading: true, message: "" }))
     SetupConfigurationAgent.getTenantSetting()
       .then((tenantsett) => {
         tenantsett["settingEntries"].forEach(
@@ -125,6 +133,7 @@ const TenantSettings: React.FC = () => {
         mapAllFields["fileDetails"] = new File([], "asd", {
           type: "image/jpg",
         });
+        dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
       })
       .catch((err: any) => {setActionVerb("POST");});
   }, []);
@@ -136,14 +145,11 @@ const TenantSettings: React.FC = () => {
       .catch(() => {});
   }, []);
   React.useEffect(() => {
-    SetupConfigurationAgent.getTenantSettingTimezone()
-      .then((timezone: any) => {
-        const temp = timezone.map((x: any) => {
-          return { label: x.DisplayName.slice(0,x.DisplayName.lastIndexOf(")")+1)+ " "+x.Id, value: x.Id };
-        });
-        setTimezoneValue(temp);
-      })
-      .catch(() => {});
+    dispatch(enterPathActionCreator({ val: "" }));
+    const temp = timeZonesData.map((x) => {
+      return { label: x.text, value: x.value }
+    })
+    setTimezoneValue(temp);
   }, []);
   const validatingFields = async (values: any) => {
     if (values.MailServer != "Custom") {
@@ -177,10 +183,10 @@ const TenantSettings: React.FC = () => {
       values.TimeFormat = "AM/PM";
     }
     if (
-      values.MesaurementUnit != "Statute" &&
-      values.MesaurementUnit != "Metric"
+      values.MeasurementUnit != "Statute" &&
+      values.MeasurementUnit != "Metric"
     ) {
-      values.MesaurementUnit = "Statute";
+      values.MeasurementUnit = "Statute";
     }
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
@@ -192,32 +198,33 @@ const TenantSettings: React.FC = () => {
       values.Reasons = [];
     }
     if (
-      values.AuthServer != "External OpenId" &&
-      values.AuthServer != "Getac OpenId with AD"
+      values.AuthServer != "1" &&
+      values.AuthServer != "2"
     ) {
-      values.AuthServer = "Getac OpenId Without AD";
+      values.AuthServer = "3";
     }
 
-    if (values.AuthServer == "External OpenId") {
+    if (values.AuthServer == "1") {
       values.RedirectingURL = "";
-    } else if (values.AuthServer == "Getac OpenId Without AD") {
+    } else if (values.AuthServer == "3") {
       values.ApplicationClientId = "";
       values.DirectoryTenantId = "";
-      values.ApplicationRedirectUrl = "";
-      values.ApplicationName = "";
+      values.CertificatePath = "";
+      values.CertificatePassword = "";
       values.ClientSecretId = "";
       values.RedirectingURL = "";
     }
     else {
       values.ApplicationClientId = "";
       values.DirectoryTenantId = "";
-      values.ApplicationRedirectUrl = "";
-      values.ApplicationName = "";
+      values.CertificatePath = "";
+      values.CertificatePassword = "";
       values.ClientSecretId = "";
     }
   };
   const submitTenantSettings = async (values: any) => {
     await validatingFields(values);
+    
     const body = {
       settingEntries: null,
       tenantSettingEntries: [
@@ -253,7 +260,7 @@ const TenantSettings: React.FC = () => {
           value: values.NTPServer,
         },
         {
-          TenantTypeId: 1,
+          TenantTypeId: 6,
           key: "AuthServer",
           value: values.AuthServer,
         },
@@ -325,32 +332,32 @@ const TenantSettings: React.FC = () => {
           value: values.Password,
         },
         {
-          TenantTypeId: 5,
+          TenantTypeId: 6,
           key: "ApplicationClientId",
           value: values.ApplicationClientId,
         },
         {
-          TenantTypeId: 5,
+          TenantTypeId: 6,
           key: "DirectoryTenantId",
           value: values.DirectoryTenantId,
         },
         {
-          TenantTypeId: 5,
-          key: "ApplicationRedirectUrl",
-          value: values.ApplicationRedirectUrl,
+          TenantTypeId: 6,
+          key: "CertificatePath",
+          value: values.CertificatePath,
         },
         {
-          TenantTypeId: 5,
-          key: "ApplicationName",
-          value: values.ApplicationName,
+          TenantTypeId: 6,
+          key: "CertificatePassword",
+          value: values.CertificatePassword,
         },
         {
-          TenantTypeId: 5,
+          TenantTypeId: 6,
           key: "ClientSecretId",
           value: values.ClientSecretId,
         },
         {
-          TenantTypeId: 5,
+          TenantTypeId: 6,
           key: "RedirectingURL",
           value: values.RedirectingURL,
         },
@@ -376,8 +383,8 @@ const TenantSettings: React.FC = () => {
         },
         {
           TenantTypeId: 4,
-          key: "MesaurementUnit",
-          value: values.MesaurementUnit,
+          key: "MeasurementUnit",
+          value: values.MeasurementUnit,
         },
         {
           TenantTypeId: 5,
@@ -461,10 +468,12 @@ const TenantSettings: React.FC = () => {
       });
     }
     else{
+      dispatch(setLoaderValue({ isLoading: true, message: "" }))
       SetupConfigurationAgent.putTenantSetting(body)
       .then((res: any) => {
           setActionVerb("PUT");
           setSuccess(true);
+          dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
           setTimeout(() => window.location.reload(), 1000);
       })
       .catch((err: any) => {
@@ -529,32 +538,32 @@ const TenantSettings: React.FC = () => {
       otherwise: Yup.number(),
     }),
     ApplicationClientId: Yup.string().when("AuthServer", {
-      is: "External OpenId",
+      is: "1",
       then: Yup.string().required("ApplicationClientId is required"),
       otherwise: Yup.string(),
     }),
     DirectoryTenantId: Yup.string().when("AuthServer", {
-      is: "External OpenId",
+      is: "1",
       then: Yup.string().required("DirectoryTenantId is required"),
       otherwise: Yup.string(),
     }),
-    ApplicationRedirectUrl: Yup.string().when("AuthServer", {
-      is: "External OpenId",
-      then: Yup.string().required("ApplicationRedirectUrl is required"),
-      otherwise: Yup.string(),
-    }),
-    ApplicationName: Yup.string().when("AuthServer", {
-      is: "External OpenId",
-      then: Yup.string().required("ApplicationName is required"),
-      otherwise: Yup.string(),
-    }),
-    ClientSecretId: Yup.string().when("AuthServer", {
-      is: "External OpenId",
-      then: Yup.string().required("ClientSecretId is required"),
-      otherwise: Yup.string(),
-    }),
+    // CertificatePath: Yup.string().when("AuthServer", {
+    //   is: "1",
+    //   then: Yup.string().required("CertificatePath is required"),
+    //   otherwise: Yup.string(),
+    // }),
+    // CertificatePassword: Yup.string().when("AuthServer", {
+    //   is: "1",
+    //   then: Yup.string().required("CertificatePassword is required"),
+    //   otherwise: Yup.string(),
+    // }),
+    // ClientSecretId: Yup.string().when("AuthServer", {
+    //   is: "1",
+    //   then: Yup.string().required("ClientSecretId is required"),
+    //   otherwise: Yup.string(),
+    // }),
     RedirectingURL: Yup.string().when("AuthServer", {
-      is: "Getac OpenId with AD",
+      is: "2",
       then: Yup.string().required("RedirectingURL is required"),
       otherwise: Yup.string(),
     }),
@@ -785,7 +794,7 @@ const TenantSettings: React.FC = () => {
                               )}
                             </div>
                           </CRXRows>
-                          <CRXRows>
+                          <CRXRows style={{display:"none"}}>
                             <div className="CBX-input">
                               <label htmlFor="Password">Password</label>
                               <TextField id="password"
@@ -931,14 +940,14 @@ const TenantSettings: React.FC = () => {
                         </div>
                       </CRXRows>
                       <CRXRows>
-                        <label htmlFor="MesaurementUnit">
-                          Mesaurement Unit
+                        <label htmlFor="MeasurementUnit">
+                        Measurement Unit
                         </label>
                         <div role="group" aria-labelledby="my-radio-group">
                           <label>
                             <Field
                               type="radio"
-                              name="MesaurementUnit"
+                              name="MeasurementUnit"
                               value="Statute"
                             />
                             Statute
@@ -946,7 +955,7 @@ const TenantSettings: React.FC = () => {
                           <label>
                             <Field
                               type="radio"
-                              name="MesaurementUnit"
+                              name="MeasurementUnit"
                               value="Metric"
                             />
                             Metric
@@ -1045,6 +1054,7 @@ const TenantSettings: React.FC = () => {
                         className="crxStationDetail"
                         container="container"
                         spacing={0}
+                        style={{display:"none"}}
                       >
                         <div className="CBX-input">
                           <label htmlFor="name">Name</label>
@@ -1055,6 +1065,7 @@ const TenantSettings: React.FC = () => {
                         className="crxStationDetail"
                         container="container"
                         spacing={0}
+                        style={{display:"none"}}
                       >
                         <div className="CBX-input">
                           <label htmlFor="password">Password</label>
@@ -1131,7 +1142,7 @@ const TenantSettings: React.FC = () => {
                           <Field
                             type="radio"
                             name="AuthServer"
-                            value="External OpenId"
+                            value="1"
                           />
                           External OpenId
                         </label>
@@ -1139,7 +1150,7 @@ const TenantSettings: React.FC = () => {
                           <Field
                             type="radio"
                             name="AuthServer"
-                            value="Getac OpenId with AD"
+                            value="2"
                           />
                           Getac OpenId with AD
                         </label>
@@ -1147,13 +1158,13 @@ const TenantSettings: React.FC = () => {
                           <Field
                             type="radio"
                             name="AuthServer"
-                            value="Getac OpenId Without AD"
+                            value="3"
                           />
                           Getac OpenId Without AD
                         </label>
                       </div>
                     </CRXColumn>
-                    {values.AuthServer == "External OpenId" && (
+                    {values.AuthServer == "1" && (
                       <CRXColumn
                         className="stationDetailCol"
                         container="container"
@@ -1199,44 +1210,11 @@ const TenantSettings: React.FC = () => {
                           )}
                         </div>
                         <div className="CBX-input">
-                          <label htmlFor="ApplicationRedirectUrl">
-                            Application Redirect Url <span>*</span>
-                          </label>
-                          <Field
-                            id="ApplicationRedirectUrl"
-                            name="ApplicationRedirectUrl"
-                          />
-                          {errors.ApplicationRedirectUrl !== undefined &&
-                          touched.ApplicationRedirectUrl ? (
-                            <div className="errorTenantStyle">
-                              <i className="fas fa-exclamation-circle"></i>
-                              {errors.ApplicationRedirectUrl}
-                            </div>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
-                        <div className="CBX-input">
-                          <label htmlFor="ApplicationName">
-                            Application Name <span>*</span>
-                          </label>
-                          <Field id="ApplicationName" name="ApplicationName" />
-                          {errors.ApplicationName !== undefined &&
-                          touched.ApplicationName ? (
-                            <div className="errorTenantStyle">
-                              <i className="fas fa-exclamation-circle"></i>
-                              {errors.ApplicationName}
-                            </div>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
-                        <div className="CBX-input">
                           <label htmlFor="ClientSecretId">
-                            Client Secret Id <span>*</span>
+                            Client Secret Id
                           </label>
                           <Field id="ClientSecretId" name="ClientSecretId" />
-                          {errors.ClientSecretId !== undefined &&
+                          {/* {errors.ClientSecretId !== undefined &&
                           touched.ClientSecretId ? (
                             <div className="errorTenantStyle">
                               <i className="fas fa-exclamation-circle"></i>
@@ -1244,11 +1222,60 @@ const TenantSettings: React.FC = () => {
                             </div>
                           ) : (
                             <></>
+                          )} */}
+                        </div>
+                        <div className="CBX-input">
+                          <label htmlFor="CertificatePath">
+                            Certificate Path 
+                          </label>
+                          <Field
+                            id="CertificatePath"
+                            name="CertificatePath"
+                          />
+                          {/* {errors.CertificatePath !== undefined &&
+                          touched.CertificatePath ? (
+                            <div className="errorTenantStyle">
+                              <i className="fas fa-exclamation-circle"></i>
+                              {errors.CertificatePath}
+                            </div>
+                          ) : (
+                            <></>
+                          )} */}
+                        </div>
+                        <div className="CBX-input">
+                          <label htmlFor="CertificatePassword">
+                            Certificate Password
+                          </label>
+                          <TextField id="password"
+                            type="password"
+                            onBlur=""
+                            name="CertificatePassword"
+                            placeholder={
+                              new Array(values.CertificatePassword.length + 1).join("*") 
+                              }
+                            onChange={(e: any) => setFieldValue("CertificatePassword", e.target.value)}>
+                            
+                          </TextField>
+                          {/* <Field id="CertificatePassword" name="CertificatePassword" type="password"
+                          placeholder={
+                            new Array(values.LiveStreamPassword.length + 1).join("*") 
+                            }
+                          onChange={(e: any) => setFieldValue("CertificatePassword", e.target.value)}
+                          onBlur=""/> */}
+                          {errors.CertificatePassword !== undefined &&
+                          touched.CertificatePassword ? (
+                            <div className="errorTenantStyle">
+                              <i className="fas fa-exclamation-circle"></i>
+                              {errors.CertificatePassword}
+                            </div>
+                          ) : (
+                            <></>
                           )}
                         </div>
+                        
                       </CRXColumn>
                     )}
-                    {values.AuthServer == "Getac OpenId with AD" && (
+                    {values.AuthServer == "2" && (
                       <CRXColumn
                         className="stationDetailCol"
                         container="container"

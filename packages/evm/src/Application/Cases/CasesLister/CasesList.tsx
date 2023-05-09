@@ -31,29 +31,32 @@ import './casesList.scss';
 // import './responsive.scss';
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
-import { CaseTemplate,DateTimeProps } from '../CaseTypes';
+import { TCaseTemplate, DateTimeProps } from '../CaseTypes';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemplatesReducer';
+// import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import anchorDisplay from '../../../utils/AnchorDisplay';
 
 const CasesList=()=>{
+  
+  // const { getModuleIds} = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [rows, setRows] = React.useState<CaseTemplate[]>([]);
+  const [rows, setRows] = React.useState<TCaseTemplate[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
-  const [orderBy, setOrderBy] = React.useState<string>('Name');
-  const [order, setOrder] = React.useState<Order>('asc');
+  const [orderBy, setOrderBy] = React.useState<string>('LastUpdatedOn');
+  const [order, setOrder] = React.useState<Order>('desc');
   const toasterRef = useRef<typeof CRXToaster>(null);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
-  const [selectedActionRow, setSelectedActionRow] = React.useState<CaseTemplate>();
-  const [selectedItems, setSelectedItems] = React.useState<CaseTemplate[]>([]);
+  const [selectedActionRow, setSelectedActionRow] = React.useState<TCaseTemplate>();
+  const [selectedItems, setSelectedItems] = React.useState<TCaseTemplate[]>([]);
   const cases: any = useSelector((state: RootState) => state.caseReducer.cases);
   //const [cases, setCases] = React.useState<CaseTemplate[]>([]);
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-  const [reformattedRows, setReformattedRows] = React.useState<CaseTemplate[]>();
+  const [reformattedRows, setReformattedRows] = React.useState<TCaseTemplate[]>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -78,17 +81,19 @@ const CasesList=()=>{
 
   const { t } = useTranslation<string>();
   const setData = () => {
-    let caseRows: CaseTemplate[] = [];
+    let caseRows: TCaseTemplate[] = [];
     if (cases != null && cases.data && cases.data.length > 0) {
       caseRows = cases.data.map((obj: any) => {
         return {
           id: obj.id,
-          caseSummary: obj.title,
-          prosecutor: '',//obj.prosecutor,
-          leadOfficer: obj.createdBy,
+          caseId: obj.title + "_" + obj.id,
+          caseSummary: obj.description != null? obj.description.plainText:'',          
+          caseLead: obj.userName,                  
           createdOn:   moment(new Date(obj.history.createdOn)).local().format("YYYY / MM / DD HH:mm:ss"),//,new Date(obj.history.createdOn).toLocaleDateString("en-US"),
           state: obj.stateName,
-          status: obj.statusName
+          status: obj.statusName,
+          updatedOn: obj.history.modifiedOn != null ? moment(new Date(obj.history.modifiedOn)).local().format("YYYY / MM / DD HH:mm:ss") : '',
+          userId: obj.userId,
         };
       });
     }
@@ -97,15 +102,12 @@ const CasesList=()=>{
   };
 
   useEffect(() => {
-    //dispatch(getCasesAsync(pageiGrid));
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'caseDataTable');
-    dispatch(getConfigurationTemplatesAsync());
   }, []);
 
   useEffect(() => {
-    //dataArrayBuilder();
     console.log("searchData", searchData)
     if(searchData.length > 0)
       setIsSearchable(true)
@@ -119,26 +121,7 @@ const CasesList=()=>{
     if (paging)
     {    
       dispatch(getCasesInfoAsync(pageiGrid));
-      // setCases( [
-      //       {
-      //         id:'1',
-      //         caseSummary:'caseSummary1',
-      //         prosecutor:'prosecutor1',
-      //         leadOfficer:'leadOfficer1',
-      //         createdOn: 'createdOn1',
-      //         state:'state1',
-      //         status:'status1'
-      //       },
-      //       {
-      //         id:'2',
-      //         caseSummary:'caseSummary2',
-      //         prosecutor:'prosecutor2',
-      //         leadOfficer:'leadOfficer2',
-      //         createdOn: 'createdOn2',
-      //         state:'state2',
-      //         status:'status2'
-      //         }
-      //       ])
+      
     }
     setPaging(false)
   }, [pageiGrid]);
@@ -170,7 +153,7 @@ const CasesList=()=>{
     setPaging(true);
   }, [page, rowsPerPage])
   
-  const searchText = (rowsParam: CaseTemplate[],headCells: HeadCellProps[], colIdx: number) => {
+  const searchText = (rowsParam: TCaseTemplate[],headCells: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
       headCells[colIdx].headerArray = valuesObject;
       onSelection(valuesObject, colIdx);
@@ -211,67 +194,42 @@ const CasesList=()=>{
       width: '80'
     },
     {
+      label: t('Case_ID'),
+      id: 'caseId',
+      align: 'left',     
+      
+      dataComponent: (e: string) => AnchorDisplay(e),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: '200',
+      attributeName: "Title",
+      attributeType: "String",
+      attributeOperator: "contains"
+    },
+    {
       label: t('Case_Summary'),
       id: 'caseSummary',
-      align: 'left',      
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '200',
-      attributeName: "CaseSummary",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: t('Prosecutor'),
-      id: 'prosecutor',
       align: 'left',
       dataComponent: (e: string) => textDisplay(e, ''),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '200',
-      attributeName: "Prosecutor",
+      attributeName: "Description.PlainText",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: t('Lead_Officer'),
-      id: 'leadOfficer',
+      label: t('Case_Lead'),
+      id: 'caseLead',
       align: 'left',
       dataComponent: (e: string) => textDisplay(e, ''),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '200',
-      attributeName: "LeadOfficer",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: t('Created_On'),
-      id: 'createdOn',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '220',
-      attributeName: "CreatedOn",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: t('State'),
-      id: 'state',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '150',
-      attributeName: "State",
+      attributeName: "UserName",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -284,10 +242,39 @@ const CasesList=()=>{
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '150',
-      attributeName: "Status",
+      attributeName: "StatusName",
       attributeType: "String",
       attributeOperator: "contains"
-    }
+    },
+    {
+      label: t('Created_On'),
+      id: 'createdOn',
+      align: 'left',
+      
+      dataComponent: (e: string) => textDisplay(e, ''),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: '220',
+      attributeName: "History.CreatedOn",
+      attributeType: "String",
+      attributeOperator: "contains"
+    },
+    {
+      label: t('Updated_On'),
+      id: 'updatedOn',
+      align: 'left',
+          
+      dataComponent: (e: string) => textDisplay(e, ''),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: '150',
+      attributeName: "History.ModifiedOn",
+      attributeType: "String",
+      attributeOperator: "contains"
+    },
+    
   ]);
   const getFilteredCaseData = () => {
 
@@ -364,11 +351,21 @@ const CasesList=()=>{
     dispatch(getCasesInfoAsync(pageiGrid));
   };
 
-
+  const AnchorDisplay = (e: string) => {
+    // if(getModuleIds().includes(0)) {
+    return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.editCase)[0].url)
+    // }
+    // else{
+    // let lastid = e.lastIndexOf("_");
+    // let text =  e.substring(0,lastid)
+    // return textDisplay(text,"")
+    // }
+  }
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className='crxManageCases crxCaseData  switchLeftComponents' onKeyDown={handleKeyDown}>
+    <div className='crxManageCases crxCaseData  switchLeftComponents' onKeyDown={handleKeyDown} 
+        onBlur={handleBlur}>
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -376,6 +373,7 @@ const CasesList=()=>{
           actionComponent={
             <CasesActionMenu
               row={selectedActionRow}
+              hasEditMenu={true}
               showToastMsg={(obj: any) => showToastMsg(obj)}
             />
           }
@@ -386,7 +384,7 @@ const CasesList=()=>{
               </CRXButton>
             </>
           }
-          getRowOnActionClick={(val: CaseTemplate) => setSelectedActionRow(val)}
+          getRowOnActionClick={(val: TCaseTemplate) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
           headCells={headCells}
@@ -397,7 +395,7 @@ const CasesList=()=>{
           allowDragableToList={false}
           className='ManageAssetDataTable crxCaseDataTable'
           onClearAll={clearAll}
-          getSelectedItems={(v: CaseTemplate[]) => setSelectedItems(v)}
+          getSelectedItems={(v: TCaseTemplate[]) => setSelectedItems(v)}
           onResizeRow={resizeRowCase}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}

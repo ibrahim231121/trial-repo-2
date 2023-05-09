@@ -362,7 +362,7 @@ const AdvancedSearch: React.FC<Props> = ({
           <i className="fa fa-plus"></i>{" "}
           <span className="btn-text">{t("Add_search_criteria")} </span>
         </button>
-        <button
+        {/* <button
           className="resetAdvancedSearchBtn"
           type="button"
           disabled={showSearchCriteria ? false : true}
@@ -370,7 +370,7 @@ const AdvancedSearch: React.FC<Props> = ({
           <span className="btn-text" onClick={() => reset()}>
           {t("Reset_advanced_search")}
           </span>
-        </button>
+        </button> */}
       </div>
       <CRXButton
         color="primary"

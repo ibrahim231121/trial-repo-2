@@ -32,7 +32,7 @@ export const getAllRetentionPoliciesInfoAsync: any = createAsyncThunk(
 export const getAllRetentionPolicies: any = createAsyncThunk(
     'getAllRetentionPolicies',
     async () => {
-        return SetupConfigurationAgent.getAllPoliciesByType('DataRetention')
+        return SetupConfigurationAgent.getAllPoliciesByType('DataRetention?Page=1&Size=1000')
             .then((response: any) => response)
             .catch((error: any) => {
                 console.error(error.response.data);
@@ -43,7 +43,7 @@ export const getAllRetentionPolicies: any = createAsyncThunk(
 export const getAllUploadPolicies: any = createAsyncThunk(
     'getAllUploadPolicies',
     async () => {
-        return SetupConfigurationAgent.getAllPoliciesByType('DataUpload')
+        return SetupConfigurationAgent.getAllPoliciesByType('DataUpload?Page=1&Size=1000')
             .then((response: any) => response)
             .catch((error: any) => {
                 console.error(error.response.data);

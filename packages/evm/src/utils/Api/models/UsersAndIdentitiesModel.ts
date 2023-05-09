@@ -18,9 +18,35 @@ export interface UserGroups {
     groupSubModules:GroupSubModules[],
     history?:History,
     id:string,
-    members:Members, //to be confirmed by backend
+    members:Members,
+    name:string
+    selfPermission? : number;
+}
+
+export interface ADGroups {
+    GuidIdentifier:boolean,
+    uniqueId:string,
+    Status:boolean,
+    history?:History,
+    id:number,
+    PdRecId:Number,
     name:string
 
+}
+export type AddGroup = {
+    id:number,
+    rowId : number,
+    adGroupRecId: number,
+    adGroupObj?: KeyValue,
+    groupRecIds: number [],
+    groupObj?: KeyValue[],
+    isChanged : boolean,
+    isDeleted : boolean,
+    serverType : number
+}
+export type KeyValue = {
+    value: string;
+    label: string;
 }
 export interface Members{
     users: MemberId[]

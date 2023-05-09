@@ -243,7 +243,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               : "center"
           }
         >
-          
+
           <div
             className={classes.headerCellDiv + " crxTableHeaderSize getWidth"}
             id={headCells[colIdx].id}
@@ -312,18 +312,18 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 onStop={() => {
                   const memo: any = {};
                   for (i = 0; i < clientWidth.length; i++) {
-                    if (clientWidth[colIdx + 2] in memo)
-                      return clientWidth[colIdx + 2].id;
-                    if (clientWidth[colIdx + 2].id == headCells[colIdx].id) {
-                      memo[clientWidth[colIdx + 2]] =
-                        clientWidth[colIdx + 2].id;
+                    if (clientWidth[colIdx] in memo)
+                      return clientWidth[colIdx].id;
+                    if (clientWidth[colIdx].id == headCells[colIdx].id) {
+                      memo[clientWidth[colIdx]] =
+                        clientWidth[colIdx].id;
 
                       headCells[colIdx].width =
                         resizeWidth.deltaX +
-                          clientWidth[colIdx + 2].clientWidth >
+                          clientWidth[colIdx].clientWidth >
                         (headCells[colIdx]?.minWidth || 125)
                           ? resizeWidth.deltaX +
-                            clientWidth[colIdx + 2].clientWidth
+                            clientWidth[colIdx].clientWidth
                           : headCells[colIdx].minWidth;
                     }
                   }

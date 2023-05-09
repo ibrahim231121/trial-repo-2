@@ -10,7 +10,10 @@ import { filterCategory } from './Utility/UtilityFunctions';
 import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import usePrevious from './Utility/usePrev';
-import { FormContainerProps, SelectedCategoryModel } from './Model/FormContainerModel';
+import { CategoryRemovalType, FormContainerProps, SelectedCategoryModel } from './Model/FormContainerModel';
+import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
+import { setLoaderValue } from '../../../../Redux/loaderSlice';
 
 const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [openModal, setOpenModal] = React.useState(false);
@@ -18,37 +21,32 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [activeForm, setActiveForm] = React.useState<number>(0);
   const [selectedCategoryValues, setSelectedCategoryValues] = React.useState<Array<SelectedCategoryModel>>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
-  const [differenceOfHours, setDifferenceOfHours] = React.useState<number>(0);
+  const [differenceOfRetentionTime, setDifferenceOfRetentionTime] = React.useState<string>('');
   const [modalTitle, setModalTitle] = React.useState('');
   const [removeClassName, setremoveClassName] = React.useState('');
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
-  const [removalType, setRemovalType] = React.useState(0);
+  const [removalType, setRemovalType] = React.useState<CategoryRemovalType>(CategoryRemovalType.NotEffectingRetentionRemoval);
   const [removeMessage, setRemoveMessage] = React.useState<string>('');
   const [holdUntill, setHoldUntill] = React.useState<string>('');
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
   const [evidenceResponse, setEvidenceResponse] = React.useState<Evidence>();
   const [previousValueState, setPreviousValueState] = React.useState(0);
+  const [isMultiSelectAssetHaveSameCategory, setIsMultiSelectAssetHaveSameCategory] = React.useState(false);
   const prevActiveForm = usePrevious(activeForm);
-
+  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const dispatch = useDispatch();
   React.useEffect(() => {
-    if (previousValueState !== prevActiveForm) {
+    if (previousValueState !== prevActiveForm)
       setPreviousValueState(prevActiveForm)
-    }
   }, [activeForm]);
 
   React.useEffect(() => {
-    if (props.openForm == true) {
+    if (props.openForm) {
+      if (props.evidenceId && props.selectedItems.length <= 1)
+        evidenceApiCall(props.evidenceId);
+      else
+        setIsMultiSelectAssetHaveSameCategory(InMultiSelectCaseAssetsHaveSameCategories());
       setOpenModal(true);
-      if (props.evidenceId) {
-        const evidenceId = props.evidenceId;
-        EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
-          setSelectedCategoryValues(filterCategory(response.categories));
-          setEvidenceResponse(response);
-        })
-          .catch((err: any) => {
-            console.error(err);
-          });
-      }
       setActiveForm(0);
     }
   }, [props.openForm]);
@@ -56,23 +54,19 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     if (IsformUpdated) {
       setActiveForm(2);
-      if (activeForm === 2) {
+      if (activeForm === 2)
         closeAndResetModal();
-      }
       return;
     }
 
     const newValue = []
-      .filter((o: any) => {
-        return o.id === removedOption.id;
-      })
+      .filter((o: any) => o.id === removedOption.id)
       .map((i: any) => {
         return {
           id: i.id,
           label: i.name
         };
       })[0];
-
     if (newValue) {
       setSelectedCategoryValues((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
       setRemovedOption({});
@@ -84,6 +78,35 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
     setOpenModal(false);
     setActiveForm(0);
     props.setOpenForm();
+  }
+
+  const evidenceApiCall = (evidenceId: number) => {
+    dispatch(setLoaderValue({ isLoading: true }));
+    EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
+      setSelectedCategoryValues(filterCategory(response.categories));
+      setEvidenceResponse(response);
+      dispatch(setLoaderValue({ isLoading: false }));
+    })
+      .catch((err: any) => {
+        dispatch(setLoaderValue({ isLoading: false, error: true }));
+        console.error(err);
+      });
+  }
+
+  const InMultiSelectCaseAssetsHaveSameCategories = (): boolean => {
+    const assetCategories = props.selectedItems.map(asset => asset.evidence.categories ?? []).sort();
+    const isArrayEqual = assetCategories.every((val, i, arr) => val.length === arr[0].length);
+    if (isArrayEqual) {
+      const isAllElementSame = assetCategories.every((array) => _.isEqual([...array].sort(), [...assetCategories[0]].sort()));
+      if (isAllElementSame) {
+        const flattenedAssetCategories = _.flatten(assetCategories);
+        const requiredCategories = categoryOptions.filter((o: any) => flattenedAssetCategories.some((i) => i === o.name));
+        setSelectedCategoryValues(filterCategory(requiredCategories));
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 
   const handleActiveForm = (step: number) => {
@@ -104,6 +127,8 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setModalTitle={(i: any) => setModalTitle(i)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
+            isMultiSelectAssetHaveSameCategory={isMultiSelectAssetHaveSameCategory}
+            selectedItems={props.selectedItems}
           />
         );
       case 1:
@@ -124,7 +149,10 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setshowSSticky={(a: any) => setshowSSticky(a)}
             categorizedBy={props.categorizedBy}
             isCategorizedBy={props.isCategorizedBy}
-
+            setRemovalType={(e: CategoryRemovalType) => setRemovalType(e)}
+            isMultiSelectAssetHaveSameCategory={isMultiSelectAssetHaveSameCategory}
+            selectedItems={props.selectedItems}
+            setSelectedItems={props.setSelectedItems}
           />
         );
       case 2:
@@ -156,13 +184,14 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removedOption={removedOption}
             evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            setDifferenceOfHours={(v: number) => setDifferenceOfHours(v)}
+            setDifferenceOfRetentionTime={(v: string) => setDifferenceOfRetentionTime(v)}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
-            setRemovalType={(e: number) => setRemovalType(e)}
+            setRemovalType={(e: CategoryRemovalType) => setRemovalType(e)}
             setRemoveMessage={(e: string) => setRemoveMessage(e)}
             setHoldUntill={(e: string) => setHoldUntill(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
+            selectedItems={props.selectedItems}
           />
         );
       case 4:
@@ -176,7 +205,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removedOption={removedOption}
             evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            differenceOfHours={differenceOfHours}
+            differenceOfRetentionTime={differenceOfRetentionTime}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
             removalType={removalType}
@@ -184,6 +213,8 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             holdUntill={holdUntill}
             categorizedBy={props.categorizedBy}
             isCategorizedBy={props.isCategorizedBy}
+            selectedItems={props.selectedItems}
+            setSelectedItems={props.setSelectedItems}
           />
         );
       case 5:
@@ -198,7 +229,11 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             categorizedBy={props.categorizedBy}
             isCategorizedBy={props.isCategorizedBy}
-            
+            removalType={removalType}
+            selectedCategoryValues={selectedCategoryValues}
+            isCategoryEmpty={props.isCategoryEmpty}
+            selectedItems={props.selectedItems}
+            setSelectedItems={props.setSelectedItems}
           />
         );
     }

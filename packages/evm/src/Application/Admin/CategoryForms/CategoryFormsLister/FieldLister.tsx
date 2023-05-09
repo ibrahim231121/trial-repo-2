@@ -228,7 +228,8 @@ useEffect(() => {
 
       return (
         <CBXMultiCheckBoxDataFilter 
-            width = {357} 
+            width = {100}
+            percentage={true} 
             option={options} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -267,10 +268,8 @@ useEffect(() => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "370",
-      maxWidth: "400",
-      attributeName: "DisplayName",
+      minWidth: "310",
+      attributeName: "caption",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -282,7 +281,7 @@ useEffect(() => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
+      minWidth: "299",
       width: "400",
       maxWidth: "400",
       attributeName: "Name",
@@ -302,20 +301,20 @@ useEffect(() => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
-      minWidth: "357",
+      minWidth: "250",
       attributeName: "ControlType",
       attributeType: "List",
       attributeOperator: "contains"
     },
     {
-      label: `${t("required")}`,
+      label: `${t("Form_Field_Requirement")}`,
       id: "isRequired",
       align: "left",
       sort: false,
       searchFilter: false,
       dataComponent: (e: string) => textDisplay(e, " "),
       searchComponent: () => null,
-      minWidth: "100",
+      minWidth: "200",
       maxWidth: "800"
     }
   ]);
@@ -388,7 +387,7 @@ useEffect(() => {
       <div className="categories">
         <CRXModalDialog
           maxWidth="gl"
-          title="Add exisiting form fields"
+          title="Add Exisiting Form Fields"
           className="add_exisiting_form_modal"
           modelOpen={openModal}
           onClose={closeDialog}

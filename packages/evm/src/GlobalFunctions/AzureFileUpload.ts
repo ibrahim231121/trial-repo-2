@@ -39,7 +39,7 @@ const uploadFiles = async (file: any, onRecvData: any, resolve: any, reject: any
 
     const blockBlobInfo = await getBlockBlobInfo(file.uploadUri);
     const blockBlobClient = blockBlobInfo.blockBlobClient;
-    const fileName = blockBlobInfo.fileName;
+    const fileName = file.uploadedFileName;
 
     window.tasks[fileName] = {}
     window.tasks[fileName].abortSignal = new AbortController(allTasksController.signal);
@@ -66,37 +66,6 @@ const uploadFiles = async (file: any, onRecvData: any, resolve: any, reject: any
     await uploadStageBlock(usb, onRecvData)
 };
 
-const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
-
-    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
-    var index = uploadItem.findIndex((x: any) => x.fileName == usb.fileName);
-
-    var selectedItem = {
-        fileName: usb.fileName,
-        blockIds: window.tasks[usb.fileName].blockIds,
-        //abortSignal: Object.assign({}, window.tasks[usb.fileName].abortSignal),
-        file: {
-            duration: usb.file.duration,
-            uploadUri: usb.file.uploadUri,
-            uploadedFileId: usb.file.uploadedFileId,
-            uploadedFileName: usb.file.uploadedFileName,
-            url: usb.file.url,
-            lastModified: usb.file.lastModified,
-            lastModifiedDate: usb.file.lastModifiedDate,
-            name: usb.file.name,
-            size: usb.file.size,
-            type: usb.file.type,
-            state: "Uploaded",
-        }
-    };
-    if (index == -1)
-        uploadItem.push(selectedItem);
-    else
-        uploadItem[index] = selectedItem;
-
-    localStorage.setItem("uploadedFiles", JSON.stringify(uploadItem));
-}
-
 const uploadStageBlock = async (usb: UploadStageBlockInfo,  onRecvData: any) => {
     if (usb.remainingBytes == 0) {
         const blockBlobCommitBlockListOptions: BlockBlobCommitBlockListOptions = {
@@ -114,10 +83,10 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo,  onRecvData: any) => 
                           value: "Uploaded",
                         }
                     ];
-                      const url:any =  `/Files/` + usb.file.uploadedFileId;
+                      const url:any =  `/Files/${usb.file.uploadedFileId}/${usb.file.accessCode}`;
                       FileAgent.changeFileUploadStatus(url, body).then((resp) => {
-                        updateStatus(usb.file.uploadedFileId,true)
-                          saveFileToLocalStorage(usb);
+                        updateStatus(usb.file.uploadedFileId,usb.file.accessCode,true)
+                        
                       });
                     
                 }

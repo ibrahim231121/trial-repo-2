@@ -13,7 +13,7 @@ import { setTimeout } from "timers";
 import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
-import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
+import { AssetLogType, TimelinesSync } from "../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent, SetupConfigurationAgent } from "../../utils/Api/ApiAgent";
 import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
@@ -32,6 +32,8 @@ import jwt_decode from "jwt-decode";
 import Cookies from "universal-cookie";
 import "./overRide_video_player_style.scss"
 import { urlList, urlNames } from "../../utils/urlList";
+import { addAssetLog } from "../../Redux/AssetLogReducer";
+import { setAssetDetailBottomTabs } from "../../Redux/VideoPlayerSettingsReducer";
 
 type Timeline = {
   assetName: string;
@@ -409,7 +411,7 @@ const VideoPlayerBase = (props: any) => {
     },
   ];
 
-
+  const assetLog : AssetLogType = { evidenceId : props.evidenceId, assetId : props.data[0].id, action : "Update", notes : ""};
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const isGuestView : boolean = props.guestView;
@@ -505,7 +507,7 @@ const VideoPlayerBase = (props: any) => {
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
   const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
-  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(!isGuestView ? true : false);
+  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(false);
   const [reasons, setReasons] = React.useState<any[]>([]);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
@@ -531,10 +533,15 @@ const VideoPlayerBase = (props: any) => {
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const addingSnapshot = useRef(false);
- const [showControlConatiner , setShowControlConatiner] = useState(false);
- const [isMute, setIsMute] = useState(false);
- const [screenChangeVideoId, setscreenChangeVideoId] = useState<any>();
-
+ const [seeMoreClass, setSeeMoreClass] = useState<string>("MultiBottomSeeMore");
+ const [containerHeightFlex,setContainerHeightFlex] = useState<string>("")
+  const [showControlConatiner , setShowControlConatiner] = useState(false);
+  const [isMute, setIsMute] = useState(false);
+  const [screenChangeVideoId, setscreenChangeVideoId] = useState<any>();
+  const assetViewed = useRef(false);
+  const layoutRef = useRef(null);
+  const settingRef = useRef(null);
+  let htmlElement: any = document.querySelector("html");
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
     if(!(openBookmarkForm || openNoteForm || reasonForViewing))
@@ -589,6 +596,17 @@ const VideoPlayerBase = (props: any) => {
       vid.removeEventListener("seeked", function () {});
     }
   }, [fps]);
+
+  React.useEffect(() => {
+     htmlElement.style.overflow = "hidden";
+  },[])
+
+  if (window.performance) {
+    if (performance.getEntriesByType("navigation")) {
+        htmlElement.style.overflow = "hidden";
+    }
+  }
+
 
   React.useEffect(() => {  // On Edit bookmark note popup stop playing
     if(isEditBookmarkNotePopup && isPlaying){
@@ -811,13 +829,17 @@ const VideoPlayerBase = (props: any) => {
   }, [bookmarkNotePopupArrObj]);
 
   React.useEffect(() => { // work Asset View Reason
-    if(assetViewReasonRequiredGet && CheckAssetViewReason()){
-      setViewReasonControlsDisabled(false);
-      setViewReasonRequired(false);
+    if(!isGuestView)
+    {
+      if(assetViewReasonRequiredGet && CheckAssetViewReason()){
+        setViewReasonControlsDisabled(false);
+        setViewReasonRequired(false);
+      }
     }
   }, [assetViewReasonRequiredGet]);
 
   React.useEffect(() => {
+    if(!isGuestView){
       SetupConfigurationAgent.getTenantSetting()
           .then((response : any) =>
           {
@@ -829,6 +851,7 @@ const VideoPlayerBase = (props: any) => {
                   let obj = settingEntries.find(x => x.key === "AssetViewReasonRequired");
                   let Reasons = settingEntries.find(x => x.key === "Reasons");
                   if(obj && obj.value == "true"){
+                    setViewReasonRequired(true);
                     setAssetViewReasonRequiredGet(true);
                     if(Reasons && Reasons.value.length >0){
                       setReasons(Reasons.value.split(","));
@@ -846,6 +869,7 @@ const VideoPlayerBase = (props: any) => {
             setViewReasonRequired(false);
             console.error(error.response.data);
           });
+        }
   }, []);
 
   const handleVoumeClick = () => {
@@ -854,6 +878,18 @@ const VideoPlayerBase = (props: any) => {
     if (volume == 0 && isMute) {
       setVolume(50);
       setVolumeHandle(50);
+    }
+
+    if(isMute)
+    {
+      assetLog.assetId = props.data[0].id;
+      assetLog.notes = "Volume UnMuted";
+      dispatch(addAssetLog(assetLog));
+    }
+    else{
+      assetLog.assetId = props.data[0].id;
+      assetLog.notes = "Volume Muted";
+      dispatch(addAssetLog(assetLog));
     }
   }
 
@@ -995,6 +1031,9 @@ const VideoPlayerBase = (props: any) => {
       hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
     if(timer > 0){
+      assetLog.assetId = props.data[0].id;
+      assetLog.notes = "Back Frame By Frame";
+      dispatch(addAssetLog(assetLog))
       handleControlBarChange(null, timer - (1/fps));
     }
     setFrameReverse(true);
@@ -1014,6 +1053,9 @@ const VideoPlayerBase = (props: any) => {
       hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
     if(timer < timelineduration){
+      assetLog.assetId = props.data[0].id;
+      assetLog.notes = "Forward Frame By Frame";
+      dispatch(addAssetLog(assetLog));
       handleControlBarChange(null, timer + (1/fps));
     }
     setFrameForward(true);
@@ -1331,11 +1373,17 @@ const VideoPlayerBase = (props: any) => {
   const viewScreenEnter = () => {
     handleScreenView.enter();
     setViewScreen(false);
+    assetLog.assetId = props.data[0].id;
+    assetLog.notes = "Enter Full Screen Mode";
+    dispatch(addAssetLog(assetLog));
   }
 
   const viewScreenExit = () => {
     handleScreenView.exit();
     setViewScreen(true);
+    assetLog.assetId = props.data[0].id;
+    assetLog.notes = "Exit Full Screen Mode";
+    dispatch(addAssetLog(assetLog));
   }
 
   const handleScreenShow = () => {
@@ -1540,9 +1588,15 @@ const VideoPlayerBase = (props: any) => {
       if (Currmode >= 6) {
         switch (CaseNo) {
           case 1: //Forward
+            assetLog.assetId = props.data[0].id;
+            assetLog.notes = "Fast Forward";
+            dispatch(addAssetLog(assetLog));
             setismodeFwdisable(true);
             break;
           case 2: //Rewind
+            assetLog.assetId = props.data[0].id;
+            assetLog.notes = "Fast Rewind";
+            dispatch(addAssetLog(assetLog));
             setisModeRwdisable(true);
             break;
           default:
@@ -1938,7 +1992,7 @@ const VideoPlayerBase = (props: any) => {
     // Speed in milliseconds or null to stop it
     isBookmarkNotePopup ? 5000 : null,
   );
-  const [minWidth, setMinWidth] = useState<string | number>("1920");
+  const [minWidth, setMinWidth] = useState<any>("1920");
   const [isShowPanel, setIsShowPanel] = useState<boolean>(false)
   const videoPlayerResponsiveRightButton = () => {
       const winWidth:string | number = window.innerWidth;
@@ -1971,23 +2025,56 @@ const VideoPlayerBase = (props: any) => {
   }
 
   useEffect(() => {
-    let layoutContent = document?.querySelector("._Player_Layout_Menu_");
-    let PlayerRight = document?.getElementById("crx_video_player");
-    if(layoutContent) {
-       PlayerRight?.appendChild(layoutContent)
-    }
+
+    let url = window.location.href;
+        let validString = url.split('/');
+        let guestView = false;
+        if(validString[4]) {
+            let validEndPoint = validString[4].split('?');
+            if(validEndPoint[0] == "SharedMedia")
+            {
+              guestView = true;
+            }
+        }
     if(multiTimelineEnabled) {
-      document.documentElement.style.overflow = "auto";
+      document.documentElement.style.overflow = guestView == true ? "scroll":"auto";
       document.documentElement.style.scrollBehavior = "smooth" ;
     } else {
-      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
       document.body.scrollTop = 0; 
       document.documentElement.scrollTop = 0;
     }
+    if(!multiTimelineEnabled) {
+      setSyncButton(false); 
+      setOpenTimelineSyncInstructions(false); 
+      setStartTimelineSync(false)
+    }
   },[multiTimelineEnabled,layoutMenuEnabled])
 
+useEffect(()=>{
+  const timelineElement: undefined | any = document.getElementById("timelines");
+  // const audioGraphElement: undefined | any = document.getElementById("_audio_graph_container");
+  if(multiTimelineEnabled && detailContent && !isAudioGraph ) {
+    timelineElement.style.display = "none";
+    setContainerHeightFlex("containerMultiHeightFlex")
+    setSeeMoreClass("MultiBottomSeeMore");
+  } else if( multiTimelineEnabled && !detailContent && !isAudioGraph ) {
+    timelineElement.style.display = "block";
+    setContainerHeightFlex("")
+    setSeeMoreClass("MultiBottomSeeLess");
+  } else if(multiTimelineEnabled && detailContent && isAudioGraph) {
+    timelineElement.style.display = "none";
+    setSeeMoreClass("MultiAudioBottomSeeMore");
+  } else {
+    timelineElement.style.display = "block";
+    setSeeMoreClass("MultiAudioBottomSeeLess");
+  }
+},[detailContent,isAudioGraph,multiTimelineEnabled])
+
   const gotoSeeMoreView = (e: any, targetId: any) => {
-    detailContent == false ? setDetailContent(true) : setDetailContent(false);
+    let detailContentTemp = detailContent == false ? true : false;
+    setDetailContent(detailContentTemp);
+    dispatch(setAssetDetailBottomTabs({assetDetailBottomTabs: detailContentTemp}))
     document.getElementById(targetId)?.scrollIntoView({
       behavior: 'smooth'
     });
@@ -1997,7 +2084,7 @@ const VideoPlayerBase = (props: any) => {
     const _video_player_screens: undefined | any = document.querySelector("#video-player-screens");
     const _videoPlayerId: undefined | any = document.querySelector("#crx_video_player");
     const _video_Multiview_Grid : undefined | any = document.querySelector("._Multiview_Grid")
-    if(targetId === "detail_view") {
+    if(targetId === "detail_view" && isAudioGraph == false  ) {
       
       MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
       MainLayoutElement.style.top = "115px";
@@ -2005,12 +2092,23 @@ const VideoPlayerBase = (props: any) => {
       _videoPlayerId.style.background = "#fff"
       _video_Multiview_Grid.style.background = "#fff"
       _video_player_screens.classList.add("removeEXHeight")
-    }else {
+    }
+    else if(targetId === "detail_view" && isAudioGraph == true ) {
+      MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
+      MainLayoutElement.style.top = "0px";
+      _video_player_main_containers.style.background = "#fff"
+      _videoPlayerId.style.background = "#fff"
+      _video_Multiview_Grid.style.background = "#fff"
+      _video_player_screens.classList.add("removeEXHeight")
+      _video_player_screens.classList.add("audioEnabled_seeLess")
+
+    } else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
       _videoPlayerId.style.background = "#000"
       _video_Multiview_Grid.style.background = "#000"
       MainLayoutElement.style.top = "-16px";
       _video_player_screens.classList.remove("removeEXHeight")
+      _video_player_screens.classList.remove("audioEnabled_seeLess")
     }
   }
 
@@ -2089,18 +2187,6 @@ const VideoPlayerBase = (props: any) => {
   },3000)
  
 
-useEffect(() => {
-    let ViewScreenMenuLayout = document?.querySelector(".ViewScreenMenu");
-    let SettingBackMenuLayout = document?.querySelector(".SettingBackMenu");   
-    let PlayerRightLayout = document?.getElementById("crx_video_player");
-    if(ViewScreenMenuLayout ) {
-      PlayerRightLayout?.appendChild(ViewScreenMenuLayout);
-    }
-    if(SettingBackMenuLayout) {
-      PlayerRightLayout?.appendChild(SettingBackMenuLayout);
-    }
-    
-  },[multiTimelineEnabled,settingMenuEnabled,overlayEnabled])
 
   const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
@@ -2113,6 +2199,9 @@ useEffect(() => {
     const pauseBtn = document.getElementById("_video_pause");
     const videoFrontLayer = document.getElementById("videoFrontLayer")
     if (isPlaying === true) {
+      assetLog.assetId = props.data[0].id;
+      assetLog.notes = "Video Played";
+      dispatch(addAssetLog(assetLog));
       playBtn?.classList.remove("zoomOut");
       playBtn?.classList.add("zoomIn");
       videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
@@ -2122,6 +2211,16 @@ useEffect(() => {
         videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
       }, 1200);
     } else {
+      if(assetViewed.current){
+        assetLog.assetId = props.data[0].id;
+        assetLog.notes = "Video Paused";
+        dispatch(addAssetLog(assetLog));
+      }else{
+        assetViewed.current = true
+        assetLog.assetId = props.data[0].id;
+        assetLog.notes = "Asset Viewed";
+        dispatch(addAssetLog(assetLog));
+      }
       pauseBtn?.classList.remove("zoomOut");
       pauseBtn?.classList.add("zoomIn");
       videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
@@ -2143,15 +2242,21 @@ useEffect(() => {
   }
  
   const [syncButton,setSyncButton] = useState(false);
+  
+useEffect(()=>{
+if(!ViewScreen) {
+  setMultiTimelineEnabled(false);
+}
+},[ViewScreen])
 
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}    >
 
-      <div className="searchComponents">
-        <div className="_video_player_container" id="_asset_detail_view_idx">
-        <div id="crx_video_player" >
+      <div className="searchComponents" >
+        <div className="_video_player_container" id="_asset_detail_view_idx" ref={layoutRef}>
+        <div id="crx_video_player"  ref={settingRef}>
         {viewReasonRequired && <VideoPlayerViewRequirement
         
         openViewRequirement={openViewRequirement}
@@ -2173,7 +2278,7 @@ useEffect(() => {
       
  
       <div className="searchComponents">
-        <div className="_video_player_container">
+        <div className={`_video_player_container _thumbnailPosition_audio${isAudioGraph}_multi${multiTimelineEnabled}_view${viewNumber}`}>
         <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
          
           <CRXToaster ref={toasterMsgRef} />
@@ -2228,6 +2333,7 @@ useEffect(() => {
                 ffScreenIcon = {fwfScreenIcon}
                 setscreenChangeVideoId={setscreenChangeVideoId}
                 isGuestView={isGuestView}
+                assetLog={assetLog}
               />
 
              
@@ -2327,7 +2433,7 @@ useEffect(() => {
                   </div>
                   
                 </div>
-              {isShowAudioGraph && <div className="_audio_graph_container">
+              {isShowAudioGraph && <div id="_audio_graph_container" className="_audio_graph_container">
               <div className={`dummy_audio_image animated ${isAudioGraph == true ? "slideInUp" : "slideOutDown"}`}>
                     <img src={AduioImage} />
                 </div>
@@ -2356,6 +2462,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Back frame by frame <i className="fal fa-long-arrow-left longArrowLeftUi"></i></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </CRXButton>
 
@@ -2365,6 +2472,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Rewind  <span className="RewindToolTip">Shift + [</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </CRXButton>
 
@@ -2374,6 +2482,7 @@ useEffect(() => {
                         placement="top"
                         title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Shift + Space</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </CRXButton>
                     <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn backwardRightBtn" disabled={ismodeFwdisable}>
@@ -2382,6 +2491,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Fast forward  <span className="RewindToolTip">Shift + ]</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </CRXButton>
                     <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" >
@@ -2397,9 +2507,10 @@ useEffect(() => {
                         placement="top"
                         title={<>Forward frame by frame <i className="fal fa-long-arrow-right longArrowLeftUi"></i></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </CRXButton>
-                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick}/>
+                    <VolumeControl  volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick} viewScreen={ViewScreen}/>
                 </div>
                 <div className="playerViewMiddle">
                   <div className="playBackMode">
@@ -2410,6 +2521,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </button>
                     <button className="MinusIconPosition" disabled={disabledModeMinus || viewReasonControlsDisabled} onClick={() => modeSet(0)}>
@@ -2418,6 +2530,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Normal speed <span className="normalSped">Shift + /</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </button>
                     <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight || viewReasonControlsDisabled} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
@@ -2427,6 +2540,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Playback speed up <span className="playBackTooltipUp">Shift + .</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       />
                     </button>
                   </div>
@@ -2438,6 +2552,7 @@ useEffect(() => {
                       placement="top"
                       title={<>{iconChanger ? "Collapse" : "Expand"} <span className="RewindToolTip">x</span></>}
                       arrow={false}
+                      disablePortal={!ViewScreen ? true : false}
                     />
                   </CRXButton>
                 </div>}
@@ -2452,6 +2567,7 @@ useEffect(() => {
                         placement="top"
                         title={<>Settings <span className="settingsTooltip">Shift + ALT + '</span></>}
                         arrow={false}
+                        disablePortal={!ViewScreen ? true : false}
                       /></div>
                     <VideoPlayerSettingMenu
                       timelinedetail={timelinedetail}
@@ -2473,6 +2589,7 @@ useEffect(() => {
                       setnotesEnabled={setnotesEnabled}
                       ViewScreen={ViewScreen}
                       isGuestView={isGuestView}
+                      settingRef={settingRef}
                     />
                   </div>
                   {!isGuestView && notesEnabled && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
@@ -2481,6 +2598,7 @@ useEffect(() => {
                       placement="top"
                       title={<>Notes <span className="notesTooltip">Shift + ALT + N</span></>}
                       arrow={false}
+                      disablePortal={!ViewScreen ? true : false}
                     />
                   </CRXButton>}
 
@@ -2490,6 +2608,7 @@ useEffect(() => {
                       placement="top"
                       title={<>Bookmarks  <span className="BookmarksTooltip">Shift + ALT + B</span></>}
                       arrow={false}
+                      disablePortal={!ViewScreen ? true : false}
                     />
                   </CRXButton>}
                   <div className="MenuListGrid">
@@ -2499,6 +2618,7 @@ useEffect(() => {
                           placement="top"
                           title={<>Layouts <span className="LayoutsTooltips">Shift + ALT + L</span></>}
                           arrow={false}
+                          disablePortal={!ViewScreen ? true : false}
                         />
                     </CRXButton>
                     <MaterialMenu
@@ -2507,6 +2627,7 @@ useEffect(() => {
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
+                     container={layoutRef.current}
                     >
 
                       <MaterialMenuItem className="layoutHeader">
@@ -2592,6 +2713,7 @@ useEffect(() => {
                           placement="top"
                           title={<>Full screen <span className="FullScreenTooltip">Shift + ALT + F</span></>}
                           arrow={false}
+                         disablePortal={!ViewScreen ? true : false}
                         />
                       </div> :
                       <div onClick={viewScreenExit}>
@@ -2600,6 +2722,7 @@ useEffect(() => {
                           placement="top"
                           title={<>Minimize screen <span className="FullScreenTooltip">ESC</span></>}
                           arrow={false}
+                          disablePortal={!ViewScreen ? true : false}
                         />
                       </div>}
                   </div>
@@ -2656,7 +2779,19 @@ useEffect(() => {
               </div>
               {!syncButton && (multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setSyncButton(true); setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i><span>Sync timeline start</span></button>)}
             </div>
-             
+            {multiTimelineEnabled == true ? 
+            <div className={`_bottom_arrow_seeMore ${seeMoreClass}_${viewNumber}`}>
+              {detailContent == false ?
+                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                    </button>
+                    :
+                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                    </button>
+                  }
+              </div>
+            : ""} 
            
           
           {openBookmarkForm && <VideoPlayerBookmark
@@ -2673,6 +2808,7 @@ useEffect(() => {
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
             addingSnapshot={addingSnapshot}
+            assetLog={assetLog}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
@@ -2686,6 +2822,7 @@ useEffect(() => {
             noteAssetId={noteAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
+            assetLog={assetLog}
           />}
 
           <TimelineSyncInstructionsModal
@@ -2707,7 +2844,9 @@ useEffect(() => {
                 EvidenceId={EvidenceId}
                 timelinedetail={timelinedetail}
                 toasterMsgRef={toasterMsgRef}
-                setIsEditBookmarkNotePopup={setIsEditBookmarkNotePopup} />
+                setIsEditBookmarkNotePopup={setIsEditBookmarkNotePopup}
+                assetLog={assetLog}
+                />
                 )
               }
             )}

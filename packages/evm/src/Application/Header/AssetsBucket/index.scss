@@ -1244,6 +1244,11 @@ body {
     .optionalSticky {
       height: 30px;
     }
+    .metaDataModalFooter {
+      .saveBtn {
+        margin-right: 32px;
+      }
+    }
   }
 }
 
@@ -1301,6 +1306,10 @@ body {
         color: var(--color-333333);
         font-family: var(--App-font-family);
         font-size: 14px;
+
+        .CRXPopupOuterDiv {
+          display:none;
+        }
       }
 
       .bucketListRec {
@@ -1463,5 +1472,45 @@ text-transform: lowercase;
         right: -9px;
       } 
   }
-
-  
+  .divBodyDrag {
+    .CRXAppBar{
+      &.dataTableStickyPos {
+        z-index: 3;
+      }
+    }
+    .AssetsDataGrid {
+      table {
+        thead {
+          z-index: 2;
+        }
+        tbody {
+          tr {
+            td {
+              &.DataTableBodyCell {
+                position: unset !important;
+                z-index: 1;
+              }
+            }
+          }
+        }
+      }
+      &::before {
+        background:var(--color-transparent);
+      }
+      &::after {
+        top: 168px;
+      }
+    }
+   
+    .dataTablePages {
+      z-index: 0;
+    }
+    .stickyPos {
+      z-index: 1;
+    }
+    .stickyBorder_Add{
+      .stickyPos {
+        z-index: 1;
+      }
+    }
+  }

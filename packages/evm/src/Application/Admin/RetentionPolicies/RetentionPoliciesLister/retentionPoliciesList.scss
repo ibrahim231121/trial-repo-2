@@ -44,7 +44,7 @@ iframe {
     padding: 0;
     margin-left: -3px;
   }
-  
+
   .RetentionFilterBtn {
     height: 30px;
     width: 108px;
@@ -101,7 +101,7 @@ iframe {
     }
   }
   tbody {
-    tr{
+    tr {
       &.Mui-selected {
         .dataTableText {
           color: var(--color-ff6e20) !important;
@@ -137,9 +137,7 @@ iframe {
     }
   }
 }
-.MuiMenu_Modal_Ui {
-  left: 1565px !important;
-}
+
 
 .SelectedActionMenu {
   background-color: #333333 !important;
@@ -147,18 +145,11 @@ iframe {
     button {
       color: #d1d2d4 !important;
     }
-    &::before {
-      background-color: #333333;
-      content: "";
-      width: 100%;
-      height: 100%;
-    }
   }
   td {
     .truncation_button {
       color: var(--color-d1d2d4);
     }
-  
   }
 }
 
@@ -174,4 +165,19 @@ iframe {
 
 .stickyTableHeader {
   visibility: collapse;
+}
+.rententionInfiniteTimeDate {
+  display: flex;
+  width: 100%;
+  .CRXLockTextIcon {
+    width: 95%;
+  }
+  .CRXLockIcon {
+    width: 5%;
+    .CRXLock {
+      &:hover {
+        color: var(--color-d1d2d4);
+      }
+    }
+  }
 }

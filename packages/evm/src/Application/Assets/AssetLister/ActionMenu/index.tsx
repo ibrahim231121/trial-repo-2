@@ -11,6 +11,7 @@ import FormContainer from "../Category/FormContainer";
 import {
   addAssetToBucketActionCreator,
   removeAssetFromBucketActionCreator,
+  updateAssetLockField,
 } from "../../../../Redux/AssetActionReducer";
 import AssignUser from "../AssignUser/AssignUser";
 import ManageRetention from "../ManageRetention/ManageRetention";
@@ -19,7 +20,6 @@ import { RootState } from "../../../../Redux/rootReducer";
 import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import { AxiosError, AxiosResponse } from "axios";
-import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
 import { useHistory } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
@@ -29,6 +29,7 @@ import {
   AssetBucket,
   AssetLockUnLockErrorType,
   LockUnlockAsset,
+  ObjectToUpdateAssetBucket,
 } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
@@ -38,12 +39,13 @@ import jwt_decode from "jwt-decode";
 import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 import {
+  Asset,
   AssetAction,
   AssetRestriction,
   Evidence,
   EvidenceChildSharingModel,
   MetadataFileType,
-  PersmissionModel, 
+  PersmissionModel,
   securityDescriptorType,
 } from "../../../../utils/Api/models/EvidenceModels";
 import { getAssetTrailInfoAsync } from "../../../../Redux/AssetDetailsReducer";
@@ -54,6 +56,13 @@ import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetention
 import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
 import { clearAddGroupedSelectedAssetsActions, clearAllGroupedSelectedAssetsActions } from "../../../../Redux/groupedSelectedAssetsActions";
 import AssetLinkConfirm from "../AssetLinkConfirm/AssetLinkConfirm";
+import { clearAddGroupedSelectedAssets, clearAllGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import { REDIRECT_URL_AICOORDINATOR, FILE_SERVICE_URL_V2 } from "../../../../utils/Api/url";
+import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
+import { AssetStatus } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { ActionMenuRestrictActionOccured } from "../../../../Redux/ActionMenuEffectReducer";
+import AssignToCase from "../AssignToCase/AssignToCase";
 
 type Props = {
   row: any;
@@ -75,6 +84,8 @@ type AssetLink = {
   assetName?: string,
   assetType?: any,
   fileType?: any,
+  expireOn?: any,
+  holduntil?: any,
 };
 
 type MasterAssetEvidence = {
@@ -83,6 +94,8 @@ type MasterAssetEvidence = {
   assetName?: string,
   assetType?: any,
   fileType?: any,
+  expireOn?: any,
+  holduntil?: any,
 };
 
 const downloadExeFileByFileResponse = (
@@ -129,52 +142,46 @@ const ActionMenu: React.FC<Props> = React.memo(
     const groupedSelectedAssetsActions: any = useSelector(
       (state: RootState) => state.groupedSelectedAssetsActionsReducer.groupedSelectedAssetsActions
     );
-    const [multiAssetDisabled, setMultiAssetDisabled] =
-      React.useState<boolean>(false);
-    const [isCategoryEmpty, setIsCategoryEmpty] =
-      React.useState<boolean>(false);
+    const [multiAssetDisabled, setMultiAssetDisabled] = React.useState<boolean>(false);
+    const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(false);
     const [isLockedAccess, setIsLockedAccess] = React.useState<boolean>(false);
     const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
     const [openForm, setOpenForm] = React.useState(false);
     const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
     const [isAssetLinkConfirm, setIsAssetLinkConfirm] = React.useState<boolean>(false);
-
+    const [isMetadataOnly, setIsMetadataOnly] = React.useState<boolean>(false);
+    const [isRetry, setIsRetry] = React.useState<boolean>(false);
     const [assetlinks, setAssetLinks] = React.useState<AssetLink[]>([]);
-
-    const [assetLockUnLockError, setAssetLockUnLockError] =
-      React.useState<AssetLockUnLockErrorType>({
+    const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>
+      ({
         isError: false,
         errorMessage: "",
       });
-    const { AssignedGroups, UserId, AssignedModules }: IDecoded = jwt_decode(
-      cookies.get("access_token")
-    );
-    const [securityDescriptorsArray, setSecurityDescriptorsArray] =
-      React.useState<Array<SearchModel.SecurityDescriptor>>([]);
+    const { UserId, AssignedModules }: IDecoded = jwt_decode(cookies.get("access_token"));
+    const { getGroupIds } = React.useContext(ApplicationPermissionContext);
+    const [securityDescriptorsArray, setSecurityDescriptorsArray] = React.useState<Array<SearchModel.SecurityDescriptor>>([]);
     const [openAssignUser, setOpenAssignUser] = React.useState(false);
     const [openManageRetention, setOpenManageRetention] = React.useState(false);
     const [openAssetShare, setOpenAssetShare] = React.useState(false);
     const [openAssetLink, setOpenAssetLink] = React.useState(false);
-
+    const [openAssetMove, setOpenAssetMove] = React.useState(false);
     const [openAssetAction, setOpenAssetAction] = React.useState<AssetAction[]>([]);
-
     const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
-    const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] =
-      React.useState(false);
-    const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] =
-      React.useState(false);
+    const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
+    const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
     const [filterValue, setFilterValue] = React.useState<any>([]);
     const [IsformUpdated, setIsformUpdated] = React.useState(false);
     const [selectedMaster, setSelectedMaster] = React.useState<MasterAssetEvidence[]>();
 
     const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
-    const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] =
-      React.useState(false);
-
+    const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] = React.useState(false);
     const [isAssetLinkedOrMoved, setisAssetLinkedOrMoved] = React.useState<string>("");
+    const [isSubmittedForRedaction, setIsSubmittedForRedaction] = React.useState<boolean>(false)
+    const [openAssignToCase, setOpenAssignToCase] = React.useState<boolean>(false);
     React.useEffect(() => {
-    }, [groupedSelectedAssetsActions])
+    }, [groupedSelectedAssetsActions]);
+
     React.useEffect(() => {
       if (row == undefined && selectedItems != null) {
         let masterIds: MasterAssetEvidence[] = [];
@@ -185,11 +192,23 @@ const ActionMenu: React.FC<Props> = React.memo(
             assetName: obj.assetName,
             assetType: obj.assetType,
             fileType: obj.evidence.asset.find((x: any) => x.assetId == obj.assetId).files[0].type,
+            expireOn: obj.expireOn,
+            holduntil: obj.holduntil,
+
           });
         });
         setSelectedMaster(masterIds);
       }
 
+      if(row){
+        let asset: Asset = row.evidence.asset.filter((asset: any) => asset.assetId === row.assetId)[0]
+        if(asset && asset.redactionStatus !== null && asset.redactionStatus === 1){
+          setIsSubmittedForRedaction(true)
+        }
+        else{
+          setIsSubmittedForRedaction(false)
+        }
+      }
       calculateSecurityDescriptor();
       checkIsMultiAssetDisabled();
       checkIsSelectedItem();
@@ -203,12 +222,17 @@ const ActionMenu: React.FC<Props> = React.memo(
        ** as response is different for every screen,
        ** we need to check from which screen action menu is opened.
        */
-      checkIsAssetCategorize();
+      ((row) || (selectedItems.length > 0)) && checkIsAssetCategorize();
       checkIsAssetLinkedOrMove();
+      checkIsAssetStatus();
     }, [row, selectedItems]);
+
     React.useEffect(() => {
       if (openAssetAction.length > 0) {
+        dispatch(clearAllGroupedSelectedAssetsActions());
         dispatch(clearAddGroupedSelectedAssetsActions(openAssetAction));
+
+
         showToastMsg?.({
           message: t("Asset " + openAssetAction[0].actionType + " ready"),
           variant: "success",
@@ -217,6 +241,7 @@ const ActionMenu: React.FC<Props> = React.memo(
       }
 
     }, [openAssetAction]);
+
     React.useEffect(() => {
       let assetsList: AssetLink[] = [];
       groupedSelectedAssets.map((obj: any) => {
@@ -228,6 +253,8 @@ const ActionMenu: React.FC<Props> = React.memo(
             assetName: obj.assetName,
             assetType: obj.assetType,
             fileType: obj.fileType,
+            expireOn: obj.expireOn,
+            holduntil: obj.holduntil,
           });
         }
       });
@@ -239,6 +266,8 @@ const ActionMenu: React.FC<Props> = React.memo(
           assetName: obj.assetName,
           assetType: obj.assetType,
           fileType: obj.fileType,
+          expireOn: obj.expireOn,
+          holduntil: obj.holduntil
         });
       });
       setAssetLinks(assetsList);
@@ -249,25 +278,71 @@ const ActionMenu: React.FC<Props> = React.memo(
       if (assetId) {
         for (const asset of row?.evidence?.asset) {
           if (asset.assetId == assetId) {
-            if (asset.lock)
+            if (asset.lock) {
               setIsLockedAccess(true);
-            else
+            }
+            else {
               setIsLockedAccess(false);
+            }
           }
+        }
+      }
+      else {
+        let unlockAssetCount = 0;
+        for (const items of selectedItems) {
+          const asset = items.evidence.asset.find((x : any) => x.assetId == items.assetId);
+          if (!asset.lock) {
+            unlockAssetCount += 1;
+          }
+        }
+        if (unlockAssetCount > 0) {
+          setIsLockedAccess(false);
+        }
+        else {
+          setIsLockedAccess(true);
         }
       }
     }
 
-    const checkIsAssetCategorize = () => {
-      if (actionMenuPlacement === ActionMenuPlacement.AssetLister) {
-        if (row?.categories.length == 0) {
-          setIsCategoryEmpty(true);
+    const checkIsAssetStatus = () => {
+      const assetId = row?.assetId;
+      if(assetId){
+       let assets =  row?.evidence?.asset.filter((x: any) => x.assetId == assetId);
+      for(const asset of assets){
+        if(asset.status ==  AssetStatus.MetadataOnly){
+          setIsRetry(false);
+          setIsMetadataOnly(true);
+        }
+        else if(asset.status == AssetStatus.RequestUpload){
+          
+        setIsMetadataOnly(false);
+        setIsRetry(true)
         }
 
-      } else {
-        if (row?.evidence.categories.length == 0) {
-          setIsCategoryEmpty(true);
+        else{
+          setIsMetadataOnly(false);
         }
+      } 
+    }
+    }
+
+    const checkIsAssetCategorize = () => {
+      //NOTE: Single Select Case.
+      if (row && selectedItems.length <= 1) {
+        if (row.evidence.categories.length === 0) {
+          setIsCategoryEmpty(true);
+          return;
+        }
+        setIsCategoryEmpty(false);
+      }
+      //NOTE: Multi Select Case. 
+      else {
+        const isEditCase = selectedItems.some((item: any) => item.evidence.categories.length > 0);
+        if (isEditCase) {
+          setIsCategoryEmpty(false);
+          return;
+        }
+        setIsCategoryEmpty(true);
       }
     }
 
@@ -303,12 +378,14 @@ const ActionMenu: React.FC<Props> = React.memo(
     const handleOpenManageRetention = () => setOpenManageRetention(true);
     const handleOpenAssetShare = () => setOpenAssetShare(true);
     const handleAssetLinkOpen = () => setOpenAssetLink(true);
+    const handleAssetMoveOpen = () => setOpenAssetMove(true);
     const handleOpenAssignSubmission = () => setOpenSubmitAnalysis(true);
     const handlePrimaryAsset = () => setIsPrimaryOptionOpen?.(true);
     const handleChange = () => setOpenForm(true);
     const restrictAccessClickHandler = () =>
       setOpenRestrictAccessDialogue(true);
     const unlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
+    const handleOpenAssignToCaseChange = () => setOpenAssignToCase(true);
 
     const multiCompareAssetBucketData = (
       assetBucketData: AssetBucket[],
@@ -338,9 +415,7 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
       let _requestBody: Array<LockUnlockAsset> = [];
-      const groupRecIdArray = AssignedGroups.split(",").map((item) => {
-        return parseInt(item, 10);
-      });
+      const groupRecIdArray = getGroupIds();
       if (isSelectedItem) {
         selectedItems.map((x: any) => {
           _requestBody.push({
@@ -358,6 +433,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           operation: operation
         } as LockUnlockAsset);
       }
+      isSelectedItem && setSelectedItems?.([]); 
       const _body = JSON.stringify(_requestBody);
       EvidenceAgent.LockOrUnLockAsset(_body)
         .then(() => {
@@ -381,13 +457,20 @@ const ActionMenu: React.FC<Props> = React.memo(
             setOpenUnlockAccessDialogue(false);
           }, 2000);
 
-          if(actionMenuPlacement === ActionMenuPlacement.AssetDetail){
+          dispatch(updateAssetLockField({
+            requestBody: _requestBody,
+            assetBucketData: assetBucketData
+          } as ObjectToUpdateAssetBucket));
+
+          if (actionMenuPlacement === ActionMenuPlacement.AssetDetail) {
             const isAllowedToAccessLockAsset = AssignedModules.split(',').includes('29');
-            if(isAllowedToAccessLockAsset){
-              setSelectedItems?.([row]);
-            } else {
+            if (isAllowedToAccessLockAsset)
+              dispatch(ActionMenuRestrictActionOccured());
+            else
               window.location.href = urlList.filter((item: any) => item.name === urlNames.assets)[0].url;
-            }
+          }
+          if (actionMenuPlacement === ActionMenuPlacement.AssetBucket) {
+            dispatch(ActionMenuRestrictActionOccured());
           }
         })
         .catch((error) => {
@@ -416,7 +499,6 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {
-
       if (selectedItems !== undefined && selectedItems !== null && selectedItems.length > 1) { // multi asset export
 
         let totalFiles = selectedItems.map((e: any) => {
@@ -424,7 +506,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           let filesArr = e.evidence.asset.map((a: any) => {
             let files = a.files;
             return files.map((x: any) => {
-              return { fileRecId: x.filesId, accessCode: "accessCode" };
+              return { fileRecId: x.filesId, accessCode: x.accessCode };
             })
 
           });
@@ -445,7 +527,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           let filesArr = e.evidence.asset.map((a: any) => {
             let files = a.files;
             return files.map((x: any) => {
-              return { fileRecId: x.filesId, accessCode: "accessCode" };
+              return { fileRecId: x.filesId, accessCode: x.accessCode };
             })
 
           });
@@ -460,8 +542,9 @@ const ActionMenu: React.FC<Props> = React.memo(
         });
         createMultiExportRequest(me);
       } else if (row !== undefined && row !== null && row.evidence != null && row.evidence.asset != null) {// single asset export
-        const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
-        const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
+        const assetId = row.evidence.asset.find((x: any) => x.assetId == row.assetId)
+        const assetFileId = assetId != null && assetId != undefined && assetId.files.length > 0 ? assetId.files[0].filesId : null;
+        const accessCode = assetId != null && assetId != undefined && assetId.files.length > 0 ? assetId.files[0].accessCode : null;
         if (!assetFileId) {
           showToastMsg?.({
             message: t("There_is_no_File_against_this_Asset"),
@@ -470,8 +553,9 @@ const ActionMenu: React.FC<Props> = React.memo(
           });
           return;
         }
-
-        FileAgent.getDownloadFileUrl(assetFileId)
+        let url:any  = `/Files/download/${assetFileId}/${accessCode}`
+        console.log("url : ", url)
+        FileAgent.getDownloadFileUrl(url)
           .then((response) => {
             downloadFileByURLResponse(response);
           })
@@ -695,7 +779,8 @@ const ActionMenu: React.FC<Props> = React.memo(
         let uploadCompletedOn;
         for (const file of files) {
           if (file.type == "Video") {
-            await FileAgent.getFile(file.filesId).then((response) => {
+            let url = "/Files/"+file.filesId +"/"+ file.accessCode;
+            await FileAgent.getFile(url).then((response) => {
               uploadCompletedOn = response.history.uploadCompletedOn;
             });
             break;
@@ -796,6 +881,8 @@ const ActionMenu: React.FC<Props> = React.memo(
 
           if (data.evidence) {
             newObject.isMaster = data.evidence.masterAssetId === data.id;
+            const isLock = data.evidence.asset.find((x : any)=> x.assetId == data.assetId)?.lock;
+            newObject.lock = isLock ?? null;
           } else {
             newObject.isMaster = data.masterAssetId === asset.assetId;
             newObject.selectedAssetId = asset.assetId;
@@ -887,7 +974,6 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     if (row !== undefined && row !== null) {
       assetBucketData.forEach((data) => {
-
         if (data.assetId === row.assetId) addToAssetBucketDisabled = true;
       });
     } else if (selectedItems !== undefined && selectedItems.length > 0) {
@@ -996,11 +1082,15 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const isEvidenceCategorizedByCurrentUser = () => {
-      let categorizedBy: number;
-      if (actionMenuPlacement === ActionMenuPlacement.AssetLister)
-        categorizedBy = row?.categorizedBy;
-      else
-        categorizedBy = row?.evidence.categorizedBy;
+      let categorizedBy: number = 0;
+      if ((!row) && selectedItems.length > 1) {
+        categorizedBy = selectedItems[0].evidence.categorizedBy;
+      } else {
+        if (actionMenuPlacement === ActionMenuPlacement.AssetLister)
+          categorizedBy = row?.categorizedBy;
+        else
+          categorizedBy = row?.evidence.categorizedBy;
+      }
       if (categorizedBy) {
         if (categorizedBy === Number(UserId))
           return true;
@@ -1011,12 +1101,22 @@ const ActionMenu: React.FC<Props> = React.memo(
     }
 
     const evidenceCategorizedBy = (): number | null => {
-      if (row?.evidence) {
-        if (row?.evidence.categorizedBy) {
-          return Number(row?.evidence.categorizedBy);
-        } else {
-          return null;
+      if ((!row) && (selectedItems.length > 1)) {
+        const evidenceCategorizedBy: Array<{ evidenceId: number, categorizedBy: number }> = [];
+        for (const asset of selectedItems) {
+          if (asset.evidence.categorizedBy) {
+            evidenceCategorizedBy.push({
+              evidenceId: Number(asset.evidence.id),
+              categorizedBy: Number(row?.evidence.categorizedBy)
+            });
+          }
         }
+      }
+      if (row?.evidence) {
+        if (row?.evidence.categorizedBy)
+          return Number(row?.evidence.categorizedBy);
+        else
+          return null;
       }
       return null;
     }
@@ -1024,7 +1124,6 @@ const ActionMenu: React.FC<Props> = React.memo(
       let tempLinkedAssets: AssetAction[] = [];
       if (assetlinks.length > 0) {
         assetlinks.map((x: AssetLink) => {
-
           tempLinkedAssets.push({
             masterId: x.masterId,
             assetId: x.assetId,
@@ -1033,6 +1132,8 @@ const ActionMenu: React.FC<Props> = React.memo(
             assetName: x.assetName,
             assetType: x.assetType,
             fileType: x.fileType,
+            expireOn: x.expireOn,
+            holduntil: x.holduntil,
           });
 
         });
@@ -1046,10 +1147,49 @@ const ActionMenu: React.FC<Props> = React.memo(
           assetName: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetName,
           assetType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetType,
           fileType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).files[0].type,
+          expireOn: row.evidence.expireOn,
+          holduntil: row.evidence.holdUntil,
         });
       }
-      setOpenAssetAction(tempLinkedAssets);
 
+      ////Master Assets////
+      if (selectedItems.length > 0) {
+        selectedItems.map((obj: any) => {
+
+          if (tempLinkedAssets.filter(x => x.assetId == obj.assetId).length == 0) {
+            tempLinkedAssets.push({
+              masterId: obj.assetId,
+              assetId: obj.assetId,
+              evidenceId: obj.id,
+              actionType: "link",
+              assetName: obj.assetName,
+              assetType: obj.assetType,
+              fileType: obj.evidence.asset.find((x: any) => x.assetId == obj.assetId).files[0].type,
+              expireOn: obj.evidence.expireOn,
+              holduntil: obj.evidence.holduntil,
+            });
+          }
+        })
+
+      }
+      else {
+        if (tempLinkedAssets.filter(x => x.assetId == row.assetId).length == 0) {
+          tempLinkedAssets.push({
+            masterId: row.assetId,
+            assetId: row.assetId,
+            evidenceId: row.id,
+            actionType: "link",
+            assetName: row.assetName,
+            assetType: row.assetType,
+            fileType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).files[0].type,
+            expireOn: row.evidence.expireOn,
+            holduntil: row.evidence.holduntil,
+          });
+        }
+      }
+
+      setOpenAssetAction(tempLinkedAssets);
+      setSelectedItems && setSelectedItems([])
     }
     const linkToAssetHandler = () => {
       handleAssetLinkOpen();
@@ -1068,6 +1208,8 @@ const ActionMenu: React.FC<Props> = React.memo(
             assetName: x.assetName,
             assetType: x.assetType,
             fileType: x.fileType,
+            expireOn: row.expireOn,
+            holduntil: row.holduntil,
           });
         });
       }
@@ -1080,16 +1222,76 @@ const ActionMenu: React.FC<Props> = React.memo(
           assetName: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetName,
           assetType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).assetType,
           fileType: row.evidence.asset.find((x: any) => x.assetId == row.assetId).files[0].type,
+          expireOn: row.expireOn,
+          holduntil: row.holduntil,
         });
       }
       setOpenAssetAction(tempLinkedAssets);
 
     }
     const moveToAssetHandler = () => {
-      let tempLinkedAssets: AssetAction[] = [];
-      dispatch(clearAllGroupedSelectedAssetsActions());
+      handleAssetMoveOpen();
+      //dispatch(clearAllGroupedSelectedAssetsActions());
 
     }
+
+    const dispatchEvidenceToSearch = () => {
+      let local_evidenceSearchType: any = localStorage.getItem("evidenceSearchType");
+      if (local_evidenceSearchType) {
+        let searchType = JSON.parse(local_evidenceSearchType).searchValue;
+        setTimeout(() => {
+          dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: searchType, }));
+        }, 2000);
+      }
+    }
+    
+
+    const UploadMasterAssetRequest = (evidenceId: number, isRetry: boolean) => {
+      const url = `Evidences/${evidenceId}/Assets/RequestingMasterAssetUpload?isRetry=${isRetry}`;
+      EvidenceAgent.masterAssetRequestUpload(url).then((resp: any) => {
+        showToastMsg?.({
+          message:
+            "Asset Status Updated",
+          variant: "success",
+          duration: 7000,
+        });
+        dispatchEvidenceToSearch()
+        
+      })
+    }
+
+    const UploadChildAssetRequest = (evidenceId: number, assetId: number, isRetry: boolean) => {
+      const url = `Evidences/${evidenceId}/Assets/${assetId}/RequestingChildAssetUpload?isRetry=${isRetry}`;
+      EvidenceAgent.masterAssetRequestUpload(url).then(() => {
+
+        showToastMsg?.({
+          message:
+            "Asset Status Updated",
+          variant: "success",
+          duration: 7000,
+        });
+        dispatchEvidenceToSearch()
+      
+      })
+    }
+
+    const AssetStatusUpdate = (assetId: number, masterAssetId: number, evidenceId: number) => {
+      assetId == masterAssetId ? UploadMasterAssetRequest(evidenceId, isRetry) : UploadChildAssetRequest(evidenceId, assetId, isRetry);
+    }
+
+
+    const requestUploadAsset = () => {
+      if (isSelectedItem) {
+        selectedItems.map((x: any) => {
+          AssetStatusUpdate(x.assetId, x.evidence.masterAssetId, x.evidence.id)
+        });
+
+      } else {
+        AssetStatusUpdate(row.assetId, row.evidence.masterAssetId, row.evidence.id)
+      }
+
+    }
+    
     return (
       <>
         <FormContainer
@@ -1100,6 +1302,8 @@ const ActionMenu: React.FC<Props> = React.memo(
           setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
           categorizedBy={evidenceCategorizedBy()}
           isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
         />
 
         <Menu
@@ -1167,51 +1371,28 @@ const ActionMenu: React.FC<Props> = React.memo(
             </MenuItem>
           )}
 
-          {isCategoryEmpty ? (
-            <MenuItem>
-              <ActionMenuCheckList
-                moduleId={2}
-                descriptorId={4}
-                maximumDescriptor={maximumDescriptor}
-                evidence={row?.evidence}
-                actionMenuName={t("Categorize")}
-                securityDescriptors={securityDescriptorsArray}
-                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
-                isCategorizedByCheck={true}
-                isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
-              >
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="fa-regular fa-clipboard-list-check"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Categorize")}</div>
+          <MenuItem>
+            <ActionMenuCheckList
+              moduleId={isCategoryEmpty ? 2 : 3}
+              descriptorId={4}
+              maximumDescriptor={maximumDescriptor}
+              evidence={row?.evidence}
+              actionMenuName={isCategoryEmpty ? t("Categorize") : t("Edit_category_and_form")}
+              securityDescriptors={securityDescriptorsArray}
+              isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+              isCategorizedByCheck={true}
+              isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
+            >
+              <div className="crx-meu-content" onClick={handleChange}>
+                <div className="crx-menu-icon">
+                  <i className="fa-regular fa-clipboard-list-check"></i>
                 </div>
-              </ActionMenuCheckList>
-            </MenuItem>
-          ) : (
-            <MenuItem>
-              <ActionMenuCheckList
-                moduleId={3}
-                descriptorId={4}
-                maximumDescriptor={maximumDescriptor}
-                evidence={row?.evidence}
-                actionMenuName={t("Edit_category_and_form")}
-                securityDescriptors={securityDescriptorsArray}
-                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
-                isCategorizedByCheck={true}
-                isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
-              >
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="fa-regular fa-clipboard-list-check"></i>
-                  </div>
-                  <div className="crx-menu-list">
-                    {t("Edit_category_and_form")}
-                  </div>
+                <div className="crx-menu-list">
+                  {isCategoryEmpty ? t("Categorize") : t("Edit_category_and_form")}
                 </div>
-              </ActionMenuCheckList>
-            </MenuItem>
-          )}
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
 
           {isPrimaryOptionOpen && (
             <MenuItem>
@@ -1231,6 +1412,18 @@ const ActionMenu: React.FC<Props> = React.memo(
               </ActionMenuCheckList>
             </MenuItem>
           )}
+
+          <MenuItem>
+            <div
+              className="crx-meu-content"
+              onClick={handleOpenAssignToCaseChange}
+            >
+              <div className="crx-menu-icon">
+                <i className="fa-regular fa-briefcase"></i>
+              </div>
+              <div className="crx-menu-list">{t("Assign_to_case")}</div>
+            </div>
+          </MenuItem>
 
           <MenuItem>
             <ActionMenuCheckList
@@ -1274,14 +1467,14 @@ const ActionMenu: React.FC<Props> = React.memo(
             </ActionMenuCheckList>
           </MenuItem>
 
-          {multiAssetDisabled === false ? (
+          {multiAssetDisabled === false && row && row.assetType === 'Video' && !isSubmittedForRedaction &&
             <MenuItem>
               <ActionMenuCheckList
                 moduleId={70}
                 descriptorId={3}
                 maximumDescriptor={maximumDescriptor}
                 evidence={row?.evidence}
-                actionMenuName={t("Submit_for_analysis")}
+                actionMenuName={t("Submit_to_Getac_AI")}
                 securityDescriptors={securityDescriptorsArray}
                 isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
               >
@@ -1293,17 +1486,66 @@ const ActionMenu: React.FC<Props> = React.memo(
                     <i className="fa-regular fa-photo-film"></i>
                   </div>
                   <div className="crx-menu-list">
-                    {t("Submit_for_analysis")}
+                    {t("Submit_to_Getac_AI")}
                   </div>
                 </div>
               </ActionMenuCheckList>
             </MenuItem>
-          ) : null}
+          }
+          {multiAssetDisabled === false && row && row.assetType === 'Video' && isSubmittedForRedaction &&
+            <MenuItem>
+              <ActionMenuCheckList
+                moduleId={70}
+                descriptorId={3}
+                maximumDescriptor={maximumDescriptor}
+                evidence={row?.evidence}
+                actionMenuName={t("Review_in_Getac_AI")}
+                securityDescriptors={securityDescriptorsArray}
+                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+              >
+                <div
+                  className="crx-meu-content groupingMenu"
+                  onClick={() => window.open(`${REDIRECT_URL_AICOORDINATOR}?assetName=${row.assetName}`, "_blank")}
+                >
+                  <div className="crx-menu-icon">
+                    <i className="fa-regular fa-photo-film"></i>
+                  </div>
+                  <div className="crx-menu-list">
+                    {t("Review_in_Getac_AI")}
+                  </div>
+                </div>
+              </ActionMenuCheckList>
+            </MenuItem>
+          }
+          {multiAssetDisabled === false && row && row.assetType === 'Video' && isSubmittedForRedaction &&
+            <MenuItem>
+              <ActionMenuCheckList
+                moduleId={70}
+                descriptorId={3}
+                maximumDescriptor={maximumDescriptor}
+                evidence={row?.evidence}
+                actionMenuName={t("Submit_again_to_Getac_AI")}
+                securityDescriptors={securityDescriptorsArray}
+                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+              >
+                <div
+                  className="crx-meu-content groupingMenu"
+                  onClick={handleOpenAssignSubmission}
+                >
+                  <div className="crx-menu-icon">
+                  </div>
+                  <div className="crx-menu-list">
+                    {t("Submit_again_to_Getac_AI")}
+                  </div>
+                </div>
+              </ActionMenuCheckList>
+            </MenuItem>
+          }
 
           <MenuItem>
-            <ActionMenuCheckList
-              moduleId={0}
-              descriptorId={2}
+            <ActionMenuCheckList 
+              moduleId={15}
+              descriptorId={3}
               maximumDescriptor={maximumDescriptor}
               evidence={row?.evidence}
               actionMenuName={t("Share_asset")}
@@ -1324,8 +1566,8 @@ const ActionMenu: React.FC<Props> = React.memo(
 
           <MenuItem>
             <ActionMenuCheckList
-              moduleId={0}
-              descriptorId={2}
+              moduleId={71}
+              descriptorId={3}
               maximumDescriptor={maximumDescriptor}
               evidence={row?.evidence}
               actionMenuName={t("Link_asset")}
@@ -1349,8 +1591,8 @@ const ActionMenu: React.FC<Props> = React.memo(
           {actionMenuPlacement == ActionMenuPlacement.DetailedAssets ? (
             <MenuItem>
               <ActionMenuCheckList
-                moduleId={0}
-                descriptorId={2}
+                moduleId={71}
+                descriptorId={3}
                 maximumDescriptor={maximumDescriptor}
                 evidence={row?.evidence}
                 actionMenuName={t("Move_asset")}
@@ -1373,15 +1615,13 @@ const ActionMenu: React.FC<Props> = React.memo(
           ) : null}
           {actionMenuPlacement == ActionMenuPlacement.AssetLister
             && groupedSelectedAssetsActions.length > 0
-            //&& selectedAssetActionType == "link" 
-            //&& multiAssetDisabled == false
             && isAssetLinkedOrMoved == "link"
             ? (
 
               <MenuItem>
                 <ActionMenuCheckList
-                  moduleId={0}
-                  descriptorId={2}
+                  moduleId={71}
+                  descriptorId={3}
                   maximumDescriptor={maximumDescriptor}
                   evidence={row?.evidence}
                   actionMenuName={t("Link_to_this_group")}
@@ -1405,14 +1645,13 @@ const ActionMenu: React.FC<Props> = React.memo(
           }
           {actionMenuPlacement == ActionMenuPlacement.AssetLister
             && groupedSelectedAssetsActions.length > 0
-            //&& selectedAssetActionType == "move" 
             && multiAssetDisabled == false
             && isAssetLinkedOrMoved == "move"
             ? (
               <MenuItem>
                 <ActionMenuCheckList
-                  moduleId={0}
-                  descriptorId={2}
+                  moduleId={71}
+                  descriptorId={3}
                   maximumDescriptor={maximumDescriptor}
                   evidence={row?.evidence}
                   actionMenuName={t("Move_to_this_group")}
@@ -1443,7 +1682,7 @@ const ActionMenu: React.FC<Props> = React.memo(
               securityDescriptors={securityDescriptorsArray}
               isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
             >
-              <div className="crx-meu-content groupingMenu">
+              <div className="crx-meu-content groupingMenu export">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   <SubMenu label={t("Export")}>
@@ -1467,6 +1706,28 @@ const ActionMenu: React.FC<Props> = React.memo(
               </div>
             </ActionMenuCheckList>
           </MenuItem>
+          
+          {isMetadataOnly  || isRetry ? (<MenuItem>
+                <ActionMenuCheckList
+                  moduleId={71}
+                  descriptorId={3}
+                  maximumDescriptor={maximumDescriptor}
+                  evidence={row?.evidence}
+                  actionMenuName={t("Request_Upload")}
+                  securityDescriptors={securityDescriptorsArray}
+                  isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+                >
+                  <div
+                    className="crx-meu-content groupingMenu crx-spac"
+                    onClick={requestUploadAsset}
+                  >
+                    <div className="crx-menu-icon">
+                      {/* <i className="far fa-user-lock fa-md"></i> */}
+                    </div>
+                <div className="crx-menu-list">{isMetadataOnly ? t("Request_Upload") : t("Retry_Request_Upload")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>) : ""}
 
           {isLockedAccess ? (
             <MenuItem>
@@ -1513,6 +1774,7 @@ const ActionMenu: React.FC<Props> = React.memo(
               </ActionMenuCheckList>
             </MenuItem>
           )}
+          
         </Menu>
 
         <RestrictAccessDialogue
@@ -1588,7 +1850,8 @@ const ActionMenu: React.FC<Props> = React.memo(
           <ShareAsset
             filterValue={filterValue}
             rowData={row}
-            items={assetlinks} //{selectedItems}
+            childAssets={assetlinks}
+            items={selectedItems} //{assetlinks}
             setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssetShare(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
@@ -1597,7 +1860,7 @@ const ActionMenu: React.FC<Props> = React.memo(
 
         <CRXModalDialog
           maxWidth="lg"
-          title={t("Submit_For_Analysis")}
+          title={isSubmittedForRedaction?t("Submit_again_to_Getac_AI"):t("Submit_to_Getac_AI")}
           className={"CRXModal"}
           modelOpen={openSubmitAnalysis}
           onClose={() => setOpenSubmitAnalysis(false)}
@@ -1611,14 +1874,34 @@ const ActionMenu: React.FC<Props> = React.memo(
             setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenSubmitAnalysis(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
+            isSubmittedForRedaction={isSubmittedForRedaction}
           />
         </CRXModalDialog>
         <CRXModalDialog
           maxWidth="lg"
-          title={t("Link_to_this_group")}
+          title={t("Please_Confirm")}
           className={"CRXModal __Crx__Share__asset"}
           modelOpen={openAssetLink}
           onClose={() => setOpenAssetLink(false)}
+          defaultButton={false}
+          indicatesText={true}
+          showSticky={true}
+        >
+          <AssetLinkConfirm 
+            filterValue={filterValue}
+            rowData={row}
+            items={selectedItems}
+            setRemovedOption={(e: any) => { }}
+            setOnClose={() => setOpenAssetLink(false)}
+            showToastMsg={(obj: any) => showToastMsg?.(obj)}
+          />
+        </CRXModalDialog>
+        <CRXModalDialog
+          maxWidth="lg"
+          title={t("Please_Confirm")}
+          className={"CRXModal __Crx__Share__asset"}
+          modelOpen={openAssetMove}
+          onClose={() => setOpenAssetMove(false)}
           defaultButton={false}
           indicatesText={true}
           showSticky={true}
@@ -1628,7 +1911,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             rowData={row}
             items={selectedItems}
             setRemovedOption={(e: any) => { }}
-            setOnClose={() => setOpenAssetLink(false)}
+            setOnClose={() => setOpenAssetMove(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
           />
         </CRXModalDialog>
@@ -1653,6 +1936,16 @@ const ActionMenu: React.FC<Props> = React.memo(
             </div>
           </div>
         </CRXConfirmDialog>
+        <CRXModalDialog
+          maxWidth="lg"
+          title={t('Assign_to_case')}
+          className={"CRXModal CRXModalAssignToCase"}
+          modelOpen={openAssignToCase}
+          onClose={() => setOpenAssignToCase(false)}
+          defaultButton={false}
+        >
+          <AssignToCase selectedItems={selectedItems} rowData={row} onClose={() => setOpenAssignToCase(false)}/>
+        </CRXModalDialog>
       </>
     );
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,18 +29,16 @@ import { FormFieldsTemplate } from "../TypeConstant/types";
 import { controlTypes } from "../TypeConstant/constants";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { urlList, urlNames } from "../../../../utils/urlList";
-import { useHistory } from "react-router-dom";
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 interface renderCheckMultiselect {
   value: string,
   id: string,
 }
 
-const ORDER_BY = "asc" as Order;
-const ORDER_BY_PARAM = "recordingStarted";
-
 const FormFieldsList: React.FC = () => {
+  const { getModuleIds} = useContext(ApplicationPermissionContext);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("Name");
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
@@ -75,6 +73,7 @@ const FormFieldsList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
   
   const onChange = (valuesObject: ValueString[], colIdx: number) => {
@@ -147,7 +146,7 @@ const FormFieldsList: React.FC = () => {
           width = {97} 
           percentage={true}
           option={options} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => clearAll()}
           isCheckBox={true}
@@ -179,7 +178,7 @@ const FormFieldsList: React.FC = () => {
       id: "displayName",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e}</div>
+        return getModuleIds().includes(74) ? <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e} </div> : <div >{e}</div>
       },
       sort: true,
       searchFilter: true,
@@ -197,7 +196,7 @@ const FormFieldsList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "450",
+      minWidth: "445",
       attributeName: "name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -221,14 +220,14 @@ const FormFieldsList: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("required")}`,
+      label: `Form Field Requirement`,
       id: "isRequired",
       align: "left",
       sort: true,
       searchFilter: false,
       dataComponent: (e: string) => textDisplay(e, " "),
       searchComponent: () => null,
-      minWidth: "200",
+      minWidth: "240",
       attributeName: "IsRequired",
       attributeType: "String",
       attributeOperator: "contains"
@@ -354,10 +353,11 @@ const FormFieldsList: React.FC = () => {
               selectedItems={selectedItems}
               onClickOpenModel={onClickOpenModel}
               pageGrid={pageiGrid}
+              toasterRef={retentionMsgFormRef}
             />}
             toolBarButton={
               <>
-                <Restricted moduleId={0}>
+                <Restricted moduleId={73}>
 
                 <CRXButton color="primary" className="primary CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
                     {t("Create_Form_Fields")}
@@ -373,8 +373,8 @@ const FormFieldsList: React.FC = () => {
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
-            orderParam={ORDER_BY}
-            orderByParam={ORDER_BY_PARAM}
+            orderParam={order}
+            orderByParam={orderBy}
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}

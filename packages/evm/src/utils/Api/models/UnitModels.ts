@@ -14,13 +14,14 @@ export interface Unit {
     primaryDeviceIdentifier: string,
     key: string
 }
-export interface UnitAndDevice  {
+export interface UnitAndDevice {
     deviceName: string;
     deviceType: string;
-    serialNumber: string;
+    status: string;
+    description: string;
     version: string
-  };
-  
+};
+
 export interface License {
     key: string,
     status: string,
@@ -88,7 +89,8 @@ export interface DeviceType {
     isLogicalDevice?: boolean,
     schema?: string,
     typeCategory?: string,
-    showDevice?: boolean
+    showDevice?: boolean,
+    fotaRelated?: boolean
 }
 
 export interface ConfigurationField {
@@ -171,8 +173,7 @@ export interface QueuedAssets {
     started: string;
     updated: string;
 }
-export interface StatusData
-{
+export interface StatusData {
     fileState: string;
     totalsize: number;
     status: number;
@@ -184,5 +185,53 @@ export interface DefaultUnitTemplate {
     templateId: number,
     deviceTypeId: number,
     operationType: number
+}
+
+export interface ScheduleVersion {
+    days: string,
+    timeStart: Date,
+    timeEnd: Date,
+}
+
+export interface UpdateVersionDevice {
+    id?: number,
+    deviceId: number,
+    deviceStatus: string,
+}
+
+export interface UpdateVersion {
+    id?: number,
+    name: string,
+    versionId: number,
+    version?: string,
+    scheduleVersion: ScheduleVersion,
+    isSilent: boolean,
+    deviceTypeId: number,
+    deviceType?: DeviceType,
+    stationId?: number,
+    totalDevices?: number,
+    totalPending?: number,
+    totalFail?: number,
+    totalSuccess?: number,
+    updateVersionDevices: UpdateVersionDevice[],
+    history?: any
+}
+export interface AssignUsersToUnit {
+    unitIds: number[];
+    userIds: number[];
+    groupIds: number[];
+}
+export interface FilterUpdateVersion {
+    id?: number,
+    version: string,
+    unitId: number,
+    unitName: string,
+    serialNumber: string,
+    station: string,
+    stationId: number,
+    lastCheckedIn?: Date,
+    status: string,
+    targetVersion: string,
+    logOutput: string,
 }
 

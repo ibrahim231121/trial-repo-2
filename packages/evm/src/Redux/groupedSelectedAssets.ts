@@ -24,6 +24,26 @@ const groupedSelectedAssets = createSlice({
         state.groupedSelectedAssets.push(...payload);
       }
     },
+    clearAdd: (state: any, action: PayloadAction<any>) => {
+      state.groupedSelectedAssets = [];
+      const { payload } = action;
+      if(state.groupedSelectedAssets.length>0)
+      {
+            payload.map((y:any)=>{
+            var a=  state.groupedSelectedAssets.find((x:any)=>x.assetId==y.assetId);
+            if(a!=null && a!=undefined){
+              a.isChecked=y.isChecked
+            }
+            else{
+              state.groupedSelectedAssets.push(y);
+            }
+          })
+        
+      }
+      else{
+        state.groupedSelectedAssets.push(...payload);
+      }
+    },
 
     remove: (state: any, action: PayloadAction<any>) => {
         const { payload } = action
@@ -41,9 +61,12 @@ const groupedSelectedAssets = createSlice({
         //work for local storage.
     },
 
-    clearAll: (state: any, action: PayloadAction<any>) => {
-        state.groupedSelectedAssets = [];
-    },
+    // clearAll: (state: any, action: PayloadAction<any>) => {
+    //     state.groupedSelectedAssets = [];
+    // },
+    clearAll: (state: any) => {
+      state.groupedSelectedAssets = [];
+  },
 
   },
 });
@@ -52,6 +75,7 @@ export default groupedSelectedAssets;
 
 export const {
   add: addGroupedSelectedAssets,
+  clearAdd: clearAddGroupedSelectedAssets,
   remove: removeGroupedSelectedAssets,
   clearAll: clearAllGroupedSelectedAssets,
 } = groupedSelectedAssets.actions;

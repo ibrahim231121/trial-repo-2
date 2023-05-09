@@ -717,7 +717,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                            
 
                                             <CRXMultiSelectBoxLight
-                                                className="metadataUploadAutocomplete"                                                
+                                                className="metadataUploadAutocomplete"                                      
+                                                
                                                 multiple={true}
                                                 CheckBox={true}
                                                 required={true}

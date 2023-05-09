@@ -1,33 +1,22 @@
 import Carousel from "react-material-ui-carousel";
 import './CRXCarousel.scss'
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import { assetdata } from "../../../Application/Assets/Detail/AssetDetailsTemplateModel";
+import { useTranslation } from "react-i18next";
 
 interface CarouselProps {
   mainSliderNodes: any[],
-  indicatorSliderNodes: any[]
+  indicatorSliderNodes: any[],
+  data: assetdata[]
 }
 
-const CRXCarousel = ({ mainSliderNodes, indicatorSliderNodes }: CarouselProps) => {
-  const [leftArrowDisable, setLeftArrowDisable] = useState(true);
+const CRXCarousel = ({ mainSliderNodes, indicatorSliderNodes, data }: CarouselProps) => {
+  const dispatch = useDispatch();
+  const { t } = useTranslation<string>();
   const [activeSlide, setActiveSlide] = useState<number>(0);
-
   const elementRef = useRef(null);
-
-  const handleHorizantalScroll = (element: any, speed: any, distance: any, step: any) => {
-    let scrollAmount = 0;
-    const slideTimer = setInterval(() => {
-      element.scrollLeft += step;
-      scrollAmount += Math.abs(step);
-      if (scrollAmount >= distance) {
-        clearInterval(slideTimer);
-      }
-      if (element.scrollLeft === 0) {
-        setLeftArrowDisable(true);
-      } else {
-        setLeftArrowDisable(false);
-      }
-    }, speed);
-  };
 
   return (
     <div className="banner_corusel">
@@ -47,37 +36,47 @@ const CRXCarousel = ({ mainSliderNodes, indicatorSliderNodes }: CarouselProps) =
               marginLeft: 0
             }
           }}
-          className="carousel"
+          className="carousel carousel_tabs"
           index={activeSlide}
           onChange={(now?: number, previous?: number) => {
             setActiveSlide(now ?? 0);
+            dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + data[now ?? 0]?.name }));
           }}>
           {mainSliderNodes.map((item: any) => (
-            <>{item}</>
+            <div className="main_silder_shop">{item}</div>
           ))}
         </Carousel>
       </div>
-      <button
+      {(activeSlide > 0) && <button
         className="leftSliderBtn"
         onClick={() => {
-          handleHorizantalScroll(elementRef.current, 10, 100, -10);
+          if (activeSlide > 0) {
+            setActiveSlide(activeSlide - 1)
+            dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + data[activeSlide - 1]?.name }));
+          }
         }}
-        disabled={leftArrowDisable}
       >
-        Left
-      </button>
-      <button
+        <i className="fa-solid fa-chevron-left"></i>
+      </button>}
+      {((indicatorSliderNodes.length - 1) > activeSlide) && <button
         className="rightSliderBtn"
         onClick={() => {
-          handleHorizantalScroll(elementRef.current, 10, 100, 10);
+          if ((indicatorSliderNodes.length - 1) > activeSlide) {
+            setActiveSlide(activeSlide + 1)
+            dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + data[activeSlide + 1]?.name }));
+          }
         }}
       >
-        Right
-      </button>
+        <i className="fa-solid fa-chevron-right"></i>
+
+      </button>}
       <div id="slide" ref={elementRef}>
         {
           indicatorSliderNodes.map((item: any, index: number) => {
-            return <div onClick={() => { setActiveSlide(index) }} className={index == activeSlide ? "activeSlider slider" : "slider"} >{item}</div>;
+            return <div onClick={() => {
+              setActiveSlide(index)
+              dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + data[index]?.name }));
+            }} className={index == activeSlide ? "activeSlider slider" : "slider"} >{item}</div>;
           })
         }
       </div>

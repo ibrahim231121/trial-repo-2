@@ -16,19 +16,23 @@ let GetAssetsByState = (status: string, decoded: IDecoded) => {
     }
 };
 
-let GetAssetsByUserName = (userName: string) => {
-    let trimmedUserName: string;
-    if (userName.includes('@'))
-        trimmedUserName = userName.split('@')[0];
-    else
-        trimmedUserName = userName;
+let GetAssetsByUserName = (decoded: IDecoded) => {
+    const userName = decoded.LoginId;
+    const lockQuery = GenerateLockFilterQuery(decoded);
     return {
         bool: {
             must: [
                 {
-                    match: { "asset.owners": trimmedUserName }
+                    multi_match: {
+                        query: userName,
+                        fields: [
+                            "asset.owners"
+                        ],
+                        "operator": "and"
+                    }
                 }
-            ]
+            ],
+            "filter": lockQuery
         }
     }
 }

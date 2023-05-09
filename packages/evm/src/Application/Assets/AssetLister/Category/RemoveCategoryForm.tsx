@@ -2,29 +2,99 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { CRXButton, CRXHeading } from '@cb/shared';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useTranslation } from "react-i18next";
 import { FormValues, RemoveCategoryFormProps, RetentionDetailForCalculation } from './Model/RemoveCategoryFormModel';
+import { ExtractHoursFromCMTEntityRecord, RetentionDateTimeFormatter } from '../../../../GlobalFunctions/AssetRetentionFormat';
+import { SetupConfigurationAgent, UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
+import { StationPolicy } from '../../../../utils/Api/models/StationModels';
+import { CategoryRemovalType } from './Model/FormContainerModel';
+import { setLoaderValue } from '../../../../Redux/loaderSlice';
+import { CalculateCategoryRetentionDetail } from './Utility/UtilityFunctions';
 
 const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation<string>();
+  const [stationPolicies, setStationPolicies] = React.useState<StationPolicy[]>([]);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const stations = useSelector((state: any) => state.stationReducer.stationInfo);
   const initialValues: FormValues = {
     reason: ''
   };
+  const [retentionDetail, setRetentionDetail] = React.useState<Array<any>>([]);
 
   React.useEffect(() => {
     props.setModalTitle(t('Removing_the_category_requires_a_reason'));
     props.setremoveClassName('crx-remove-category-form');
     props.setIndicateTxt(false);
+    //NOTE : MultiSelect case.
+    if (!props.evidence && props.selectedItems.length > 1) {
+      const stationPromises: Array<Promise<StationPolicy[]>> = [];
+      let stationDetails: Array<{ stationId: number, stationName: string, evidenceId: number, hours: number }> = [];
+      for (const asset of props.selectedItems) {
+        const station = stations.find((station: any) => station.name === asset.evidence.station);
+        if (station) {
+          const _stationId = parseInt(station.id);
+          stationDetails.push({
+            evidenceId: asset.evidence.id,
+            stationId: _stationId,
+            stationName: station.name,
+            hours: 0
+          });
+          stationPromises.push(UnitsAndDeviceAgentPromise(_stationId));
+        }
+      }
+      if (stationPromises.length > 0) {
+        Promise.all(stationPromises).then((response) => {
+          const policies = response.flat();
+          let iterator = 0;
+          for (const detail of stationDetails) {
+            detail.hours = ExtractHoursFromCMTEntityRecord(policies[iterator].retentionPolicyId).totalHours;
+          }
+          const EffectedAssets = [];
+          const messageArr = [];
+          stationDetails = stationDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
+          for (const selectedAsset of props.selectedItems) {
+            const expiryDate = moment(selectedAsset.evidence.holdUntil ?? selectedAsset.evidence.expireOn);
+            const newExpiryDate = moment().add('hours', stationDetails[0].hours);
+            const assetName = selectedAsset.evidence.asset.find((x: any) => x.assetId == selectedAsset.assetId).assetName;
+            if (!newExpiryDate.isAfter(expiryDate)) {
+              //Show messaage, cause Retention will get effected,
+              EffectedAssets.push({
+                assetName: assetName,
+                difference: RetentionDateTimeFormatter(moment(), newExpiryDate)
+              });
+            }
+          }
+          if (EffectedAssets.length > 0) {
+            for (const eff of EffectedAssets) {
+              const message = `${eff.assetName} will Expire in ${eff.difference}`
+              messageArr.push(message + '\n');
+            }
+            props.setDifferenceOfRetentionTime(`${t("Please_be_aware_that_by_modifying_the_categories_you_are_reducing_the_assets_lifetime")} ${'\n'} ${messageArr.join()}`);
+            props.setRemovalType(CategoryRemovalType.HighestRetentionCategoryRemovalInMultiSelect);
+          }
+        });
+      }
+      // Get Category Retentions on page start up.
+      if (props.selectedItems[0].evidence.categories.length > 0) { //Getting first index, cause at this stage, every asset have same category.
+        const selectedAssetCategories = categoryOptions.filter((o: any) => props.selectedItems[0].evidence.categories.some((i: string) => i === o.name));
+        const retentionList = CalculateCategoryRetentionDetail(selectedAssetCategories).retentionList;
+        SetupConfigurationAgent.getRetentionPolicyObjectFromRetentionIds(retentionList)
+        .then((dataRetentionPromisesResponse) => setRetentionDetail(dataRetentionPromisesResponse as Array<any>));
+      }
+    }
+    //NOTE : Normal case.
+    if ((props.evidence) && (props.selectedItems.length <= 1)) {
+      const stationId = props.evidence.stationId.cmtFieldValue;
+      UnitsAndDevicesAgentApiCall(stationId);
+    }
   }, []);
 
   const cancelBtn = () => {
     let newValue = categoryOptions
-      .filter((o: any) => {
-        return o.id === props.removedOption.id;
-      })
+      .filter((o: any) => o.id === props.removedOption.id)
       .map((i: any) => {
         return {
           id: i.id,
@@ -36,25 +106,47 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
-  };
+  }
 
-  const getPolicyAsync = (message: string) => {
+  const UnitsAndDevicesAgentApiCall = (stationId: number) => {
+    dispatch(setLoaderValue({ isLoading: true }));
+    UnitsAndDeviceAgentPromise(stationId).then((response) => {
+      setStationPolicies(response);
+      dispatch(setLoaderValue({ isLoading: false }));
+    }).catch((err: any) => {
+      dispatch(setLoaderValue({ isLoading: false, error: true }));
+      console.error(err);
+    });
+  }
+
+  const UnitsAndDeviceAgentPromise = (stationId: number): Promise<StationPolicy[]> => UnitsAndDevicesAgent.getStationPolicies(stationId);
+
+  const getPolicyAsync = () => {
     const retentionDetails: RetentionDetailForCalculation[] = [];
     const removedCategory = props.removedOption;
     if (props.evidence) {
       const categoryObject = props.evidence.categories;
-      props.setRemoveMessage(message);
       for (const elem of categoryObject) {
         if (elem.dataRetentionPolicy) {
-          const Hours = elem.dataRetentionPolicy.record.filter((x) => x.key === 'Hours')[0].value;
-          const GracePeriodHours = elem.dataRetentionPolicy.record.filter((x) => x.key === 'GracePeriodHours')[0].value;
-          const TotalHours = parseInt(Hours) + parseInt(GracePeriodHours);
+          const cmtExtractValues = ExtractHoursFromCMTEntityRecord(elem.dataRetentionPolicy);
           retentionDetails.push({
             categoryName: elem.record?.record.filter((x) => x.key === 'Name')[0].value ?? "",
-            retentionId: elem.dataRetentionPolicy.cmtFieldValue,
-            hours: TotalHours
+            retentionId: cmtExtractValues.retentionId,
+            hours: cmtExtractValues.totalHours
           });
         }
+      }
+    } else {
+      //Multi Asset Selection Case.
+      const categoryObject = categoryOptions.filter((o: any) => props.selectedItems[0].evidence.categories.some((i: string) => i === o.name));;
+      for (const category of categoryObject) {
+        const retentionId = category.policies.retentionPolicyId;
+        const retentionTime = retentionDetail.find((x : any) => x.id == retentionId).detail.limit;
+        retentionDetails.push({
+          categoryName: category.name,
+          retentionId: retentionId,
+          hours: retentionTime.hours + retentionTime.gracePeriodInHours
+        });
       }
     }
     /** 
@@ -66,34 +158,37 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       /** 
        * * This was the last category 
        * */
-      props.setDifferenceOfHours(sortedArray[0].hours);
-      props.setRemovalType(2);
-      props.setActiveForm(4);
-      return;
+      if (stationPolicies[0].retentionPolicyId) {
+        const cmtExtractValues = ExtractHoursFromCMTEntityRecord(stationPolicies[0].retentionPolicyId);
+        const totalHours = cmtExtractValues.totalHours;
+        const newExpiryDate = moment().add(totalHours, 'hours');
+        const differenceOfRetentionTime = RetentionDateTimeFormatter(moment(), newExpiryDate);
+        props.setDifferenceOfRetentionTime(differenceOfRetentionTime);
+        props.setRemovalType(CategoryRemovalType.LastCategoryRemoval);
+        props.setActiveForm(4);
+        return;
+      }
     }
     const SecondHighestRetention = sortedArray[1];
     if (highestRetention.categoryName === removedCategory.label) {
       /** 
        * * Selected Category have Highest Hours 
        * */
-      const recordingStarted = props.evidence?.assets?.master?.recording.started;
-      const expiryDate = moment(recordingStarted).add(highestRetention.hours, 'hours').utc();
       const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
-      const duration = Math.floor(moment.duration(expiryDate.diff(newExpiryDate)).asHours());
+      const differenceOfRetentionTime = RetentionDateTimeFormatter(moment(), newExpiryDate);
       props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
-      props.setDifferenceOfHours(duration);
-      /** Incase Retention is effected */
-      props.setRemovalType(1);
+      props.setDifferenceOfRetentionTime(differenceOfRetentionTime);
+      props.setRemovalType(CategoryRemovalType.HighestRetentionCategoryRemoval);
       props.setActiveForm(4);
     }
     else {
       /** 
        * * Normal Removal 
        * */
-      props.setRemovalType(0);
+      props.setRemovalType(CategoryRemovalType.NotEffectingRetentionRemoval);
       props.setActiveForm(4);
     }
-  };
+  }
 
   return (
     <>
@@ -102,10 +197,10 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
         onSubmit={({ reason }: any, actions) => {
           // If assest is going to uncategorized.
           const categoriesLenght: number = props.selectedCategoryValues?.length;
-          if (categoriesLenght == 0) {
+          props.setRemoveMessage(reason);
+          if (categoriesLenght == 0)
             props.setActiveForm(4);
-          }
-          getPolicyAsync(reason);
+          getPolicyAsync();
           actions.setSubmitting(false);
         }}
         validationSchema={Yup.object({
@@ -127,7 +222,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
               as='textarea'
               onChange={(event: any) => {
                 handleChange(event);
-                // setMessageLenght(event.target.value);
                 props.setIsformUpdated(true)
               }}
             />

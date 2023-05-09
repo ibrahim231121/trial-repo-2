@@ -76,7 +76,7 @@ const SensorsAndTriggersList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "sensorsAndTriggersTemplateDataTable");
-    //dispatch(enterPathActionCreator({ val: "" }));
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   const setSensorsEventsData = () => {
@@ -327,7 +327,7 @@ const SensorsAndTriggersList: React.FC = () => {
             selectedItems={selectedItems}
              //Please dont miss this block.
              offsetY={119}
-             stickyToolbar={122}
+             stickyToolbar={117}
              searchHeaderPosition={229}
              dragableHeaderPosition={194}
              //End here

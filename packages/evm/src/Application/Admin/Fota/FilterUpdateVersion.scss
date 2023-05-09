@@ -1,0 +1,29 @@
+.filterUploadSelectGridMain {
+    display: flex;
+    justify-content: space-between;
+    .filterUploadSelectGridDiv {
+        display: flex;
+    }
+    .filterUploadSelectGrid_1 {
+        margin-top: 137px;
+        margin-left: 103px;
+      }
+      .filterUploadSelectGrid_2 {
+        margin-top: 137px;
+        margin-left: 16px;
+      }
+      .createUpdateVersion {
+        margin-right: 800px;
+        margin-top: 120px;
+        .gridFilterTextBox , .configurationTemplateLabel {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .gridFilterTextBox {
+            input {
+                width: 130px;
+            }
+        }
+      }
+}

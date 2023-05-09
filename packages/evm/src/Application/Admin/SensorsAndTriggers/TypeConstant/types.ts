@@ -1,5 +1,9 @@
 export type SelectBoxType = {
     value: number,
+    label: string
+}
+export type CameraSelectBoxType = {
+    value: number,
     displayText: string
 }
 
@@ -27,7 +31,7 @@ export type SwitchParametersModel = {
     overlay: StringExpand,
     category: SelectBoxTypeExpand,
     description: StringExpand,
-    camera: SelectBoxTypeExpand,
+    camera: CameraSelectBoxTypeExpand,
     emailAlert: BooleanExpand
 }
 
@@ -63,6 +67,10 @@ export type DeviceParameterDropdownModel = {
 
 export type SelectBoxTypeExpand = {
     data: SelectBoxType,
+    id: number
+}
+export type CameraSelectBoxTypeExpand = {
+    data: SelectBoxType[],
     id: number
 }
 

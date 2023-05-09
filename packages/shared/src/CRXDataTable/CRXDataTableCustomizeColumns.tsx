@@ -19,6 +19,7 @@ import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 
+
 const checkboxStyle = makeStyles({
   root: {
     "&:hover": {
@@ -69,7 +70,8 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
   onReorder,
   onChange,
   onHeadCellChange,
-  expanView
+  expanView,
+  presetPerUser
 }) => {
   const { t } = useTranslation<string>();
   const chkStyle = checkboxStyle();
@@ -83,7 +85,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
   const [onPreset, setOnPreSet] = useState<boolean>(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id);
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id + "_" + presetPerUser);
     if (checkOrderPreset !== null) setOnPreSet(true);
     else setOnPreSet(false);
   }, []);
@@ -103,10 +105,10 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
 
     if (onPreset)
       localStorage.setItem(
-        "checkOrderPreset_" + id,
+        "checkOrderPreset_" + id + "_" + presetPerUser,
         JSON.stringify(checkOrderPreset)
       );
-    else localStorage.removeItem("checkOrderPreset_" + id);
+    else localStorage.removeItem("checkOrderPreset_" + id + "_" + presetPerUser);
 
     setCustomize(false);
   }
@@ -211,6 +213,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
         role={undefined}
         placement="top-end"
         transition
+        disablePortal={true}
         
         style={{zIndex : 99999}}
       >

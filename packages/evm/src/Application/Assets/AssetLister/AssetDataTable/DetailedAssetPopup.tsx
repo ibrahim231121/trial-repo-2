@@ -33,6 +33,8 @@ type CheckValue = {
   assetName?: string,
   assetType?: string,
   fileType?: string,
+  expireOn?: Date,
+  holduntil?: Date,
 };
 
 type Props = {
@@ -80,36 +82,40 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
 
   const controlSelection = (check: boolean) => {
     if (groupedAsset !== undefined) {
-      let checkValues = groupedAsset.map((select: SearchModel.Asset, i: number) => {
+
+      let checkValues = groupedAsset?.map((select: SearchModel.Asset, i: number) => {
         let obj: CheckValue = {
           isChecked: check,
-          assetId: select.assetId,
-          masterId: row.masterAsset.assetId,
-          evidenceId: row.id,
-          assetName: row.asset.find((x: any) => x.assetId == select.assetId).assetName,
-          assetType: row.asset.find((x: any) => x.assetId == select.assetId).assetType,
-          fileType: row.asset.find((x: any) => x.assetId == select.assetId).files[0].type,
+          assetId: select?.assetId,
+          masterId: row?.masterAsset?.assetId,
+          evidenceId: row?.id,
+          assetName: row?.asset?.find((x: any) => x.assetId == select.assetId)?.assetName,
+          assetType: row?.asset?.find((x: any) => x.assetId == select.assetId)?.assetType,
+          fileType: row?.asset?.find((x: any) => x.assetId == select.assetId)?.files[0]?.type,
+          expireOn: row?.expireOn,
+          holduntil: row?.holdUntil,
         }
         return obj;
       });
 
       setSelected(checkValues);
-      let groupedSelectedAssets = checkValues.map((select: any, i: number) => {
+      let groupedSelectedAssets = checkValues?.map((select: any, i: number) => {
         let obj: any = {
-          isChecked: select.isChecked,
-          assetId: select.assetId,
-          masterId: row.masterAsset.assetId,
-          evidenceId: row.id,
-          assetName: row.asset.find((x: any) => x.assetId == select.assetId).assetName,
-          assetType: row.asset.find((x: any) => x.assetId == select.assetId).assetType,
-          fileType: row.asset.find((x: any) => x.assetId == select.assetId).files[0].type,
+          isChecked: select?.isChecked,
+          assetId: select?.assetId,
+          masterId: row?.masterAsset?.assetId,
+          evidenceId: row?.id,
+          assetName: row?.asset?.find((x: any) => x.assetId == select.assetId)?.assetName,
+          assetType: row?.asset?.find((x: any) => x.assetId == select.assetId)?.assetType,
+          fileType: row?.asset?.find((x: any) => x.assetId == select.assetId)?.files[0]?.type,
+          expireOn: row?.expireOn,
+          holduntil: row?.holdUntil,
         }
         return obj;
       });
       dispatch(addGroupedSelectedAssets(groupedSelectedAssets));
     }
   };
-
 
 
   const handleCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,11 +137,12 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
           assetName: row.asset.find((x: any) => x.assetId == select.assetId).assetName,
           assetType: row.asset.find((x: any) => x.assetId == select.assetId).assetType,
           fileType: row.asset.find((x: any) => x.assetId == select.assetId).files[0].type,
+          expireOn: row.expireOn,
+          holduntil: row.holdUntil,
         }
         return obj;
       } else return select;
     });
-
     setSelected(checkValues);
     let groupedSelectedAssets = checkValues.map((select: any, i: number) => {
       let obj: any = {
@@ -145,6 +152,8 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
         assetName: row.asset.find((x: any) => x.assetId == select.assetId).assetName,
         assetType: row.asset.find((x: any) => x.assetId == select.assetId).assetType,
         fileType: row.asset.find((x: any) => x.assetId == select.assetId).files[0].type,
+        expireOn: row.expireOn,
+        holduntil: row.holdUntil,
       }
       return obj;
     });
@@ -176,6 +185,12 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
 
       return middleElip
     }
+  }
+
+  const isLockIconShow = (asset : SearchModel.Asset) : boolean => {
+    if(asset.lock)
+      return true;
+    return false;
   }
 
   return (
@@ -218,22 +233,28 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
             {(selected.length > 0 && groupedAsset !== undefined)
               ? groupedAsset.map((asset: SearchModel.Asset, index: number) => {
                 const id = `checkBox'+${index}`;
+                const links =
+                  <>
+                    <Link
+                      className="linkColor"
+                      to={{
+                        pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
+                        state: {
+                          evidenceId: row.id,
+                          assetId: asset.assetId,
+                          assetName: asset.assetName,
+                          evidenceSearchObject: row
+                        },
+                      }}
+                    >
 
-                const links = <Link
-                  className="linkColor"
-                  to={{
-                    pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
-                    state: {
-                      evidenceId: row.id,
-                      assetId: asset.assetId,
-                      assetName: asset.assetName,
-                      evidenceSearchObject: row
-                    },
-                  }}
-                >
+                      <div className="assetName">{asset.assetName}</div>
+                    </Link>
+                    {isLockIconShow(asset) &&
+                      <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock" />
+                    }
+                  </>;
 
-                  <div className="assetName">{asset.assetName}</div>
-                </Link>
                 return (
                   <>
                     <div className="_asset_group_list_row" key={index}>
@@ -253,6 +274,7 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
                           assetName={asset.assetName}
                           assetType={asset.assetType}
                           fileType={asset.files && asset.files[0]?.type}
+                          accessCode={asset.files && asset.files[0]?.accessCode}
                           className={"CRXPopupTableImage"}
                         />
                       </div>

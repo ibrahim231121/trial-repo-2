@@ -1,374 +1,398 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory,CRXCheckBox, CRXSelectBox,CRXButton } from '@cb/shared';
+import { CRXCheckBox, CRXSelectBox, CRXButton } from '@cb/shared';
 import IconButton from '@material-ui/core/IconButton';
-// import CRXTooltip  from "../../controls/CRXTooltip/CRXTooltip";
-
-
-import { useDispatch } from 'react-redux';
-import Cookies from 'universal-cookie';
-import { EvidenceAgent, FileAgent } from '../../../../utils/Api/ApiAgent';
-import { SubmitAnalysisModel,Project,Job,File } from '../../../../utils/Api/models/EvidenceModels';
+import { useDispatch, useSelector } from 'react-redux';
+import { AICoordinatorAgent, EvidenceAgent, FileAgent } from '../../../../utils/Api/ApiAgent';
+import { Asset, File } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { CRXTooltip } from '@cb/shared';
-import { number } from 'yup/lib/locale';
-import { CRXMultiSelectBoxLight } from '@cb/shared';
-import { JOBCOORDINATOR_SERVICE_URL } from '../../../../utils/Api/url';
+import { Project } from '../../../../utils/Api/models/AICoordinatorModels';
+
+import './SubmitAnalysis.scss'
 import moment from 'moment';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
+import { ProjectStateEnum, ProjectStatusEnum, ProjectTypeEnum, RedactionStatus } from '../../utils/RedactionEnum';
+import { MultiSelectBoxCategory } from '@cb/shared';
+import { SelectedCategoryModel } from '../Category/Model/FormContainerModel';
+import { filterCategory } from '../Category/Utility/UtilityFunctions';
+import { RootState } from '../../../../Redux/rootReducer';
+import { getUsersIdsAsync, getUsersInfoAsync } from '../../../../Redux/UserReducer';
+import { UserNameAndValue } from '../../../Header/AssetsBucket/SubComponents/types';
+import { CRXMultiSelectBoxLight } from '@cb/shared';
+import { AutoCompleteOptionType } from '../../../Cases/CaseTypes';
 
 type SubmitAnalysisProps = {
-    items: any[];
-    filterValue: any[];
-    //setFilterValue: (param: any) => void;
-    rowData: any;
-    setOnClose: () => void;
-    setRemovedOption: (param: any) => void;
-    showToastMsg: (obj: any) => any;
-  };
+  items: any[];
+  filterValue: any[];
+  //setFilterValue: (param: any) => void;
+  rowData: any;
+  setOnClose: () => void;
+  setRemovedOption: (param: any) => void;
+  showToastMsg: (obj: any) => any;
+  isSubmittedForRedaction: boolean
+};
+
 const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
 
-    type AudioSourceOptionModel =  {
-      value: number;
-      displayText: string;
-    };
-    const { t } = useTranslation<string>();
-    const dispatch = useDispatch();
-    const [buttonState, setButtonState] = React.useState<boolean>(false);
-
-    const [audioSourceCheck, setAudioSourceCheck] = React.useState<boolean>(false);
-    const [videoAnalysisCheck, setVideoAnalysisCheck] = React.useState<boolean>(false);
-    const [audioAnalysisCheck, setAudioAnalysisCheck] = React.useState<boolean>(false);
-    const [audioSource,setAudioSource] = React.useState<string>("");
-    const [notes,setNotes] = React.useState<string>('');
-    const anchorRef = React.useRef<HTMLButtonElement>(null);
-    const [res, setRes] = React.useState<File>();
-    const [downloadUrl, setDownloadUrl] = React.useState<string>();
-
-    const [responseError, setResponseError] = React.useState<string>('');
-    const [alert, setAlert] = React.useState<boolean>(false);
-    const [emailError, setEmailError] = React.useState<string>('');
-    const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
-    const [audioSourceOptions, setAudioSourceOptions] = React.useState<AudioSourceOptionModel[]>([{ value: 0, displayText: "Select" }]);
-
-   
-  //   const AudioSourceOptions = [
-  //     { value: 1, displayText: t("Audio_Source_1") },
-  //     { value: 2, displayText: t("Audio_Source_2") },
-  //     { value: 3, displayText: t("Audio_Source_3") }
-  //  ];
-  //setAudioSourceOptions([{ value: 0, displayText: "Select" }])
-  
-    const [submitAnalysis, setSubmitAnalysis] = React.useState<SubmitAnalysisModel>()
-  
-    React.useEffect(() => {
-      var masterAudioDevice = props.rowData.evidence.masterAsset.audioDevice;
-     var TempAudioSources = [
-        { value: 1, displayText: masterAudioDevice }
-     ];
-      
-      var audioDevices = props.rowData.evidence.asset.map((x:any) => x.audioDevice  );
-      console.log('audio Devices: ' + audioDevices);
-      for(var i = 0;i < audioDevices.length-1; i++)
-      {
-        if(audioDevices[i] != null)
-        {
-        const temp = {
-          value: i+2, displayText: audioDevices[i]
-        }
-      
-        TempAudioSources.push(temp);
-        }
-      }
-      setAudioSourceOptions(TempAudioSources);
-      setAudioSource(TempAudioSources[0].displayText);
-     
-    }, []);
-    React.useEffect(() => {
-      if(submitAnalysis != null)
-      {
-        sendData();
-      }
-    },[submitAnalysis])
-    React.useEffect(() => {
-      if(res != null)
-        {
-          DownloadUrl();
-        //   let tempProject: Project = {
-        //     projectName:"Project_202208100648",
-        //     type:0,
-        //     notes:notes,
-        //     assetId:props.rowData.evidence.masterAsset.assetId,
-        //     assetName:props.rowData.assetName,
-        //     assetUrl: res ? res.url : "",
-        //     assetFileSize:res ? res.size : 0,
-        //     assetDuration: res ? res.duration : 0,
-        //     recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
-        //     fileType:res ? res.extension : "",
-        //     submitBy: parseInt(localStorage.getItem('User Id') ?? "0")
-        // };
-        // let tempJob: Job = {
-        //   type:0,
-        //   priority:0,
-        //   progress:0
-        // };
-        // let temp: SubmitAnalysisModel = {
-        //   project:tempProject,
-        //   job:tempJob
-        // };
-        //setSubmitAnalysis(temp);
-      }
-    },[res])
-
-    React.useEffect(() => {
-      if(res != null)
-      {
-        let tempProject: Project = {
-          projectName:"Project_202208100648",
-          type:0,
-          notes:notes,
-          assetId:props.rowData.evidence.masterAsset.assetId,
-          assetName:props.rowData.assetName,
-          assetUrl: downloadUrl ? downloadUrl : "",
-          assetFileSize:res ? res.size : 0,
-          assetDuration: res ? res.duration : 0,
-          recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
-          fileType:res ? res.extension : "",
-          submitBy: parseInt(localStorage.getItem('User Id') ?? "0"),
-          evidenceId: props.rowData.evidence.Id,
-          tenantId:1
-      };
-      let tempJob: Job = {
-        type:0,
-        priority:0,
-        progress:0
-      };
-      let temp: SubmitAnalysisModel = {
-        project:tempProject,
-        job:tempJob
-      };
-      setSubmitAnalysis(temp);
-    }
-    },[downloadUrl])
-
-  
-    const handleAudioSourceCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-      
-      setAudioSourceCheck(e.target.checked)
-    }
-    const handleAudioAnalysisCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAudioAnalysisCheck(e.target.checked)
-    }
-    const handleVideoAnalysisCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setVideoAnalysisCheck(e.target.checked)
-    }
-    
-    const onAudioSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAudioSource(e.target.value);
-  }
-    const onSubmitForm = async () => {
-      
-      const url =
-      "/Evidences/" +
-      `${props.rowData.id}` +
-      "/assets/" +
-      `${props.rowData.assetId}` +
-      "/Files";
-
-      
-      EvidenceAgent.getAssetFile(url).then((response: File[]) =>  {
-        const temp = response;
-        
-        setRes(temp[0]);
-        
-      });
-     
-  
-    };
-    const DownloadUrl = async () => {
-      const url =
-      "/Files/download/" +
-      `${res?.url}`;
-      FileAgent.getDownloadUrl(url).then((response: string) =>  {
-        setDownloadUrl(response);
-      });
-      
-    }
-    const sendData = async () => {
-      const url = JOBCOORDINATOR_SERVICE_URL;
-      EvidenceAgent.submitAnalysis(url, submitAnalysis).then(() => {
-        props.setOnClose();
-        props.showToastMsg({
-          message: "Analysis submitted for redaction",
-          variant: "success",
-          duration: 7000,
-          clearButtton: true,
-        });
-      })
-      .catch(function (error) {
-        setAlert(true);
-        setResponseError(
-          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-        );
-        return error;
-      });
-    }
-    
-  
-    const cancelBtn = () => {
-      props.setOnClose();
-    };
-    const validateMultipleEmails = () => {
-    }
-    return (
-      <>
-        <div style={{ height: "380px" }}>
-          <Formik 
-          initialValues={{}} 
-          onSubmit={() => onSubmitForm()}
-          >
-            {() => (
-              <>
-              <Form>
-                <br></br>
-                <div>* indicates required field</div>
-                <br></br>
-                <div>&lt; Please make your preferred selections for your submission &gt;</div>
-
-                <div style={{
-                  height: "0px", paddingTop: "5px",
-                  display: `${props.rowData.evidence.asset.length > 0
-                    ? ""
-                    : "none"
-                    }`
-                }}>
-                  {t("Audio_Source")}
-                  <CRXCheckBox
-                    inputProps={"audioSourceCheck"}
-                    className="relatedAssetsCheckbox"
-                    lightMode={true}
-                    checked={audioSourceCheck}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => handleAudioSourceCheck(e)}
-                  />
-                  
-                  <IconButton
-                  ref={anchorRef}
-                  aria-haspopup="true"
-                  className="dataIconButton"
-                  disableRipple={true}
-                  style={{fontSize:"14px"}}
-                  >
-                  <CRXTooltip iconName='fas fa-info-circle' title="Audio Source" arrow={false} placement="top-start"></CRXTooltip>
-        </IconButton>
-                </div>
-                
-                <div style={{
-                  height: "0px", paddingTop: "35px", paddingBottom: "30px",
-                  display: `${audioSourceCheck == true
-                    ? ""
-                    : "none"
-                    }`
-                }}>
-                 <span >{t("Select_Audio_Source")}</span>
-                <CRXSelectBox
-                      className={`adVSelectBox createUserSelectBox`}
-                      id="selectBoxAudioSource"
-                      value={audioSource}
-                      onChange={(e: any) => onAudioSourceChange(e)}
-                      options={audioSourceOptions}
-                      icon={true}
-                      popover={"crxSelectPermissionGroup"}
-                       />
-                 
-                   </div>
-                   <div style={{
-                  height: "0px", paddingTop: "40px", paddingBottom: "0px"
-                  
-                }}>
-                  {t("Analysis Option")}*
-                </div>
-                   <div style={{
-                  height: "0px",marginLeft:"120px", paddingTop: "35px", paddingBottom: "30px", display:"inline"
-                  
-                }}>
-                   {t("Video_Analysis")}
-                   <CRXCheckBox
-                    inputProps={"videoAnalysisCheck"}
-                    className="relatedAssetsCheckbox"
-                    lightMode={true}
-                    checked={videoAnalysisCheck}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => handleVideoAnalysisCheck(e)}
-                  />
-                  
-                  <IconButton
-                  ref={anchorRef}
-                  aria-haspopup="true"
-                  className="dataIconButton"
-                  disableRipple={true}
-                  style={{fontSize:"14px"}}
-                  >
-                  <CRXTooltip iconName='fas fa-info-circle' title="Video Analysis" arrow={false} placement="top-start"></CRXTooltip>
-        </IconButton>
-        </div>
-                <div style={{
-                  height: "0px",marginLeft:"120px", paddingTop: "5px", paddingBottom:"10px",
-                  
-                }}>
-                  {t("Audio_Analysis")}
-                  <CRXCheckBox
-                    inputProps={"audioAnalysisCheck"}
-                    className="relatedAssetsCheckbox"
-                    lightMode={true}
-                    checked={audioAnalysisCheck}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => handleAudioAnalysisCheck(e)}
-                  />
-                  
-                  <IconButton
-                  ref={anchorRef}
-                  aria-haspopup="true"
-                  className="dataIconButton"
-                  disableRipple={true}
-                  style={{fontSize:"14px"}}
-                  >
-                  <CRXTooltip iconName='fas fa-info-circle' title="Audio Analysis" arrow={false} placement="top-start"></CRXTooltip>
-          {/* <i className="fas fa-columns"></i> */}
-        </IconButton>
-                </div>
-                <div className='categoryTitle'>
-                {t("Notes")}
-                </div>
-                <div >
-                  <textarea placeholder='Example: Redacting the person&#8218;s face' value={notes} onChange={(e) => setNotes(e.target.value)} rows={4} cols={36} ></textarea>
-                </div>
-                <br />
-                <br /><br />
-                <br />
-  
-                <div className='modalFooter CRXFooter'>
-                  <div className='nextBtn'>
-                    <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                      {t("Save")}
-                    </CRXButton>
-                  </div>
-                  <div className='cancelBtn'>
-                    <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                    {t("Cancel")}
-                    </CRXButton>
-                  </div>
-                </div>
-              </Form>
-              </>
-            )}
-          </Formik>
-        </div>
-      </>
-    );
+  type AudioSourceOptionModel = {
+    value: number;
+    displayText: string;
   };
-  
-  export default SubmitAnalysis;
-  
+  const cookies = new Cookies();
+  const { t } = useTranslation<string>();
+  const dispatch = useDispatch();
+  const [buttonState, setButtonState] = React.useState<boolean>(true);
+
+  const [audioSourceCheck, setAudioSourceCheck] = React.useState<boolean>(false);
+  const [evidenceGroupCheck, setEvidenceGroupCheck] = React.useState<boolean>(false);
+  const [videoAnalysisCheck, setVideoAnalysisCheck] = React.useState<boolean>(false);
+  const [audioAnalysisCheck, setAudioAnalysisCheck] = React.useState<boolean>(false);
+  const [audioSource, setAudioSource] = React.useState<string>("");
+  const [notes, setNotes] = React.useState<string>('');
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const [asset, setAsset] = React.useState<Asset>()
+  const [audioSourceOptions, setAudioSourceOptions] = React.useState<AudioSourceOptionModel[]>([{ value: 0, displayText: "Select" }]);
+  const [selectedCategoryValues, setSelectedCategoryValues] = React.useState<Array<SelectedCategoryModel>>([]);
+  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const [owner, setOwner] = React.useState<AutoCompleteOptionType[]>([])
+  const [userOption, setUserOption] = React.useState<string[]>([])
+  const users: any = useSelector((state: RootState) => state.userReducer.userIds);
+
+  React.useEffect(() => {
+    var masterAudioDevice = props.rowData.evidence.masterAsset.audioDevice;
+    var TempAudioSources = [
+      { value: 1, displayText: masterAudioDevice }
+    ];
+
+    var audioDevices = props.rowData.evidence.asset.map((x: any) => x.audioDevice);
+    for (var i = 0; i < audioDevices.length - 1; i++) {
+      if (audioDevices[i] != null) {
+        const temp = {
+          value: i + 2, displayText: audioDevices[i]
+        }
+
+        TempAudioSources.push(temp);
+      }
+    }
+    setAudioSourceOptions(TempAudioSources);
+    setAudioSource(TempAudioSources[0].displayText);
+    dispatch(getUsersIdsAsync())
+    EvidenceAgent.getEvidence(props.rowData.id).then((response: any) => {
+      setAsset(response.assets.master)
+      setButtonState(false)
+    })
+  }, []);
+
+  useEffect(() => {
+    if (users.data && users.data.length > 0) {
+      const userNames = users.data.map((user: any) => {
+        return {
+          userid: user.recId,
+          loginId: user.loginId,
+        } as UserNameAndValue;
+      });
+      sendOptionList(userNames);
+    }
+  }, [users])
+
+  const sendOptionList = (data: any[]): void => {
+    const dateOfArry: any = [];
+    data?.forEach((item, index) => {
+      dateOfArry.push({
+        id: item.userid,
+        label: item.loginId,
+      });
+    });
+    setUserOption(dateOfArry);
+  };
+
+  const onSubmitForm = async () => {
+    if(asset){
+
+      const AssetBody : any = {
+        id: asset.id,
+        name: asset.name,
+        typeOfAsset: asset.typeOfAsset,
+        state: asset.state,
+        status: asset.status,
+        unitId: asset.unitId,
+        duration: asset.duration,
+        bookMarks: [],
+        files: [],
+        owners: asset.owners,
+        lock: asset.lock,
+        recording: asset.recording,
+        isRestrictedView: asset.isRestrictedView,
+        buffering: asset.buffering,
+        isOverlaid: asset.isOverlaid,
+        notes: [],
+        redactionStatus: RedactionStatus.SubmitForAnalysis
+      };
+
+      EvidenceAgent.getAssetFile("/Evidences/" + `${props.rowData.id}` + "/assets/" + `${asset.id}` + "/Files").then((response: File[]) => {
+        FileAgent.getDownloadUrl("/download/" + `${response[0].url}`).then((responseURL: string) => {
+          if (responseURL != null) {
+            let accessToken = cookies.get('access_token');
+            let tenantId
+            if (accessToken) {
+                let decodedAccessToken: any = jwt_decode(accessToken);
+                tenantId = decodedAccessToken.TenantId;
+            }
+            let url = new URL(responseURL)
+            let project: Project = {
+              id: 0,
+              projectName: "Project_"+moment(new Date()).local().format("YYYYMMDDHHmmss"),
+              type: ProjectTypeEnum['Video Analyzing'],
+              state: ProjectStateEnum.Submit,
+              status: ProjectStatusEnum.Active,
+              notes: notes,
+              assetId: props.rowData.assetId,
+              assetName: props.rowData.assetName,
+              assetUrl: responseURL,
+              assetFileSize: props.rowData.size,
+              assetDuration: props.rowData.duration,
+              recordedBy: props.rowData.recordedBy[0],
+              fileType: url.pathname.split('.')[1],
+              submitBy: parseInt(localStorage.getItem('User Id') ?? "0"),
+              evidenceId: props.rowData.evidence.id,
+              tenantId: tenantId,
+              modifiedOn: new Date(),
+              job: undefined,
+              jobs: []
+            }
+            AICoordinatorAgent.addProject(project)
+            .then(() => {
+              EvidenceAgent.updateAsset(`/Evidences/${props.rowData.id}/assets/${asset.id}`, AssetBody)
+              .then(() =>{ 
+                props.setOnClose();
+                props.showToastMsg({
+                  message: "Asset submitted to Getac AI",
+                  variant: "success",
+                  duration: 7000,
+                })
+              })
+              .catch((ex) => {
+                console.error(ex)
+                props.showToastMsg({
+                  message: ex.message,
+                  variant: "error",
+                  duration: 7000,
+                })
+              })
+            })
+            .catch((error) => {
+              props.showToastMsg({
+                message: error.message,
+                variant: "error",
+                duration: 7000,
+              })
+            })
+          }
+        })
+      })
+    }
+    else
+      console.error("Asset not found")
+  }
+
+  const handleChange = (e: any, colIdx: number, v: any, reason: any, detail: any) => {
+    setSelectedCategoryValues(() => [...v]);
+    // if (reason === 'remove-option') {
+    //   // Show "Remove Category Reason" Modal Here.
+    //   // Set value of removed option in to parent state.
+    //   if (isNewlyAddedCategory(detail.option.label)) {
+    //     props.setRemovedOption(detail.option);
+    //     props.setActiveForm((prev) => prev + 3);
+    //   } else {
+    //     props.setIsformUpdated(false);
+    //   }
+    // }
+  };
+
+  return (
+    <>
+      <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
+        {() => (
+          <>
+            <Form style={{marginTop:45, marginBottom:45}}>
+              <i>* indicates required field</i>
+              <div style={{marginTop:30}}>&lt;Please make your preferred selections for your submission&gt;</div>
+              <div style={{display:'flex', marginTop:45, marginBottom:60, alignItems:'baseline'}}>
+                {t("Audio_Source")}
+                <div style={{display:'flex', flexDirection:'column'}}>
+                  <div style={{marginLeft:40}}>
+                    <CRXCheckBox
+                      inputProps={"audioSourceCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={audioSourceCheck}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAudioSourceCheck(e.target.checked)}
+                    />
+                    <span>{t("Select_Audio_Source")}</span>
+                    <IconButton
+                      ref={anchorRef}
+                      aria-haspopup="true"
+                      className="dataIconButton"
+                      disableRipple={true}
+                      style={{ fontSize: "14px" }}
+                    >
+                      <CRXTooltip iconName='fas fa-info-circle' title="Choose from list of audio sources" arrow={true} placement="right"></CRXTooltip>
+                    </IconButton>
+                  </div>
+                  <CRXSelectBox
+                    disabled={!audioSourceCheck}
+                    className={`adVSelectBox createUserSelectBox`}
+                    id="selectBoxAudioSource"
+                    value={audioSource}
+                    onChange={(e: any) => setAudioSource(e.target.value)}
+                    options={audioSourceOptions}
+                    icon={true}
+                    popover={"crxSelectPermissionGroup"}
+                  />
+                </div>
+              </div>
+              <p>Please select which type(s) you want to submit for redaction analysis:</p>
+              <div style={{display:'flex',marginTop: 45, marginBottom: 45}}>
+                <div style={{display:'flex',alignSelf: 'baseline', marginTop:10}}>
+                  {t("Analysis Type")}*
+                </div>
+                <div style={{display:'flex', flexDirection:'column', marginLeft:30}}>
+                  <div>
+                    <CRXCheckBox
+                      inputProps={"videoAnalysisCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={videoAnalysisCheck}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVideoAnalysisCheck(e.target.checked)}
+                    />
+                    {t("Video_Analysis")}
+                    <IconButton
+                      ref={anchorRef}
+                      aria-haspopup="true"
+                      className="dataIconButton"
+                      disableRipple={true}
+                      style={{ fontSize: "14px" }}
+                    >
+                      <CRXTooltip iconName='fas fa-info-circle' title="Video analysis includes both face and license plate" arrow={true} placement="right"></CRXTooltip>
+                    </IconButton>
+                  </div>
+                  <div>
+                    <CRXCheckBox
+                      inputProps={"audioAnalysisCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={audioAnalysisCheck}
+                      onChange={(
+                        e: React.ChangeEvent<HTMLInputElement>) => setAudioAnalysisCheck(e.target.checked)}
+                    />
+                    {t("Audio_Analysis")}
+                    <IconButton
+                      ref={anchorRef}
+                      aria-haspopup="true"
+                      className="dataIconButton"
+                      disableRipple={true}
+                      style={{ fontSize: "14px" }}
+                    >
+                      <CRXTooltip iconName='fas fa-info-circle' title="Audio analysis includes transcription" arrow={true} placement="right"></CRXTooltip>
+                    </IconButton>
+                  </div>
+                </div>
+              </div>
+              <div style={{display:'flex'}}>
+                {t("Notes")}
+                <textarea placeholder='Example: Redacting the persons face' value={notes} onChange={(e) => setNotes(e.target.value)} rows={6} cols={52} style={{marginLeft:90}}></textarea>
+              </div>
+              <div style={{display:'flex', marginTop:45, marginBottom:45}}>
+                <div style={{display:'flex',alignSelf: 'baseline', marginTop:10}}>
+                  {t("Evidence Group")}
+                </div>
+                <div style={{display:'flex', flexDirection:'column', marginLeft:30}}>
+                  <div>
+                    <CRXCheckBox
+                      inputProps={"audioSourceCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={evidenceGroupCheck}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEvidenceGroupCheck(e.target.checked)}
+                    />
+                    <span>{t("Create New Evidence Group")}</span>
+                    <IconButton
+                      ref={anchorRef}
+                      aria-haspopup="true"
+                      className="dataIconButton"
+                      disableRipple={true}
+                      style={{ fontSize: "14px" }}
+                    >
+                      <CRXTooltip iconName='fas fa-info-circle' title="Makes a physical copy of all evidence of original group, and with redacted video of, but with a new owner" arrow={true} placement="right"></CRXTooltip>
+                    </IconButton>
+                  </div>
+                  {evidenceGroupCheck && 
+                    <>
+                      <div style={{display:'flex', alignItems:'center', marginTop:20}}>
+                      <div>
+                          {t('Owner(s)')}
+                        </div>
+                        <div >
+                        <CRXMultiSelectBoxLight
+                          className="categoryBox"
+                          placeHolder=""
+                          multiple={true}
+                          CheckBox={true}
+                          required={false}
+                          options={userOption}
+                          value={owner}
+                          autoComplete={false}
+                          isSearchable={true}
+                          onChange={(e: React.SyntheticEvent, value: AutoCompleteOptionType[]) => {
+                            setOwner(value)
+                          }}
+                        />
+                        </div>
+                      </div>
+                      <div style={{display:'flex', alignItems:'center', marginTop:20}}>
+                        <div>
+                          {t('Category')}
+                        </div>
+                        <div >
+                          <MultiSelectBoxCategory
+                            className='categoryBox'
+                            multiple={true}
+                            CheckBox={true}
+                            visibility={true}
+                            options={filterCategory(categoryOptions)}
+                            value={selectedCategoryValues}
+                            autoComplete={false}
+                            isSearchable={true}
+                            onChange={(event: any, newValue: any, reason: any, detail: any) => {
+                              return handleChange(event, 1, newValue, reason, detail);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  }
+                </div>
+              </div>
+              <div className='modalFooter CRXFooter'>
+                <div className='nextBtn'>
+                  <CRXButton disabled={buttonState} type='submit' className='primary'>
+                    {props.isSubmittedForRedaction ? t("Submit_again_to_Getac_AI") : t("Submit_to_Getac_AI")}
+                  </CRXButton>
+                </div>
+                <div className='cancelBtn'>
+                  <CRXButton onClick={() => props.setOnClose()} className='cancelButton secondary'>
+                    {t("Cancel")}
+                  </CRXButton>
+                </div>
+              </div>
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+export default SubmitAnalysis;

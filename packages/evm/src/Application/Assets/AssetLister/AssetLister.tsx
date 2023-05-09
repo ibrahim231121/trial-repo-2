@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn,CRXAlert  } from '@cb/shared';
 import AdvanceOption from './AdvanceOption';
@@ -30,6 +30,10 @@ import Cookies from 'universal-cookie';
 import { SearchModel } from '../../../utils/Api/models/SearchModel';
 import { useParams } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
+import { CRXTooltip } from '@cb/shared';
+import { IconButton } from '@material-ui/core';
+import "../../../Assets/css/animate.min.css";
+
 const SearchComponent = (props: any) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -42,6 +46,10 @@ const SearchComponent = (props: any) => {
   const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
   const [searchData, setSearchData] = React.useState<SearchModel.Evidence[]>([]);
   const [predictiveText, setPredictiveText] = React.useState('');
+  const [searchResultText, setSearchResultText] = React.useState<any>({
+    type : '',
+    name : ''
+  });
   const [querryString, setQuerryString] = React.useState('');
   const [randomKey, setRandomKey] = React.useState(0);
   const [stickyBorder, setStickyBorder] = React.useState(false);
@@ -51,6 +59,7 @@ const SearchComponent = (props: any) => {
     value: basicDateDefaultValue,
     displayText: basicDateDefaultValue
   });
+  const [fieldsNumber,setFieldsNumber] = useState(0);
   const [errorMessage, setErrorMessage] = React.useState<any>({
     message: "",
     type: "",
@@ -86,7 +95,7 @@ const SearchComponent = (props: any) => {
     bool: {
       must: [
         {
-          query_string: {
+          multi_match: {
             query: `${querryString}*`,
             fields: [
               'asset.assetName',
@@ -98,6 +107,7 @@ const SearchComponent = (props: any) => {
               'formData.key',
               'formData.value'
             ],
+            operator : 'and'
           },
         },
       ],
@@ -116,12 +126,13 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: 'My Assets',
-      query: () => queries.GetAssetsByUserName(decoded.LoginId),
+      query: () => queries.GetAssetsByUserName(decoded),
       renderData: function () {
         setQuerryString(evidenceSearchType.MyAsstes);
         setDateTimeAsset(dateTimeDropDown);
         fetchData(this.query(), SearchType.ViewOwnAssets,evidenceSearchType.MyAsstes);
         setPredictiveText(evidenceSearchType.MyAsstes);
+        setSearchResultText({type : "Search Term:", name : evidenceSearchType.MyAsstes})
         setShowAssetDateCompact(true);
         setShowShortCutSearch(false);
         setAdvanceSearch(false);
@@ -138,6 +149,7 @@ const SearchComponent = (props: any) => {
         if(categorydateValue != null)
         fetchData(queries.GetAssetsUnCategorized(categorydateValue.startDate(), categorydateValue.endDate(), decoded), SearchType.ShortcutSearch,evidenceSearchType.NotCategorized);
         setPredictiveText(evidenceSearchType.NotCategorized);
+        setSearchResultText({type : "Search Term:", name : evidenceSearchType.NotCategorized})
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
@@ -153,6 +165,7 @@ const SearchComponent = (props: any) => {
         setQuerryString(evidenceSearchType.ApproachingDeletion);
         setDateOptionType(dateOptionsTypes.approachingDeletion);
         setPredictiveText(evidenceSearchType.ApproachingDeletion);
+        setSearchResultText({type : "Search Term :", name : evidenceSearchType.ApproachingDeletion})
         setIsSearchBtnDisable(false);
         if (!dateTimeObject) {
           let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === (dateTimeDropDown.displayText != "anytime" ? dateTimeDropDown.displayText : approachingDateDefaultValue));
@@ -313,7 +326,17 @@ const SearchComponent = (props: any) => {
           } else if (o.key == 'category') {
             const val = {
               bool: {
-                should: [{ match: { categories: `${o.inputValue}` } }],
+                must: [
+                  {
+                    multi_match: {
+                      query: `${o.inputValue}*`,
+                      fields: [
+                        'categories'
+                      ],
+                      operator : 'and'
+                    },
+                  },
+                ]
               },
             };
             AdvancedSearchQuerry.bool.must.push(val);
@@ -366,11 +389,6 @@ const SearchComponent = (props: any) => {
     setSearchData([]);
   }, []);
 
-  const CreateBorderWithScroll = () => {
-    const borderBottomd : HTMLCollectionOf<any> = document.getElementsByClassName('titlePage');
-    borderBottomd.length > 0 && (borderBottomd[0].style.borderBottom = "1px solid #dedede") ;
-  }
-
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -399,6 +417,7 @@ const SearchComponent = (props: any) => {
   }, [dateTimeDropDown]);
 
   const Search = () => {
+    setSearchResultText({type : "Search Term:", name :querryString})
     if (querryString && querryString.length > 0 && querryString.includes("#")) {
       if (querryString.startsWith("#")) {
         let exactShortCutName = querryString.substring(1);
@@ -409,10 +428,12 @@ const SearchComponent = (props: any) => {
           setSearchData([]);
 
         }
+        
       }
     } else {
       NormalSearch();
     }
+    closeSearchPanel()
   }
 
   const NormalSearch = () => {
@@ -480,6 +501,7 @@ const SearchComponent = (props: any) => {
       setDateTimeAsset(dateTimeDropDown);
     }
     setDateOptionType(dateOptionType);
+    
   }
 
   const getAllOptions = (e: any) => {
@@ -520,32 +542,100 @@ const SearchComponent = (props: any) => {
 
   const stickyBorderClass = stickyBorder ? "stickyBorder_Add" : "stickyBorder_Remove"; 
   const searchBar : any = useRef()
+  const adSearchBar : any = useRef()
+  const titleSearchBox : any = useRef();
+  const [searchPanelModal, setSearchPanelModal] = useState<string>("panel_show");
+  const [searchPanelIdentifer,setSearchPanelIdentifer] = useState<boolean>(false);
+  const [isOverLay, setIsOverlay] = useState<boolean>(false)
+  const [advanceSearchText, setSdvanceSearchText] = useState<any[]>([])
+
+  useEffect(() => {
+    showAdvanceSearch == true ? setSearchPanelModal("panel_show main_master_page_panel") : setSearchPanelModal("panel_hide")
+  },[showAdvanceSearch])
+
   const showSearchBar = () => {
-    searchBar && (searchBar.current.style.top = "89px")
+    setSearchPanelModal("panel_show panelDesign panelDesignUi panelDesignPopup ") 
+    setSearchPanelIdentifer(true);
+    setIsOverlay(true)
   }
+
+  useEffect(()=>{
+    let htmlElement = document.querySelector("html");
+    if(searchPanelIdentifer) {
+      htmlElement?.classList.add("removeScrollHtml");
+    }else {
+      htmlElement?.classList.remove("removeScrollHtml");
+    }
+  },[searchPanelIdentifer])
+
+
+  const closeSearchPanel = () => {
+    setSearchPanelModal("panel_hide") 
+    setSearchPanelIdentifer(false);
+    setIsOverlay(false)
+  }
+  const searchButton = <IconButton
+  aria-controls="viewControle"
+  className="viewControleButton"
+  aria-haspopup="true"
+  onClick={showSearchBar}
+  disableRipple={true}
+>
+  <CRXTooltip iconName="fa-solid fa-file-magnifying-glass" className='crxTooltipFilter' placement={"top"} arrow={false} title={"search assets"}></CRXTooltip>
+</IconButton>
+
+const showAdvanceSearchBox = () => {
+  setShowAdvance(!showAdvance)
+  titleSearchBox.current.style.borderBottom = "1px solid #dedede"
+  setTimeout(() => {
+    const advanceSearchBox:any = document.querySelector("#advanceSearchBox")
+    advanceSearchBox.scrollTop = 170;
+    advanceSearchBox.scrollIntoView({behavior: 'smooth', block: 'start' });
+    
+  },500)
+  
+}
+const PreSearchButtonClass = showAdvance ? "PreSearchButton_Open" : "PreSearchButton_Close";
+const fieldsNumberClass = fieldsNumber == 1 ? "scrollMainPage_1" : fieldsNumber == 2 ? "scrollMainPage_2" : "" ;
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "56px" : "124px"}}>
-       {/* {showShortCutSearch == false ?  <div className='showArrow-search'>
-          <button onClick={() => showSearchBar()}>
-            <i className='fa fa-angle-down'></i>
-          </button>
-        </div> : ""
-        } */}
-        
-        {showShortCutSearch == true ?
-        <div ref={searchBar} className={ `predictiveSearch_wraper`}>
-        <div className={`predictiveSearch ${searchData.length > 0 ? "CRXPredictiveDisable" : ""}`}>
+       
+      {isOverLay == true ? <div className='search-modal-overlay'></div> : ""} 
+        <div ref={searchBar} className={`asset_lister_search_panel ${searchPanelModal}`}>
+         
+        {showShortCutSearch == false ?  <div className='modal-title_cs'>
+          <div className='title_div'>Search Assets
+          <div className='hr-line' ref={titleSearchBox}></div>
+          </div>
+          <div className='close-icon-modal'>
+            <button className='closeButton-modal' onClick={() => closeSearchPanel()}>
+              <i className='icon icon-cross2'></i>
+            </button>
+          </div>
+          </div>
+        : ""}
+
+        <div className={`scrollMainPage ${fieldsNumberClass}`} ref={adSearchBar}>
+        <div className={ `predictiveSearch_wraper`}>
+        <div className={`predictiveSearch  ${searchData.length > 0 ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
-              <label className='searchLabel'>{t("Search_Assets")}</label>
+              <label className='searchLabel'>{t("Search_Assets_By")}</label>
               <PredictiveSearchBox
 
                 onSet={(e) => onChangePredictiveSearch(e)}
                 value={predictiveText}
                 decoded={decoded}
+                onKeyUp={(event: any) => {
+                  
+                if (event.keyCode == 13) 
+                    Search()
+                        
+        }}
               />
             </CRXColumn>
+           
             <CRXColumn item xs={6}>
               <label className='dateTimeLabel'>{t("Date_and_Time")}</label>
 
@@ -573,7 +663,6 @@ const SearchComponent = (props: any) => {
           </CRXButton>
         </div>
         </div>
-        : "" }
         
         {showShortCutSearch && (
           <>
@@ -583,12 +672,12 @@ const SearchComponent = (props: any) => {
           </>
         )}
 
-        {showAdvanceSearch && (
-          <>
+       
+          
             <div className='advanceSearchContet'>
               <CRXButton
-                onClick={() => setShowAdvance(!showAdvance)}
-                className='PreSearchButton'
+                onClick={() => showAdvanceSearchBox()}
+                className={`PreSearchButton ${PreSearchButtonClass}` }
               >
                 <i className={'fas fa-sort-down ' + iconRotate}></i> {t("Advanced")}&nbsp;
                 {t("Search")}
@@ -596,16 +685,24 @@ const SearchComponent = (props: any) => {
 
               {showAdvance && (
                 <AdvanceOption
+                  searchPanelIdentifer={searchPanelIdentifer}
                   getOptions={(e) => getAllOptions(e)}
                   hideOptions={() => setShowAdvance(false)}
                   dateOptionType={dateOptionType}
                   dateTimeDetail={dateTimeDropDown}
+                  closeSearchPanel={() => closeSearchPanel()}
+                  className="animate animate__slideInUp"
+                  setSdvanceSearchText={setSdvanceSearchText}
+                  setFieldsNumber={setFieldsNumber}
+                  
                 />
               )}
             </div>
-          </>
-        )}
+          </div>
 
+          
+        
+        </div>
         {searchResult &&  <CRXAlert
                     className=""
                     message= {errorMessage.message}
@@ -624,6 +721,9 @@ const SearchComponent = (props: any) => {
               dateOptionType={dateOptionType === dateOptionsTypes.approachingDeletion ? "" : dateOptionType}
               dateTimeDetail={dateTimeAsset}
               showAdvanceSearch={showAdvanceSearch}
+              showSearchPanel={searchButton}
+              searchResultText={searchResultText}
+              advanceSearchText={advanceSearchText}
             />
           </div>
         )}

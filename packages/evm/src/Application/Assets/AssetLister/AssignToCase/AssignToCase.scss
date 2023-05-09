@@ -1,0 +1,79 @@
+.assignToCaseContent {
+    margin-top: 20px;
+    margin-bottom: 69px;
+    padding-right: 3px;
+    .caseId-container {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        h6 {
+            width: 80px;
+        }
+        .caseIdAutoComplete {
+            width: 300px;
+        }
+        .caseIdLabel {
+            margin-right: 20px;
+        }
+    }
+    .caseInformation-container {
+        padding: 25px;
+        .caseInformationHeading {
+            width: 100%;
+            text-align: center;
+            display: block;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .caseInformationRow {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .caseInformationContent {
+            display: flex;
+            :first-child {
+                padding-right: 10px;
+            }
+        }
+        .caseInformation-caseDescription {
+            width: 155px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+    .assignToCaseModalFooter {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        padding: 0px;
+        height: 74px;
+        align-items: center;
+        width: 100%;
+        border-top: 1px solid var(--color-d1d2d4);
+        left: 0;
+        padding-left: 25px;
+        background-color: var(--color-White);
+        .assignToCaseAddButton {
+            margin-right: 10px;
+        }
+    }
+}
+.CRXModalConfirmAdditionalAssets {
+    .modelTitle {
+        text-align: center;
+    }
+    .MuiDialog-paperWidthLg {
+        height: 600px;
+        width: 800px;
+    }
+    .CRXContent {
+        padding-bottom: 20px;
+        height: 100%;
+    }
+    .MuiDialog-paper {
+        max-width: none;
+    }
+}

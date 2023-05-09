@@ -1,0 +1,122 @@
+.create_Internal_Sharing_Form {
+    &.crx-model {
+        .MuiDialog-scrollPaper {
+            .MuiDialog-paperScrollPaper {
+                min-width: 1143px;
+                top: 151px;
+            }
+        }
+    }
+    .create_internal_sharing_form_field_content {
+        padding-top: 3px;
+        .crx_form_internal_sharing_row {
+            padding-bottom: 32px;
+            display: flex;
+            .cc_form_label {
+                margin-top: 100px;
+            }
+            .inputIndefiniteLabel {
+                margin-top : 10px;
+            }
+            .createInternalSharingCol {
+                .dateTimeError {
+                    color: var(--color-aa1d1d);
+                    padding-top: 7px;
+                    font-size: 14px;
+                    i {
+                      margin-right: 4px;
+                      font-size: 12px;
+                    }
+                }
+                    .errorBrdr {
+                        padding: 0 0 30px;
+                        input {
+                            outline: 2px solid #aa1d1d;
+                            &:hover {
+                            outline: 2px solid #aa1d1d;
+                            }
+                            &:focus {
+                            border: 1px solid #888787;
+                            outline: 2px solid #aa1d1d;
+                            }
+                        }
+                        label {
+                            span {
+                            color: #aa1d1d;
+                            }
+                        }
+                        }
+                .labelUi {
+                    margin-left : 45px
+                }
+                margin-left: 15px;
+                h6 {
+                    width: 140px !important;
+                }
+                &.columnLeft1 {
+                    margin-left: 177px;
+                }
+                .MuiGrid-grid-xs-2 {
+                    margin-top: 8px;
+                }
+                label {
+                    font-size: 14px;
+                    color: var(--color-333333);
+                    font-family: var(--base-font-family);
+                    span {
+                        font-size: 18px;
+                        position: relative;
+                        font-weight: var(--Font-style-bold);
+                        top: -5px;
+                        left: 6px
+                    }
+                }
+               
+                .users-input {
+                    width: 100% !important;
+                    padding-right: 5px;
+                }
+            }
+            .DateTimeUi {
+                margin-top: -5px;
+                border: 1px solid #d1d2d4;
+                background-color: #fff;
+                padding-left: 5px;
+                padding-top: 0px;
+            }
+        }
+    }
+}
+
+.internalSharingRadioBtn {
+    position: relative;
+    height: 40px;
+    label {
+        position: absolute;
+        width: 200px;
+        &:nth-child(2) {
+            left: 300px;
+        }
+        .MuiFormControlLabel-label {
+            margin-bottom: 19px;
+            margin-left: 10px;
+        }
+        span {
+            &:nth-child(2) {
+                font-size: 14px !important;
+
+            }
+        }
+    }
+}
+
+.caseIdValidation {
+    display: inline-block;
+    position: relative;
+    width: calc(100% - 140px);
+}
+.error {
+    color :'red'
+}
+
+

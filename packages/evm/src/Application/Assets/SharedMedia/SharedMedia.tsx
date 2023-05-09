@@ -21,6 +21,8 @@ import DetailedAssetPopup from "../AssetLister/AssetDataTable/DetailedAssetPopup
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 
 import { CRXLoader } from "@cb/shared";
+import { assetDurationFormat } from "../../../GlobalFunctions/AssetSizeFormat";
+import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 
 
 
@@ -110,8 +112,7 @@ const SharedMedia = () => {
   const [LinkStatus, setlinkStatus] = React.useState<string>("Validating...")
   const [downloadLink, setDownloadLink] = React.useState<string[]>([]);
 
-  const [getAssetData, setGetAssetData] = React.useState<Evidence>();
-  const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
+
   const [apiKey, setApiKey] = React.useState<string>("");
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
@@ -121,6 +122,7 @@ const SharedMedia = () => {
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [isdownloadable, setIsdownloadable] = React.useState<boolean>();
   const [ismetaDataIncluded, setIsmetaDataIncluded] = React.useState<boolean>();
+  const [assetName, setAssetName] = React.useState<string>();
 
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
   const [detailContent, setDetailContent] = React.useState<boolean>(false);
@@ -214,7 +216,7 @@ const SharedMedia = () => {
       keyCol: true
     },
     {
-      label: t("Download_link"),
+      label: `${t("Download_link")}`,
       id: "downloadLink",
       align: "center",
       dataComponent: (e: string) => { return <a href={e} style={{ color: 'black' }}><i className="fa fa-download"></i></a> },
@@ -225,7 +227,7 @@ const SharedMedia = () => {
       visible: (isdownloadable == false || isdownloadable == undefined) ? false : true
     },
     {
-      label: t("Asset_name"),
+      label: `${t("Asset_name")}`,
       id: "assetName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -235,7 +237,7 @@ const SharedMedia = () => {
       minWidth: "358",
     },
     {
-      label: t("Unit_name"),
+      label: `${t("Unit_name")}`,
       id: "unitName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -245,7 +247,7 @@ const SharedMedia = () => {
       minWidth: "358",
     },
     {
-      label: t("Categories"),
+      label: `${t("Category")}`,
       id: "categories",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -255,7 +257,7 @@ const SharedMedia = () => {
       minWidth: "358",
     },
     {
-      label: t("Description"),
+      label: `${t("Description")}`,
       id: "fields",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -265,7 +267,7 @@ const SharedMedia = () => {
       minWidth: "358",
     },
     {
-      label: t("Checksum"),
+      label: `${t("Checksum")}`,
       id: "checksum",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -275,24 +277,25 @@ const SharedMedia = () => {
       minWidth: "358",
     },
     {
-      label: t("CapturedDate"),
-      id: "capturedDate",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
+      label: t("Captured"),
+      id: "recordingStarted",
+      align: "center",
+      dataComponent: dateDisplayFormat,
       sort: true,
+      minWidth: "230",
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "358",
     },
     {
-      label: t("Duration"),
+      label: t("Asset_Duration"),
       id: "duration",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
+      dataComponent: assetDurationFormat,
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "358",
+      minWidth: "200",
+      visible: true,
     }
   ]);
 
@@ -362,6 +365,7 @@ const SharedMedia = () => {
     });
     let response = await res.json();
     setLoadingValue(false);
+    setAssetName(response[0].assetGroup[0].assetName);
     document.documentElement.style.overflow = "visible !important";
     let tempRec: SharedAssetLister[] = [];
     let formsfields: Field[] = [];
@@ -379,14 +383,13 @@ const SharedMedia = () => {
       
   });
     response[0].assetGroup.map((x: any) => {
-
       tempRec.push(
         {
           assetId: x.assetId,
           assetName: x.assetName,
           unitName: x.unitName,
           checksum: x.files.filter((y: any) => y.assetId = x.assetId).map((z: any) => { return z.checksum.checksum }),
-          duration: x.files.filter((y: any) => y.assetId = x.assetId).map((z: any) => { return z.duration / 1000 }),
+          duration: x.files.filter((y: any) => y.assetId = x.assetId)[0].duration, //.map((z: any) => { return z.duration }),
           capturedDate: x.files.filter((y: any) => y.assetId = x.assetId).map((z: any) => { return z.recording.started }),
           downloadLink: x.downloadFile[x.files.map((z: any) => { return z.filesId })],
           categories: categories.replace(/,(\s+)?$/, ''),
@@ -658,18 +661,10 @@ return (
           show={loadingValue == true}
           loadingText="Please wait"
         />
-    {/* <div style={{ textAlign: "center" }}>
-        <span style={{ fontSize: "28px", fontWeight: "900" }}>Shared Media</span><br></br>
-        <span style={{ fontSize: "16px", fontWeight: "400" }}>{LinkStatus}</span>
-      </div> */}
-    {/* {isdownloadable ? (
-        <div>
-          <CRXButton className="RetentionPoliciesBtn" onClick={() => { downloadVideos() }}>
-                  {t("Download_Assets")}
-                </CRXButton>
-        </div>
-      ) : null} */}
-
+    <div style={{ textAlign: "center" }}>
+        <span style={{ fontSize: "28px", fontWeight: "900" }}>{assetName}</span>
+        {/* <span style={{ fontSize: "16px", fontWeight: "400" }}>{LinkStatus}</span> */}
+      </div>
 
     {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
 

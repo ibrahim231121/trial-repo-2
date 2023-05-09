@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CRXButton, TextField } from "@cb/shared";
-
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 import "./AssetDetailsPanel.scss";
 import { CRXTooltip, CRXConfirmDialog } from "@cb/shared";
 import { useDispatch } from "react-redux";
 import { addTimelineDetailActionCreator } from "../../../Redux/VideoPlayerTimelineDetailReducer";
-import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
+import { AssetLogType, Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { CMTEntityRecord } from "../../../utils/Api/models/CommonModels";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { Button, Menu, MenuItem } from "@material-ui/core";
 import { RootRef } from '@material-ui/core';
+import { addAssetLog } from "../../../Redux/AssetLogReducer";
+import reactStringReplace from "react-string-replace";
 
 type Timeline = {
   recording_start_point: number;
@@ -40,10 +43,12 @@ interface propsObject {
   selectDropDown: any
   onClickBookmarkNote: any
   toasterMsgRef: any
+  assetLog: AssetLogType
+  searchTerm: string
 }
 
 
-const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, selectDropDown, onClickBookmarkNote, toasterMsgRef }: propsObject) => {
+const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, selectDropDown, onClickBookmarkNote, toasterMsgRef, assetLog, searchTerm }: propsObject) => {
   const { t } = useTranslation<string>();
   const [description, setDescription] = React.useState<string>("");
   const [editDescription, setEditDescription] = React.useState<boolean>(false);
@@ -58,6 +63,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const [numberOfLine, setNumberOfLine] = useState<any>("")
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const [userName, setUserName] = useState<string>(stateObj.madeBy);
+  const cookies = new Cookies();
+  let bookMarkPopup: any = document.querySelector("._video_player_container");
 
   const userIdBody: CMTEntityRecord = {
     id: "",
@@ -81,19 +88,30 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
   React.useEffect(() => {
     if (stateObj.madeBy == "User") {
-      let listOfKeyValue = stateObj?.userInfo?.record;
       let FName = "";
       let LName = "";
-      if (listOfKeyValue && listOfKeyValue.length > 0) {
-        listOfKeyValue.forEach((x: any) => {
-          if (x.key == "FName") {
-            FName = x.value;
-          }
-          if(x.key == "LName"){
-            LName = x.value;
-          }
-        });
-        setUserName(FName + " " + LName)
+      let listOfKeyValue = stateObj?.userInfo?.record;
+      if (listOfKeyValue) { // get case
+        if (listOfKeyValue && listOfKeyValue.length > 0) {
+          listOfKeyValue.forEach((x: any) => {
+            if (x.key == "FName") {
+              FName = x.value;
+            }
+            if (x.key == "LName") {
+              LName = x.value;
+            }
+          });
+          setUserName(FName + " " + LName)
+        }
+      }
+      else { // add case
+        let accessToken = cookies.get('access_token');
+        if (accessToken) {
+          let decodedAccessToken: any = jwt_decode(accessToken);
+          FName = decodedAccessToken?.FName ? decodedAccessToken?.FName : "";
+          LName = decodedAccessToken?.LName ? decodedAccessToken?.LName : "";
+          setUserName(FName + " " + LName)
+        }
       }
     }
   }, []);
@@ -108,7 +126,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   let inputRef: any;
   useEffect(() => {
     if (editDescription) {
-      inputRef.focus();
+      // inputRef.focus();
       setIsReadMore(true);
     }
   }, [editDescription]);
@@ -204,6 +222,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           duration: 5000,
           clearButtton: true,
         });
+        assetLog.assetId = body.assetId;
+        assetLog.notes = "Bookmark Updated";
+        dispatch(addAssetLog(assetLog));
       })
       .catch((err: any) => {
         onUpdateDone();
@@ -246,6 +267,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           duration: 5000,
           clearButtton: true,
         });
+        assetLog.assetId = body.assetId;
+        assetLog.notes = "Note Updated";
+        dispatch(addAssetLog(assetLog));
       })
       .catch((err: any) => {
         onUpdateDone();
@@ -311,6 +335,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
+        assetLog.assetId = stateObj.assetId;
+        assetLog.notes = "Bookmark Deleted";
+        dispatch(addAssetLog(assetLog));
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -341,6 +368,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
+        assetLog.assetId = stateObj.assetId;
+        assetLog.notes = "Note Deleted";
+        dispatch(addAssetLog(assetLog));
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -359,17 +389,27 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     }
   }, [confirmDelete]);
 
+  const bookMarkPopupFunction = () => {
+    bookMarkPopup.classList.add("_asset_detail_view_video_popup");
+    setTimeout(() => {
+      if(bookMarkPopup){
+        bookMarkPopup.classList.remove("_asset_detail_view_video_popup");
+      }  
+    }, 0.5);
+  }
 
   const onDeleteConfirm = async () => {
     if (IsOpenConfirmDailog) {
       setIsOpenConfirmDailog(false)
       if (selectDropDown == "Bookmarks") {
         onDeleteBookmark();
+      
       } else if (selectDropDown == "Notes") {
         onDeleteNote();
       }
       setConfirmDelete(!confirmDelete)
     }
+    bookMarkPopupFunction();
   };
 
   const handleReadMore = () => {
@@ -419,6 +459,16 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
     }
   }
+  const formattedText = (description: string) => {
+    let value = description.replace("z", '<b>z</b>')
+
+    return value;
+  }
+
+  const OpenConfrimDailogFun = () => {
+    setIsOpenConfirmDailog(false)
+    bookMarkPopupFunction()
+  }
 
 
   return (
@@ -435,7 +485,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
                 {` ${t("From")}: `}<span>{userName}</span>
               </div>
               <div className={`${editDevice ? "textToggler textField_Edited" : "textToggler"} ${isReadMore ? 'displayBlock' : ''}  `}>
-                <TextField
+                {editDevice ? <TextField
                   type="text"
                   placeholder={"Type your note here"}
                   onChange={(e: any) => onChangeDescription(e)}
@@ -448,7 +498,13 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
                     inputRef = input;
                   }}
                   fullWidth
-                />
+                /> : <div className={isReadMore ? "readMoreClass" : ""}>
+
+                  {reactStringReplace(description, searchTerm, (match, i) => (
+                    <span key={i} style={{ fontWeight: 'bolder' }}>{match}</span>
+                  ))}
+
+                </div>}
 
                 {!editDescription && stateObj.description.length >= 130 && (numberOfLine.length >= 130 ?
                   <div className="bookmark_read_function" onClick={() => handleReadLess()}><p>{t("Read_less")} </p><i className="fa-regular fa-chevron-up"></i></div>
@@ -464,7 +520,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
                         className="_field_action_button _action_button_xmark"
                       ></CRXTooltip>
                     </CRXButton>
-                    <CRXButton onClick={onClickSave} disabled={onSave}>
+                    <CRXButton onClick={onClickSave} disabled={description == "" ? true : false}>
                       <CRXTooltip
                         iconName="far fa-check"
                         placement="bottom"
@@ -512,7 +568,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         </a>
       </div>
       <CRXConfirmDialog
-        setIsOpen={() => setIsOpenConfirmDailog(false)}
+        setIsOpen={() => OpenConfrimDailogFun()}
         onConfirm={() => setConfirmDelete(true)}
         className="__CRX_BookMarkNote_Delete_Modal__"
         title={t("Please_confirm")}

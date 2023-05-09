@@ -215,6 +215,7 @@
 }
 
 .usersGroupDataTable {
+  min-height: 408px;
  &::before {
    background: transparent !important;
  }
@@ -223,6 +224,7 @@
     z-index: 7 !important;
   }
  }
+ overflow: auto !important;
 }
 
 @media only screen and (max-width: 1366px) {

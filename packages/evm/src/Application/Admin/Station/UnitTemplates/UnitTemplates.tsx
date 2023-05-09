@@ -29,6 +29,7 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
   );
 
   const defaultUnitTemplateChangeHandler = (e: any, deviceId: string) => {
+
     setDefaultUnitTemplateSelectBoxValues((previousObject: any[]) => {
       let values = previousObject.filter((o: any) => {
         return o.deviceId !== deviceId;
@@ -36,23 +37,42 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
       return [...values, { deviceId: deviceId, templateId: e.target.value.toString() }];
     });
     const templateId = e.target.value.toString();
-    const searchedTemplate = configurationTemplatesFromStore.find((x: any) => x.id === templateId);
-    /**
-     * * operationType = 1, Update,  operationType = 2, Add
-     * * 'searchedTemplate' was freezed so in order to change its property, needed to create copy of it.
-     */
-    const objectCopy = { ...searchedTemplate };
-    let tempConfigurationTemplate = [...values.ConfigurationTemplate];
-    let index = tempConfigurationTemplate.findIndex((x: any) => x.typeOfDevice.id == objectCopy.typeOfDevice.id);
-    if (index != -1) {
-      objectCopy.operationType = 1;
+    if (templateId == 0) { 
+      var configurationTemplatesFromStore_New = configurationTemplatesFromStore.slice();
+      var originalTemplateId = values.ConfigurationTemplate.find(x => x.typeOfDevice.id == deviceId).id
+      const searchedTemplate = configurationTemplatesFromStore_New.filter((x: any) => x.deviceTypeId === deviceId && x.id == originalTemplateId)[0];
+
+      /**
+       * * operationType = 1, Update,  operationType = 2, Add
+       * * 'searchedTemplate' was freezed so in order to change its property, needed to create copy of it.
+       */
+      const objectCopy = { ...searchedTemplate };
+      let tempConfigurationTemplate = [...values.ConfigurationTemplate];
+      let index = tempConfigurationTemplate.findIndex((x: any) => x.typeOfDevice.id == objectCopy.typeOfDevice.id);
+      objectCopy.operationType = 3;
       tempConfigurationTemplate[index] = objectCopy;
       setFieldValue("ConfigurationTemplate", tempConfigurationTemplate, false);
-    } else {
-      objectCopy.operationType = 2;
-      tempConfigurationTemplate.push(objectCopy);
-      setFieldValue("ConfigurationTemplate", tempConfigurationTemplate, false);
     }
+    else {
+
+      var configurationTemplatesFromStore_New = configurationTemplatesFromStore.slice();
+      const searchedTemplate = configurationTemplatesFromStore_New.find((x: any) => x.id === templateId);
+
+
+      const objectCopy = { ...searchedTemplate };
+      let tempConfigurationTemplate = [...values.ConfigurationTemplate];
+      let index = tempConfigurationTemplate.findIndex((x: any) => x.typeOfDevice.id == objectCopy.typeOfDevice.id);
+      if (index != -1) {
+        objectCopy.operationType = 1;
+        tempConfigurationTemplate[index] = objectCopy;
+        setFieldValue("ConfigurationTemplate", tempConfigurationTemplate, false);
+      } else {
+        objectCopy.operationType = 2;
+        tempConfigurationTemplate.push(objectCopy);
+        setFieldValue("ConfigurationTemplate", tempConfigurationTemplate, false);
+      }
+    }
+
   }
 
   const filterOptionValuesOnTheBaseOfDeviceId = (deviceId: number) => {
@@ -61,7 +81,6 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
       if (!isAddCase) {
         filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
           if ((parseInt(obj.typeOfDevice.id) === deviceId)) {
-            // && (obj.stationId == id)
             return obj;
           }
         });
@@ -72,12 +91,15 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
           }
         });
       }
+      console.log(filteredCollection)
+      filteredCollection.push({ id: 0, name: "None" })
       return formatConfigurationTemplatesToMapCRXSelectBox(filteredCollection);
     }
     return [];
   }
 
   const setValueOfDefaultUnitTemplateSelectBox = (deviceTypeObj: TypeOfDevice) => {
+
     if (defaultUnitTemplateSelectBoxValues.length > 0) {
       if (defaultUnitTemplateSelectBoxValues.some(x => x.deviceId === deviceTypeObj.id)) {
         const filteredArray = configurationTemplatesFromStore.filter((x: any) => x.id.toString() == deviceTypeObj.id);
@@ -89,13 +111,26 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
         })[0];
         return singleObject;
       }
+      else {
+        return {
+          displayText: "None",
+          value: "0"
+        }
+      }
     }
   }
 
   const setValueOfSelectBoxInUpdateCase = (deviceTypeObj: TypeOfDevice) => {
+
     const requiredDeviceObject = defaultUnitTemplateSelectBoxValues.find((x: any) => x.deviceId === deviceTypeObj.id)
     if (requiredDeviceObject) {
       return requiredDeviceObject.templateId.toString();
+    }
+    else {
+      return {
+        displayText: "None",
+        value: "0"
+      }
     }
   }
 
@@ -103,12 +138,12 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
     <>
       <div className="stationDetailOne gepStationSetting CRXUnitTemplate">
         <div className="stationColumnSet">
-            <div className="itemIndicator itemIndicator_unitTemplate">
-                <label className="indicates-label"><b>*</b> Indicates required field</label>
-            </div>
-            <div className="indicatorMessage_unitTemplate">
-                  <p>Please select the station's unit default template(s).</p>
-            </div>
+          <div className="itemIndicator itemIndicator_unitTemplate">
+            <label className="indicates-label"><b>*</b> Indicates required field</label>
+          </div>
+          <div className="indicatorMessage_unitTemplate">
+            <p>Please select the station's unit default template(s).</p>
+          </div>
           <CRXRows
             className="crxStationDetail"
             container="container"
@@ -145,8 +180,8 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
                 </div>
               </CRXColumn>
             ))}
-       
-              {deviceTypeCollection.filter(x => x.showDevice == true).slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
+
+            {deviceTypeCollection.filter(x => x.showDevice == true).slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
               <CRXColumn
                 className="stationDetailCol"
                 container="container"
@@ -178,7 +213,7 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
               </CRXColumn>
             ))}
           </CRXRows>
-      </div>
+        </div>
       </div>
     </>
   );

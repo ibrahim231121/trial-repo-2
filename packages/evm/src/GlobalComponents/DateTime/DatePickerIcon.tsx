@@ -102,7 +102,7 @@ type Props = {
           options={dateOptionsValues}
           className="daysSelection"
         />
-        <CRXTooltip className="crxTooltipdate" iconName="fas fa-info-circle" title="Select from pre-selection" placement="right" />
+        <CRXTooltip className="crxTooltipdate" disablePortal={true} iconName="fas fa-info-circle" title="Select from pre-selection" placement="right" />
       </div>
 
       <div className="paperFooter">

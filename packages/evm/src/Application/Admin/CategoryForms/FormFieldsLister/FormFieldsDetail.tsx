@@ -20,6 +20,8 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import { controlTypes, controlTypesForValidation } from "../TypeConstant/constants";
+import { IsFieldtypeEquals } from "../../../Assets/AssetLister/Category/Utility/UtilityFunctions";
+import { FieldTypes } from "../../../Assets/AssetLister/Category/Model/FieldTypes";
 
 type FormFieldsDetailProps = {
   id: number;
@@ -213,6 +215,11 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
               defaultFieldValue: response?.defaultFieldValue,
               isRequired: response?.isRequired,
             });
+            if ((IsFieldtypeEquals(response, FieldTypes.FieldDropDownListType)) || 
+                (IsFieldtypeEquals(response, FieldTypes.FieldCheckedBoxListType)) || 
+                (IsFieldtypeEquals(response, FieldTypes.FieldRadioButtonListType))) {
+              setIsFieldValueEnable(true);
+            }
           }
         })
         .catch((err: any) => {
@@ -297,12 +304,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         : " "
                     }`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={5}>
                       <label className="cc_form_label">
                         {t("Control_Type")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={7}>
                       <CRXSelectBox
                         name="type"
                         id="type"
@@ -343,12 +350,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         : ""
                     }`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={5}>
                       <label htmlFor="name" className="cc_form_label">
                         {t("Field_Name")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={7}>
                       <Field
                         id="name"
                         key="name"
@@ -371,12 +378,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     spacing={1}
                     className="crx_form_group_row"
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={5}>
                       <label htmlFor="displayName" className="cc_form_label">
                         {t("Field_Display_Name")}
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={7}>
                       <Field
                         id="displayName"
                         key="displayName"
@@ -393,12 +400,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     className={`crx_form_group_row ${errors.defaultFieldValue !== undefined &&
                       touched.defaultFieldValue ? "error_staric" : ""}`}
                   >
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={5}>
                       <label htmlFor="defaultFieldValue" className="cc_form_label">
                         {t("Field_Values")} <span>*</span>
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={7}>
                       <Field
                         id="defaultFieldValue"
                         key="defaultFieldValue"
@@ -419,12 +426,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                   </CRXRows>
                   )}
                   <CRXRows container={true} spacing={1} className="crx_form_group_row">
-                    <CRXColumn item={true} xs={4}>
+                    <CRXColumn item={true} xs={5}>
                       <label htmlFor="isReuired" className="cc_form_label">
-                        {t("isRequired")}
+                      Form Field Requirement
                       </label>
                     </CRXColumn>
-                    <CRXColumn item={true} xs={8}>
+                    <CRXColumn item={true} xs={7}>
                       <div className="formikCheckboxField">
                         <Field
                         type="checkbox"
@@ -433,6 +440,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         key="isRequired"
                         className={``}
                       />
+                      <div className="optionalText">Make Required</div>
                       </div>
                     </CRXColumn>
                   </CRXRows>

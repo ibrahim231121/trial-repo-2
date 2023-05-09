@@ -154,8 +154,9 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
             style={{ minWidth: "auto", left: "0px" }}
             value={defaultOptionText}
             disabled
+            className="default_disabled"
           >
-            {defaultOptionText}
+            <div className="default_disabled">{defaultOptionText}</div>
           </StyledMenuItem>
         )}
         {option}

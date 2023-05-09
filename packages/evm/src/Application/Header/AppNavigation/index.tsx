@@ -46,9 +46,9 @@ const CRXLefNavigation = () => {
       moduleId: 0,
       label: t("Cases"),
       icon: "fas fa-briefcase NaveIcon",
-      // command: () => {
-      //   navigateToPage(urlList.filter((item: any) => item.name === urlNames.cases)[0].url);
-      // },
+      command: () => {
+        navigateToPage(urlList.filter((item: any) => item.name === urlNames.cases)[0].url);
+      },
       // items: [
       //   {
       //     moduleIds:0,
@@ -197,6 +197,11 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.tenantSettings)[0].url) },
         },
         {
+          moduleIds: 69,
+          label: 'AD Groups Mapping',
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.ADGroupsMapping)[0].url) },
+        },
+        {
           moduleIds: 17,
           label: t('Manage_Station'),
           command: () => {
@@ -229,6 +234,11 @@ const CRXLefNavigation = () => {
           moduleIds: 55,
           label: t('Category_Forms_And_Fields'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.categoryForms)[0].url) },
+        },
+        {
+          moduleIds: 0,
+          label: t('FOTA_Version_Management'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.updateVersion)[0].url) },
         }
       ],
     },

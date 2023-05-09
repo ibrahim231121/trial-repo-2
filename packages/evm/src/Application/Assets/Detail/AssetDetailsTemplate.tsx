@@ -1,5 +1,5 @@
 import {
-  CBXLink, 
+  CBXLink,
   CRXTooltip
 } from "@cb/shared";
 import moment from "moment";
@@ -25,7 +25,6 @@ import { assetdata, AssetReformated } from "./AssetDetailsTemplateModel";
 import { AssetDetailRouteStateType, EvidenceObjectToPassInActionMenu } from "../AssetLister/AssetDataTable/AssetDataTableModel";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
 import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
-import PDFViewer from "../../../components/MediaPlayer/PdfViewer/PDFViewer";
 import { BlockLockedAssets } from "../utils/constants";
 import jwt_decode from "jwt-decode";
 import Cookies from 'universal-cookie';
@@ -33,6 +32,8 @@ import AssetDetailTabs from "./AssetDetailTabs";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import { CRXToaster } from "@cb/shared";
+import AssetsDisplayTabs from "./AssetsDisplayTabs";
+import { useHistory } from "react-router-dom";
 
 export type FileData = {
   filename: string,
@@ -42,10 +43,15 @@ export type FileData = {
   typeOfAsset: string
 };
 
+export const typeOfVideoAssetToInclude = ["Video"];
+export const typeOfDocAssetToInclude = ["PDFDoc"];
+export const typeOfOtherAssetToInclude = ["WordDoc", "Text", "ExcelDoc", "PowerPointDoc", "DLL", "Exe", "Msi", "bin", "BW2Certificate", "Zip", "GPS", "Unknown", "Others", "CSVDoc"];
+export const typeOfImageAssetToInclude = ["Image"];
+export const typeOfAudioAssetToInclude = ["Audio", "AudioOnly"];
 const AssetDetailsTemplate = () => {
   const { state } = useLocation<AssetDetailRouteStateType>();
   const evidenceId: number = state.evidenceId;
-  const assetId: string = state.assetId.toString();
+  const [assetId, setAssetId] = React.useState<string>(state.assetId.toString());
   const assetName: string = state.assetName;
   const evidenceSearchObject: SearchModel.Evidence = state.evidenceSearchObject;
   let assetObj: AssetReformated = {
@@ -62,22 +68,20 @@ const AssetDetailsTemplate = () => {
     status: "",
     camera: ""
   };
-
+  const history = useHistory();
   const toasterRef = React.useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const decoded: any = jwt_decode(cookies.get("access_token"));
+
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const [openMap, setOpenMap] = React.useState<boolean>(false);
   const [uploadedOn, setUploadedOn] = React.useState<string>("");
-  const [apiKey, setApiKey] = React.useState<string>("");
+
   const [allDataRetrieved, setAllDataRetrieved] = React.useState<boolean>(false);
-  const typeOfVideoAssetToInclude = ["Video", "WMVVideo", "BBvideo", "AvenueSource"];
-  const typeOfDocAssetToInclude = ["Doc", "WordDoc", "PDFDoc", "Text", "ExcelDoc", "PowerPointDoc"];
-  const typeOfImageAssetToInclude = ["Image"];
-  const typeOfAudioAssetToInclude = ["Audio", "AudioOnly"];
-  const typeOfAssetToInclude = [...typeOfVideoAssetToInclude, ...typeOfDocAssetToInclude, ...typeOfImageAssetToInclude, ...typeOfAudioAssetToInclude];
+
+  const typeOfAssetToInclude = [...typeOfVideoAssetToInclude, ...typeOfOtherAssetToInclude, ...typeOfImageAssetToInclude, ...typeOfAudioAssetToInclude];
   const [masterFileData, setMasterFileData] = React.useState<FileData[]>([]);
   const [childFileData, setChildFileData] = React.useState<FileData[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
@@ -89,12 +93,17 @@ const AssetDetailsTemplate = () => {
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [assetsList, setAssetList] = React.useState<Asset[]>([]);
   const [fileState, setFileState] = React.useState<string>("");
-  const [objPassedFromActionMenu, setObjPassedFromActionMenu] = React.useState<any[]>([]);
+  const [masterAssetId, setMasterAssetId] = React.useState<number>(0);
+  const [isPrimaryAsset, setIsPrimaryAsset] = React.useState<boolean>(false);
   const assetBucketBasketIsOpen: any = useSelector((state: RootState) => state.assetBucketBasketSlice.isOpen);
+  const RestrictEffectOccured = useSelector((state: RootState) => state.ActionMenuEffectSlice.RestrictEffect);
 
   useEffect(() => {
     fetchEvidenceAgentApi();
-  }, [objPassedFromActionMenu]);
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
+  }, [RestrictEffectOccured]);
 
   useEffect(() => {
     if (gpsFileData && gpsFileData.length > 0) {
@@ -102,67 +111,6 @@ const AssetDetailsTemplate = () => {
       gpsAndOverlayData(blobClient);
     }
   }, [gpsFileData]);
-
-
-  const getMasterAssetFile = (dt: any) => {
-    if (dt?.some((x: any) => x.type == "GPS")) {
-      setOpenMap(true);
-    }
-    dt?.map((template: any) => {
-      FileAgent.getFile(template.filesId).then((response) => {
-        setFileState(response.state)
-        if (template.type != "GPS") {
-          let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
-          setUploadedOn(uploadCompletedOnFormatted)
-        }
-      });
-      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-        if (template.type == "GPS") {
-          setGpsFileData([...gpsFileData, {
-            filename: template.name,
-            fileurl: template.url,
-            type: template.type,
-            downloadUri: response
-          }])
-        }
-        else{
-          setMasterFileData([...masterFileData, {
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            typeOfAsset: template.type,
-            downloadUri: response,
-          }])
-        }
-      });
-    })
-  }
-  const getChildAssetFile = (dt: any) => {
-    let fileDownloadUrls: any = [];
-    dt?.map((ut: any) => {
-      ut?.files.map((template: any) => {
-        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          fileDownloadUrls.push({
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          })
-          setChildFileData([...fileDownloadUrls])
-        })
-      })
-    })
-
-  }
-
-
-  useEffect(() => {
-    if (evidence) {
-      getMasterAssetFile(evidence?.assets.master.files.filter(x => x.filesId > 0))
-      getChildAssetFile(evidence?.assets.children.filter(x => x?.files[0]?.filesId > 0))
-    }
-  }, [evidence]);
-
 
   const getFormattedData = (row: any) => {
     let rowdetail: assetdata[] = [];
@@ -191,7 +139,7 @@ const AssetDetailsTemplate = () => {
       }
     }
     rowdetail.push({ id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, name: name, notes: notes, camera: camera, status: status });
-    let children : assetdata[] = row.assets.children.map((template: any) => {
+    let children: assetdata[] = row.assets.children.map((template: any) => {
       if (template.recording) {
         template.recording = {
           ...template.recording,
@@ -222,7 +170,7 @@ const AssetDetailsTemplate = () => {
   useEffect(() => {
     if (evidence) {
       let masterasset = evidence.assets.master.files.filter(x => x.filesId > 0 && typeOfAssetToInclude.includes(x.type));
-      let childrenAssets = evidence.assets.children.map(x => x.files[0]).filter(x => x.filesId > 0 && typeOfAssetToInclude.includes(x.type));
+      let childrenAssets = evidence.assets.children.map(x => x.files[0]).filter(x => x?.filesId > 0 && typeOfAssetToInclude.includes(x?.type));
       let allDataRetrieved = (masterasset.length == masterFileData.length) && (childrenAssets.length == childFileData.length);
 
       if (allDataRetrieved) {
@@ -271,20 +219,117 @@ const AssetDetailsTemplate = () => {
           status: assetMetadata.status,
           camera: assetMetadata.camera ?? ""
         });
-        const data = getFormattedData(evidence);
-        if (fileState != "Deleted") { // File state from Azure deleted - do not render video player - page crashes - ad hoc fix - need to show pop up 
-          if (data[0]?.id != parseInt(assetId)) {
-            let updatedData = data.filter(x => x.id == parseInt(assetId));
-            updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetId))]
-            setFormattedData(updatedData);
-          }
-          else {
-            setFormattedData(data);
-          }
-        }
+        updatePrimaryAsset();
       }
     }
   }, [evidence, masterFileData, childFileData]);
+
+  const updatePrimaryAsset = (assetIdTmp?: string) => {
+    const data = getFormattedData(evidence);
+    let assetIdNS = assetId;
+    if (assetIdTmp) {
+      assetIdNS = assetIdTmp;
+      setAssetId(assetIdTmp);
+      var assetObj = data.find(x => x.id == parseInt(assetIdTmp))
+      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetObj?.name }));
+    }
+    setIsPrimaryAsset(parseInt(assetIdNS) == masterAssetId)
+    if (fileState != "Deleted") { // File state from Azure deleted - do not render video player - page crashes - ad hoc fix - need to show pop up 
+      let updatedData = data.filter(x => x.id == parseInt(assetIdNS));
+      if (assetIdTmp && (typeOfVideoAssetToInclude.includes(updatedData[0].typeOfAsset) || (updatedData[0].typeOfAsset == "AudioOnly" ? updatedData[0].files.some(y => typeOfAudioAssetToInclude.includes(y.typeOfAsset)) : false))) {
+        history.push(urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url, {
+          evidenceId: evidenceId,
+          assetId: updatedData[0].id,
+          assetName: updatedData[0].name,
+          evidenceSearchObject: evidence
+        })
+        history.go(0);
+      }
+      if (data[0]?.id != parseInt(assetIdNS)) {
+        updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetIdNS))]
+        setFormattedData(updatedData);
+      }
+      else {
+        setFormattedData(data);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (evidence) {
+      getMasterAssetFile(evidence?.assets.master.files.filter(x => x.filesId > 0))
+      getChildAssetFile(evidence?.assets.children.filter(x => x?.files[0]?.filesId > 0))
+    }
+  }, [evidence]);
+
+  const getMasterAssetFile = (dt: any) => {
+    if (dt?.some((x: any) => x.type == "GPS")) {
+      setOpenMap(true);
+    }
+    dt?.map((template: any) => {
+      let url1:any  = `/Files/${template.filesId}/${template.accessCode}`
+      FileAgent.getFile(url1).then((response) => {
+        setFileState(response.state)
+        if (template.type != "GPS") {
+          let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
+          setUploadedOn(uploadCompletedOnFormatted)
+        }
+      });
+      let url:any  = `/Files/download/${template.filesId}/${template.accessCode}`
+      FileAgent.getDownloadFileUrl(url).then((response: string) => response).then((response: any) => {
+        if (template.type == "GPS") {
+          setGpsFileData((previousState : any[]) => {
+            const isExist = previousState.find(x => x.filename === template.name);
+            if (!isExist) {
+              return [...previousState,
+              {
+                filename: template.name,
+                fileurl: template.url,
+                type: template.type,
+                downloadUri: response
+              }];
+            }
+            return [...previousState];
+          });
+        }
+        else {
+          setMasterFileData((previousState: FileData[]) => {
+            const isExist = previousState.find(x => x.filename === template.name);
+            if (!isExist) {
+              return [...previousState,
+              {
+                filename: template.name,
+                fileurl: template.url,
+                fileduration: template.duration,
+                typeOfAsset: template.type,
+                downloadUri: response,
+              }];
+            }
+            return [...previousState];
+          });
+        }
+      });
+    })
+  }
+  const getChildAssetFile = (dt: any) => {
+    let fileDownloadUrls: any = [];
+    
+    dt?.map((ut: any) => {
+      ut?.files.map((template: any) => {
+        let url:any  = `/Files/download/${template.filesId}/${template.accessCode}`
+        FileAgent.getDownloadFileUrl(url).then((response: string) => response).then((response: any) => {
+          fileDownloadUrls.push({
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            typeOfAsset: template.type,
+            downloadUri: response
+          })
+          setChildFileData([...fileDownloadUrls])
+        })
+      })
+    })
+  }
 
 
 
@@ -389,85 +434,15 @@ const AssetDetailsTemplate = () => {
     return numberFormatting + " (" + nameFormatting + ")";
   }
 
-  const gotoSeeMoreView = (e: any, targetId: any) => {
-    detailContent == false ? setDetailContent(true) : setDetailContent(false);
-    document.getElementById(targetId)?.scrollIntoView({
-      behavior: 'smooth'
-    });
-  }
-
-  const dummyViewForVideoPlayer = () => {
-    return <div className="_player_video_uploading">
-      <div className="layout_inner_container">
-        {metaData.id && <div className="text_container_video">Evidence is not available, Uploading is in progress!</div>}
-        <div className="_empty_arrow_seeMore">
-          {detailContent == false ?
-            <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-              <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-            </button>
-            :
-            <button id="lessMoreButton" data-target="#root" className="_empty_content_see_mot_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-              <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-            </button>
-          }
-        </div>
-      </div>
-    </div>
-  }
-
-  const assetDisplay = (formattedData: assetdata[], evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: boolean, apiKey: any) => {
-    let availableAssets = formattedData.filter((x: any) => x.status == "Available");
-    if (availableAssets.length > 0) {
-      let videos = availableAssets.filter((x: any) => typeOfVideoAssetToInclude.includes(x.typeOfAsset) || typeOfAudioAssetToInclude.includes(x.typeOfAsset));
-      let docs = availableAssets.filter((x: any) => typeOfDocAssetToInclude.includes(x.typeOfAsset));
-
-      switch (formattedData[0]?.typeOfAsset) {
-        case 'AudioOnly':
-        case 'Video':
-          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} guestView={false} /> : dummyViewForVideoPlayer;
-        case 'Image':
-          return <img src={availableAssets[0]?.files[0]?.downloadUri}></img>
-        case 'Audio':
-          return <audio controls={true} src={availableAssets[0]?.files[0]?.downloadUri}></audio>
-        case 'Doc':
-          return <>
-            {docs.length > 0 && <PDFViewer data={docs}/>}
-          </>
-        default:
-          return <></>;
-      }
-    }
-    else {
-      return <>
-        <div className="_player_video_uploading">
-          <div className="layout_inner_container">
-            {/* Please make error message dynamic */}
-            {metaData.id && <div className="text_container_video">Evidence is not available!</div>}
-            <div className="_empty_arrow_seeMore">
-              {detailContent == false ?
-                <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                  <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-                </button>
-                :
-                <button id="lessMoreButton" data-target="#root" className="_empty_content_see_mot_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                  <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-                </button>
-              }
-            </div>
-          </div>
-        </div>
-      </>
-    }
-  }
 
   const fetchEvidenceAgentApi = () => {
     dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
-    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
-
     dispatch(setLoaderValue({ isLoading: true }))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       let assetListTemp: Asset[] = [response.assets.master];
+      setMasterAssetId(response.assets.master.id);
+      setIsPrimaryAsset(parseInt(assetId) == response.assets.master.id)
       assetListTemp = [...assetListTemp, ...response.assets.children];
       /**
        *! Locked child asset only be rendered if user has 'Permission' or asset is owned by user as 'Search Type' is 'ViewOwnAssets'.
@@ -481,11 +456,8 @@ const AssetDetailsTemplate = () => {
 
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setCurrentAsset(response));
-
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
-    }
   }
+
 
   const rowReformationMethodToPassInActionMenu = (): EvidenceObjectToPassInActionMenu => {
     const modifiedAssetArray: SearchModel.Asset[] = [];
@@ -546,7 +518,7 @@ const AssetDetailsTemplate = () => {
       };
       dispatch(addNotificationMessages(notificationMessage));
     }
-  }; 
+  };
 
   const actionBucketClass = assetBucketBasketIsOpen ? "actionBucketIndex" : "";
   return (
@@ -561,20 +533,28 @@ const AssetDetailsTemplate = () => {
         <ActionMenu
           row={rowReformationMethodToPassInActionMenu()}
           actionMenuPlacement={ActionMenuPlacement.AssetDetail}
-          setSelectedItems={(v: any[]) => setObjPassedFromActionMenu(v)}
           showToastMsg={(obj: any) => showToastMsg(obj)}
         />
 
-        <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assets)[0].url}`} />
+        <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assetSearchResult)[0].url}`} />
       </div>
 
-      {allDataRetrieved && assetDisplay(formattedData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
+      {allDataRetrieved && <AssetsDisplayTabs metaData={metaData}
+        typeOfVideoAssetToInclude={typeOfVideoAssetToInclude}
+        typeOfAudioAssetToInclude={typeOfAudioAssetToInclude}
+        typeOfImageAssetToInclude={typeOfImageAssetToInclude}
+        typeOfDocAssetToInclude={typeOfDocAssetToInclude}
+        typeOfOtherAssetToInclude={typeOfOtherAssetToInclude}
+        detailContent={detailContent} setDetailContent={setDetailContent}
+        formattedData={formattedData} evidenceId={evidenceId} gpsJson={gpsJson}
+        sensorsDataJson={sensorsDataJson} openMap={openMap}
+        updatePrimaryAsset={updatePrimaryAsset} isPrimaryAsset={isPrimaryAsset} assetId={assetId} />}
 
       {detailContent
         && <div className="topBorderForDetail"></div>
       }
 
-     <AssetDetailTabs assetId={assetId} evidenceId={evidenceId} metaData={metaData} uploadedOn={uploadedOn} assetsList={assetsList} evidenceSearchObject={evidenceSearchObject}/>
+      <AssetDetailTabs assetId={assetId} evidenceId={evidenceId} metaData={metaData} uploadedOn={uploadedOn} assetsList={assetsList} evidenceSearchObject={evidenceSearchObject} />
 
     </div>
   );

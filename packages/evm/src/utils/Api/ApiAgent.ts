@@ -4,6 +4,7 @@ import { StringIfPlural } from 'react-i18next';
 import { Category, CategoryModel } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
 import { Cases } from './models/CasesModels';
+import {CaseSharing} from './models/CaseSharingModels'
 import { CRXLoader } from "@cb/shared"
 import jwt_decode from 'jwt-decode';
 
@@ -19,18 +20,19 @@ import {
     Note,
     TimelinesSync,
     EvdenceCategoryAssignment,
-    SubmitAnalysisModel,
-    MetadataFileType
+    MetadataFileType,
+    AssetsLinking
 } from './models/EvidenceModels';
 import { File as FileF } from './models/FileModels';
 import {
-    JOBCOORDINATOR_SERVICE_URL,
+    AI_COORDINATOR_SERVICE_URL,
     EVIDENCE_SERVICE_URL,
     BASE_URL_USER_SERVICE,
     SETUP_CONFIGURATION_SERVICE_URL,
     USER_INFO_GET_URL,
     GROUP_USER_LIST,
     USER, GROUP_GET_URL,
+    ADGROUP_GET_URL,
     GROUP_GET_BY_ID_URL,
     GROUP_USER_COUNT_GET_URL,
     SAVE_USER_GROUP_URL,
@@ -45,12 +47,13 @@ import {
     BASE_URL_Configuration_SERVICE,
     BASE_URL_DeviceHeartBeat_SERVICE,
     BASE_URL_COMMAND_SERVICE,
+    FILE_SERVICE_URL_V2,
     BASE_URL_HOTLIST
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
-import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupList, UserStatus } from './models/UsersAndIdentitiesModel'
+import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupList, UserStatus, ADGroups, AddGroup } from './models/UsersAndIdentitiesModel'
 import {
     ConfigurationTemplate,
     ConfigurationTemplateLogs,
@@ -64,11 +67,15 @@ import {
     Unit,
     UnitInfo,
     UnitTemp,
-    UnitTemplateConfigurationInfo
+    UnitTemplateConfigurationInfo,
+    SoftwareVersion,
+    UpdateVersion,
+    FilterUpdateVersion,
+    AssignUsersToUnit
 } from './models/UnitModels';
-import { CaptureDevice, Station } from './models/StationModels';
+import { CaptureDevice, Station, StationPolicy } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
-import { Paginated, Headers } from './models/CommonModels';
+import { Paginated, Headers, CMTEntityRecord } from './models/CommonModels';
 import { useState, useEffect } from 'react';
 import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -78,8 +85,9 @@ import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/Retentio
 import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies';
 import { logOutUser } from '../../Logout/API/auth';
 import { url } from 'inspector';
-import { Case } from '../../Application/Cases/CaseTypes';
+import { Case, TCaseHighlight, TCaseTimeline } from '../../Application/Cases/CaseTypes';
 import { StationPolicyConfigurationTemplate } from '../../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
+import { Job, Project } from './models/AICoordinatorModels';
 import { HotListTemplate } from './models/HotListModels';
 
 
@@ -112,7 +120,6 @@ let configForExe = {
         'TenantId': getTenantId()
     }
 }
-
 axios.interceptors.response.use(async response => {
     try {
         return response;
@@ -206,7 +213,7 @@ const requests = {
     delete: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody) },
 }
 export const SetupConfigurationAgent = {
-    getAllControlTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Fields/GetAllControlTypesKeyValues", config),
+    getAllControlTypes: () => requests.get<UnitTemplateConfigurationInfo[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Fields/GetAllControlTypesKeyValues", config),
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     postCategories: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteCategoryForms: (extraHeader?: Headers[]) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
@@ -214,9 +221,9 @@ export const SetupConfigurationAgent = {
     putCategories: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     putFormField: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteFormFields: (extraHeader?: Headers[]) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-    getSingleCategory: (id : number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
-    getSingleFormField: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields/${id}`, config),
-    getSingleCategoryForm: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms/${id}`, config),
+    getSingleCategory: (id: number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
+    getSingleFormField: (id: number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields/${id}`, config),
+    getSingleCategoryForm: (id: number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms/${id}`, config),
     postCategoryForms: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     putCategoryForms: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -224,8 +231,8 @@ export const SetupConfigurationAgent = {
     getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     putSensorsAndTriggersTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getSensorsAndTriggersEvents: (url: string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" + url, config),
-    deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),
-    deleteSensorsAndTriggersTemplate: (id: number) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteEvent/"+ id, config),
+    deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents", body, config),
+    deleteSensorsAndTriggersTemplate: (id: number) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteEvent/" + id, config),
     getAllFiltersSensorsAndTriggersEvents: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
@@ -269,6 +276,7 @@ export const SetupConfigurationAgent = {
     getAllFormFields: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
+    getRetentionPolicyObjectFromRetentionIds: (url: string) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/RetentionIds/DataRetention?${url}`, config),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
@@ -280,6 +288,7 @@ export const EvidenceAgent = {
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
     addEvidence: (body: any) => requests.post<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences', body, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
+    updateAsset: (url: string, body: Asset) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body, config),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     addBookmark: (url: string, body: Bookmark) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
     updateBookmark: (url: string, body: Bookmark) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body, config),
@@ -293,11 +302,12 @@ export const EvidenceAgent = {
     addUsersToAsset: (url: string, body: number[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body, config),
     setPrimaryAsset: (url: string) => requests.get<void>(EVIDENCE_SERVICE_URL, url, config),
     updateRetentionPolicy: (url: string, body: ExtendRetention[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body, config),
-    changeCategories: (url: string, body: EvdenceCategoryAssignment, extraHeader: Headers[]) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-    shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
+    changeCategories: (body: Array<EvdenceCategoryAssignment>, extraHeader: Headers[], editReason: string = "") => requests.patch<void>(EVIDENCE_SERVICE_URL, `/Evidences/ChangeCategories?editReason=${editReason}`, body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    shareAsset: (url: string, body?: AssetSharingModel[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
+    linkAsset: (url: string, body?: AssetsLinking[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
+
     //openSharedMedia: (url: string) => requests.get<AssetSharingModel>(EVIDENCE_SERVICE_URL+'/OpenSharedMedia?E='+url),
-    
-    submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
+
     LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
     ExportEvidence: (evidenceId: number, assetId: number, fileType: MetadataFileType) => {
         return axios.get(`${EVIDENCE_SERVICE_URL}/Evidences/ExportAsset/${evidenceId}/${assetId}/${fileType}`, {
@@ -307,12 +317,17 @@ export const EvidenceAgent = {
     },
     getUploadedEvidence: (evidenceId: string) => requests.get<any>(EVIDENCE_GET_BY_ID_URL, '/' + evidenceId, config),
     getEvidenceBuildVersion: () => requests.get<any>(EVIDENCE_SERVICE_URL, "/Evidence/Health/BuildVersion"),
+    addAssetLog: (url: string, body: any) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
+    masterAssetRequestUpload: (url: string) => requests.post<any>(EVIDENCE_SERVICE_URL, url, {}, config),
+    GetAssetsForUnit: (unitId: number) => requests.get<number>(EVIDENCE_SERVICE_URL, '/Evidences/GetAssetsForUnit/' + unitId, config),
+    childAssetRequestUpload: (url: string) => requests.post<any>(EVIDENCE_GET_URL, url, {}, config)
 }
 
 export const AuthenticationAgent = {
     getAccessToken: (url: string) => requests.get<Token>(getVerificationURL(url), '', config),
     getAccessAndRefreshToken: (url: string) => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, url, config),
     getAuthenticationBuildVersion: () => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, "/Authentication/Health/BuildVersion"),
+    sendEmail: (url: string, email: string, clientId: string, applicationName: string, isResendActivation: boolean) => requests.post<any>(BASE_URL_AUTHENTICATION_SERVICE, `${url}?email=${email}&client_id=${clientId}&applicationName=${applicationName}&resendActivation=${isResendActivation}`, {}, config)
 }
 
 export const AuditLogAgent = {
@@ -321,18 +336,20 @@ export const AuditLogAgent = {
 }
 
 export const FileAgent = {
-    getDownloadFileUrl: (fileId: number) => requests.get<string>(FILE_SERVICE_URL, '/Files/download/' + fileId, config),
+    getDownloadFileUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL_V2, url, config),
     getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL + "/Files", url, config),
-    getFile: (id: number) => requests.get<FileF>(FILE_SERVICE_URL, "/Files/" + id, config),
-    getThumbnail: (name: string) => requests.get<any>(FILE_SERVICE_URL, "/Files/FetchThumbnail/" + name, config),
+    getFile: (url: string) => requests.get<FileF>(FILE_SERVICE_URL_V2, url, config),
+    getThumbnail: (name: string, accessCode:string, isVideoFile: boolean) => requests.get<any>(FILE_SERVICE_URL_V2, "/Files/FetchThumbnail/" + name + '/' + accessCode + '/' + isVideoFile, config),
     getHealthCheck: () => requests.get<string>(FILE_SERVICE_URL, '/Files/HealthCheck', config),
     getFileBuildVersion: () => requests.get<any>(FILE_SERVICE_URL, "/Files/Health/BuildVersion"),
-    changeFileUploadStatus: (url: any, body:any) => requests.patch<any>(FILE_SERVICE_URL, url, body, config),
+    changeFileUploadStatus: (url: any, body: any) => requests.patch<any>(FILE_SERVICE_URL_V2, url, body, config),
+    uploadAssetChecksum: (fileId: string,) => requests.get<void>(FILE_SERVICE_URL_V2, '/Files/UploadAssetChecksum?fileId=' + fileId, config),
     getMultiDownloadFileUrl: (body: any) => {
-        return axios.post(`${FILE_SERVICE_URL}/Files/multifiledownload`, body, {
+        return axios.post(`${FILE_SERVICE_URL_V2}/Files/multifiledownload`, body, {
             headers: config.headers,
             responseType: "blob",
-        });}
+        });
+    }
 }
 
 export const UsersAndIdentitiesServiceAgent = {
@@ -344,6 +361,10 @@ export const UsersAndIdentitiesServiceAgent = {
     },
 
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
+    getADGroups: (authServer : any) => requests.get<ADGroups[]>(BASE_URL_USER_SERVICE, authServer, config),
+    getADGroupsMapping: () => requests.get<AddGroup[]>(ADGROUP_GET_URL, '', config),
+    deleteADGroupsMapping: (url: string) => requests.delete<void>(BASE_URL_USER_SERVICE, url, config),
+    upsertADRecords: (url: string, body: AddGroup[]) => requests.post<number>(BASE_URL_USER_SERVICE, url, body, config),
     getGroups: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
@@ -367,6 +388,9 @@ export const UnitsAndDevicesAgent = {
         return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
     getUnit: (url: string) => requests.get<UnitAndDevice[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getAssignedUsers: (url: string) => requests.get<CMTEntityRecord[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getAssignedGroups: (url: string) => requests.get<CMTEntityRecord[]>(BASE_URL_UNIT_SERVICES, url, config),
+ 
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
@@ -377,8 +401,8 @@ export const UnitsAndDevicesAgent = {
     getAllStations: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
-    getStationPolicyConfigurationTemplate : (url: string) => requests.getAll<Paginated<StationPolicyConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, `/StationPolicyConfigurationTemplate/GetAll${url}`, config),
-    getAllStationForDefaultUnitTemplate : (url: string) => requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations/GetAllStationForDefaultUnitTemplate${url}`, config),
+    getStationPolicyConfigurationTemplate: (url: string) => requests.getAll<Paginated<StationPolicyConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, `/StationPolicyConfigurationTemplate/GetAll${url}`, config),
+    getAllStationForDefaultUnitTemplate: (url: string) => requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations/GetAllStationForDefaultUnitTemplate${url}`, config),
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo" + url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
@@ -402,6 +426,21 @@ export const UnitsAndDevicesAgent = {
     getAllUnitTemplateKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitAssignmentKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitBuildVersion: () => requests.get<any>(BASE_URL_UNIT_SERVICES, "/UnitsDevices/Health/BuildVersion"),
+    getFilteredDeviceByStation: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<FilterUpdateVersion>>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getDeviceSoftwareVersion: (url: string) => requests.get<SoftwareVersion[]>(BASE_URL_UNIT_SERVICES, url, config),
+
+    getUpdateVersions: (url: string, extraHeader?: Headers[]) => requests.get<UpdateVersion[]>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getFilteredUpdateVersions: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    addUpdateVersions: (url: string, body: UpdateVersion) => requests.post<number>(BASE_URL_UNIT_SERVICES, url, body, config),
+    putUpdateVersions: (url: string, body: any) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
+    getSingleUpdateVersion: (id: number) => requests.get<UpdateVersion>(BASE_URL_UNIT_SERVICES, `/UpdateVersion/${id}`, config),
+    deleteSingleUpdateVersion: (id: number) => requests.delete<void>(BASE_URL_UNIT_SERVICES, `/UpdateVersion/${id}`, config),
+    syncSoftwareVersion: (url: string) => requests.get<void>(BASE_URL_UNIT_SERVICES, url, config),
+    deleteAllUpdateVersions: (extraHeader?: Headers[]) => requests.delete<number>(BASE_URL_UNIT_SERVICES, `/UpdateVersion`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getStationPolicies: (stationId: number) => requests.get<StationPolicy[]>(BASE_URL_UNIT_SERVICES, `/Stations/${stationId}/StationPolicies`, config),
+
+    addUsersToUnits: (url: string, body: AssignUsersToUnit) => requests.post<number>(BASE_URL_UNIT_SERVICES, url, body, config),
+   
 }
 
 export const CommonAgent = {
@@ -419,8 +458,8 @@ export const CasesAgent = {
     getCasesBuildVersion: () => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/Health/BuildVersion"),
     getAllDropDownValues: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
 
-    addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
-    editCase: (url:string, caseBody: Case) => requests.put<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
+    addCase: (url: string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
+    editCase: (url: string, caseBody: Case) => requests.put<any>(BASE_URL_CASES_SERVICE, url, caseBody, config),
 
     getCase: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config),
     getAllCases: (url: string, extraHeader?: Headers[]) => {
@@ -428,6 +467,20 @@ export const CasesAgent = {
     },
     // getAllCasesInfo: (url: string) => requests.get<Cases[]>(BASE_URL_Cases_SERVICE, "/Case/GetAllCases" + url, config),
     deleteCase: (url: string) => requests.delete<void>(BASE_URL_CASES_SERVICE, url, config),
+    addCaseNote: (url: string, body: any) => requests.post<string>(BASE_URL_CASES_SERVICE, url, body, config),
+    updateCaseNote: (url: string, body: any) => requests.put<string>(BASE_URL_CASES_SERVICE, url, body, config),
+    deleteCaseNote: (url: string) => requests.delete<string>(BASE_URL_CASES_SERVICE, url, config),
+    addToCaseHighlight: (url: string, body: TCaseHighlight) => requests.post<string>(BASE_URL_CASES_SERVICE, url, body, config),
+    getCaseTimeline: (id: number) => requests.get<TCaseTimeline[]>(BASE_URL_CASES_SERVICE, `/Case/GetTimelineData/${id}`, config),
+    updateCaseHighlight: (url: string) => requests.put<void>(BASE_URL_CASES_SERVICE, url, {}, config),
+    getPredictiveCaseIds: (predictiveText: string) => requests.get<any>(BASE_URL_CASES_SERVICE, `/Case/GetPredictiveCaseIds?predictiveText=${predictiveText}`, config),
+    getAllCaseSharing: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<CaseSharing[]>>(BASE_URL_CASES_SERVICE,url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
+    addCaseSharing: (url: string, body:any) => requests.post<any>(BASE_URL_CASES_SERVICE,url, body, config),
+    editCaseSharing: (url: string, body: any) => requests.put<any>(BASE_URL_CASES_SERVICE,url, body, config),
+    getCaseSharing: (url: any) => requests.get<any>(BASE_URL_CASES_SERVICE,url,config)
+
 }
 
 export const ConfigurationAgent = {
@@ -463,6 +516,17 @@ export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
     return [data];
 };
 
+export const AICoordinatorAgent = {
+    addProject: (body: Project) => requests.post<number>(AI_COORDINATOR_SERVICE_URL, '', body, config),
+    updateProject: (id: number, body: Project) => requests.put<number>(AI_COORDINATOR_SERVICE_URL, `Project/${id}`, body),
+    duplicateProject: (id: number, projectName: string) => requests.post<number>(AI_COORDINATOR_SERVICE_URL, `Project/${id}?projectName=${projectName}`, {}),
+    addProjectJob: (projectId: number, body: Job) => requests.post<number>(AI_COORDINATOR_SERVICE_URL, `Project/${projectId}/Job`, body),
+    getProjects: () => requests.get<any>(AI_COORDINATOR_SERVICE_URL, '/Project'),
+    analyzeResult: (url: string) => requests.get<any>(url, ''),
+    addJob: (body: Job) => requests.post<number>(AI_COORDINATOR_SERVICE_URL, '/Job', body),
+    saveMetaData: (id: number, body: any) => requests.put<any>(AI_COORDINATOR_SERVICE_URL, `Job/${id}/UpdateData`, body),
+    cancelJob: (id: number, body: Job) => requests.post<number>(AI_COORDINATOR_SERVICE_URL, `Job/${id}/Cancel`, body),
+}
 
 export const HotListAgent = {
 

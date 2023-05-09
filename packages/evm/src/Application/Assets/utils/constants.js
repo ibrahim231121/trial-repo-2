@@ -109,19 +109,28 @@ const GenerateLockFilterQuery = (decoded) => {
 
 const BlockLockedAssets = (decoded, searchType, response, actionPlacement) => {
     const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
-    if ((!isAllowed) && searchType !== 'ViewOwnAssets') {
+    if ((!isAllowed) && (searchType !== 'ViewOwnAssets')) {
         let blockedAssets;
-        if (actionPlacement === "getAssetSearchInfoAsync") {
+        if ((actionPlacement === "getAssetSearchInfoAsync")) {
             blockedAssets = response.map((evidence) => {
                 return {
                     ...evidence,
-                    asset: evidence.asset.filter((x) => x.lock == undefined)
+                    asset: evidence.asset.filter((x) => (x.lock === undefined) || (x.lock === null))
                 }
             });
             return blockedAssets;
         } else if (actionPlacement === "AssetDetailsTemplate") {
-            blockedAssets = response.filter((x) => x.lock == undefined);
-            return blockedAssets
+            blockedAssets = response.filter((x) => (x.lock === undefined) || (x.lock === null));
+            return blockedAssets;
+        }
+        else if(actionPlacement === "AssetBucket"){
+           blockedAssets = response.filter(res => {
+                const asset = res.evidence.asset.find((a) => a.assetId === res.assetId);
+                if ((asset.lock === undefined) || (asset.lock === null)){
+                    return res;
+                }
+            });
+            return blockedAssets;
         }
         else { }
     }

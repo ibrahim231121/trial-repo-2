@@ -42,9 +42,9 @@ import { BASE_URL_COMMAND_SERVICE } from './Api/url';
 export const urlNames: any = {
     assets: "assets",
     assetSearchResult: "assetSearchResult",
-    cases:"cases",
-    createCase:"createCase",
-    editCase:"editCase",
+    cases: "cases",
+    createCase: "createCase",
+    editCase: "editCase",
     adminUserGroups: "adminUserGroups",
     adminUserGroup: "adminUserGroup",
     adminUserGroupId: "adminUserGroupId",
@@ -63,6 +63,7 @@ export const urlNames: any = {
     testVideoPlayer: "videoplayer",
     testEvidence: "Evidence",
     tenantSettings: "tenantSetting",
+    ADGroupsMapping: "ADGroupsMapping",
     adminStation: 'adminStation',
     adminStationCreate: 'adminStationCreate',
     adminStationEdit: 'adminStationEdit',
@@ -93,11 +94,14 @@ export const urlNames: any = {
     createFormField: 'createFormField',
     editFormField: 'editFormField',
     createRetentionPolicies: 'createRetentionPolicies',
-    editRetentionPolicy : 'editRetentionPolicy',
-    HotList : 'HotList',
-    HotListDetail : 'HotListDetail',
-    DataSource : 'DataSource',
-    DataSourceTab : 'DataSourceTab'
+    editRetentionPolicy: 'editRetentionPolicy',
+    updateVersion: 'updateVersion',
+    filterUpdateVersion: 'filterUpdateVersion',
+    filterUpdateVersionEdit: 'filterUpdateVersionEdit',
+    HotList: 'HotList',
+    HotListDetail: 'HotListDetail',
+    DataSource: 'DataSource',
+    DataSourceTab: 'DataSourceTab'
 };
 
 export const urlList: any = [
@@ -114,30 +118,38 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Manage Cases", },
         ],
-    }, 
+    },
     {
         name: urlNames.createCase,
-        url: "/cases/caseDetail",
+        url: "/cases/createCase",
         details: [
-            
+
             { routeTo: "/cases", type: "link", label: "Manage Cases", },
             { type: "text", label: "Create Case", }
         ],
-    }, 
+    },
     {
-     
+
         name: urlNames.editCase,
         url: "/cases/caseDetail/:id",
         details: [
             { routeTo: "/cases", type: "link", label: "Manage Cases", },
-            { type: 'text', label: 'Edit Case' },
+            { type: 'text', label: 'Case Detail' },
         ],
-    }, 
+    },
     {
         name: urlNames.tenantSettings,
         url: "/tenantSettings",
         details: [
             { type: "text", label: "Tenant Settings", }
+        ],
+    },
+    {
+        name: urlNames.ADGroupsMapping,
+        url: "/admin/manageADGroupsMapping",
+        details: [
+            { type: "text", label: "Admin", },
+            { type: "text", label: "AD Groups Mapping", }
         ],
     },
     {
@@ -335,7 +347,6 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/configurationtemplate", type: "link", label: "Manage Units & Devices Configuration Templates", },
-            //{ type: "text", label: "Create Template : BC04", }
         ],
     },
 
@@ -439,8 +450,8 @@ export const urlList: any = [
     //         { routeTo: '/admin/createFormField', type: 'text', label: 'Create Form Field' }
     //     ],
     // },
-   
-   {
+
+    {
         name: urlNames.defaultUnitTemplate,
         url: "/admin/defaultUnitTemplate",
         details: [
@@ -490,7 +501,7 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categories/', type: 'link', label: 'Categories' },
             { routeTo: '/admin/categories/createCategory', type: 'text', label: 'Create Category' }
-           
+
         ]
     },
     {
@@ -499,10 +510,10 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categories', type: 'link', label: 'Categories' },
-            
+
         ]
     },
-    
+
     {
         name: urlNames.categoryForms,
         url: "/admin/categoryForms",
@@ -524,7 +535,7 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
-            { type: 'text', label: 'Create Category Forms' }
+            { type: 'text', label: 'Create Category Form' }
         ]
     },
     {
@@ -534,16 +545,16 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
         ]
-    }, 
+    },
 
-    
+
     {
         name: urlNames.categoryFormsCreate,
         url: '/admin/categoryForms/categoryForm',
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
-            { type: 'text', label: 'Create Category Forms' }
+            { type: 'text', label: 'Create Category Form' }
         ]
     },
     {
@@ -553,28 +564,52 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' },
         ]
-    } , 
-     {
+    },
+    {
+        name: urlNames.updateVersion,
+        url: '/admin/updateVersion',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { type: 'text', label: 'Version Management' },
+        ]
+    },
+    {
+        name: urlNames.filterUpdateVersion,
+        url: '/admin/filterUpdateVersion',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { type: 'text', label: 'Filter Version Management' },
+        ]
+    },
+    {
+        name: urlNames.filterUpdateVersionEdit,
+        url: '/admin/filterUpdateVersionEdit/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { type: 'text', label: 'Filter Version Management' },
+        ]
+    },
+    {
         name: urlNames.HotList,
         url: "/Alpr/HotList",
         details: [
             { routeTo: "/Alpr/HotList", type: "link", label: "Manage Hot List", },
         ],
-    },{
+    }, {
         name: urlNames.HotListDetail,
         url: '/ALPR/HotList/HotListDetail/:id',
         details: [
-            { type: 'text', label: 'Hot List' },
-            { routeTo: 'ALPR/HotList/HotListDetail', type: 'link', label: 'Hot List' },
-            
+            { routeTo: '/ALPR/HotList' ,type: 'text', label: 'Manage Hot List' },
+            { routeTo: 'ALPR/HotList/HotListDetail', type: 'text', label: 'Hot List' },
+
         ]
-    },{
+    }, {
         name: urlNames.DataSource,
         url: '/ALPR/DataSource',
         details: [
             { type: 'text', label: 'ALPR' },
             { routeTo: '/ALPR/DataSource', type: 'text', label: 'Hot List Data Source' },
-            
+
         ]
     },
     {
@@ -583,7 +618,7 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'ALPR' },
             { routeTo: '/ALPR/DataSourceTab', type: 'text', label: 'Hot List Data Source' },
-            
+
         ]
     },
 ];

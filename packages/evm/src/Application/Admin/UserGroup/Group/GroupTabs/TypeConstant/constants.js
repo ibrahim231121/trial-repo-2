@@ -4,7 +4,8 @@ export const defaultPermissionLevel = "Select_permission_level"
 
 export const permissionTypes = [
     { value: 2, displayText: 'Category' },
-    { value: 1, displayText: 'Station' }
+    { value: 1, displayText: 'Uncategorized Assets' },
+    { value: 3, displayText: 'Assigned To Self' }
 ];
 
 export const permissionLevels = [

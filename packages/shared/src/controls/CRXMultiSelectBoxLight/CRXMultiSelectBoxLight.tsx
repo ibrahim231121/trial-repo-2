@@ -3,7 +3,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-
+import CRXTooltip from "../CRXTooltip/CRXTooltip"
 import './crx_MultiSelectBoxLight.scss'
 
 const useSelectBoxStyle = makeStyles((theme: any) =>
@@ -153,6 +153,11 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       '&:hover': {
         background: "none"
       }
+    },
+    noOptions: {
+      color: "#333",
+      backgroundColor: "#fff",
+      fontSize : "14px",
     }
   }),
 );
@@ -184,6 +189,7 @@ interface multiSelectProps {
   disabled?: boolean;
   freeSolo? : boolean
   isSuggestion? :boolean
+  onInputChange: (e: any) => void,
 }
 
 const CRXMultiSelectBoxLight = ({
@@ -205,6 +211,7 @@ const CRXMultiSelectBoxLight = ({
   disabled,
   freeSolo=false,
   isSuggestion=true,
+  onInputChange,
 
 }: multiSelectProps) => {
 
@@ -212,10 +219,12 @@ const CRXMultiSelectBoxLight = ({
   const [styelHeight, setAutoHeight] = React.useState<string>('31px');
   const [isClear, setIsClearIcon] = React.useState<any>(true);
   const [controled, setControled] = React.useState<any>(<i className="fas fa-caret-down"></i>);
-  const closeIcon: any = <i className={"fas fa-times" + " " + classes.closeIcon}></i>
+
+  const closeIcon: any = <CRXTooltip title="clear" placement="bottom-right" iconName="fas fa-times" className={classes.closeIcon} />
+
   const errorMessage = (error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errorMsg}</span> </div>)
   const errClx = error && error ? " inputError" : " ";
-
+  const lightBox = React.useRef(null)
   React.useEffect(() => {
 
     value && value.length > 1 ? setAutoHeight("auto") : setAutoHeight("31px");
@@ -277,6 +286,7 @@ const CRXMultiSelectBoxLight = ({
       }
       <div className='selectInner_content selectInner_content_autoComplete '>
       <Autocomplete
+        ref={lightBox}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
         filterSelectedOptions={false}
@@ -284,11 +294,13 @@ const CRXMultiSelectBoxLight = ({
         disableCloseOnSelect={true}
         freeSolo={freeSolo}
         // open={true}
+        noOptionsText="No option available"
         autoHighlight={true}
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
         closeText=""
+        clearText=""
         openText=""
         style={{ height: styelHeight }}
         className={"crx_MultiSelectBoxLight " + className + " " + errClx + " " + classes.root}
@@ -312,7 +324,7 @@ const CRXMultiSelectBoxLight = ({
         renderOption={(option: any, { selected }) => (
           optionLabel(option, selected)
         )}
-
+        onInputChange={typeof onInputChange === "function" ? onInputChange : () => {}}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
           if(isSuggestion) {
@@ -330,7 +342,7 @@ const CRXMultiSelectBoxLight = ({
 
         renderInput={(params: any) => (
           <TextField
-            placeholder={placeHolder}
+            placeholder={value && value.length == 0 ? placeHolder : ""}
             onBlur={onBlur}
             error={error}
             variant="filled"

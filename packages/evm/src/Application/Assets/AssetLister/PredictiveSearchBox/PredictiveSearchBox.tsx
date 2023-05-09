@@ -13,8 +13,10 @@ interface Props {
   onSet: (e: any) => void;
   value: string;
   decoded: IDecoded;
+  onKeyUp: (event: React.KeyboardEvent<HTMLImageElement>) => void;
 }
-const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded }) => {
+
+const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded,onKeyUp }) => {
   const { t } = useTranslation<string>();
   const [showSearch, setShowSearch] = React.useState<any>(false);
   const [outCome, setOutCome] = React.useState<any>([]);
@@ -115,6 +117,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded 
         onInputChange={handleOnChange}
         clearText={() => setInputValue("")}
         value={value}
+        onKeyUp = {onKeyUp}
+        
 
       />
     </div>

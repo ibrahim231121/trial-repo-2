@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import { CRXConfirmDialog } from '@cb/shared';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './CasesActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
@@ -10,13 +10,22 @@ import { getCasesInfoAsync } from '../../../Redux/CasesReducer';
 import { CasesAgent } from '../../../utils/Api/ApiAgent';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
+import CaseInternalSharingPermissionForm from '../CaseInternalSharingPermission/CaseInternalSharingPermissionForm';
+import { getUsersInfoAsync } from "../../../Redux/UserReducer";
+import { getGroupAsync } from '../../../Redux/GroupReducer';
+
 
 type Props = {
   row?: any;
+  menuItems?: any,
+  offsetX?: number,
+  offsetY?: number,
+  className?: string,
+  hasEditMenu: boolean,
   showToastMsg(obj: any): any;
 };
 
-const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
+const CasesActionMenu: React.FC<Props> = ({ row, menuItems, offsetX, offsetY, className, hasEditMenu, showToastMsg }) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -26,17 +35,78 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
   const [secondary, setSecondary] = React.useState<string>('');
   const [modalType, setModalType] = React.useState<string>('');
   const [caseName, setCaseName] = useState<string>('')
+  const selectedRowRef = useRef<any>(null);
   const history = useHistory();
 
+  const caseActionMenuItemListRef = useRef<{label: string, icon: any, onClickHandler: (row?: any) => void}[]>([])
+  const [createFormInternalSharing,setCreateFormInternalSharing] = useState<boolean>(false)
+  
+  const userPagerData = {
+    gridFilter: {
+      logic: "and", 
+      filters: []
+    },
+    page: 0,
+    size: 100,
+    gridSort: {
+      field: "LoginId",
+      dir: "asc"
+    }
+  }
+
   useEffect(() => {
-    if (row?.caseSummary.length > 0)
+    if (row?.caseSummary?.length > 0)
       setCaseNameProcess(row?.caseSummary);
+      selectedRowRef.current = row;
   }, [row]);
+
+  const groupPagerData = {
+    gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: 0,
+      size: 100,
+      gridSort: {
+        field: "Name",
+        dir: "asc"
+      }
+}
+
+  const updateOpenModel = () => {
+    let modelOpen = true;
+    setCreateFormInternalSharing(modelOpen);
+    dispatch(getUsersInfoAsync(userPagerData));
+    dispatch(getGroupAsync(groupPagerData))
+  }
+
+  useEffect(() => {
+    caseActionMenuItemListRef.current = Array.isArray(menuItems) ? menuItems : [];
+    if(hasEditMenu) {
+      caseActionMenuItemListRef.current.unshift(
+        {
+          label: t('Edit_case'),
+          icon: <i className='fas fa-pen'></i>,
+          onClickHandler: openCaseDetailForm,
+        }
+      )
+    }
+    if(hasEditMenu) {
+      caseActionMenuItemListRef.current.unshift(
+        {
+          label: t('Share_internal'),
+          icon: <i className='fas fa-pen'></i>,
+          onClickHandler: updateOpenModel,
+        }
+      )
+    }
+  }, [])
 
   const setCaseNameProcess = (text: string) => {
     let txt = text.split("_");
     setCaseName(txt[0]);
   }
+  
   const deleteCase = async () => {
     const url = '/Cases/' + `${row.id}`
     CasesAgent.deleteCase(url).then(() => {
@@ -53,7 +123,7 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
           filters: []
         },
         page: 0,
-        size: 25
+        size: 25,
       }));
     })
       .catch(function (error) {
@@ -67,8 +137,8 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
       });
   }
   const openCaseDetailForm = () => {
-    const path = `${urlList.filter((item: any) => item.name === urlNames.createCase)[0].url}/${row?.id}`;
-    history.push(path);
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editCase)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + selectedRowRef.current?.id);
   };
   // const openCaseDeleteForm = () => {
   //   setTitle(t("Delete_case"));
@@ -88,8 +158,30 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
       }
     }
   };
+
+  const getMenuItemContent = () => {
+    return caseActionMenuItemListRef.current.map((item, idx: number) => {
+      return (
+        <MenuItem onClick={() => item.onClickHandler(row)} key={`${item.label}-${idx}`}>
+          <Restricted moduleId={19}>
+          <div className='crx-meu-content groupingMenu crx-spac osama'>
+            <div className='crx-menu-icon'>
+              {item.icon}
+            </div>
+            <div className='crx-menu-list'>{item.label}</div>
+          </div>
+          </Restricted>
+        </MenuItem>
+      )
+    })
+  }
+
     return (
       <>
+      {
+        createFormInternalSharing &&
+       (<CaseInternalSharingPermissionForm id={0}  title={t("Share_Case_Internal")} openModel={updateOpenModel} formValues={selectedRowRef.current}/>)
+       }
       <CRXConfirmDialog
         title={title}
         setIsOpen={setIsOpenDelete}
@@ -111,16 +203,16 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
           viewScroll='close'
           direction='right'
           position='auto'
-          className='menuCss caseActionMenu'
-          offsetX={-18}
-          offsetY={-24}
+          className={`menuCss ${className ?? 'caseActionMenu'}`}
+          offsetX={offsetX ?? -18}
+          offsetY={offsetY ?? -24}
           portal={true}
           menuButton={
             <MenuButton>
               <i className='far fa-ellipsis-v'></i>
             </MenuButton>
           }>
-          <MenuItem onClick={openCaseDetailForm}>
+          {/* <MenuItem onClick={openCaseDetailForm}>
             <Restricted moduleId={19}>
               <div className='crx-meu-content groupingMenu crx-spac osama'>
                 <div className='crx-menu-icon'>
@@ -130,7 +222,8 @@ const CasesActionMenu: React.FC<Props> = ({ row, showToastMsg }) => {
               </div>
 
             </Restricted>
-          </MenuItem>
+          </MenuItem> */}
+          { getMenuItemContent() }
           {/* <MenuItem onClick={openCaseDeleteForm}>
             <Restricted moduleId={20}>
               <div className='crx-meu-content groupingMenu crx-spac osama'>

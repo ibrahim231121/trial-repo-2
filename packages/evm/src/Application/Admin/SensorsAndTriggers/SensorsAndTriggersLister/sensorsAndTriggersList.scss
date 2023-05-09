@@ -134,9 +134,7 @@ iframe {
       }
     }
   }
-  .MuiMenu_Modal_Ui {
-    left: 1565px !important;
-  }
+
   
   .SelectedActionMenu {
     background-color: #333333 !important;
@@ -144,12 +142,6 @@ iframe {
       // position: relative;
       button {
         color: #d1d2d4 !important;
-      }
-      &::before {
-        background-color: #333333;
-        content: "";
-        width: 100%;
-        height: 100%;
       }
     }
   }

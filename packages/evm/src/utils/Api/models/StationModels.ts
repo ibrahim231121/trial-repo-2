@@ -1,6 +1,6 @@
 import { ConfigurationTemplate, Unit } from "./UnitModels"
 import { GeoLocation, History } from "./CommonModels"
-
+import { Record } from "./CommonModels";
 export interface Station {
     id: number,
     name: string,
@@ -35,5 +35,8 @@ export interface CaptureDevice {
 }
 
 export interface RetentionPolicyId  {
+    id: string;
+    cmtFieldName: string;
     cmtFieldValue: number;
+    record: Record[];
   };

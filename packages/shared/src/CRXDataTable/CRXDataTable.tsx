@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#FFF",
     borderTop: "1px solid var(--color-ccc)",
     width: "calc(100% - 26px)",
-    zIndex: 2,
+    zIndex: 99,
     '& .MuiToolbar-regular' : {
       height:"30px",
       minHeight: "30px",
@@ -124,7 +124,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   stickyToolbar,
   isPaginationRequired,
   viewName,
-  showExpandViewOption
+  showExpandViewOption,
+  showSearchPanel,
+  searchResultText,
+  advanceSearchText,
+  presetPerUser,
+  selfSorting
 }) => {
   const classes = useStyles();
   
@@ -164,8 +169,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
-    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id);
-
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id + "_" + presetPerUser);
     if (checkOrderPreset !== null) {
       let arr = JSON.parse(checkOrderPreset).map((x: OrderValue) => x.order);
       setOrderColumn(arr);
@@ -237,7 +241,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   };
 
   useEffect(() => {
-    if(id == "assetDataTable")
+    if(selfSorting)
       stableSort(
         containers.tableId.rows,
         getComparator(orderData.order, orderData.orderBy)
@@ -418,6 +422,10 @@ useEffect(() => {
                         toggleExpanView={() => handleExpandCollapse()}
                         expanView={expandView}
                         showExpandViewOption={showExpandViewOption}
+                        showSearchPanel={showSearchPanel}
+                        searchResultText={searchResultText}
+                        advanceSearchText={advanceSearchText}
+						            presetPerUser= {presetPerUser}
                       />
                     )}
 
@@ -459,6 +467,7 @@ useEffect(() => {
                       headerPositionInit={headerPositionInit}
                       viewName={viewName}
                       expanViews={expandView}
+                      totalRecords={totalRecords}
                     />
                     {(isPaginationRequired == null || isPaginationRequired == true) ?
                       <TablePagination

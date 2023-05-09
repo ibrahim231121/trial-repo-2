@@ -28,10 +28,12 @@ import {
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import UserGroupActionMenu from "./UserGroupActionMenu";
+import NumberSearch from "../../../GlobalComponents/DataTableSearch/NumberSearch";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { CRXModalDialog } from "@cb/shared";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 type GroupUser = {
   id: number;
@@ -46,8 +48,7 @@ const UserGroup: React.FC = () => {
   let history = useHistory();
 
   React.useEffect(() => {
-    // dispatch(getGroupAsync(pageiGrid));
-    // dispatch(getGroupUserCountAsync());
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
 
@@ -133,26 +134,24 @@ const UserGroup: React.FC = () => {
       onSelection(valuesObject, colIdx);
     };
 
-    const onSelection = (v: ValueString[], colIdx: number) => {
-      if (v.length > 0) {
-        for (var i = 0; i < v.length; i++) {
-          let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-          setSearchData((prevArr) =>
-            prevArr.filter(
-              (e) => e.columnName !== headCells[colIdx].id.toString()
-            )
-          );
-          setSearchData((prevArr) => [...prevArr, searchDataValue]);
-        }
-      } else {
-        setSearchData((prevArr) =>
-          prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-        );
-      }
+    return (
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} className="userGroupSearchBox" />
+    );
+  };
+
+  const searchNumber = (
+    rowsParam: GroupUser[],
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
+
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
     };
 
     return (
-      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} className="userGroupSearchBox" />
+      <NumberSearch headCells={headCells} colIdx={colIdx} onChange={onChange} className="userGroupSearchBox" />
     );
   };
 
@@ -163,6 +162,23 @@ const UserGroup: React.FC = () => {
    
   }
 
+  const onSelection = (v: ValueString[], colIdx: number) => {
+    if (v.length > 0) {
+      for (var i = 0; i < v.length; i++) {
+        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, searchDataValue]);
+      }
+    } else {
+      setSearchData((prevArr) =>
+        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+      );
+    }
+  };
 
   const simpleFilter = (data : any) => {
     
@@ -240,7 +256,7 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: searchNumber,
       minWidth: "244",
       attributeName: "UserCount",
       attributeType: "Int",
@@ -253,7 +269,7 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: searchNumber,
       minWidth: "232",
       attributeName: "UserCount",
       attributeType: "Int",
@@ -266,7 +282,7 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: searchNumber,
       minWidth: "420",
       attributeName: "UserCount",
       attributeType: "Int",
@@ -410,9 +426,9 @@ const UserGroup: React.FC = () => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={130}
-            searchHeaderPosition={224}
-            dragableHeaderPosition={189}
+            stickyToolbar={129}
+            searchHeaderPosition={221}
+            dragableHeaderPosition={186}
             showExpandViewOption={true}
             //End here
    

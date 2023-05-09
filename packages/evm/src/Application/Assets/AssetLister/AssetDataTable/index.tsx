@@ -12,6 +12,8 @@ import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetention
 import { assetDurationFormat, assetSizeFormat } from "../../../../GlobalFunctions/AssetSizeFormat";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import {
+  AssetState,
+  AssetStatus,
   HeadCellProps, onClearAll, onDateCompare, onMultipleCompare,
   onMultiToMultiCompare, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, SearchObject, ValueString
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
@@ -27,11 +29,16 @@ import "./index.scss";
 import { EvidenceChildSharingModel } from "../../../../utils/Api/models/EvidenceModels";
 import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import { checkIndefiniteDate } from "./Utility";
+import { getToken } from "./../../../../Login/API/auth";
+import { TokenType } from "./../../../../types";
+import jwt_decode from "jwt-decode";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let {assetType, assetName} = evidence.masterAsset;
   let fileType = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.type;
-  return <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} fontSize="61pt" />;
+  let accessCode = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.accessCode;
+  return <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} accessCode={accessCode} fontSize="61pt" />;
 };
 
 const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
@@ -82,47 +89,65 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     
 };
 
-const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
-  let date: Date;
-  if (evidence.holdUntil != null)
-    date = moment(evidence.holdUntil).toDate();
-  else
-    date = moment(evidence.expireOn).toDate();
-
-  if (moment(date).format('DD-MM-YYYY') == "31-12-9999" || date.getFullYear() === 9999) { //NOTE: Case in which the expiry date for asset is infinite.       
-    return (
-      <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
-    );
-  }
-  return (
-    <div className="dataTableText ">
-      {AssetRetentionFormat(date)}
-      {
-        evidence.holdUntil != null && moment(evidence.holdUntil).format('DD-MM-YYYY') != "31-12-9999" ?<i className="fas fa-arrow-up"></i> : ""
-      }
-    </div>
-  );
-}
-
 const MasterMain: React.FC<MasterMainProps> = ({
   rowsData,
   dateOptionType,
   dateTimeDetail,
   showDateCompact,
-  showAdvanceSearch,
+  advanceSearchText,
+  searchResultText,
+  showSearchPanel
 }) => {
   const toasterRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   let reformattedRows: SearchModel.Evidence[] = [];
+
+  const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
+    let date: Date;
+    if (evidence.holdUntil != null)
+      date = moment(evidence.holdUntil).toDate();
+    else
+      date = moment(evidence.expireOn).toDate();
+    
+    if (checkIndefiniteDate(date)) { //NOTE: Case in which the expiry date for asset is infinite.       
+      return (
+        <div className="dataTableText">
+          <div className="CRXLockTextIcon">
+            {t("Indefinite")}
+          </div>
+          <div className="CRXLockIcon">
+            <CRXTooltip arrow={false} disablePortal={true} iconName="fas fa-infinity" title="Indefinite" placement="top" className="CRXLock" />
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="dataTableText ">
+        {AssetRetentionFormat(date)}
+        {
+          evidence.holdUntil != null && !checkIndefiniteDate(moment(evidence.holdUntil).toDate()) ? <i className="fas fa-arrow-up"></i> : ""
+        }
+      </div>
+    );
+  }
+
   rowsData.forEach((row: SearchModel.Evidence, i: number) => {
     const checkStatus = () => {
-  if((row.masterAsset.state == "Deleted" || row.masterAsset.state == "Trash") && row.masterAsset.status == "Available"){
-    return "Expired"
-  }
-  else{
-    return row.masterAsset.status
-  }
+      
+      if(row.masterAsset.state == AssetState.Deleted || row.masterAsset.state == AssetState.Trash){
+        return "Expired"
+      }
+      else if(row.masterAsset.status == AssetStatus.MetadataOnly){
+        return "Metadata Only"
+      }
+      else if(row.masterAsset.status == AssetStatus.RequestUpload){
+        return "Upload Requested"
+      }
+      else{
+        return row.masterAsset.status
+      }
     }
+
     let evidence: any = {
       id: row.id,
       assetId: row.masterAsset.assetId,
@@ -153,6 +178,16 @@ const MasterMain: React.FC<MasterMainProps> = ({
     onSaveHeadCellData(headCells, "assetDataTable");
   }, []);
 
+  const userIdPreset = () =>{
+    var token = getToken();
+    if (token) {
+        var accessTokenDecode: any = jwt_decode(token);
+        return accessTokenDecode.LoginId
+    }
+    else
+     return ""
+  }
+
   const dispatch = useDispatch();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -164,6 +199,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
   const [selectedMaster, setSelectedMaster] = React.useState<number[]>();
   const [groupedSelectedAsset, setGroupedSelectedAsset] = React.useState<SearchModel.Evidence[]>([]);
+  const [userId, setUserId] = React.useState<string>(userIdPreset());
 
   const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
@@ -365,10 +401,11 @@ const MasterMain: React.FC<MasterMainProps> = ({
       }
 
       return (
-        <div>
+        <div className="assetDataTableMultiSelect">
           {["categories", "unit", "station","recordedBy"].includes(headCells[colIdx].id.toString())  ?
             <CBXMultiSelectForDatatable
-              width={220}
+              width={100}
+              percentage={true}
               option={options}
               value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
               onChange={(e: any, value: any) => changeMultiselect(value, colIdx)}
@@ -377,9 +414,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
               isduplicate={true}
             /> :
             <CBXMultiCheckBoxDataFilter 
-              width = {220} 
+              width = {100} 
+              percentage={true}
               option={options} 
-              defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
+              value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
               onChange={(value : any) => changeMultiselect(value, colIdx)}
               onSelectedClear = {() => clearAll()}
               isCheckBox={false}
@@ -409,6 +447,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       ];
 
       return (
+      
         // <CBXMultiSelectForDatatable
         //   width={220}
         //   option={options}
@@ -418,10 +457,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
         //   isCheckBox={true}
         //   isduplicate={true}
         // />
+        <div className="assetDataTableMultiSelect">
         <CBXMultiCheckBoxDataFilter 
-          width = {220} 
+          width = {100} 
+          percentage={true}
           option={options} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => clearAll()}
           isCheckBox={true}
@@ -429,6 +470,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
           isduplicate={true}
           selectAllLabel="All"
         />
+        </div>
       );
     }
   };
@@ -606,9 +648,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       align: "left",
       dataComponent: assetDurationFormat,
       sort: true,
-      searchFilter: true,
-      searchComponent: () => null,
-      minWidth: "230",
+      searchFilter: false,
+      //searchComponent: () => null,
+      minWidth: "200",
       visible: false,
     },
     {
@@ -617,9 +659,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       align: "left",
       dataComponent: assetSizeFormat,
       sort: true,
-      searchFilter: true,
-      searchComponent: () => null,
-      minWidth: "230",
+      searchFilter: false,
+      //searchComponent: () => null,
+      minWidth: "200",
       visible: false,
     },
   ]);
@@ -675,7 +717,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
         dataRows = onDateCompare(dataRows, headCells, el);
       }
     });
+    
     setRows(dataRows);
+    
   };
 
   const clearAll = () => {
@@ -725,6 +769,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
             <ActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
               showToastMsg={(obj: any) => showToastMsg(obj)}
               portal={true}
               actionMenuPlacement={ActionMenuPlacement.AssetLister}
@@ -755,9 +800,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
           offsetY={1}
-          stickyToolbar={117}
-          searchHeaderPosition={199}
-          dragableHeaderPosition={166}
+          stickyToolbar={112}
+          searchHeaderPosition={203}
+          dragableHeaderPosition={168}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}
@@ -767,6 +812,11 @@ const MasterMain: React.FC<MasterMainProps> = ({
           selfPaging={true}
           viewName="assetListerView"
           showExpandViewOption={true}
+          showSearchPanel={showSearchPanel}
+          searchResultText={searchResultText}
+          advanceSearchText={advanceSearchText}
+		      presetPerUser={userId}
+          selfSorting={true}
         />
 
       )}

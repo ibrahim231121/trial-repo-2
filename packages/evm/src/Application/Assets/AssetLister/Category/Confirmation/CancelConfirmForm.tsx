@@ -4,6 +4,7 @@ import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { CancelConfirmFormProps, FormValues } from '../Model/CancelConfirmFormModel';
+import '../categoryForm.scss'
 
 const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);

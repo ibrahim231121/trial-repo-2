@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { SearchModel } from '../../../../utils/Api/models/SearchModel';
 import { EvidenceObjectToPassInActionMenu } from './AssetDataTableModel';
 
@@ -8,4 +9,11 @@ const ReFormatPropsForActionMenu = (evidence: SearchModel.Evidence, assetId: num
     return o;
 };
 
-export { ReFormatPropsForActionMenu };
+const checkIndefiniteDate = (date : Date) => {
+    let differenceOfYears = date.getFullYear() - moment().year();
+    if(differenceOfYears > 50)
+      return true;
+    return false;
+  }
+
+export { ReFormatPropsForActionMenu, checkIndefiniteDate };

@@ -1,10 +1,13 @@
 import * as Yup from 'yup';
 
-const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
+const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b\s]*$/;
 const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
 const regexForNumberOnly = new RegExp('^[0-9]+$');
 export const stationValidationSchema = Yup.object().shape({
-    Name: Yup.string().required('Station_Name_is_required').min(3, "Station Name cannot be less than 3 and greater than 128").max(128, "Station Name cannot be less than 3 and greater than 128"),
+    Name: Yup.string().required('Station Name is required')
+    .matches(regex, "Invalid Station Name. Special Characters are not allowed")
+    .min(3, "Station Name should at least have 3 characters")
+    .max(128, "Station Name should not exceed 128 characters limit"),
     Passcode: Yup.string()
         .test(
             'len',
@@ -30,5 +33,5 @@ export const stationValidationSchema = Yup.object().shape({
     }),
     UploadPolicy: Yup.object().shape({
         id: Yup.string().required('Upload_Policy_is_required')
-    })
+    }) 
 });

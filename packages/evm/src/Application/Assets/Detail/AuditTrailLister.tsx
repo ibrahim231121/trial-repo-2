@@ -19,6 +19,9 @@ import { AuditTrail, DateTimeObject, DateTimeProps } from "./AssetDetailsTemplat
 
 const AuditTrailLister = (props: any) => {
   const {metaData, uploadedOn} = props;
+  const assetDetailBottomTabs: boolean = useSelector(
+    (state: RootState) => state.videoPlayerSettingsSlice.assetDetailBottomTabs
+  );
   const { t } = useTranslation<string>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [orderBy] = React.useState<string>("name");
@@ -327,10 +330,10 @@ const AuditTrailLister = (props: any) => {
 
 
 
-
+  
   return (
 
-            <div className="asset_detail_AT_table">
+            <div className="asset_detail_AT_table" style={{display: assetDetailBottomTabs ? "block" : "none"}}>
               {rows && (
                 <CRXDataTable
                   id="Audit Trail"
@@ -374,7 +377,8 @@ const AuditTrailLister = (props: any) => {
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-                  totalRecords={500}
+                  totalRecords={rows.length}
+                  selfPaging={true}
                 />
               )}
             </div>

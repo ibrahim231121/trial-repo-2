@@ -19,17 +19,14 @@ const Buffering = (props:any)  => {
     context.strokeStyle = '#333';
     var inc = canvas.width / width;
 
-   
-      for (var i = 0; i < video.buffered.length; i++) {
+    for (let i = 0; i < video.buffered?.length; i++) {
+      let startX = video.buffered.start(i) * inc;
+      let endX = video.buffered.end(i) * inc;
+      let width = endX - startX;
 
-        let startX = video.buffered.start(i) * inc;
-        let endX = video.buffered.end(i) * inc;
-        let width = endX - startX;
-
-        context.fillRect(startX, 0, width, canvas.height);
-        context.rect(startX, 0, width, canvas.height);
-        context.stroke();
-      
+      context.fillRect(startX, 0, width, canvas.height);
+      context.rect(startX, 0, width, canvas.height);
+      context.stroke();
     };
     draw(context)
   }, [draw])

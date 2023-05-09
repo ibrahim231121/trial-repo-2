@@ -3,7 +3,8 @@ import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupC
 import { FormInitialValues } from '../Model/CategoryFormModel';
 import { FieldTypes } from '../Model/FieldTypes';
 import { SelectedCategoryModel } from '../Model/FormContainerModel';
-import { Category } from '../../../../../utils/Api/models/EvidenceModels';
+import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
+import { AssetCategoryObject } from '../../ActionMenu/types';
 
 const filterCategory = (arr: Array<any>): Array<SelectedCategoryModel> => {
     let sortedArray: Array<SelectedCategoryModel> = [];
@@ -92,10 +93,7 @@ const RevertKeyName = (keyNameText: string): string => {
     return result;
 };
 
-const MapSetupCategoryFormToEvidenceCategoryForm = (
-    setupCategories: Array<SetupConfigurationsModel.Category>,
-    evidenceCategories: Array<Category>
-): Array<any> => {
+const MapSetupCategoryFormToEvidenceCategoryForm = (setupCategories: Array<SetupConfigurationsModel.Category>, evidenceCategories: Array<Category>): Array<any> => {
     const categoryArray: any = [];
     for (const evidenceCategory of evidenceCategories) {
         const setupCategory = setupCategories.find((x) => x.name === evidenceCategory.name);
@@ -118,11 +116,60 @@ const MapSetupCategoryFormToEvidenceCategoryForm = (
     }
     return categoryArray;
 };
+
+const GetResponseToUpdateAssetBucketCategory = (body: Array<EvdenceCategoryAssignment>, setupCategories: Array<SetupConfigurationsModel.Category>) => {
+    const assetCategories: Array<AssetCategoryObject> = [];
+    for (const o of body) {
+        let assetCategory: AssetCategoryObject = {
+            evidenceId: o.evidenceId,
+            categories: []
+        };
+        if (o.assignedCategories.length > 0) {
+            assetCategory.categories = setupCategories.filter((s: any) => o.assignedCategories.some((e: any) => s.id === e.id))
+                .map((i: any) => i.name) as Array<string>;
+        }
+        if (o.updateCategories.length > 0) {
+            assetCategory.categories = setupCategories.filter((s: any) => o.updateCategories.some((e: any) => s.id === e.id))
+                .map((i: any) => i.name) as Array<string>;
+        }
+        assetCategories.push(assetCategory);
+    }
+    return assetCategories;
+}
+
+
+interface categoryretentionDetails {
+    categoryName: string; 
+    retentionId: number; 
+    hours: number;
+}
+const CalculateCategoryRetentionDetail = (selectedCategoriesObject: Array<any>) : {retentionList: string, retentionDetails : Array<categoryretentionDetails>} => {
+    let retentionList = '';
+    let count = 0;
+    const retentionDetails: Array<categoryretentionDetails> = [];
+    for (const i of selectedCategoriesObject) {
+        retentionList += selectedCategoriesObject.length !== count + 1 ? `PolicyIDList=${i.policies.retentionPolicyId}&` : `PolicyIDList=${i.policies.retentionPolicyId}`;
+        retentionDetails.push({
+          categoryName: i.name,
+          retentionId: i.policies.retentionPolicyId,
+          hours: 0
+        });
+        count++;
+      }
+      return {
+        retentionList : retentionList,
+        retentionDetails : retentionDetails
+      };
+}
+
+
 export {
     filterCategory,
     applyValidation,
     IsFieldtypeEquals,
     RemapFormFieldKeyName,
     RevertKeyName,
-    MapSetupCategoryFormToEvidenceCategoryForm
+    MapSetupCategoryFormToEvidenceCategoryForm,
+    GetResponseToUpdateAssetBucketCategory,
+    CalculateCategoryRetentionDetail
 };

@@ -27,10 +27,16 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
   const [policyName, setPolicyName] = useState<any[]>([]);
 
   const deleteUploadPolicies = () => {
+    let eventIds: number[] = [];
     if (Array.isArray(selectedItems) && selectedItems.length > 0) {
-      const eventIds: number[] = selectedItems.map((data: any) => {
+      eventIds = selectedItems.map((data: any) => {
         return data.id;
       });
+    }
+    else
+    {
+      eventIds.push(row.id);
+    }
       SetupConfigurationAgent.deleteAllUploadPoliciesTemplate(eventIds)
         .then(function (response: any) {
           let { AssignIdName, UnAssignsIds } = response;
@@ -44,7 +50,7 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
             return error;
           }
         });
-    }
+      
 
     const deleteUploadPoliciesHandler = (AssignIdName: any, UnAssignsIds: any) => {
       if (AssignIdName.length > 0) {

@@ -32,6 +32,7 @@ import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import Restricted from "../../../../ApplicationPermission/Restricted";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 type CategoriesTemplate = {
   id: number;
@@ -103,7 +104,7 @@ const CategoriesList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
-    
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   const history = useHistory();
@@ -242,7 +243,7 @@ const CategoriesList: React.FC = () => {
           width = {93} 
           percentage = {true}
           option={options} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => clearAll()}
           isCheckBox={true}
@@ -264,7 +265,7 @@ const CategoriesList: React.FC = () => {
             width = {93} 
             percentage={true}
             option={options} 
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
             onSelectedClear = {() => clearAll()}
             isCheckBox={true}
@@ -521,9 +522,9 @@ const sortingOrder = (sort: any) => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={130}
-            searchHeaderPosition={224}
-            dragableHeaderPosition={188}
+            stickyToolbar={129}
+            searchHeaderPosition={221}
+            dragableHeaderPosition={186}
             //End here
             showExpandViewOption={true}
 			      initialRows={reformattedRows}          />

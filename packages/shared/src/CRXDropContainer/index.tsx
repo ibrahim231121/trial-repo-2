@@ -22,7 +22,9 @@ const useStyles = makeStyles(() => ({
     boxShadow: "none",
     overflow: "hidden",
   },
-  modalbox: {},
+  modalbox: {
+    zIndex: "9999!important" as any,
+  },
 }));
 const CRXDropContainer: React.FC<propsType> = ({
   color,

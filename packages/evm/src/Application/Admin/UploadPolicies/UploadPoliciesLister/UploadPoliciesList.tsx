@@ -75,6 +75,7 @@ const UploadPoliciesList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "uploadPoliciesTemplateDataTable");
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   const setUploadPoliciesData = () => {
@@ -355,9 +356,9 @@ const UploadPoliciesList: React.FC = () => {
             selectedItems={selectedItems}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={130}
-            searchHeaderPosition={222}
-            dragableHeaderPosition={188}
+            stickyToolbar={129}
+            searchHeaderPosition={221}
+            dragableHeaderPosition={186}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}

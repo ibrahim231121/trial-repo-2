@@ -38,6 +38,10 @@ import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
 import ApplicationPermissionContext from "../ApplicationPermission/ApplicationPermissionContext";
 import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../utils/hub_config";
+import { getToken } from "./../Login/API/auth";
+import { TokenType } from "./../types";
+import jwt_decode from "jwt-decode";
+import { CRXToaster } from "@cb/shared";
 
 
 type Unit = {
@@ -78,6 +82,16 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const userIdPreset = () =>{
+    var token = getToken();
+    if (token) {
+        var accessTokenDecode: any = jwt_decode(token);
+        return accessTokenDecode.LoginId
+    }
+    else
+     return ""
+  }
   const tenMinutes:number=10;
   const rowsRef = useRef<any>([]);
   const statusJson =useRef<any>();
@@ -115,6 +129,7 @@ const UnitAndDevices: React.FC = () => {
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
+  const [userId, setUserId] = React.useState<string>(userIdPreset());
   
   React.useEffect(() => {
     subscribeGroupToSocket("UnitStatus");
@@ -139,7 +154,7 @@ const UnitAndDevices: React.FC = () => {
         clearInterval(intervalRef.current);
          };
   }, []);
- 
+
   const singleEventListener = (function(element: any) {
           var eventListenerHandlers:any = {};
           return function(eventName: string, func?: any) {
@@ -357,7 +372,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 
   if(colIdx === 2 && initialRows && initialRows.unitStatus && initialRows.unitStatus.length > 0) {
 
-    let status: any = [{id: 0, value: t("No_Status") }];
+    let status: any = [];
     initialRows.unitStatus.map((x: any) => {
       status.push({id : x.id, value: x.name });
     });
@@ -377,7 +392,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
         <CBXMultiCheckBoxDataFilter 
           width = {200} 
           option={status} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
@@ -414,7 +429,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
         <CBXMultiCheckBoxDataFilter 
           width = {200} 
           option={template} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
@@ -647,7 +662,7 @@ const searchAndNonSearchMultiDropDown = (
         <CBXMultiCheckBoxDataFilter 
           width = {250} 
           option={status.filter((x: any) =>x.value != null && x.value != "")} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
@@ -680,7 +695,7 @@ const searchAndNonSearchMultiDropDown = (
         {/* <CBXMultiCheckBoxDataFilter 
           width = {200} 
           option={status} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
@@ -713,7 +728,6 @@ const onSelection = (v: ValueString[], colIdx: number) => {
 
 useEffect(() => {
   //dataArrayBuilder();
-  console.log("searchData", searchData)
   if(searchData.length > 0)
     setIsSearchable(true)
   if(isSearchableOnChange)
@@ -872,20 +886,24 @@ const handleBlur = () => {
   if(isSearchable)
     getFilteredUnitData()
 }
-
+const showToastMsg = (obj: any) => {
+  toasterRef.current.showToaster({
+    message: obj.message,
+    variant: obj.variant,
+    duration: obj.duration,
+    clearButtton: true,
+  });
+};
 return (
+  <><CRXToaster ref={toasterRef} />
   <ClickAwayListener onClickAway={handleBlur}>
     <div className="searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown}>
       {/* <p className="unitsStatusCounter">{rows.length} Units</p> */}
-      {
-        
-        rows && (
+      {rows && (
         <CRXDataTable
           id={t("Units_&_Devices")}
-          actionComponent={<UnitAndDevicesActionMenu selectedItems ={selectedItems} row={selectedActionRow} />}
-          getRowOnActionClick={(val: Unit) =>
-            setSelectedActionRow(val)
-          }
+          actionComponent={<UnitAndDevicesActionMenu selectedItems={selectedItems} row={selectedActionRow}  showToastMsg={(obj: any) => showToastMsg(obj)} />}
+          getRowOnActionClick={(val: Unit) => setSelectedActionRow(val)}
           // toolBarButton={
           //   <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUnitData()}> {t("Filter")} </CRXButton>
           // }
@@ -916,23 +934,22 @@ return (
           selectedItems={selectedItems}
           page={page}
           rowsPerPage={rowsPerPage}
-          setPage= {(page:any) => setPage(page)}
-          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          setPage={(page: any) => setPage(page)}
+          setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={units.totalCount}
-          setSortOrder={(sort:any) => sortingOrder(sort)}
-           //Please dont miss this block.
-           offsetY={119}
-           stickyToolbar={118}
-           searchHeaderPosition={204}
-           dragableHeaderPosition={168}
-           showExpandViewOption={true}
-           //End here
-          />
-          )
-        }
-      
+          setSortOrder={(sort: any) => sortingOrder(sort)}
+          //Please dont miss this block.
+          offsetY={118}
+          stickyToolbar={130}
+          searchHeaderPosition={221}
+          dragableHeaderPosition={186}
+          showExpandViewOption={true}
+          //End here
+          presetPerUser={userId} />
+      )}
+
     </div>
-    </ClickAwayListener>
+  </ClickAwayListener></>
   )
 }
 

@@ -12,6 +12,9 @@
     align-items: center;
     flex-direction: row-reverse;
     justify-content: center;
+    .Mui-focused {
+      outline: unset;
+    }
     &:focus-within {
         outline: 1px solid var(--color-White) !important;
       }
@@ -227,6 +230,10 @@ iframe {
         padding: 0 6px;
         .linkColor {
             word-break: break-all;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
         } 
     }
     .dragging {
@@ -355,7 +362,7 @@ html {
 
   .stickyBorder_Add {
     .stickyPos {
-      z-index: 9;
+      z-index: 100;
     }
   }
   
@@ -376,6 +383,41 @@ html {
   .stickyPos {
     .toolbar_counter_text {
         padding-top: 8px;
+        display: flex;
+        .searchResultText {
+          padding-left: 15px;
+          display: flex;
+          span {
+            display: inline-block;
+            font-size: 14px;
+            font-family: var(--base-font-family);
+            color: var(--color-333333);
+            padding: 0px 4px;
+            &.s-name{
+              font-weight: bold;
+            }
+            &.s-type {
+              font-weight: normal;
+            }
+          }
+          .advance-type {
+            display: flex;
+            font-size: 14px;
+            font-family: var(--base-font-family);
+            color: var(--color-333333);
+            padding: 0px 4px;
+            .valueName {
+              font-weight: normal;
+            }
+            .valueData {
+              font-weight: bold;
+              padding: 0 0px 0px 6px;
+            }
+          }
+          .searchType {
+            padding-left: 4px;
+          }
+        }
     }
   }
 
@@ -446,11 +488,60 @@ html {
     }
     .stickyPos {
      width: -webkit-fill-available !important;
-     padding-right: 25px;
+     padding-right: 25px !important;
     }
   }
 
   .overlaySticky-content {
     position: sticky;
     padding: 33px 0px;
+  }
+
+  .CRXAppHeader {
+    .CRXPageTitle  {
+      h2 {
+        white-space: nowrap; 
+        max-width: 55%; 
+        overflow: hidden;
+        text-overflow: ellipsis; 
+      }
+    }
+  }
+
+  .CRXLeftMenu  {
+    >
+    ul {
+      >
+      .activeSubList {
+        > 
+        a {
+          background: var(--color-151515) !important;
+          border-left:4px solid var(--color-d74b00) !important;
+          span {
+            color: var(--color-White) !important;
+          }
+        }
+       
+      }
+    }
+  }
+.searchAssetText-main
+  {
+    font-size: 14px;
+    text-align: left;
+    text-indent: 7px;
+    padding-bottom: 9px;
+    color: #333;
+  }
+
+  .linkColor {
+    &:hover {
+      cursor: pointer;
+    }
+    label,.assetName {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
   }

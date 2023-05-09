@@ -26,6 +26,13 @@ const FormFieldRowValue: React.FC<infoProps> = ({ selectedFields, setSelectedFie
         <>
             <div className="crx-fields-col">
                 <CRXRows container="container" spacing={0}>
+                <CRXColumn className="crx-fieldsCol-btn" container="container" item="item" xs={1} spacing={0} >
+                        <button
+                            className="removeBtn"
+                            onClick={() => onRemovePermission(rowField?.id)}
+                        ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon" /></button>
+
+                    </CRXColumn>
                     <CRXColumn className="fieldsCol" container="container" item="item" xs={3} spacing={0}>
                         <label>{rowField?.displayName}</label>
                     </CRXColumn>
@@ -37,13 +44,6 @@ const FormFieldRowValue: React.FC<infoProps> = ({ selectedFields, setSelectedFie
                     </CRXColumn>
                     <CRXColumn className="fieldsCol" container="container" item="item" xs={2} spacing={0}>
                         <label>{rowField?.isRequired.toString() == "true" ? "Yes" : "No"}</label>
-                    </CRXColumn>
-                    <CRXColumn className="crx-fieldsCol-btn" container="container" item="item" xs={1} spacing={0} >
-                        <button
-                            className="removeBtn"
-                            onClick={() => onRemovePermission(rowField?.id)}
-                        ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon" /></button>
-
                     </CRXColumn>
                 </CRXRows>
             </div>

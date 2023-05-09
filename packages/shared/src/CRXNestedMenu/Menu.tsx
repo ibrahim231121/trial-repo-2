@@ -35,7 +35,6 @@ const CRXNestedMenu = ({popup = false, model, style, className, disabled , appen
     }
 
     const onPanelClick = () => {
-       
     }
 
     useEffect(() => {

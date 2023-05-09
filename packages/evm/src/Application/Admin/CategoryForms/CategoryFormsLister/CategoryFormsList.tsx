@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,6 +27,7 @@ import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 
 type CategoryFormsTemplate = {
   id: number;
@@ -34,10 +35,8 @@ type CategoryFormsTemplate = {
   description: string;
 }
 
-const ORDER_BY = "asc" as Order;
-const ORDER_BY_PARAM = "recordingStarted";
-
 const CategoryFormsList: React.FC = () => {
+  const { getModuleIds} = useContext(ApplicationPermissionContext);
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   const [rows, setRows] = React.useState<CategoryFormsTemplate[]>([]);
@@ -148,7 +147,7 @@ const CategoryFormsList: React.FC = () => {
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editCategoryForm(id)} className={"dataTableText txtStyle"}>{e}</div>
+        return  getModuleIds().includes(74) ? <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editCategoryForm(id)} className={"dataTableText txtStyle"}>{e} </div>: <div >{e}</div>
       },
       sort: true,
       searchFilter: true,
@@ -282,10 +281,11 @@ const CategoryFormsList: React.FC = () => {
               row={selectedActionRow}
               selectedItems={selectedItems}
               pageiGrid={pageiGrid}
+              toasterRef={retentionMsgFormRef}
             />}
             toolBarButton={
               <>
-                <Restricted moduleId={0}>
+                <Restricted moduleId={73}>
 
                   <CRXButton color="primary" className="primary CategoriesBtn" onClick={handleClickOpen}>
                     {t("Create_Category_Forms")}
@@ -301,8 +301,8 @@ const CategoryFormsList: React.FC = () => {
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
-            orderParam={ORDER_BY}
-            orderByParam={ORDER_BY_PARAM}
+            orderParam={order}
+            orderByParam={orderBy}
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}

@@ -1083,6 +1083,7 @@ export const getUsersInfoAsync: any = createAsyncThunk(
             }).catch((error: any) => {
                 thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
                 console.error(error.response.data);
+                return error.response.status
               });
 
 });
@@ -1099,7 +1100,7 @@ export const getUsersIdsAsync: any = createAsyncThunk(
             page: 1,
             size: 10000,
             gridSort: {
-              field: "UserName",
+              field: "LoginId",
               dir: "asc"
             }
 

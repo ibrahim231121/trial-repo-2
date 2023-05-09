@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { ClickAwayListener } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -172,9 +172,10 @@ type SelectProps = {
     multiple? : boolean,
     selectAllLabel? : string,
     poperZindex? : number,
-    percentage? : boolean
+    percentage? : boolean,
+    disablePortal? : boolean
 }
-export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, percentage,  ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, percentage, disablePortal, ...props} : SelectProps) {
   const selectBoxStyled = makeStyles({
   
     root: {
@@ -333,6 +334,12 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
 
   const handleClearOptions = () => {setSelectedOptions([]); onSelectedClear()};
 
+  useEffect(() =>{
+    if(value?.length == 0) {
+      setSelectedOptions([])
+    }
+  },[value?.length == 0])
+
   const getOptionLabel = (option : any) => `${option.value}`;
 
   const handleSelectAll = (isSelected : any) => {
@@ -461,6 +468,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
         id="multiple-tags_checkbox"
         options={option}
         onChange={handleChange}
+        disablePortal={disablePortal}
         className="data_filter_select_list_checkbox"
         classes = {{
             ...selectClass

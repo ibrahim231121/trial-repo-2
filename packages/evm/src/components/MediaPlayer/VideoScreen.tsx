@@ -8,6 +8,7 @@ import "../../Assets/css/animate.min.css";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import VideoColumn from "./VideoColumn";
 import { CRXTooltip, CBXSwitcher } from "@cb/shared";
+import { AssetLogType } from "../../utils/Api/models/EvidenceModels";
 
 interface VideoScreenProp {
   viewNumber?: number;
@@ -35,6 +36,7 @@ interface VideoScreenProp {
   ffScreenIcon ? : any;
   setscreenChangeVideoId : any
   isGuestView: boolean
+  assetLog: AssetLogType
 }
 
 const VideoScreen = ({
@@ -62,7 +64,8 @@ const VideoScreen = ({
   isAudioGraph,
   ffScreenIcon,
   setscreenChangeVideoId,
-  isGuestView
+  isGuestView,
+  assetLog
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -256,13 +259,17 @@ const VideoScreen = ({
     CrateLayoutbaseClass();
   }, [viewNumber]);
 
-  
+  const audioGraphClass = isAudioGraph ? "withAudio" : "withoutAudio";
   return (
     <div
       id="video-player-screens"
       className={`${videoLayoutResetHeight} ${
-        !isAudioGraph ? "_videPlayer_height_AU" : ""
-      } ${mapEnabled ? " _contaoner_flex" : ""}`}
+        !isAudioGraph ? "_videPlayer_height_AU" : "_videPlayer_height_Enabled_AU"
+      } ${ 
+        isMultiTimelineEnabled ? `_videPlayer_multiTimeLine_${audioGraphClass}_height_${viewNumber}` : ""
+      }${
+        mapEnabled ? " _contaoner_flex" : ""}`
+      }
     >
       <div
         className={`_video_player_grid _videoPlayer_grid_customize ${
@@ -363,6 +370,7 @@ const VideoScreen = ({
             setOnMarkerClickTimeData={setOnMarkerClickTimeData}
             isGuestView={isGuestView}
             toasterMsgRef={toasterMsgRef}
+            assetLog={assetLog}
           />
         </div>
       ) : ""}

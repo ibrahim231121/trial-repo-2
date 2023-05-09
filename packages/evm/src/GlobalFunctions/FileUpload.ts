@@ -1,11 +1,14 @@
-import { FILE_SERVICE_URL } from '../../src/utils/Api/url';
+import { FILE_SERVICE_URL, FILE_SERVICE_URL_V2 } from '../../src/utils/Api/url';
 import uploadFiles, { resumeFile } from "../GlobalFunctions/AzureFileUpload";
 import Cookies from 'universal-cookie';
+import moment from "moment";
+
 declare const window: any;
 const cookies = new Cookies();
 interface FileInfo {
     fileId: string,
     name: string,
+    extension: string,
     size: {
         total: number,
         remaining: number
@@ -33,9 +36,15 @@ export const AddFilesToFileService = async (files: any, onRecvData: any) => {
     fileData = files
     for (const file of files) {
         filesId.push(file.id);
+
+        var FName=file.name.replaceAll(' ', '_');
+        var ext = FName.substring(FName.lastIndexOf('.') + 1, FName.Length);
+        var fileName  = FName.substring(0, FName.lastIndexOf('.')) + "_" + moment().utc().format("yyyyMMDDHHmmssSSSS");
+        
         const fileInfo: FileInfo = {
-            fileId: file.name.replaceAll(' ', '_'),
-            name: file.name.replaceAll(' ', '_'),
+            fileId: fileName,
+            name: fileName,
+            extension: ext,
             size: {
                 total: file.size,
                 remaining: file.size,
@@ -78,7 +87,7 @@ export const filesToUpload = async (files: any, onRecvData: any) => {
 
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {
 
-    await fetch(FILE_SERVICE_URL + "/Files", {
+    await fetch(FILE_SERVICE_URL_V2 + "/Files", {  
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(payload)
@@ -91,12 +100,12 @@ const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => 
         else return res.text();
     }).then(function (resp) {
         if (resp !== undefined) {
-            let error = JSON.parse(resp);
+            let error = JSON.parse(resp.fileId);
+            //let error = JSON.parse(resp);
             if (error.errors !== undefined) {
             }
             else if (!isNaN(+error)) {
-                
-                fetchFile(resp, file, resolve,false);
+                fetchFile(resp.fileId, resp.value, file, resolve,false);
             }
             else {
                 window.onRecvError.data = {
@@ -130,16 +139,16 @@ const dispatchError = () => {
 
 }
 
-export const updateStatus = async (fileId: string, fileUpdate:boolean) => {
+export const updateStatus = async (fileId: string, accessCode:string,  fileUpdate:boolean) => {
     const promises = [];
     promises.push(
         new Promise((resolve, reject) => {
-            fetchFile(fileId, fileData, resolve,fileUpdate);
-        }));
+            fetchFile(fileId, accessCode, fileData, resolve,fileUpdate);
+        })); 
     
 }
-export const fetchFile = async (id: string, file: any, resolve: any,fileUpdate: boolean) => {
-    await fetch(`${FILE_SERVICE_URL}/Files/${id}`, {
+export const fetchFile = async (id: string, accessCode:string, file: any, resolve: any,fileUpdate: boolean) => {
+    await fetch(`${FILE_SERVICE_URL_V2}/Files/${id}/${accessCode}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookies.get("access_token")}
     }).then(function (res) {
@@ -154,15 +163,17 @@ export const fetchFile = async (id: string, file: any, resolve: any,fileUpdate: 
             };
             window.dispatchEvent(window.onRecvError);
         }
-        else return res.text();
+        else {
+            return res.text();
+        } 
     }).then(function (resp) {
         if (resp !== undefined) {
-            
             if(!fileUpdate){
 
                 file.uploadUri = resp.upload.uri;
                 file.uploadedFileName = resp.name;
                 file.uploadedFileId = resp.id;
+                file.accessCode = resp.accessCode;
                 file.url = resp.url;
                 file.state = resp.state;
             }

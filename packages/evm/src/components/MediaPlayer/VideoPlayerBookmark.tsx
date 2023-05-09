@@ -5,12 +5,13 @@ import { TextField } from '@cb/shared';
 import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import { CRXConfirmDialog } from '@cb/shared';
-import { Asset, Bookmark, File as EvidenceFile } from '../../utils/Api/models/EvidenceModels';
+import { Asset, AssetLogType, Bookmark, File as EvidenceFile } from '../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
 import { useDispatch } from 'react-redux';
 import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
 import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
+import { addAssetLog } from '../../Redux/AssetLogReducer';
 declare const window: any;
 
 type VideoPlayerSnapshotProps = {
@@ -27,10 +28,11 @@ type VideoPlayerSnapshotProps = {
     toasterMsgRef: any;
     timelinedetail: any;
     addingSnapshot: any;
+    assetLog: AssetLogType
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,addingSnapshot} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,addingSnapshot,assetLog} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -183,6 +185,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 };
                 setBookmarkInTimelineDetail("Add", responseObj);
                 toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "success", duration: 5000, clearButtton: true});
+                assetLog.assetId = Number(timelinedetail[0].dataId);
+                assetLog.notes = "Bookmark Taken";
+                dispatch(addAssetLog(assetLog));
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Bookmark Not Saved", variant: "error", duration: 5000, clearButtton: true});
@@ -289,6 +294,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 setOpenModal(false);
                 setopenBookmarkForm(false);
                 addingSnapshot.current = false;
+                assetLog.assetId = Number(timelinedetail[0].dataId);
+                assetLog.notes = "Snapshot Taken";
+                dispatch(addAssetLog(assetLog));
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Snapshot Saved Error", variant: "error", duration: 5000, clearButtton: true});

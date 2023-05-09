@@ -309,7 +309,10 @@ const StationDetail: React.FC = () => {
         {
           id: values.PolicyId,
           retentionPolicyId: {
-            cmtFieldValue: Number(values.RetentionPolicy?.id)
+            cmtFieldValue: Number(values.RetentionPolicy?.id),
+            cmtFieldName : '',
+            id : '',
+            record : []
           },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
@@ -434,6 +437,37 @@ const StationDetail: React.FC = () => {
   useEffect(() => {
     RemoveSidePanelClass()
   },[])
+
+  const returnErrorString = (field: any, msg: string, fieldtouched: any) => {
+
+    return ` ${field && fieldtouched == true
+      ? msg
+      : ""
+      }`
+  }
+
+  const returnHtmlError = (field: any, fieldtouched: any) => {
+    return field !== undefined &&
+      fieldtouched === true ? (
+      <div className="errorStationStyle ">
+        <i className="fas fa-exclamation-circle"></i>
+        {t(field)}
+      </div>
+    ) : null
+  }
+
+  const returnOptions = (optionArray: AutoCompleteOptionType[]) => {
+    return optionArray.length > 0 ? optionArray : [];
+  }
+
+  const setfieldTouchedValue = (value: any) => {
+    return value ? 1 : 0
+  }
+
+  const setFieldsValue = (value : AutoCompleteOptionType) => {
+    return value === null ? null : value
+  }
+  
   return (
     <>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
@@ -525,10 +559,7 @@ const StationDetail: React.FC = () => {
                         <CRXColumn
                           className={
                             "stationDetailCol " +
-                            ` ${errors.Name && touched.Name == true
-                              ? "errorBrdr"
-                              : ""
-                            }`
+                            returnErrorString(errors.Name, "errorBrdr", touched.Name)
                           }
                           container="container"
                           item="item"
@@ -542,13 +573,7 @@ const StationDetail: React.FC = () => {
                             </label>
                             <div className="CrxStationError">
                               <Field id="name" name="Name" />
-                              {errors.Name !== undefined &&
-                                touched.Name === true ? (
-                                <div className="errorStationStyle ">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {t(errors.Name)}
-                                </div>
-                              ) : null}
+                              {returnHtmlError(errors.Name, touched.Name)}
                             </div>
                           </div >
                         </CRXColumn>
@@ -566,13 +591,7 @@ const StationDetail: React.FC = () => {
                             </label>
                             <div className="CrxStationError">
                               <Field id="street" name="StreetAddress" />
-                              {errors.StreetAddress !== undefined &&
-                                touched.StreetAddress === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {t(errors.StreetAddress)}
-                                </div>
-                              ) : null}
+                              {returnHtmlError(errors.StreetAddress, touched.StreetAddress)}
                             </div>
                           </div>
                         </CRXColumn>
@@ -580,10 +599,7 @@ const StationDetail: React.FC = () => {
                         <CRXColumn
                           className={
                             "stationDetailCol " +
-                            ` ${errors.Phone && touched.Phone == true
-                              ? "errorBrdr"
-                              : ""
-                            }`
+                            returnErrorString(errors.Phone, "errorBrdr", touched.Phone)
                           }
                           container="container"
                           item="item"
@@ -595,14 +611,7 @@ const StationDetail: React.FC = () => {
                             <label htmlFor="phone">{t("Phone_Number")}</label>
                             <div className="CrxStationError">
                               <Field id="phone" name="Phone" />
-
-                              {errors.Phone !== undefined &&
-                                touched.Phone === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {t(errors.Phone)}
-                                </div>
-                              ) : null}
+                              {returnHtmlError(errors.Phone, touched.Phone)}
                             </div>
                           </div>
                         </CRXColumn>
@@ -630,10 +639,7 @@ const StationDetail: React.FC = () => {
                       <CRXColumn
                         className={
                           "stationDetailCol " +
-                          ` ${errors.Passcode && touched.Passcode == true
-                            ? "errorBrdr"
-                            : ""
-                          }`
+                          returnErrorString(errors.Passcode, "errorBrdr", touched.Passcode)
                         }
                         container="container"
                         item="item"
@@ -653,10 +659,7 @@ const StationDetail: React.FC = () => {
                       <CRXColumn
                         className={
                           "stationDetailCol " +
-                          ` ${errors.SSId && touched.SSId == true
-                            ? "errorBrdr"
-                            : ""
-                          }`
+                          returnErrorString(errors.SSId, "errorBrdr", touched.SSId)
                         }
                         container="container"
                         item="item"
@@ -670,23 +673,14 @@ const StationDetail: React.FC = () => {
                           </label>
                           <div className="CrxStationError">
                             <Field id="SSId" name="SSId" />
-                            {errors.SSId !== undefined &&
-                              touched.SSId === true ? (
-                              <div className="errorStationStyle">
-                                <i className="fas fa-exclamation-circle"></i>
-                                {t(errors.SSId)}
-                              </div>
-                            ) : null}
+                            {returnHtmlError(errors.SSId, touched.SSId)}
                           </div>
                         </div>
                       </CRXColumn>
                       <CRXColumn
                         className={
                           "stationDetailCol " +
-                          ` ${errors.Password && touched.Password == true
-                            ? "errorBrdr"
-                            : ""
-                          }`
+                          returnErrorString(errors.Password, "errorBrdr", touched.Password)
                         }
                         container="container"
                         item="item"
@@ -722,7 +716,7 @@ const StationDetail: React.FC = () => {
                               error={blackBoxRetentionTouched == 1}
                               errorMsg={"Blackbox_Retention_Policy_is_required"}
                               value={blackBoxAutoCompleteValue}
-                              options={blackBoxAutoCompleteOptions.length > 0 && blackBoxAutoCompleteOptions}
+                              options={blackBoxAutoCompleteOptions.length > 0 ? blackBoxAutoCompleteOptions : []}
                               onChange={(
                                 e: any,
                                 value: AutoCompleteOptionType,
@@ -734,13 +728,13 @@ const StationDetail: React.FC = () => {
                                   setFieldValue,
                                   reason
                                 )
-                                setBlackBoxRetentionTouched(value === null ? 1 : 0)
-                                setBlackBoxRetentionValue(value === null ? null : value);
+                                setBlackBoxRetentionTouched(setfieldTouchedValue(value === null))
+                                setBlackBoxRetentionValue(setFieldsValue(value));
                               }
                               }
                               onBlur ={() =>
                               {
-                                setBlackBoxRetentionTouched(blackBoxRetentionValue == (null || undefined) ? 1 : 0)
+                                setBlackBoxRetentionTouched(setfieldTouchedValue(blackBoxRetentionValue == (null || undefined)))
                               }}
                               CheckBox={true}
                               checkSign={false}
@@ -769,7 +763,7 @@ const StationDetail: React.FC = () => {
                               error={retentionPolicyTouched === 1}
                               errorMsg={"Retention_Policy_is_required"}
                               value={retentionAutoCompleteValue}
-                              options={retentionAutoCompleteOptions.length > 0 && retentionAutoCompleteOptions}
+                              options={retentionAutoCompleteOptions.length > 0 ? retentionAutoCompleteOptions : []}
                               onChange={(
                                 e: any,
                                 value: AutoCompleteOptionType,
@@ -782,14 +776,14 @@ const StationDetail: React.FC = () => {
                                   setFieldValue,
                                   reason
                                 )
-                                setRetentionPolicyTouched(value === null ? 1 : 0)
-                                setRetentionPolicyValue(value === null ? null : value);
+                                setRetentionPolicyTouched(setfieldTouchedValue(value === null))
+                                setRetentionPolicyValue(setFieldsValue(value));
                               }
                               }
 
                               onBlur = {() =>
                               {
-                                setRetentionPolicyTouched(retentionPolicyValue == (null || undefined) ? 1 : 0)
+                                setRetentionPolicyTouched(setfieldTouchedValue(retentionPolicyValue == (null || undefined)))
                               }
                             }
                               CheckBox={true}
@@ -815,11 +809,11 @@ const StationDetail: React.FC = () => {
                             <CRXMultiSelectBoxLight
                               id="uploadPolicyMultiSelect"
                               className="getStationField"
-                              error={uploadPolicyTouched === 1}
+                              error={uploadAutoCompleteOptions.length > 0 && uploadPolicyTouched === 1}
                               errorMsg={"Upload_Policy_is_required"}
                               multiple={false}
                               value={uploadAutoCompleteValue}
-                              options={uploadAutoCompleteOptions.length > 0 && uploadAutoCompleteOptions}
+                              options={uploadAutoCompleteOptions.length > 0 ? uploadAutoCompleteOptions : []}
                               onChange={(
                                 e: any,
                                 value: AutoCompleteOptionType,
@@ -832,13 +826,13 @@ const StationDetail: React.FC = () => {
                                   setFieldValue,
                                   reason
                                 )
-                                setUploadPolicyTouched(value === null ? 1 : 0)
-                                setUploadPolicyValue(value === null ? null : value);
+                                setUploadPolicyTouched(setfieldTouchedValue(value === null))
+                                setUploadPolicyValue(setFieldsValue(value));
                               }
                               }
                               onBlur = {() =>
                               {
-                                setUploadPolicyTouched(uploadPolicyValue == (null || undefined) ? 1 : 0)
+                                setUploadPolicyTouched(setfieldTouchedValue(uploadPolicyValue == (null || undefined)))
                               }
                               }
                               CheckBox={true}

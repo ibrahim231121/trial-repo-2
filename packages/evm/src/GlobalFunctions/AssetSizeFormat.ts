@@ -12,28 +12,16 @@ export const assetSizeFormat = (size: number) => {
     return (size / Math.pow(1024, i)).toFixed(1) + " " + sizes[i]
 }
 
-
-export const assetDurationFormat = (duration: number) => {
-    const time = ["Second(s)", "Minute(s)", "Hour(s)"]
-    let assetDuration: string = ""
-    let h = Math.floor(duration / 3600);
-    let m = Math.floor(duration % 3600 / 60);
-    let s = Math.floor(duration % 3600 % 60);
-    switch (true) {
-        case duration >= 3600 :
-            assetDuration = h + " " + time[2] + " " + (m > 0 ?  m + " " + time[1] : " ")
-            break;
-
-        case duration >= 60 && duration < 3600:
-            assetDuration = m + " " + time[1] + " " + (s > 0 ? s + " " +  time[0] : " ")
-            break;
-
-        case duration <= 60 && duration > 0 :
-            assetDuration = s + " " + time[0]
-            break;
-
-            default:
-            assetDuration = "N/A";
+export const assetDurationFormat = (duration:number) => {
+    let assetDuration: string;
+    if(duration == 0){
+        return assetDuration = "N/A"
     }
-    return assetDuration
-}
+    let date:Date = new Date(duration)
+    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+    assetDuration = (hourFormatting ? hourFormatting + " Hour(s) " : "") + (minuteFormatting ? minuteFormatting + " Minute(s) " : "") + (secondFormatting ? secondFormatting + " Second(s)" : "")
+    return   assetDuration ;
+  }
+

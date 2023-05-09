@@ -1,0 +1,246 @@
+.createCaseStepperContent {
+    padding: 0 4px 0px 65px !important;
+    padding-top: 90px !important;
+    transition: 0.5s padding ease-out !important;
+    align-items: flex-start !important;
+    .createCaseStepperTitle {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    .createCaseStepperButtonsContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 23px;
+      padding-bottom: 20px;
+      bottom: 1px;
+      width: calc(100% - 117px);
+      z-index: 2;
+      overflow: hidden;
+      position: fixed;
+      background: #FFF;
+      border-top: 1px solid var(--color-ccc);
+      .createCaseStepperButtonsChildContainer {
+        display: flex;
+        button:not(:first-child) {
+          margin-left: 10px;
+        }
+      }
+    }
+    .createCaseAssetBucketDataTable {
+      max-height: calc(100% - 200px);
+    }
+    .dataTablePages {
+      left: 0px;
+      width: calc(100% - 30px);
+      height: 60px;
+      z-index: 2;
+      overflow: hidden;
+      position: relative;
+      background: #FFF;
+      bottom: 0;
+      border: none;
+    }
+  .assetBucketSelectAllContainer {
+    display: flex;
+    padding: 20px 0 20px 0;
+    align-items: center;
+    // color: var(--color-c34400);
+    font-size: 14px;
+    font-weight: var(--Font-style-normal);
+    position: relative;
+    gap: 50px;
+  }
+  .assetBucketLister {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 100px;
+    padding-top: 20px;
+  
+    // overflow-y: auto;
+    // max-height: calc(100% - 210px);
+    .bucketLister {
+      display: flex;
+      gap: 30px;
+      place-items: center;
+      margin-bottom: 20px;
+      .bucketThumb {
+        margin: 0 20px;
+      }
+      .bucketListTextData {
+        text-align: left;
+        font-size: 14px;
+        .bucketListAssetName {
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        .bucketListRec {
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+        }
+      }
+  
+      .bucketActionMenu {
+        .rc-menu-button {
+          background: transparent;
+          border: 0px;
+          font-size: 23px;
+          width: 40px;
+          padding: 5px 0px;
+          color: var(--color-333333);
+  
+          &.rc-menu-button--open {
+            background: #333333;
+            color: #d1d2d4;
+          }
+        }
+      }  
+    }
+  }
+  .selectedAssetsLister {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-top: 20px;
+    .bucketLister {
+      display: flex;
+      gap: 30px;
+      place-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid var(--color-ccc);
+      border-radius: 6px;
+      .bucketThumb {
+        margin: 0 20px;
+      }
+      .bucketListTextData {
+        text-align: left;
+        font-size: 14px;
+        .bucketListAssetName {
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        .bucketListRec {
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+        }
+      }
+  
+      .bucketActionMenu {
+        .rc-menu-button {
+          background: transparent;
+          border: 0px;
+          font-size: 23px;
+          width: 40px;
+          padding: 5px 0px;
+          color: var(--color-333333);
+  
+          &.rc-menu-button--open {
+            background: #333333;
+            color: #d1d2d4;
+          }
+        }
+      }  
+    }
+  }
+  .createCaseWizardSearchEvidence {
+    .searchByHeading {
+      font-weight: 600;
+    }
+    .createCaseWizardSearchByContainer {
+      display: flex;
+      flex-direction: row;
+      padding-bottom: 25px;
+      
+      .searchByRadioBtn {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        padding-right: 20px;
+        label .MuiFormControlLabel-label {
+          font-weight: 600;
+        }
+      }
+      .searchByAutoComplete {
+        width: 100%;
+        min-width: 250px;
+      }
+      h6 {
+        width: 100px !important;
+      }
+      .searchByUserAndDateContainer {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        .searchByUserContainer {
+          display: flex;
+          flex-direction: row;
+          .selectInner_content {
+            width: calc(100% - 100px);
+          }
+        }
+        .searchByDateContainer {
+          padding-top: 15px;
+          display: flex;
+          .datePickerContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            margin-bottom: 3px !important;
+            &:first-child {
+              margin-right: 25px;
+            }
+            label {
+              width: 80px;
+            }
+            .users-input {
+              width: 100% !important;
+            }
+            .CBX-inputDatePicker {
+              border: 1px solid var(--color-d1d2d4);
+              padding: 0 11px;
+              width: auto;
+              min-width: 80px;
+            }
+          }
+        }
+      }
+      .searchButtonContainer {
+        display: flex;
+        margin-left: 30px;
+      }
+    }
+    .createCaseWizardMatchingResultContainer {
+      width: 100%;
+      min-height: 200px;
+      .matchingResultHeading {
+        display: block;
+        font-weight: 600;
+        height: 30px;
+        width: 100%;
+        border-bottom: 1px solid var(--color-Black);
+        padding-left: 20px;
+      }
+      .matchingResultContent {
+        width: 100%;
+        min-height: 100px;
+      }
+    }
+    .createCaseWizardRelatedAssetsContainer {
+        width: 100%;
+      .relatedAssetsAccordion {
+        width: 100%;
+        .MuiAccordionSummary-content p {
+          padding-left: 20px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
 import { CRXButton, CRXCheckBox,CBXSwitcher } from "@cb/shared";
@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const {  fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen, isGuestView } = props;
+  const {  fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen, isGuestView,settingRef } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -15,14 +15,18 @@ const VideoPlayerSettingMenu = (props: any) => {
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
     
-    let scroll:any = window.scroll({
-      top: 100,
-      left: 0,
-      behavior: 'smooth',
-    })
-    let htmlScroll = document.querySelector("html");
-    htmlScroll && (htmlScroll.style.overflowY = "auto")
-    event.target.checked && scroll();
+    // let scroll:any = window.scroll({
+    //   top: 100,
+    //   left: 0,
+    //   behavior: 'smooth',
+    // })
+    // let htmlScroll = document.querySelector("html");
+    // htmlScroll && (htmlScroll.style.overflowY = "hidden")
+    // event.target.checked && scroll();
+  }
+
+  if(multiTimelineEnabled) {
+    document.documentElement.style.overflow = "hidden";
   }
 
   const IsShowAudioGraphChangeEvent = (event : any) => {
@@ -75,15 +79,28 @@ useEffect(() => {
   let CheckedSpeed = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")
 
   useEffect(()=>{
+    let url = window.location.href;
+    let validString = url.split('/');
+    let guestView = false;
+    if(validString[4]) {
+        let validEndPoint = validString[4].split('?');
+        if(validEndPoint[0] == "SharedMedia")
+        {
+          guestView = true;
+        }
+    }
       if(settingMenuEnabled === null) {  
-        document.documentElement.style.overflow = "hidden";
+        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
         document.body.scrollTop = 0; 
         document.documentElement.scrollTop = 0;
-      }
-      if(isAudioGraphEnabled || multiTimelineEnabled) {
-        document.documentElement.style.overflow = "scroll";
-      }else {
-        document.documentElement.style.overflow = "hidden";
+      } else if (isAudioGraphEnabled && multiTimelineEnabled  ) {
+        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
+      } else if(multiTimelineEnabled) {
+        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
+      } else if( isAudioGraphEnabled && !multiTimelineEnabled) {
+        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
+      } else {
+        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
         document.body.scrollTop = 0; 
         document.documentElement.scrollTop = 0;
       }
@@ -93,7 +110,7 @@ useEffect(() => {
 const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
   return (
     <>
-   
+ 
     <MaterialMenu
         className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}  ${settingEnabled_status} ${notesEnabledClass}`}
         anchorEl={settingMenuEnabled}
@@ -109,6 +126,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        container={settingRef.current}
       >
         
 
@@ -133,7 +151,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
             </label>
           </div>
         </MaterialMenuItem>}
-        <MaterialMenuItem className="settingOverlay">
+        {!isGuestView && <MaterialMenuItem className="settingOverlay">
           <span className="fa-solid fa-chart-simple iconsLeft"></span>
           {/* <span className="toggleBack"></span> */}
           <div className="SwitcherControl"  >
@@ -143,7 +161,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
             </label>
           </div>
           {/* <i className="fas fa-chevron-right iconsRight"></i> */}
-        </MaterialMenuItem>
+        </MaterialMenuItem>}
         <MaterialMenuItem className="settingOverlay">
           <span className="icon icon-stack3 iconsLeft"></span>
           <span className="toggleBack"></span>
@@ -155,7 +173,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
-        {!singleVideoLoad && isMultiViewEnable &&
+        {(!singleVideoLoad && isMultiViewEnable && ViewScreen) &&
           <>
             <MaterialMenuItem className="settingOverlay">
               <i className="far fa-stream iconsLeft"></i>
@@ -178,7 +196,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
         keepMounted
         open={Boolean(overlayMenuEnabled)}
         onClose={() => { overlayMenuEnabled(null) }}
-
+        container={settingRef.current}
       >
         <MaterialMenuItem className='backChevron'>
           <i className="fas fa-chevron-left chevronLeft "></i>

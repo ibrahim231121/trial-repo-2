@@ -1,179 +1,457 @@
-.ManageCase {
-    .MuiCollapse-wrapperInner {
-      [aria-labelledby="accorIdx1"] {
-        .MuiAccordionDetails-root {
-          padding: 47px 25px 75px;
-        }
-      }
-    }
-    &.switchLeftComponents {
-        padding: 0 4px 0px 65px;
-        padding-top: 113px;
-        transition: 1s padding ease-out;
-      }
-  }
-  .CaseSettingsUpdate {
-    .crxCaseDetail {
-        margin: 20px 0;
-        label {
-            width:190px;
-        }
-        input {
-            min-width: auto;
-        }
-    }
-   .CaseDetailCol1 {
-    .MuiGrid-root {
-        margin: 20px 0;
-    }
-   }
+// .ManageCase {
+//     .MuiCollapse-wrapperInner {
+//       [aria-labelledby="accorIdx1"] {
+//         .MuiAccordionDetails-root {
+//           padding: 47px 25px 75px;
+//         }
+//       }
+//     }
+//     &.switchLeftComponents {
+//         padding: 0 4px 0px 65px;
+//         padding-top: 113px;
+//         transition: 1s padding ease-out;
+//       }
+//   }
+//   .CaseSettingsUpdate {
+//     .crxCaseDetail {
+//         margin: 20px 0;
+//         label {
+//             width:190px;
+//         }
+//         input {
+//             min-width: auto;
+//         }
+//     }
+//    .CaseDetailCol1 {
+//     .MuiGrid-root {
+//         margin: 20px 0;
+//     }
+//    }
   
-}
-  // Case Detail page start
-.ManageCaseUi {
-    margin-top: 21px;
+// }
+//   // Case Detail page start
+// .ManageCaseUi {
+//     margin-top: 21px;
     
-      .indicates-label {
-        font-style: italic;
-        font-size: 14px;
-        color: var(--color-333333);
-        font-family: Arial, Helvetica, sans-serif;
-        margin-left: -43px;
-        margin-left: -16px;
-        b {
-          font-size: 20px;
-          margin-right: 8px;
-        }
+//       .indicates-label {
+//         font-style: italic;
+//         font-size: 14px;
+//         color: var(--color-333333);
+//         font-family: Arial, Helvetica, sans-serif;
+//         margin-left: -43px;
+//         margin-left: -16px;
+//         b {
+//           font-size: 20px;
+//           margin-right: 8px;
+//         }
   
-      }
-      .generalPanelRow {
-        align-items: flex-end;
-      }
-      .centerGeneralTab {
-        // padding: 70px 0 0 91px;
-        .itemIndicator {
-          position: fixed;
-          top: 229px;
-          background: white;
-          z-index: 1;
-          left: 207px;
-        }
-        .crxLocationBtn {
-          margin-top: 114px;
-          display: flex;
-          text-align: left;
-        }
-        .generalContainer {
-          display: flex;
-          text-align: center;
-          align-items: flex-end;
-          justify-content: space-evenly;
-          // margin: 0 28px;
-          // @media only screen and (min-width:1700px) {
-          //   margin: 0 83px;
-          // }
-          .CaseDetailCol {
-            display: block;
-          }
-      }
-      label {
-        text-align: left;
-      }
+//       }
+//       .generalPanelRow {
+//         align-items: flex-end;
+//       }
+//       .centerGeneralTab {
+//         // padding: 70px 0 0 91px;
+//         .itemIndicator {
+//           position: fixed;
+//           top: 229px;
+//           background: white;
+//           z-index: 1;
+//           left: 207px;
+//         }
+//         .crxLocationBtn {
+//           margin-top: 114px;
+//           display: flex;
+//           text-align: left;
+//         }
+//         .generalContainer {
+//           display: flex;
+//           text-align: center;
+//           align-items: flex-end;
+//           justify-content: space-evenly;
+//           // margin: 0 28px;
+//           // @media only screen and (min-width:1700px) {
+//           //   margin: 0 83px;
+//           // }
+//           .CaseDetailCol {
+//             display: block;
+//           }
+//       }
+//       label {
+//         text-align: left;
+//       }
   
-      }
-      .CaseDetailButton {
+//       }
+//       .CaseDetailButton {
+//         justify-content: space-between;
+//         .groupInfoTabButtons {
+//           margin-right: 25px;
+//         }
+//       }
+//       .MuiTab-wrapper {
+//         text-transform: uppercase;
+//       }
+//       .centerSettingTab {
+//         width: 50%;
+//         margin: auto;
+//         padding: 45px 0px;
+//         margin-top: 69px;
+//         label {
+//           width: 244px ;
+//         }
+//          .itemIndicator {
+//           position: fixed;
+//           left: 206px;
+//           top: 229px;
+//         }
+//         .passwordCaseField {
+//           margin-bottom: -8px;
+//           .passEyeIcon {
+//             font-weight: 400;
+//             font-size: 14px;
+//             padding-top: 8px;
+//             span {
+//             font-family: Arial, Helvetica, sans-serif;
+  
+//             }
+//           }
+//         }
+//         .Uncategorized_Retention_Policy  {
+//           margin-top: -1px;
+//         }
+//       }
+//       .crxMainTab {
+//         z-index: 2;
+//       } 
+//       .CaseDetailCol  {
+//         input {
+//           width: 430px;
+//           min-width: 430px;
+  
+//         }
+//         .CrxCaseError  {
+//           width: 430px;
+//           min-width: 430px;
+//           height: 30px;
+//           input {
+//             width: 430px;
+//           min-width: 430px;
+  
+//           }
+//         }
+//       }
+//       .passErrorStyle {
+//         bottom: -39px !important;
+//     }
+//   }
+//   @media screen and (max-width: 768px) {
+//     .crx-d-h {
+//       display: none !important;
+//     }
+//     .crxCaseDetail {
+//       .CaseDetailCol {
+//         input {
+//           width: 100%;
+//         }
+//         .CBX-input {
+//           .CrxCaseError {
+//             min-width: 100%;
+//           }
+//         }
+//         label {
+//           width: 100%;
+//         }
+//       }
+//       .colCase {
+//         .crx_MultiSelectBoxLight {
+//           width: 100%;
+//         }
+//       }
+//     }
+//     .crxCaseDetailBtn {
+//       position: fixed;
+//       bottom: 0;
+//       width: 100%;
+//     }
+//     .crxLocationBtn {
+//       position: static;
+//     }
+//   }
+
+.caseDetailHeaderButtonContainer {
+  display: flex;
+  // width: 120px;
+  height: 30px;
+  gap: 20px;
+  position: absolute;
+    top: 130px;
+    right: 24px;
+  .rc-menu-button {
+    background: none;
+    border: none;
+    // border-right: 1px solid var(--color-979797);
+    font-size: 23px;
+    color: var(--color-333333);
+    width: 40px;
+    height: 100%;
+    cursor: pointer;
+    align-self: center;
+  }
+}
+
+.caseDetail {
+  display: flex;
+  padding: 0 4px 50px 65px !important;
+  padding-top: 85px !important;
+  transition: 0.5s padding ease-out !important;
+  align-items: flex-start !important;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  @media screen and (min-width: 1280px) {
+    max-width: 1280px;
+  }
+  .caseDetailCenterPanel {
+    width: 100%;
+    max-height: calc(100% - 70px);
+    .createCaseForm {
+      padding: 0;
+    }
+    .subHeading {
+      width: 100%;
+      height: 30px;
+      border-bottom: 1px solid var(--color-979797);
+    }
+  }
+  .caseDetailFooterButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    left: 90px;
+    padding: 0 118px 0 0;
+    width: 100%;
+    bottom: 0;
+    height: 70px;
+    z-index: 2;
+    overflow: hidden;
+    position: fixed;
+    background: #FFF;
+    border-top: 1px solid var(--color-ccc);
+    .caseDetailButton {
+      margin-right: 25px;
+    }
+  }
+  .caseTimeline-main {
+    height: 100%;
+    width: 100%;
+    .subHeading {
+      width: 100%;
+      height: 30px;
+      border-bottom: 1px solid var(--color-979797);
+    }
+    .caseTimeline-content{
+      width: 100%;
+      // padding-top: 20px;
+      .caseTimeline-searchArea {
+        display: flex;
+        padding: 10px 25px 20px 25px;
         justify-content: space-between;
-        .groupInfoTabButtons {
-          margin-right: 25px;
+        .gridFilterTextBox {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0;
+          h6 {
+            min-width: 100px;
+          }
+          .gridFilterSpanUi {
+            width: 300px;
+            min-width: 300px;
+            margin-left: 20px;
+          }
+        }
+        .filterIconButton {
+          font-size: 18px;
+          color: var(--color-333333);
+          padding: 0;
         }
       }
-      .MuiTab-wrapper {
-        text-transform: uppercase;
+      .caseTimeline-highlightsArea {
+        padding: 20px 20px;
+        min-height: auto;
+        max-height: 400px;
+        overflow-y: auto;
+        position: relative;
+        .highlightsArea-subHeading {
+          font-weight: bold;
+        }
       }
-      .centerSettingTab {
-        width: 50%;
-        margin: auto;
-        padding: 45px 0px;
-        margin-top: 69px;
-        label {
-          width: 244px ;
+      .caseTimelineButtonContainer {
+        width: 100%;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        height: 50px;
+        .caseTimelineAddNoteButton {
+          margin-left: 200px;
         }
-         .itemIndicator {
-          position: fixed;
-          left: 206px;
-          top: 229px;
+        .caseTimelineSortbyContainer {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          h6 {
+            padding-right: 30px;
+          }
+          .caseTimelineSortByRadioBtn {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+          }
         }
-        .passwordCaseField {
-          margin-bottom: -8px;
-          .passEyeIcon {
-            font-weight: 400;
-            font-size: 14px;
-            padding-top: 8px;
-            span {
-            font-family: Arial, Helvetica, sans-serif;
-  
+      }
+      .caseTimeline-sectionSeparator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 10px;
+        border-top: 1px solid var(--color-c8c8c8);
+        border-bottom: 1px solid var(--color-Black);
+        width: 100%;
+      }
+      .caseTimeline-detail {
+        display: flex;
+        flex-direction: column;
+        padding: 0px 20px 0 20px;
+        min-height: 100px;
+        max-height: 300px;
+        overflow: auto;
+      }
+      .caseTimeline-item {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        &.--temporaryHeight {
+          margin-bottom: 10px;
+        }
+        &:first-child {
+          margin-top: 0px;
+        }
+        .caseTimeline-item-timestamp {
+          width: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-right: 15px;
+        }
+        .caseTimeline-item-detailContainer {
+          display: flex;
+          align-items: center;
+          width: calc(100% - 200px);
+          border: 1px solid var(--color-979797);
+          box-shadow: 2px 2px 5px var(--color-00000029);
+          border-radius: 5px;
+          padding: 6px 10px;
+          position: relative;
+          height: 60px;
+          .caseTimeline-item-thumbnail {
+            height: 90%;
+            width: 70px;
+            display: flex;
+            justify-content: center;
+            img {
+              height: 100%;
+              width: 100%;
+            }
+            i {
+              font-size: 40px;
             }
           }
-        }
-        .Uncategorized_Retention_Policy  {
-          margin-top: -1px;
-        }
-      }
-      .crxMainTab {
-        z-index: 2;
-      } 
-      .CaseDetailCol  {
-        input {
-          width: 430px;
-          min-width: 430px;
-  
-        }
-        .CrxCaseError  {
-          width: 430px;
-          min-width: 430px;
-          height: 30px;
-          input {
-            width: 430px;
-          min-width: 430px;
-  
+          .caseTimeline-item-detail {
+            width: calc(100% - 70px);
+            padding: 0px 15px;
+            display: flex;
+            align-items: center;
+            .gridFilterTextBox {
+              display: flex;
+              flex-wrap: wrap;
+              padding: 0;
+              width: 100%;
+              h6 {
+                width: 50px;
+                margin-bottom: 5px;
+                font-family: var(--base-font-family);
+                font-size: 1em;
+              }
+              .gridFilterSpanUi {
+                width: calc(100% - 60px);
+              }
+              .MuiOutlinedInput-multiline {
+                padding: 0;
+                border-radius: 0;
+                fieldset {
+                  border: 0px;
+                }
+                &.Mui-focused {
+                  fieldset {
+                    border: 0px;
+                  }
+                }
+              }
+              textarea {
+                min-height: 30px;
+                padding: 5px 5px 0px 5px;
+                text-indent: 0;
+              }
+            }
+          }
+          .caseTimeline-item-noteButtonContainer {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: 35px;
+            right: 80px;
+            width: 155px;
           }
         }
+        .rc-menu-button {
+          background: none;
+          border: none;
+          border-left: 1px solid var(--color-979797);
+          font-size: 23px;
+          color: var(--color-333333);
+          width: 40px;
+          height: 80%;
+          cursor: pointer;
+          align-self: center;
+          float: right;
+          margin-left: auto;
+        } 
+        .caseTimeline-itemHeader {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 5px;
+        }
       }
-      .passErrorStyle {
-        bottom: -39px !important;
     }
   }
-  @media screen and (max-width: 768px) {
-    .crx-d-h {
-      display: none !important;
+  .crxMainTab {
+    margin-top: 20px; 
+  }
+  .cbxTabsContent {
+    padding: 30px 25px !important;
+    min-height: 400px;
+    height: 100%;
+  }
+  .caseDetailAutoComplete {
+    // width: 100%;
+    min-width: 400px;
+  }
+  .caseDetailFilterAutocompleteContainer {
+    display: flex;
+    h6 {
+      width: 100px !important;
     }
-    .crxCaseDetail {
-      .CaseDetailCol {
-        input {
-          width: 100%;
-        }
-        .CBX-input {
-          .CrxCaseError {
-            min-width: 100%;
-          }
-        }
-        label {
-          width: 100%;
-        }
-      }
-      .colCase {
-        .crx_MultiSelectBoxLight {
-          width: 100%;
-        }
-      }
-    }
-    .crxCaseDetailBtn {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    .crxLocationBtn {
-      position: static;
+    .caseDetailFilterAutocomplete {
+      width: 300px;
     }
   }
+}
   

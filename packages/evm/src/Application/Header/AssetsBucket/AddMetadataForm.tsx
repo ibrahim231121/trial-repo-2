@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EVIDENCE_ASSET_DATA_URL } from "../../../utils/Api/url";
+import { EVIDENCE_ASSET_DATA_URL, FILE_SERVICE_URL_V2 } from "../../../utils/Api/url";
 import { useDispatch, useSelector } from "react-redux";
 import { CRXSelectBox, CRXMultiSelectBoxLight, CRXConfirmDialog } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
@@ -9,7 +9,7 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { EvidenceAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { EvidenceAgent, FileAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import moment from "moment";
@@ -28,21 +28,20 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   uploadFile,
   uploadAssetBucket,
   activeScreen,
+  uploadInfo,
   setActiveScreen,
   setIsformUpdated
 }) => {
   let displayText = "";
   if (uploadFile.length != 0) {
-    displayText = uploadFile[0].uploadedFileName.substring(
-      0,
-      uploadFile[0].uploadedFileName.lastIndexOf(".")
-    );
+    displayText = uploadFile[0].uploadedFileName
   }
+  
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const [formpayload, setFormPayload] = useState<addMetadata>({
-    station: "",
+    station: {},
     masterAsset: "",
     owner: [],
     category: []
@@ -67,6 +66,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
   });
+  const [fileId,setFileId] = useState<any>([])
   const [alertType, setAlertType] = useState<string>("inline");
   const [alert, setAlert] = useState<boolean>(false);
   const [responseError, setResponseError] = useState<string>("");
@@ -137,7 +137,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setIsSaveBtnDisable(false);
     }
 
-    if (formpayload && (formpayload.station !== "" || formpayload.owner.length > 0 || formpayload.category.length > 0)) {
+    if (formpayload && (Object.keys(formpayload.station).length !== 0 || formpayload.owner.length > 0 || formpayload.category.length > 0)) {
       setIsformUpdated(true)
     }
     else {
@@ -176,11 +176,14 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             categoryData.push(i);
           });
         });
-      let stationString = "";
+      let stationObject = {};
       stationList
-        .filter((x: any) => station == x.value)
+        .filter((x: any) => station == x.label)
         .forEach((x: any) => {
-          stationString = x.value;
+          stationObject = {
+            id: x.id,
+            label : x.label
+          } ;
         });
       const ownerDateOfArry: any = [];
       userOption.map((item: any, counter: number) =>
@@ -203,7 +206,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
       setFormPayload({
         masterAsset: assetName,
-        station: stationString,
+        station: stationObject,
         category: categoryDateOfArry,
         owner: ownerDateOfArry,
       });
@@ -218,13 +221,17 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setIsOwnerDisable(false);
       setIsCategoryDisable(false);
       setIsEditCase(false);
-      setFormPayload({ ...formpayload});
+      setFormPayload({ ...formpayload, station : {},category : [], owner: []});
 
     }
   }, [formpayload.masterAsset]);
 
   React.useEffect(() => {
     setFormPayload({ ...formpayload, masterAsset: displayText });
+    uploadInfo.map((x:any) => {
+     
+     setFileId((fileId: any) => [...fileId , x.fileId]);
+         });
   }, [uploadFile]);
 
   React.useEffect(() => {
@@ -285,8 +292,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         const stationNames = response.map((x: any, i: any) => {
           return {
             id: x.id,
-            value: x.name,
-          } as NameAndValue;
+            label: x.name,
+          };
         });
         setStationList(stationNames);
       });
@@ -294,14 +301,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const masterAssets = () => {
     let assetName = uploadFile.map((x: any) => {
-      var masterAssetId = x.uploadedFileName.lastIndexOf("_");
-      let masterAssetValueIndex = x.uploadedFileName.lastIndexOf(".");
       var j: MasterNameAndValue = {
-        id: x.uploadedFileName.substring(
-          masterAssetId + 1,
-          masterAssetValueIndex
-        ),
-        value: x.uploadedFileName.substring(0, masterAssetValueIndex),
+        id: x.uploadedFileId,
+        value: x.uploadedFileName,
       };
       return j;
     });
@@ -413,8 +415,20 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     }
   };
 
+  const checkStation = () => {
+    if (!formpayload.station || Object.keys(formpayload.station).length === 0) {
+      setformpayloadErr({
+        ...formpayloadErr,
+        stationErr: "Station is required",
+      });
+    } else {
+      setformpayloadErr({ ...formpayloadErr, stationErr: "" });
+    }
+  };
+
   const checkAssetType = (assetType: string) => {
     let typeOfAsset: string = "";
+    assetType = assetType.toLocaleLowerCase();
     switch (assetType) {
       case ".mp4":
       case ".avi":
@@ -440,6 +454,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".psd":
       case ".ai":
       case ".jpg":
+      case ".jfif":
+      case ".bmp":
         typeOfAsset = "Image";
         break;
 
@@ -454,6 +470,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".pdf":
       case ".txt":
       case ".ppt":
+      case ".csv":
         typeOfAsset = "Doc";
         break;
 
@@ -487,6 +504,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const checkFileType = (fileType: string) => {
     let typeOfFile: string = "";
+    fileType = fileType.toLocaleLowerCase();
     switch (fileType) {
 
       case ".mp4":
@@ -512,6 +530,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".psd":
       case ".ai":
       case ".jpg":
+      case ".jfif":
+      case ".bmp":
         typeOfFile = "Image";
         break;
 
@@ -530,6 +550,10 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
       case ".pdf":
         typeOfFile = "PDFDoc";
+        break;
+
+      case ".csv":
+        typeOfFile = "CSVDoc";
         break;
 
       case ".txt":
@@ -579,7 +603,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         break;
 
       case ".xml":
-      case ".csv":
       case ".wpt":
       case ".dat":
       case ".ppc":
@@ -646,7 +669,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const recordingEnded = (fileName: string) => {
     const filterObject = uploadFile.find(
       (x: any) =>
-        x.uploadedFileName.substring(0, x.uploadedFileName.lastIndexOf(".")).replaceAll(" ", "_") ===
+        x.uploadedFileName.replaceAll(" ", "_") ===
         fileName
     );
 
@@ -710,11 +733,11 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       currentMiliSecond
     );
   };
-
+  
   const onAddMetaData = async (submitType: SubmitType) => {
-    const station = stationList.find(
-      (x: any) => x.value === formpayload.station
-    );
+    
+    let station: any = formpayload.station
+
     let categories: any[] = [];
     if (submitType === SubmitType.WithoutForm) {
       categories = insertCategory(formpayload.category).map((x: any) => {
@@ -727,18 +750,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       categories = insertCategory(formpayload.category);
     }
 
+    
     const uploadedFile = uploadFile.map((index: any) => {
-      let masterAssetValueIndex = index.uploadedFileName.lastIndexOf(".");
-      let name = index.uploadedFileName;
-      let extension = index.uploadedFileName.substring(
-        masterAssetValueIndex,
-        name.length
-      );
+      let extension = index.name.slice(index.name.indexOf('.'));
       const files: masterAssetFile = {
         id: 0,
         assetId: 0,
         filesId: index.uploadedFileId,
-        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        accessCode: index.accessCode,
+        name: index.uploadedFileName,
         type: checkFileType(extension),
         extension: extension,
         url: index.url,
@@ -746,19 +766,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         duration: index.duration != undefined ? (index.duration * 1000) : 0,
         recording: {
           started: currentStartDate(),
-          ended: recordingEnded(index.uploadedFileName.substring(0, masterAssetValueIndex)),
+          ended: recordingEnded(index.uploadedFileName),
         },
         sequence: 0,
-        checksum: {
-          checksum: "bc527343c7ffc103111f3a694b004e2f",
-          status: true,
-          algorithm: "SHA-257",
-        },
+        checksum: null,
         version: "",
       };
       return {
         id: index.uploadedFileId,
-        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        name: index.uploadedFileName,
         typeOfAsset: checkAssetType(extension),
         status: checkFileStatus(index.state),
         state: "Normal",
@@ -933,6 +949,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   }
   const onAdd = async (submitType: SubmitType) => {
     const payload: any = await onAddMetaData(submitType);
+    
 
     EvidenceAgent.addEvidence(payload).then((res) => {
       onClose();
@@ -942,6 +959,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setTimeout(() => {
         getUploadedEvidence(res);
       }, 2000);
+      const fileArr: any = [];
+      fileId.map((x: any) => uploadInfo.forEach((y: any) => {
+        if (x == y.fileId && y.isCompleted == true) {
+          fileArr.push(x)
+        }
+      }
+      ))
+      FileAgent.uploadAssetChecksum(fileArr.toString()).then((res) => {       
+      })
       return res;
     }).catch((error: any) => {
       setIsSaveBtnDisable(false);
@@ -970,21 +996,22 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const setEditPayload = () => {
-
+    const owners = formpayload.owner.map((x: any) => {
+      return {
+        CMTFieldValue: x.id,
+      };
+    });
     // newly uploaded file in seprate array
     const uploadedFile = uploadFile.map((index: any) => {
-      let masterAssetValueIndex = index.uploadedFileName.lastIndexOf(".");
-      let name = index.uploadedFileName;
-      let extension = index.uploadedFileName.substring(
-        masterAssetValueIndex,
-        name.length
-      );
+      
+      let extension = index.name.slice(index.name.indexOf('.'));
 
       const files: masterAssetFile = {
         id: 0,
         assetId: 0,
         filesId: index.uploadedFileId,
-        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        accessCode: index.accessCode,
+        name: index.uploadedFileName,
         type: checkFileType(extension),
         extension: extension,
         url: index.url,
@@ -992,20 +1019,16 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         duration: index.duration != undefined ? (index.duration * 1000) : 0,
         recording: {
           started: currentStartDate(),
-          ended: recordingEnded(index.uploadedFileName.substring(0, masterAssetValueIndex)),
+          ended: recordingEnded(index.uploadedFileName),
         },
         sequence: 0,
-        checksum: {
-          checksum: "bc527343c7ffc103111f3a694b004e2f",
-          status: true,
-          algorithm: "SHA-257",
-        },
+        checksum: null,
         version: "",
       };
 
       return {
         id: 0,
-        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        name: index.uploadedFileName,
         typeOfAsset: checkAssetType(extension),
         status: checkFileStatus(index.state),
         state: "Normal",
@@ -1022,11 +1045,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         },
         bookMarks: [],
         notes: [],
-        owners: [
-          {
-            cmtFieldValue: localStorage.getItem('User Id'),
-          },
-        ],
+        owners: owners,
         files: [files],
         audioDevice: null,
         camera: null,
@@ -1110,7 +1129,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const stationSelectClose = (e: any) => {
     if (e.target.value == undefined || e.target.value != 0) {
-      formpayload.station = ""; 
+      formpayload.station = {}; 
       setMetaDataErrMsg({
         ...meteDataErrMsg,
         required: "Station is required",
@@ -1193,36 +1212,34 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                 }`}
             >
               <div
-                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
+                className={`metaData-inner ${Object.keys(formpayload.station).length === 0 ? "" : "gepAddClass"
                   }`}
               >
-                <label className="label_Select_ui_field">
-                  {t("Station")} <span>*</span>
-                </label>
-                <div className="__CrX_Station__metaData__">
-                  <CRXSelectBox
+                <div className={`metaData-category ${formpayloadErr.stationErr == ""
+                ? ""
+                : "__Crx_MetaData__Station_Error"
+                }`}>
+                  
+                  <CRXMultiSelectBoxLight
                     className="metaData-Station-Select metaData-Station-Select_ui_field"
-                    id={"select_" + "selectBox"}
-                    zIndex={13001}
-                    value={
-                      formpayload.station === "" ? "" : formpayload.station
-                    }
-                    disabled={stationDisable ? true : false}
-                    onChange={(e: any) => {
-                      setFormPayload({
-                        ...formpayload,
-                        station: e.target.value,
-                      });
-                    }}
-                    onClose={(e: any) => stationSelectClose(e)}
-                    isRequried={true}
-                    error={meteDataErrMsg.required == "" ? true : false}
-                    errorMsg={meteDataErrMsg.required}
-                    defaultOptionText=""
+                    label={t("Station")}
+                    placeHolder=""
+                    multiple={false}
+                    CheckBox={true}
+                    required={true}
                     options={stationList}
-                    defaultValue=""
-                  />
-                </div>
+                    value={formpayload.station}
+                    autoComplete={false}
+                    isSearchable={true}
+                    disabled={stationDisable ? true : false}
+                    error={!!formpayloadErr.stationErr}
+                    errorMsg={formpayloadErr.stationErr}
+                    onBlur={checkStation}
+                    onChange={(e: React.SyntheticEvent, value: object) => {
+                      setFormPayload({ ...formpayload, station: value });
+                    }}
+                />
+                </div> 
               </div>
             </div>
             <div

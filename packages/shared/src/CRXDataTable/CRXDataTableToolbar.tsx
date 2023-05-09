@@ -31,7 +31,11 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   offsetY,
   expanView,
   toggleExpanView,
-  showExpandViewOption
+  showExpandViewOption,
+  showSearchPanel,
+  searchResultText,
+  advanceSearchText,
+  presetPerUser
 }) => {
   const classes = useToolbarStyles();
   const { t } = useTranslation<string>();
@@ -53,15 +57,15 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
         handle = setTimeout(callback, timeout || 100); 
         if(offsetY && element.pageYOffset >= offsetY) {
          
-          ToolBarRefs.current.style.position = "fixed",
-          ToolBarRefs.current.style.width = "calc(100% - 117px)";
+          ToolBarRefs && (ToolBarRefs.current.style.position = "fixed")
+          ToolBarRefs && (ToolBarRefs.current.style.width = "calc(100% - 115px)");
           setPaddingRight(0)
         }
        
         else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1 ) {
           window.pageXOffset = 1;
           ToolBarRefs.current.style.position = "fixed",
-          ToolBarRefs.current.style.width = "calc(100% - 117px)";
+          ToolBarRefs.current.style.width = "calc(100% - 115px)";
           setPaddingRight(0)
         }
     };
@@ -90,11 +94,26 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
       <div className='toolbar-button'>
         
         {toolBarButton}
+        
       </div>
       {
         (showCountText || showCountText === undefined) ?
           <Typography className={classes.title + " toolbar_counter_text"} color="inherit" variant="subtitle1" component="div">
-            {<><b>{rowCount}</b> {t(id)}</>}
+            {<><b>{rowCount}</b> { t(id)} {searchResultText?.type && <div className='searchResultText'>
+            [<span className='s-type'>{searchResultText?.type}</span>
+            <span className='s-name'>{searchResultText?.name}</span>]
+            </div>}
+              {advanceSearchText && advanceSearchText.length > 0 && <div className='searchResultText'>[<div className='searchType'>Advance Search Terms:</div>
+              {advanceSearchText.map((x : any,_: any) => {
+                if(x.isUsed == true) {
+                    return <div className='advance-type'><div className='valueName'>{x.value}</div> : <div className='valueData'>{x.inputValue}</div>,</div>
+                  }else {
+                    return false
+                  }
+              })}
+              ]</div>}
+            
+            </>}
           </Typography> : <></>
       }
       {
@@ -103,6 +122,13 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
             {<>{numSelected} {t("total_users_in_group")} </>}
           </Typography> : <></>
       }
+
+      {headCells.length > 0 ?
+      <div className='expandViewButton'>
+        {showSearchPanel}
+      </div> : ""
+      }
+
       {showExpandViewOption == true ?
       <div className='expandViewButton'>
       <IconButton
@@ -132,6 +158,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           onHeadCellChange={onHeadCellChange}
           showCustomizeIcon={showCustomizeIcon}
           expanView={expanView}
+          presetPerUser= {presetPerUser}
         />
       }
 

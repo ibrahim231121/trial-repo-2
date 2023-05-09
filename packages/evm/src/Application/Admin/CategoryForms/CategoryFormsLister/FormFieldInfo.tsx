@@ -17,27 +17,27 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
   const { t } = useTranslation<string>();
   const [position, setPosition] = useState<string>("relative")
   const stickyForm : any = useRef()
-  useEffect(() => {
-    window.addEventListener('scroll', function() {
-       const win = window.pageYOffset;
-       if(win > 0) {
-        stickyForm && (stickyForm.current.style.position = "sticky");
-        stickyForm && (stickyForm.current.style.top = "135px")
+//   useEffect(() => {
+//     window.addEventListener('scroll', function() {
+//        const win = window.pageYOffset;
+//        if(win > 0) {
+//         stickyForm && (stickyForm.current.style.position = "sticky");
+//         stickyForm && (stickyForm.current.style.top = "135px")
             
-       }else {
-          stickyForm && (stickyForm.current.style.position = "relative");
-          stickyForm && (stickyForm.current.style.top = "55px")
-       }
-    });
-},[])
+//        }else {
+//           stickyForm && (stickyForm.current.style.position = "relative");
+//           stickyForm && (stickyForm.current.style.top = "55px")
+//        }
+//     });
+// },[])
   return (
     <>
       <div className="formDetailInfo" ref={stickyForm}>
         <div className="category_create_form_fields">
-
+        <div className="fieldIndicateText"><sup>*</sup>Indicates required field</div>
           <div className="text-field">
               <label htmlFor="name">
-                Name <span className={`${errors.name !== undefined &&
+                Category Form Name <span className={`${errors.name !== undefined &&
                 touched.name ? "staric-error" : ""}`}>*</span>
               </label>
               <div className={`CBX-input ${errors.name !== undefined &&

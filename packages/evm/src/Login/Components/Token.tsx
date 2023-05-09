@@ -8,6 +8,8 @@ import {TokenType} from '../../types'
 import { AuthenticationAgent } from "../../utils/Api/ApiAgent";
 import { Token } from "../../utils/Api/models/AuthenticationModels";
 import { urlList, urlNames } from "../../utils/urlList";
+import { useDispatch } from "react-redux";
+import { setAccessAndRefreshToken } from "../../Redux/AccessAndRefreshTokenReducer";
 
 
 const TokenPage=(props:any)=> {
@@ -19,17 +21,17 @@ const TokenPage=(props:any)=> {
 
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (checkVerifier() == null) {
       history.push(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
     } else {
-     
-    
         AuthenticationAgent.getAccessToken(url).then((response:Token) => response)
         .then((response) => 
         authenticate(response.accessToken,response.idToken,response.refreshToken
           , () => {
+            dispatch(setAccessAndRefreshToken({ refreshToken: response.refreshToken, accessToken: response.accessToken }))
             var accessTokenDecode :TokenType =  jwt_decode(response.accessToken);
        
             if(accessTokenDecode !== null &&  accessTokenDecode.AssignedModules && accessTokenDecode.AssignedModules !== ""){

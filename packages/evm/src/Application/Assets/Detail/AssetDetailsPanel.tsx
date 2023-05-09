@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { CRXToaster, CRXAlert, CRXMenu } from "@cb/shared";
 import "./AssetDetailsPanel.scss";
 import GoogleMap from "../../../map/google/GoogleMap";
-import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
+import { AssetLogType, Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { useTranslation } from "react-i18next";
 import { CMTEntityRecord } from "../../../utils/Api/models/CommonModels";
@@ -25,7 +25,8 @@ type propsObject = {
   openMap: boolean
   setOnMarkerClickTimeData: any
   toasterMsgRef: any
-  isGuestView: boolean
+  isGuestView: boolean,
+  assetLog: AssetLogType
 }
 type Timeline = {
   recording_start_point: number;
@@ -44,10 +45,10 @@ type Timeline = {
   enableDisplay: boolean,
   indexNumberToDisplay: number,
   camera: string,
-  timeOffset: number,
+  timeOffset: number
 }
 
-const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, isGuestView, toasterMsgRef }: propsObject) => {
+const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, isGuestView, toasterMsgRef, assetLog }: propsObject) => {
   const { t } = useTranslation<string>();
   const [selectDropDown, setSelectDropDown] = React.useState(openMap ? "Map" : "Bookmarks");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -126,7 +127,6 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
     setsearchTerm("");
   }
 
-
   return (
 
     <div className="detailDropdownMain">
@@ -195,7 +195,10 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                           timelinedetail={timelinedetail}
                           selectDropDown={selectDropDown}
                           onClickBookmarkNote={onClickBookmarkNote}
-                          toasterMsgRef={toasterMsgRef} />
+                          toasterMsgRef={toasterMsgRef}
+                          assetLog={assetLog}
+                          searchTerm={searchTerm}
+                        />
                       )
                     }
                     )
@@ -210,7 +213,10 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                           timelinedetail={timelinedetail}
                           selectDropDown={selectDropDown}
                           onClickBookmarkNote={onClickBookmarkNote}
-                          toasterMsgRef={toasterMsgRef} />
+                          toasterMsgRef={toasterMsgRef}
+                          assetLog={assetLog}
+                          searchTerm={searchTerm}
+                        />
                       )
                     }
                     )

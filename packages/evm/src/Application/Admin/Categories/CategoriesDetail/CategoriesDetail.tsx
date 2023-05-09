@@ -61,7 +61,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       page: 1,
       size: 25
     })
-
+    
     const setEvidenceRetentionPolicies = () => {
       let RetentionPoliciesTemplateRows: DropdownModel[] = [];
       if (retentionPoliciesList?.data && retentionPoliciesList?.data.length > 0) {
@@ -137,7 +137,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         var body = Obj;
         let url = "Categories";
         if (parseInt(id) > 0) {
-          url += "/" + id;
+          url += "/ChangeCategory/" + id;
           SetupConfigurationAgent.putCategories(url, body).then(() => {
             onMessageShow(true, t("Category_Edited_Successfully"));
             dispatch(getAllCategoriesFilter(pageiGrid));
@@ -314,7 +314,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     }, [uploadPoliciesList?.data]);
   
     const categoriesFromValidationSchema = Yup.object().shape({
-      name: Yup.string().required("Name is required"),
+      name: Yup.string().min(3, "Category Name should at least have 3 characters")
+      .max(128, "Category Name should not exceed 128 character limit")
+      .matches(/^^[a-zA-Z]+[a-zA-Z0-9-_ \b]*$/, "Invalid Category Name")
+      .required("Category Name is required"),
       evidenceRetentionPolicy: Yup.number().min(1, "Evidence Retention Policy is required"),
       uploadPolicy: Yup.number().min(1, "Upload Policy is required"),
       audioprompt: Yup.mixed()
@@ -329,7 +332,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         })
     });
 
-    
+  const audioRefs = React.useRef<any>(null)  
+
   return (
     <div className="searchComponents">
       <>
@@ -345,7 +349,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
             <>
               <div className={`create_category_form_modal categories ${error ? "errorFormField1":""}`}>
                 <CRXToaster ref={categoriesFormRef} />
-
                 {error && (
                   <CRXAlert
                     className="formFieldError"
@@ -358,7 +361,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                 )}
                 <div className="indicatestext tp15"><b>*</b> Indicates required field</div>
                 <div className="createCategory_form">
-
                   <div className="category_form_fields">
                     <div className="CBX-input">
                       <label htmlFor="name">
@@ -383,13 +385,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                           <></>
                         )}
                       </div>
-
-
                     </div>
-
                   </div>
-                  <div className="category_form_fields">
 
+                  <div className="category_form_fields">
                     <TextField
                       id="description"
                       required={false}
@@ -482,20 +481,42 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                       }}
                     />
                   </div>
-                  <div className={`file_upload_button ${errors.audioprompt ? "fileErrorbtn" : ""}`}>
+                  <div className="category_form_fields">
+                  <TextField
+                      id="audioprompt"
+                      required={true}
+                      value={values.audioprompt != null? values.audioprompt.name : ""}
+                      label={t("Audio")}
+                      className={`categories-input`}
+                      disabled={false}
+                      type="text"
+                      multiline={false}
+                      errorMsg={errors.audioprompt}
+                      error={errors.audioprompt !== undefined ? true : false}
+                    />
+                    <button className="audio-clear" onClick={(e,) => { setFieldValue("audioprompt", null, true); audioRefs.current.value = null }}>
+                    <i className="fa-solid fa-circle-minus"></i>
+                    </button>
+                  </div>
+                  
+                  <div className={`file_upload_button`}>
                     <input
                       type="file"
                       accept=".wav"
-                      id="audioprompt"
+                      ref={audioRefs}
+                      id=""
                       name="audioprompt"
                       className="audio_file_upload"
                       onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
                     />
-                    {errors.audioprompt &&
-                      <div className="fileError">
-                        <i className='fas fa-exclamation-circle'/>
-                        {errors.audioprompt}
-                      </div>}
+                    <CRXButton
+                      variant="contained"
+                      className="category_Audio_File_Upload"
+                      color="primary"
+                    >
+                      {t("Choose .WAV file")}
+                    </CRXButton>
+                    
                   </div>
                 </div>
                 <div className="crxFooterEditFormBtn stickyFooter_Tab">

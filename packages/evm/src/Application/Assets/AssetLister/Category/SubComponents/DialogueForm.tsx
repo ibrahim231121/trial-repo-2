@@ -7,10 +7,16 @@ import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import './DialogueForm.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DialogueFormProps } from '../Model/DialogueFormModel';
 import { getAssetSearchInfoAsync } from '../../../../../Redux/AssetSearchReducer';
 import { SearchType } from '../../../utils/constants';
+import { GetResponseToUpdateAssetBucketCategory } from '../Utility/UtilityFunctions';
+import { RootState } from '../../../../../Redux/rootReducer';
+import { AssetBucket, ObjectToUpdateAssetBucketCategoryField } from '../../ActionMenu/types';
+import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupConfigurations';
+import { setLoaderValue } from '../../../../../Redux/loaderSlice';
+import { updateAssetBucketCategoryField } from '../../../../../Redux/AssetActionReducer';
 
 const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -19,6 +25,8 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const [saveBtn, setSaveBtn] = React.useState(true);
   const rowLen: number = props.formCollection?.length;
   const alertIcon = <i className='fas fa-info-circle attentionIcon'></i>;
+  const setupCategories = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
+  const assetBucketData: AssetBucket[] = useSelector((state: RootState) => state.assetBucket.assetBucketData);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -55,7 +63,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const submitForm = (values: any[]) => {
     const evidenceId = props.evidence?.id;
     const Assign_Category_Arr: Category[] = [];
-    const Assign_Category_URL = `/Evidences/${evidenceId}/Categories`;
+    // const Assign_Category_URL = `/Evidences/${evidenceId}/Categories`;
     for (const v of values) {
       const _body: Category = {
         id: v.id,
@@ -65,23 +73,34 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       };
       Assign_Category_Arr.push(_body);
     }
-
-    const body: EvdenceCategoryAssignment = {
+    const body: Array<EvdenceCategoryAssignment> = [];
+    body.push({
       unAssignCategories: [],
       assignedCategories: Assign_Category_Arr,
       updateCategories: [],
-      categorizedBy: props.categorizedBy
-    };
+      categorizedBy: props.categorizedBy,
+      evidenceId: evidenceId!
+    } as EvdenceCategoryAssignment);
     const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
-    EvidenceAgent.changeCategories(Assign_Category_URL, body, headers).then(() => {
+    //NOTE : Creating response to update asset bucket.
+    const assetCategories = GetResponseToUpdateAssetBucketCategory(body, setupCategories);
+    dispatch(setLoaderValue({ isLoading: true }));
+    EvidenceAgent.changeCategories(body, headers).then(() => {
       props.setSelectedCategoryValues([]);
       setSuccess(true);
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         closeModal();
       }, 3000);
+      //NOTE : To update asset bucket data.
+      dispatch(updateAssetBucketCategoryField({
+        requestBody: assetCategories,
+        assetBucketData: assetBucketData
+      } as ObjectToUpdateAssetBucketCategoryField));
+      dispatch(setLoaderValue({ isLoading: false }));
     })
       .catch(() => {
+        dispatch(setLoaderValue({ isLoading: false, error: true }));
         setError(true);
       });
   }

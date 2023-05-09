@@ -9,10 +9,11 @@ import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
-import { Note } from '../../utils/Api/models/EvidenceModels';
+import { AssetLogType, Note } from '../../utils/Api/models/EvidenceModels';
 import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
 import { useDispatch } from 'react-redux';
 import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
+import { addAssetLog } from '../../Redux/AssetLogReducer';
 
 type VideoPlayerNoteProps = {
     openNoteForm: boolean;
@@ -26,10 +27,11 @@ type VideoPlayerNoteProps = {
     noteAssetId?: number;
     toasterMsgRef: any;
     timelinedetail: any;
+    assetLog: AssetLogType
 };
 
 const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
-    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail} = props;
+    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail,assetLog} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [onSave, setOnSave] = useState(true);
@@ -135,6 +137,9 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                 }
                 setNotesInTimelineDetail("Add", responseObj);
                 toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                assetLog.assetId = Number(timelinedetail[0].dataId);
+                assetLog.notes = "Note Taken";
+                dispatch(addAssetLog(assetLog));
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});

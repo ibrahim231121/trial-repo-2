@@ -31,6 +31,7 @@ import ViewConfigurationTemplateLog from './Application/Admin/UnitConfiguration/
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
 import SharedMedia from "./Application/Assets/SharedMedia/SharedMedia";
 import TenantSettings from "./Application/Admin/SetupAndConfiguration/TenantSettings";
+import ADGroupsMapping from "./Application/Admin/ADGroupsMapping/ADGroupsMapping";
 import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplate";
 import SensorsAndTriggersDetail from "./Application/Admin/SensorsAndTriggers/SensorsAndTriggersDetail/SensorsAndTriggersDetail";
@@ -44,15 +45,19 @@ import CategoryFormsDetail from "./Application/Admin/CategoryForms/CategoryForms
 import Cookies from "universal-cookie";
 import MicroservicesBuildVersion from "./Application/MicroservicesBV";
 import CasesList from "./Application/Cases/CasesLister/CasesList";
-import CaseDetail from "../src/Application/Cases/CaseDetail/CaseDetail";
+import CaseDetail from "./Application/Cases/CaseDetail/CaseDetail";
+import CreateCaseWizard from "./Application/Cases/CreateCase/CreateCaseWizard";
 import ImageViewer from "./components/MediaPlayer/ImageViewer/ImageViewer";
 import CategoriesDetail from "./Application/Admin/Categories/CategoriesDetail/CategoriesDetail";
 import RetentionPoliciesDetailPage from "./Application/Admin/RetentionPolicies/RetentionPoliciesDetail/RetentionPoliciesDetail";
+import FilterUpdateVersion from "./Application/Admin/Fota/FilterUpdateVersion";
+import UpdateVersions from "./Application/Admin/Fota/UpdateVersion";
 import CADList from "./Application/CAD/CADLister";
 import HotList from "./Application/ALPR/HotList/Index";
 import HotListDetail from "./Application/ALPR/HotList/HotListDetail";
 import HotListDataSource from "./Application/ALPR/HotListDataSource/Index";
 import DataSourceTab from "./Application/ALPR/HotListDataSource/DataSourcePanel";
+
 
 const cookies = new Cookies();
 
@@ -108,6 +113,10 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
                 
                 <PrivateRoute moduleId={8} path={urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+                <PrivateRoute moduleId={8} path={urlList.filter((item: any) => item.name === urlNames.updateVersion)[0].url} exact={true} component={UpdateVersions} />
+                <PrivateRoute moduleId={8} path={urlList.filter((item: any) => item.name === urlNames.filterUpdateVersion)[0].url} exact={true} component={FilterUpdateVersion} />
+                <PrivateRoute moduleId={8} path={urlList.filter((item: any) => item.name === urlNames.filterUpdateVersionEdit)[0].url} exact={true} component={FilterUpdateVersion} />
+
                 <PrivateRoute moduleId={13} path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
                 <PrivateRoute moduleId={22} path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
@@ -133,9 +142,9 @@ const Routes = () => {
                 <PrivateRoute moduleId={19} path={urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.manageUnitDeviceTemplate)[0].url} exact={true} component={DefaultUnitTemplate} />
 
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url} exact={true} component={SensorsAndTriggersDetail} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url} exact={true} component={SensorsAndTriggersDetail} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggers)[0].url} exact={true} component={SensorAndTriggersList} />
+                <PrivateRoute moduleId={51} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url} exact={true} component={SensorsAndTriggersDetail} />
+                <PrivateRoute moduleId={52} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url} exact={true} component={SensorsAndTriggersDetail} />
+                <PrivateRoute moduleId={49} path={urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggers)[0].url} exact={true} component={SensorAndTriggersList} />
 
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.retentionPolicies)[0].url} exact={true} component={RetentionPoliciesList} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.uploadPoliciesEdit)[0].url} exact={true} component={UploadPoliciesDetail} />
@@ -149,11 +158,12 @@ const Routes = () => {
            
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitCreate} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.tenantSettings)[0].url} exact={true} component={TenantSettings} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.ADGroupsMapping)[0].url} exact={true} component={ADGroupsMapping} />
                 
                 
                 {/* Cases */}
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.cases)[0].url}  exact={true} component={CasesList} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createCase)[0].url}  exact={true} component={CaseDetail} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createCase)[0].url}  exact={true} component={CreateCaseWizard} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editCase)[0].url}  exact={true} component={CaseDetail} />
 
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createCategory)[0].url} exact={true} component={CategoriesDetail} />

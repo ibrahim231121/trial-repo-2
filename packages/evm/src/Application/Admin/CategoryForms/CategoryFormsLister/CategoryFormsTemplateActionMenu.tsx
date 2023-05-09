@@ -11,7 +11,7 @@ import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
-import { getAllCategoriesFilter } from "../../../../Redux/Categories";
+import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
 
 type CategoryFormsTemplate = {
   id: number;
@@ -23,11 +23,12 @@ type Props = {
   selectedItems?: CategoryFormsTemplate[];
   row?: any;
   pageiGrid: any;
+  toasterRef : any;
 };
 
 
 
-const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, pageiGrid }) => {
+const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, pageiGrid, toasterRef }) => {
   const history = useHistory();
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -42,18 +43,36 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
       categoryFormIds = selectedItems?.map(({ id }) => id).join(', ')
     }
 
-    let headers = [{key : 'formsIds', value : categoryFormIds}]
+    let headers = [{ key: 'formsIds', value: categoryFormIds }]
     SetupConfigurationAgent.deleteCategoryForms(headers).then(() => {
-      dispatch(getAllCategoriesFilter(pageiGrid));
+      dispatch(getAllCategyFormsFilter(pageiGrid));
+      onMessageShow(true, t("Category_Form_Deleted_Successfully"));
     })
       .catch((e: any) => {
+        onMessageShow(false, e?.response?.data);
         return e;
       })
   }
 
+  const CategoryFormFormMessages = (obj: any) => {
+    toasterRef?.current?.showToaster({
+        message: obj.message,
+        variant: obj.variant,
+        duration: obj.duration,
+        clearButtton: true,
+    });
+}
+
+const onMessageShow = (isSuccess: boolean, message: string) => {
+    CategoryFormFormMessages({
+        message: message,
+        variant: isSuccess ? 'success' : 'error',
+        duration: 7000
+    });
+}
+
   return (
     <div className="table_Inner_Action">
-
       <Menu
         key="right"
         align="center"
@@ -73,7 +92,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
 
         {selectedItems && selectedItems?.length <= 1 ? (
           <MenuItem onClick={editFormFields}>
-            <Restricted moduleId={0}>
+            <Restricted moduleId={74}>
               <div className="crx-meu-content groupingMenu  crx-spac"  >
                 <div className="crx-menu-icon">
                   <i className="far fa-pencil"></i>
@@ -89,7 +108,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         )}
 
         <MenuItem >
-          <Restricted moduleId={0}>
+          <Restricted moduleId={75}>
             <div className="crx-meu-content  crx-spac" onClick={deleteCategoryForms} >
               <div className="crx-menu-icon">
                 <i className="far fa-trash-alt"></i>

@@ -165,9 +165,16 @@ body {
 }
 
 .divImg i {
-  color: var(--color-333333);
+  color: var(--color-#d1d2d4) !important;
   font-size: 55px;
   position: relative;
+}
+.divImg .assetThumb .asset_lister_thumb {
+  background: #333 !important;
+  color: var(--color-#d1d2d4) !important;
+}
+.divImg .assetThumb .asset_lister_thumb i {
+  color: var(--color-#d1d2d4) !important;
 }
 .imgdrag {
   width: 115px;
@@ -246,7 +253,7 @@ body {
   background: var(--color-White) !important;
   height: 59px;
   width: 100%;
-  z-index: 9;
+  z-index: 100;
   padding-top: 4px;
   margin-left:  1px;
   position: sticky;

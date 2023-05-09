@@ -31,8 +31,8 @@ import {
 import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
 import QueuedAsstsDataTable from "./AssetQueuedDataTable";
-import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { Device, GetPrimaryDeviceInfo, Unit,UnitAndDevice, UnitTemp, UnitTemplateConfigurationInfo,  } from "../../utils/Api/models/UnitModels";
+import { EvidenceAgent, UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
+import { Device, GetPrimaryDeviceInfo, QueuedAssets, Unit, UnitAndDevice, UnitTemp, UnitTemplateConfigurationInfo, } from "../../utils/Api/models/UnitModels";
 import { Station } from "../../utils/Api/models/StationModels";
 import UnitDeviceEvents from "./UnitDeviceEvents";
 import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
@@ -90,7 +90,7 @@ const UnitCreate = (props: historyProps) => {
     stationList: [],
     stationId: "",
     allconfigTemplateList: [],
-    lastCheckedIn:[]
+    lastCheckedIn: []
   });
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -106,6 +106,8 @@ const UnitCreate = (props: historyProps) => {
   const validationCheckOnButton = (checkError: boolean) => { setButton(checkError); };
   const [selectedActionRow, setSelectedActionRow] = React.useState<UnitAndDevice>();
   const [selectedItems, setSelectedItems] = React.useState<UnitAndDevice[]>([]);
+  const [queuedAssets, setQueuedAssets] = React.useState<number>(0);
+  const [assetsCount, setAssetCount] = React.useState<number>(0);
   const [reformattedRows, setReformattedRows] = React.useState<UnitAndDevice[]>();
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
@@ -130,7 +132,7 @@ const UnitCreate = (props: historyProps) => {
     page: page,
     size: rowsPerPage
   })
-  const tenMinutes:number=10;
+  const tenMinutes: number = 10;
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -140,7 +142,7 @@ const UnitCreate = (props: historyProps) => {
 
   const unitID = location.state.unitId;
   const inCarTab: any = location.state.deviceType;
- 
+
 
   const tabs1 = [
     { label: t("Configuration"), index: 0 },
@@ -161,25 +163,29 @@ const UnitCreate = (props: historyProps) => {
   const [configTemplateList, setConfigTemplateList] = useState<any[]>([]);
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
   const stationList: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
-  
+
 
   React.useEffect(() => {
+
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
     subscribeGroupToSocket("UnitStatus");
     UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response: GetPrimaryDeviceInfo) => {
       setPrimaryDeviceInfo(response);
       if (response != undefined) {
-        let currentTime = new Date();   
-        let tenMinutesAddedInlastCheckedIn= moment(response.lastCheckedIn).add(tenMinutes, 'm').toDate() ;
-        if(tenMinutesAddedInlastCheckedIn < currentTime && response.status != "Inactive"){
+        let currentTime = new Date();
+        let tenMinutesAddedInlastCheckedIn = moment(response.lastCheckedIn).add(tenMinutes, 'm').toDate();
+        if (tenMinutesAddedInlastCheckedIn < currentTime && response.status != "Inactive") {
           setUnitStatus("OFFLINE");
         }
-        else{
+        else {
           setUnitStatus(response.status.toUpperCase());
         }
       }
     });
-
+    EvidenceAgent.getQueuedAssets(unitID).then((response: QueuedAssets[]) => setQueuedAssets(response.filter(x => x.fileState == "Uploading").length));
+    EvidenceAgent.GetAssetsForUnit(unitID).then((response) => {
+      setAssetCount(response)
+    })
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response: UnitTemplateConfigurationInfo[]) => {
 
       setConfigTemplateList(response)
@@ -191,12 +197,12 @@ const UnitCreate = (props: historyProps) => {
       let unitAndDevicesRows: UnitAndDevice[] = [];
       if (response != undefined) {
 
-    
         unitAndDevicesRows = response.map((data) => {
           return {
             deviceName: data.deviceName,
             deviceType: data.deviceType,
-            serialNumber: data.serialNumber,
+            description: data.description,
+            status: data.status,
             version: data.version
           };
         });
@@ -234,7 +240,7 @@ const UnitCreate = (props: historyProps) => {
       configTemplateList.map((x: any) => {
         template.push({ displayText: x.name, value: x.id, stationId: x.stationId });
       });
-     
+
 
       let stationlst: any = [{ displayText: t("None"), value: "0" }];
       stationList.map((x: any) => {
@@ -278,7 +284,9 @@ const UnitCreate = (props: historyProps) => {
       }
     }
   };
-
+  const updateUploading = () => {
+    EvidenceAgent.getQueuedAssets(unitID).then((response: QueuedAssets[]) => setQueuedAssets(response.filter(x => x.fileState == "Uploading").length));
+  }
   const singleEventListener = (function (element: any) {
     var eventListenerHandlers: any = {};
     return function (eventName: string, func?: any) {
@@ -349,7 +357,7 @@ const UnitCreate = (props: historyProps) => {
       stationList: primaryDeviceInfo === undefined ? [] : unitInfo.stationList,
       stationId: primaryDeviceInfo === undefined ? "" : stationID,
       allconfigTemplateList: allconfigTemplateList,
-      lastCheckedIn:primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.lastCheckedIn
+      lastCheckedIn: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.lastCheckedIn
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -446,8 +454,16 @@ const UnitCreate = (props: historyProps) => {
       minWidth: "350"
     },
     {
-      label: `${t("Serial_Number")}`,
-      id: "serialNumber",
+      label: `${t("Description")}`,
+      id: "description",
+      align: "right",
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: false,
+      minWidth: "350"
+    },
+    {
+      label: `${t("Status")}`,
+      id: "status",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
@@ -598,8 +614,8 @@ const UnitCreate = (props: historyProps) => {
 
                 <div className="RightBoard">
                   <div className="pannelBoard mr-50">
-                    <div className="panel_Heading_unitDetail">0</div>
-                    <span className="pdUpload">
+                    <div className="panel_Heading_unitDetail">{queuedAssets}</div>
+                    <span className="pdUpload" onClick={updateUploading}>
                       <i className="fad fa-sync-alt"></i>
                     </span>
                     <p>{t("UPLOADING")}</p>
@@ -611,7 +627,7 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-50"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">0</div>
+                    <div className="panel_Heading_unitDetail">{assetsCount}</div>
                     <span className="noRow"></span>
                     <p>{t("ASSETS")}</p>
                   </div>
@@ -723,13 +739,13 @@ const UnitCreate = (props: historyProps) => {
             {`template name == ${inCarTab}`} */}
           </CrxTabPanel>
         ) : <CrxTabPanel value={value} index={1}>
-          <QueuedAsstsDataTable unitId={unitID} />
+          <QueuedAsstsDataTable unitId={unitID} setQueuedAssetsCount={setQueuedAssets} />
         </CrxTabPanel>}
 
 
         {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={2}>
-            <QueuedAsstsDataTable unitId={unitID} />
+            <QueuedAsstsDataTable unitId={unitID} setQueuedAssetsCount={setQueuedAssets} />
           </CrxTabPanel>
         ) : (<CrxTabPanel value={value} index={2}>
           <UnitDeviceEvents id={unitID} />

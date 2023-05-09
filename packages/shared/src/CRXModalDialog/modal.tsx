@@ -41,7 +41,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
       },
     },
     root : {
-      zIndex : "13000 !important" as any,
+      
     }
   });
 

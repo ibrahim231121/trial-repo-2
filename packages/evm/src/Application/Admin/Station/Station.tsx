@@ -35,6 +35,7 @@ import { addNotificationMessages } from "../../../Redux/notificationPanelMessage
 import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemplatesReducer';
 import { StationType, DateTimeProps } from './StationTypes';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
 
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -100,6 +101,7 @@ const Station: React.FC = () => {
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'stationDataTable');
     dispatch(getConfigurationTemplatesAsync());
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   useEffect(() => {
@@ -377,9 +379,9 @@ const Station: React.FC = () => {
           setSortOrder={(sort:any) => sortingOrder(sort)}
           //Please dont miss this block.
           offsetY={50}
-          stickyToolbar={130}
-          searchHeaderPosition={223}
-          dragableHeaderPosition={188}
+          stickyToolbar={129}
+          searchHeaderPosition={221}
+          dragableHeaderPosition={186}
           //End here
           showExpandViewOption={true}
         />

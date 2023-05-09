@@ -8,6 +8,13 @@ import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { FormValues, SaveConfirmFormProps } from '../Model/SaveConfirmFormModel';
 import { getAssetSearchInfoAsync } from '../../../../../Redux/AssetSearchReducer';
 import { SearchType } from '../../../utils/constants';
+import { CategoryRemovalType } from '../Model/FormContainerModel';
+import { setLoaderValue } from '../../../../../Redux/loaderSlice';
+import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupConfigurations';
+import { GetResponseToUpdateAssetBucketCategory } from '../Utility/UtilityFunctions';
+import { updateAssetBucketCategoryField } from '../../../../../Redux/AssetActionReducer';
+import { AssetBucket, ObjectToUpdateAssetBucketCategoryField } from '../../ActionMenu/types';
+import { RootState } from '../../../../../Redux/rootReducer';
 
 const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -15,7 +22,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const [error, setError] = React.useState<boolean>(false);
   const [WarningMessage, setWarningMessage] = React.useState<string>('');
   const initialValues: FormValues = {};
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const categoryOptions = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
+  const assetBucketData: AssetBucket[] = useSelector((state: RootState) => state.assetBucket.assetBucketData);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -25,19 +33,19 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (props.removalType === 1) {
-      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")} ${props.differenceOfHours} ${t("Hours.")}`);
-    } else if (props.removalType === 2) {
+    if (props.removalType === CategoryRemovalType.HighestRetentionCategoryRemoval) {
+      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")} ${props.differenceOfRetentionTime}.`);
+    } else if (props.removalType === CategoryRemovalType.LastCategoryRemoval) {
       setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")}
-        ${props.differenceOfHours} ${t("Hours.")} ${t("Uncategorized_retention_policy_of_station_will_be_applied_on_this_evidence_group.")}`);
+        ${props.differenceOfRetentionTime}.  ${t("Uncategorized_retention_policy_of_station_will_be_applied_on_this_evidence_group.")}`);
+    } else if (props.removalType === CategoryRemovalType.HighestRetentionCategoryRemovalInMultiSelect) {
+      setWarningMessage(`${props.differenceOfRetentionTime}.`);
     }
   }, [props.removalType]);
 
   const cancelBtn = () => {
     const newValue = categoryOptions
-      .filter((o: any) => {
-        return o.id === props.removedOption.id;
-      })
+      .filter((o: any) => o.id === props.removedOption.id)
       .map((i: any) => {
         return {
           id: i.id,
@@ -50,43 +58,80 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
-  };
+  }
 
   const closeModal = () => {
     props.setOpenForm();
     props.closeModal(false);
-  };
+  }
 
   const deleteRequest = () => {
+    const body: Array<EvdenceCategoryAssignment> = [];
     const message = props.removeMessage;
-    const evidenceId = props.evidence?.id;
     const categoryId = props.removedOption.id;
-    const unAssignCategory: Category = {
-      id: categoryId,
-      formData: [],
-      assignedOn: new Date(),
-      name: ""
-    };
-
-    const body: EvdenceCategoryAssignment = {
-      unAssignCategories: [unAssignCategory],
-      assignedCategories: [],
-      updateCategories: [],
-      categorizedBy: props.categorizedBy
+    //NOTE : MultiSelect case.
+    if (!props.evidence && props.selectedItems.length > 1) {
+      for (const asset of props.selectedItems) {
+        const unAssignCategory: Category = {
+          id: categoryId,
+          formData: [],
+          assignedOn: new Date(),
+          name: ""
+        };
+        body.push({
+          unAssignCategories: [unAssignCategory],
+          assignedCategories: [],
+          updateCategories: [],
+          categorizedBy: props.categorizedBy,
+          evidenceId: asset.evidence.id
+        } as EvdenceCategoryAssignment);
+      }
+      props.setSelectedItems?.([]);
     }
-    const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
+    //NOTE : Normal case.
+    if ((props.evidence) && (props.selectedItems.length <= 1)) {
+      const evidenceId = props.evidence.id;
+      const unAssignCategory: Category = {
+        id: categoryId,
+        formData: [],
+        assignedOn: new Date(),
+        name: ""
+      };
+      body.push({
+        unAssignCategories: [unAssignCategory],
+        assignedCategories: [],
+        updateCategories: [],
+        categorizedBy: props.categorizedBy,
+        evidenceId: evidenceId
+      } as EvdenceCategoryAssignment);
+    }
+    EvidenceAgentApiCall(body, message);
+  }
+
+  const EvidenceAgentApiCall = (body: Array<EvdenceCategoryAssignment>, message: string) => {
+    dispatch(setLoaderValue({ isLoading: true }));
     const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
-    EvidenceAgent.changeCategories(url, body, headers).then(() => {
+     //NOTE : Creating response to update asset bucket.
+     const assetCategories = GetResponseToUpdateAssetBucketCategory(body, categoryOptions);
+    EvidenceAgent.changeCategories(body, headers, message).then(() => {
       setSuccess(true);
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         closeModal();
       }, 3000);
+       //NOTE : To update asset bucket data.
+       dispatch(updateAssetBucketCategoryField({
+        requestBody: assetCategories,
+        assetBucketData: assetBucketData
+      } as ObjectToUpdateAssetBucketCategoryField));
+      dispatch(setLoaderValue({ isLoading: false }));
     })
       .catch(() => {
+        dispatch(setLoaderValue({ isLoading: false, error: true }));
         setError(true);
       });
   }
+
 
   return (
     <>
@@ -99,14 +144,13 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
           open={true}
         />
       )}
-
       <Formik
         initialValues={initialValues}
         onSubmit={() => {
           deleteRequest();
         }}>
         <Form className='crx-category-remove-form'>
-          {props.removalType !== 0 && (
+          {props.removalType !== CategoryRemovalType.NotEffectingRetentionRemoval && (
             <CRXAlert message={WarningMessage} className='crx-warning' type='warning' alertType='inline' open={true} />
           )}
           <div className='CRXCategory crx-category-attempting'>

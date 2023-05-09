@@ -93,7 +93,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 
   useEffect(() => {
     document.addEventListener('mousemove',function(e){
-      let x = e.pageX + 172;
+      let x = e.pageX + 199;
       if(refStyle.current  ) {
         const leftSide = refStyle.current.style.left = (x) + "px" ;
         if(leftSide < "-10px") {
@@ -108,10 +108,10 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 const enabledTimeline_bar =   timelinedetail.filter((x: any) => x.enableDisplay);
 const syncButtonClass = syncButton ? "syncButton_Disabled" : "syncButton_Enabled";
   return (
-    <div className="_beforeline_Main" onMouseMove={()=> {setShowSeekBar(true)}} onMouseLeave={()=> {setShowSeekBar(false)}} >
+    <div className={multiTimelineEnabled ? "_beforeline_Main" : "" } onMouseMove={()=> {setShowSeekBar(true)}} onMouseLeave={()=> {setShowSeekBar(false)}} >
       {(multiTimelineEnabled && showSeekBar) && <div ref={refStyle} id="seekBar_multiTimeLine_view" className={`enabledTimeline_bar_${enabledTimeline_bar.length}`}>
       </div> }
-      {multiTimelineEnabled && <div className="scroll_to_see_timeline">scroll to see multiple timelines</div>}
+      {/* {multiTimelineEnabled && <div className="scroll_to_see_timeline">scroll to see multiple timelines</div>} */}
       {timelinedetail.filter((x: any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any, i:any) =>
         
         <div className="time_line_container" >
@@ -165,7 +165,7 @@ const syncButtonClass = syncButton ? "syncButton_Disabled" : "syncButton_Enabled
               {isMultiViewEnable && <div className={`beforerecording ${syncButtonClass}_Before`} style={{ width: x.recording_Start_point_ratio + '%', height: multiTimelineEnabled ? '20px' : "0", display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
               ></div>}
-              {isMultiViewEnable && startTimelineSync && <><div className="canvas-width"
+              {isMultiViewEnable && <><div className="canvas-width"
                 style={{ backgroundColor: '#333', width: x.recordingratio + '%', height: multiTimelineEnabled ? '20px' : "0", display: 'flex'}}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}

@@ -5,6 +5,7 @@ import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import { dateOptions, basicDateDefaultValue } from "../../../utils/constant";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useTranslation } from "react-i18next";
+import { CRXTooltip } from "@cb/shared";
 
 interface IOptions {
   value: string;
@@ -23,6 +24,11 @@ interface Props {
   hideOptions: () => void;
   dateOptionType: string;
   dateTimeDetail: DateTimeObject;
+  className : string,
+  closeSearchPanel: () => void,
+  searchPanelIdentifer: boolean,
+  setSdvanceSearchText : any,
+  setFieldsNumber: any
 }
 
 type DateTimeObject = {
@@ -30,6 +36,7 @@ type DateTimeObject = {
   endDate: string;
   value: string;
   displayText: string;
+  
 };
 
 const AdvancedSearch: React.FC<Props> = ({
@@ -37,6 +44,11 @@ const AdvancedSearch: React.FC<Props> = ({
   hideOptions,
   dateOptionType,
   dateTimeDetail,
+  className,
+  closeSearchPanel,
+  searchPanelIdentifer,
+  setSdvanceSearchText,
+  setFieldsNumber
 }) => {
 
   const { t } = useTranslation<string>();
@@ -234,6 +246,7 @@ const AdvancedSearch: React.FC<Props> = ({
       setShowSearchCriteria(true);
     }
     setAdvanceSelect([...advanceOption]);
+    setSdvanceSearchText([...advanceOption])
   };
 
   const AdvancedSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -275,6 +288,9 @@ const AdvancedSearch: React.FC<Props> = ({
     }
 
     getOptions({ options, dateTimeDropDown });
+    console.log("select", options)
+    setSdvanceSearchText(options)
+    closeSearchPanel()
   };
 
   React.useEffect(() => {
@@ -301,6 +317,7 @@ const AdvancedSearch: React.FC<Props> = ({
     newOptions = options.filter(
       (opt: IOptions) => opt.usedBy == i || !opt.isUsed
     );
+    setFieldsNumber(i)
     return (
       <div className="advRow" key={i}>
         <CRXRows container spacing={2}>
@@ -334,7 +351,10 @@ const AdvancedSearch: React.FC<Props> = ({
                 <button
                   className="removeBtn"
                   onClick={() => Remove(i)}
-                ></button>
+                >
+                <CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="Remove" placement="right" disablePortal={true} className="crxTooltipNotificationIcon" />
+
+                </button>
               </div>
             </CRXColumn>
           )}
@@ -343,7 +363,7 @@ const AdvancedSearch: React.FC<Props> = ({
     );
   });
   return (
-    <div className="advanceSerachContainer CRXAdvanceSearchBox">
+    <div id="advanceSearchBox" className={"advanceSerachContainer CRXAdvanceSearchBox " + className}>
       <CRXRows container spacing={2}>
         <CRXColumn item xs={3}>
           <label className="dateTimeLabel">{t("Date_and_Time")}</label>
@@ -359,11 +379,12 @@ const AdvancedSearch: React.FC<Props> = ({
           />
         </CRXColumn>
       </CRXRows>
+       <div className="searchAssetText">Search Assets By</div>
       {selectBoxArray}
 
       <div className="advancedSearchBottom">
         <button
-          className="AddRemove-Search-Criteria-btn"
+          className={`AddRemove-Search-Criteria-btn ${!showSearchCriteria && "AddRemove-Search-Disabled"}`}
           type="button"
           onClick={() => addSearchCriteria()}
           disabled={showSearchCriteria ? false : true}
@@ -376,9 +397,9 @@ const AdvancedSearch: React.FC<Props> = ({
           type="button"
           disabled={showSearchCriteria ? false : true}
         >
-          <span className="btn-text" onClick={() => reset()}>
+          {/* <span className="btn-text" onClick={() => reset()}>
           {t("Reset_advanced_search")}
-          </span>
+          </span> */}
         </button>
       </div>
       <CRXButton

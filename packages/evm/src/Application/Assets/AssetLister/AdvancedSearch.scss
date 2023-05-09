@@ -47,7 +47,7 @@
   .adVInputBox {
     width: 88%;
     margin: 0 16px 0 0;
-    color: var(--color-74767c);
+    color: var(--color-333333);
     height: 30px;
     outline: none;
     border-radius: 0px;
@@ -81,13 +81,13 @@
       border-radius: 100px;
       vertical-align: middle;
       position: relative;
-      &::before {
-        content: "\10f056";
-        font-family: "Font Awesome 5 Duotone";
-        position: relative;
-        right: 0px;
-        top: 0px;
-      }
+      // &::before {
+      //   content: "\10f056";
+      //   font-family: "Font Awesome 5 Duotone";
+      //   position: relative;
+      //   right: 0px;
+      //   top: 0px;
+      // }
       .MuiSvgIcon-root {
         fill: var(--color-White);
         position: relative;
@@ -96,6 +96,9 @@
       }
       &:hover {
         cursor: pointer;
+      }
+      .MuiTooltip-popper {
+        margin-top: 2px;
       }
     }
   }
@@ -126,8 +129,16 @@
     }
 
     &:focus {
-      outline: 0px;
+      outline: 0px; 
     }
+  }
+  .AddRemove-Search-Disabled {
+    background-color: var(--color-e5e5e5);
+    border: var(--color-e5e5e5);
+    i , span {
+      color: var(--color-979797) !important;
+    }
+   
   }
 
   .advanceInputBoxContent {
@@ -156,7 +167,7 @@
     min-width: 100px;
     border: 0px;
     margin-top: 32px;
-    color: var(--color-d74b00);
+    color: var(--color-d74b00) !important;
 
     i {
       font-size: 16px;

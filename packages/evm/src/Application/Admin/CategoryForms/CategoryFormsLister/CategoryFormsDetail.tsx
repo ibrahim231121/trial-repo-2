@@ -245,18 +245,19 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                             <CRXButton
                                 className='create_form_field_button'
                                 onClick={onCreateFormFields}
-                                color='primary'
+                                color='secondary'
                                 variant='contained'
                             > {t("Create_Form_Fields")}
                             </CRXButton>
                         </div>
                         <div className="create_category_Content">
                             <CRXRows container="container" spacing={0} className="create_category_rows">
+                                 <CRXColumn className="create_category_column" container="container" item="item" xs={1} spacing={0}>{t("Actions")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
                                 <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Type")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={2} spacing={0}>{t("required")}</CRXColumn>
-                                <CRXColumn className="create_category_column" container="container" item="item" xs={1} spacing={0}>{t("Remove")}</CRXColumn>
+                                <CRXColumn className="create_category_column" container="container" item="item" xs={2} spacing={0}>{t("Form_Field_Requirement")}</CRXColumn>
+                                
                             </CRXRows>
                         </div>
                         <FieldRowLister selectedFields={selectedFields} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FieldRowLister>

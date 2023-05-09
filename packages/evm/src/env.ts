@@ -15,7 +15,7 @@ type EnvType = {
   REACT_APP_UNIT_SERVICE_URL: string
   REACT_APP_SETUP_SERVICE_URL: string
   REACT_APP_FILE_SERVICE_URL: string
-  REACT_APP_JOBCOORDINATOR_SERVICE_URL: string
+  REACT_APP_AICOORDINATOR_SERVICE_URL: string
   REACT_APP_CLIENT_ID: string
   REACT_APP_GOOGLE_MAPS_API_KEY:string
   REACT_APP_BING_MAPS_API_KEY:string
@@ -25,6 +25,7 @@ type EnvType = {
   REACT_APP_DeviceHeartBeat_SERVICE_URL: string
   REACT_APP_COMMAND_SERVICE_URL: string
   REACT_APP_SOCKET_SERVICE_URL: string
+  REACT_APP_AICOORDINATOR_SERVICE_Redirect_URL: string
   REACT_APP_HOTLIST_URL: string
 }
 export const env: EnvType = { ...process.env, ...window.env }

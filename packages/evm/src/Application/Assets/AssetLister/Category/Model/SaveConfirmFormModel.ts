@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { Evidence } from "../../../../../utils/Api/models/EvidenceModels";
-import { SelectedCategoryModel } from "./FormContainerModel";
+import { CategoryRemovalType, SelectedCategoryModel } from "./FormContainerModel";
 
 export type SaveConfirmFormProps = {
     removedOption: any;
     setremoveClassName: any;
     evidence : Evidence | undefined;
-    differenceOfHours: number;
-    removalType: number;
+    differenceOfRetentionTime: string;
+    removalType: CategoryRemovalType;
     removeMessage: string;
     holdUntill: string;
     setActiveForm: (param: any) => void;
@@ -17,8 +17,10 @@ export type SaveConfirmFormProps = {
     setRemovedOption: (param: any) => void;
     setModalTitle: (param: string) => void;
     setIndicateTxt: (param: boolean) => void;
+    setSelectedItems?: (obj: any) => void;
     categorizedBy: number | null;
     isCategorizedBy : boolean;
+    selectedItems : any[];
   }
 
   export interface FormValues { }

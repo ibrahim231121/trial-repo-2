@@ -19,8 +19,24 @@ export interface AssetAction {
     assetName?: string,
     assetType?: any,
     fileType?: any,
+    expireOn?: Date,
+    holduntil?: Date,
 }
-
+export interface EvidenceAssetAction {
+    evidenceId: number,
+    assetId: number,
+    action: string,
+}
+export interface EvidenceRetention {
+    evidenceId: number,
+    holdUntil: Date,
+}
+export interface AssetsLinking {
+    evidenceId: number,
+    assetId: number,
+    action: string,
+    evidenceRetentionList: EvidenceRetention[],
+}
 export interface Category {
     id: number;
     name: string;
@@ -74,6 +90,7 @@ export interface File {
     recording: Recording;
     sequence: number;
     checksum: any;
+    accessCode?: string;
 }
 export interface Assets {
     master: Asset;
@@ -103,6 +120,7 @@ export interface Asset {
     version?: string;
     createdOn?: Date;
     modifiedOn?: Date;
+    redactionStatus?: number
 }
 
 export interface Lock {
@@ -157,7 +175,14 @@ export interface RevokedModel {
     on?: Date;
 }
 export interface AssetSharingModel {
-    assetGroup: AssetShareLink[];
+    //assetGroup: AssetShareLink[];
+    assetId: number;
+    masterId: number;
+    evidenceId: number;
+    assetName?: string,
+    assetType?: any,
+    fileType?: any,
+
     tenantId: number;
     message: string;
     email: string;
@@ -191,38 +216,14 @@ export interface AssetShareLink {
     assetId: number;
     masterId: number;
     evidenceId: number;
-    assetName?: string,
-    assetType?: any,
-    fileType?: any,
+    assetName?: string;
+    assetType?: any;
+    fileType?: any;
 }
 export interface EvidenceChildSharingModel {
     masterId: number;
     assetId: number[];
 
-}
-export interface SubmitAnalysisModel {
-    project: Project;
-    job: Job;
-}
-export interface Project {
-    projectName: string;
-    type: number;
-    notes: string;
-    assetId: number;
-    assetName: string;
-    assetUrl: string;
-    assetFileSize: number;
-    assetDuration: number;
-    recordedBy: string;
-    fileType: string;
-    submitBy: number;
-    tenantId: number;
-    evidenceId: number;
-}
-export interface Job {
-    type: number;
-    priority: number;
-    progress: number;
 }
 
 export interface Evidence {
@@ -247,6 +248,7 @@ export interface EvdenceCategoryAssignment {
     assignedCategories: Category[];
     updateCategories: Category[];
     categorizedBy: number | null;
+    evidenceId : number;
 }
 
 export type securityDescriptorType = {
@@ -270,4 +272,16 @@ export enum MetadataFileType {
     XML = 1,
     PDF = 2,
     CSV = 3
+}
+
+export interface AssetLogType {
+    evidenceId : number
+    assetId : number
+    action : string
+    notes : string
+}
+
+export interface AssetLog {
+    action : string
+    notes : string
 }

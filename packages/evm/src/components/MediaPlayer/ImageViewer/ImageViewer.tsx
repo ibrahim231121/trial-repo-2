@@ -1,10 +1,13 @@
 import './ImageViewer.scss'
 import CRXCarousel from "./CRXCarousel";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { assetdata } from '../../../Application/Assets/Detail/AssetDetailsTemplateModel';
 
 
-
-export default function ImageViewer(props: any) {
+interface ImageViewerProps {
+  data: assetdata[];
+}
+const ImageViewer: React.FC<ImageViewerProps> = ({data}) => {
 
   const Transform = ({ children }: any) => (
     <TransformWrapper>
@@ -16,36 +19,25 @@ export default function ImageViewer(props: any) {
     </TransformWrapper>
   )
 
+  let mainSliderNodes = data.map(x => {
+    return <Transform><img src={x.files[0]?.downloadUri} alt="" className="image" /></Transform>
+  })
 
-  let images = [
-    <Transform><img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" /></Transform>,
-    <Transform><img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" /></Transform>,
-  ]
-  let images1 = [
-    <img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/setting-sun-over-ocean-australia-11835577.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/seagul-fishing-boat-far-away-sea-sunrise-greece-31280927.jpg"} alt="" className="image" />,
-    <img src={"https://thumbs.dreamstime.com/b/bright-big-sun-sky-yellow-orange-red-gradation-colors-mm-%EF%BC%8B-teleconverter%EF%BC%88%C3%97-%EF%BC%89-33955585.jpg"} alt="" className="image" />,
-  ]
+  let indicatorSliderNodes = data.map(x => {
+    return <img src={x.files[0]?.downloadUri} alt="" className="image" />
+  })
 
 
   return (
     <>
       <CRXCarousel
-        mainSliderNodes={images}
-        indicatorSliderNodes={images1} />
+        mainSliderNodes={mainSliderNodes}
+        indicatorSliderNodes={indicatorSliderNodes}
+        data={data}
+         />
     </>
   );
 }
+
+
+export default ImageViewer;

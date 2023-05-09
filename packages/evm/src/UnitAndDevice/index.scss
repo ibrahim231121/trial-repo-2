@@ -178,7 +178,21 @@ iframe {
     background-color: var(--color-blue) !important;
   }
 }
-
+.jss9 {
+  &.jss10 {
+    .searchComponents {
+      &.unitDeviceMainUii {
+        padding: 96px 4px 0 65px;
+      }
+    }
+  }
+  .searchComponents {
+    &.unitDeviceMainUii {
+      padding-top: 96px;
+      padding-left: 0;
+    }
+  }
+}
 .unitDeviceMainUii {
   top: 0px;
   padding: 0 81px;
@@ -276,7 +290,7 @@ iframe {
       background-color: var(--color-2d6fcc) !important
     }
     .Live {
-
+      background-color: var(--color-ff6e20) !important
     }
   }
 }

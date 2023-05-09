@@ -8,13 +8,15 @@ import ApplicationPermissionContext from '../../../../ApplicationPermission/Appl
 import { filterCategory } from './Utility/UtilityFunctions';
 import { useTranslation } from "react-i18next";
 import { DropdownFormProps } from './Model/DropdownFormModel';
+import { CRXHeading } from '@cb/shared';
 
 const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const { t } = useTranslation<string>();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const { getModuleIds } = useContext(ApplicationPermissionContext);
-  const isCancelable = getModuleIds().includes(4) ? true : false
+  const isCancelable = getModuleIds().includes(4) ? true : false;
+
   React.useEffect(() => {
     const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_category");
     props.setIsformUpdated(false);
@@ -31,8 +33,14 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
       const changeInValues = props.selectedCategoryValues.filter((o) => {
         return !props.evidence?.categories.some((i) => i.name === o.label);
       });
-      if (changeInValues.length > 0) {
-        props.setIsformUpdated(true);
+      (changeInValues.length > 0) && props.setIsformUpdated(true);
+    }
+    //NOTE: If MultiSelect case occurs.
+    if (!props.evidence && props.selectedItems.length > 1) {
+      if (props.isMultiSelectAssetHaveSameCategory) {
+        if (IsChangingDropdownCausesUpdate()) {
+          props.setIsformUpdated(true);
+        }
       }
     }
     props.setIndicateTxt(true);
@@ -50,21 +58,46 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
         props.setIsformUpdated(false);
       }
     }
-  };
+  }
 
   const isNewlyAddedCategory = (label: string): boolean => {
-    let removedValueWasSaved = props.evidence?.categories.some((x) => x.name === label);
-    if (removedValueWasSaved) {
-      return true;
+    if (!props.evidence && props.selectedItems.length > 1) {
+      if (props.isMultiSelectAssetHaveSameCategory) {
+        if (IsChangingDropdownCausesUpdate(label))
+          return true;
+      }
+    }
+    if (props.evidence) {
+      let removedValueWasSaved = props.evidence.categories.some((x) => x.name === label);
+      if (removedValueWasSaved)
+        return true;
     }
     return false;
-  };
+  }
+
+  const IsChangingDropdownCausesUpdate = (label?: string): Boolean => {
+    const isAssetCategoryUpdated: Array<boolean> = [];
+    for (const asset of props.selectedItems) {
+      if (label) {
+        const isValue = asset.evidence.categories.some((i: any) => i === label);
+        isAssetCategoryUpdated.push(isValue);
+      } else {
+        const categoryObject = props.selectedCategoryValues.filter((o) => {
+          return asset.evidence.categories.some((i: any) => i.name === o.label);
+        });
+        isAssetCategoryUpdated.push(categoryObject.length > 0 ? true : false);
+      }
+    }
+    if (isAssetCategoryUpdated.includes(true))
+      return true;
+    return false;
+  }
 
   const onSubmitForm = () => {
     if (props.selectedCategoryValues.length !== 0) {
       props.setActiveForm((prev) => prev + 1);
     }
-  };
+  }
 
   const cancelBtn = () => {
     /**
@@ -78,7 +111,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
     // }
     props.setOpenForm();
     props.closeModal(false);
-  };
+  }
 
   return (
     <>
@@ -100,11 +133,14 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
                 value={props.selectedCategoryValues}
                 autoComplete={false}
                 isSearchable={true}
-                onChange={(event: any, newValue: any, reason: any, detail: any) => {
-                  return handleChange(event, 1, newValue, reason, detail);
-                }}
+                onChange={(event: any, newValue: any, reason: any, detail: any) => handleChange(event, 1, newValue, reason, detail)}
               />
+              {(!props.isMultiSelectAssetHaveSameCategory) && (props.selectedItems.length > 1) &&
+                <CRXHeading variant="p">
+                  {`(${t('Selected_categories_will_replace_all_current_assigned_categories')})`}
+                </CRXHeading>}
             </div>
+
             <div className='modalFooter CRXFooter'>
               <div className='nextBtn'>
                 <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>

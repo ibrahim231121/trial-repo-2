@@ -73,7 +73,8 @@ const AssetDetailTabs: React.FC<AssetDetailTabsProps>  = (props) => {
       if (GroupedFilesId.length == 1) {
         console.log("1 download");
         console.log(GroupedFilesId);
-        FileAgent.getDownloadFileUrl(GroupedFilesId[0].filesId)
+        let url:any  = `/Files/download/${GroupedFilesId[0].filesId}/${GroupedFilesId[0].accessCode}`
+        FileAgent.getDownloadFileUrl(url)
           .then((response) => {
             downloadFileByURLResponse(response);
           })
@@ -307,6 +308,8 @@ const AssetDetailTabs: React.FC<AssetDetailTabsProps>  = (props) => {
                 <div className="asset_group_tabs_data_row">
                   {assetsList.filter(x => x.id != parseInt(assetId)).map((asset: any, index: number) => {
                     let lastChar = asset.name.substr(asset.name.length - 4);
+                    let fileType = asset?.files &&  asset?.files[0]?.type;
+                    let accessCode = asset?.files &&  asset?.files[0]?.accessCode;
                     return (
                       <>
                         <div className="asset_group_tabs_data_col" key={index}>
@@ -320,8 +323,10 @@ const AssetDetailTabs: React.FC<AssetDetailTabsProps>  = (props) => {
                           </div>
                           <div className="_detail_thumb_column">
                             <AssetThumbnail
-                              assetName={asset.assetName}
+                              assetName={asset.name}
                               assetType={asset.typeOfAsset}
+                              fileType={fileType}
+                              accessCode={accessCode}
                               className={"CRXPopupTableImage  CRXPopupTableImageUi"}
                               onClick={() => newRound(asset.id, asset.name)}
                             />

@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,12 +51,12 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
     const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
-    const userIds: any = useSelector((state: RootState) => state.userReducer.userIds);
+    //const userIds: any = useSelector((state: RootState) => state.userReducer.userIds);
     const userGroups : any = useSelector((state: RootState) => state.userReducer.userGroups);
     // const [idValue, setIdValue] = React.useState<Number[]>(ids);
     const [rows, setRows] = React.useState<User[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<string>("UserName");
+    const [orderBy, setOrderBy] = React.useState<string>("LoginId");
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<any>([]);
@@ -77,6 +77,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
     })
     const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+    const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         dispatch(getAllUserGroupKeyValuesAsync());
@@ -105,14 +106,23 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     const setData = () => {
         let userRows = getUserRows(users.data)
-        let userIdsRows = getUserRows(userIds.data)
+        //let userIdsRows = getUserRows(userIds.data)
 
-        let selectedUsers = userIdsRows.filter(x => {
-            if (ids.indexOf(x.id) > -1)
-                return x;
-        });
-
-        setSelectedItems(selectedUsers);
+        // let selectedUsers = userIdsRows.filter(x => {
+        //     if (ids.indexOf(x.id) > -1)
+        //         return x;
+        // });
+        let sUsers = ids.map((item:any) => {
+            let x:User ={
+                id: item,
+                loginId:"",
+                firstName:"",
+                lastName:"",
+                userGroups:[]
+            }
+            return x
+        })
+        setSelectedItems(sUsers);
         setRows(userRows)
         //setReformattedRows(userRows);
         setReformattedRows({...reformattedRows, rows: userRows, userGroups: userGroups});
@@ -124,15 +134,15 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     }, [selectedItems]);
 
     React.useEffect(() => { 
-        if(userIds.data && userIds.data.length > 0)
+        if(users.data && users.data.length > 0)
             setData()
-    }, [users.data, userIds.data, userGroups]);
+    }, [users.data, userGroups]);
 
     useEffect(() => {
         const overlay : any = document.getElementsByClassName("overlayPanel")
         if(paging){
           dispatch(getUsersInfoAsync(pageiGrid));
-          dispatch(getUsersIdsAsync());
+          //dispatch(getUsersIdsAsync());
         }
         setPaging(false)
         overlay && (overlay[0].style.width = "28px")
@@ -164,15 +174,27 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                 });
         
             return (
-                <CBXMultiSelectForDatatable 
-                    width = {98} 
-                    percentage={true}
+                // <CBXMultiSelectForDatatable 
+                //     width = {430} 
+                //     option={status} 
+                //     value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+                //     onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+                //     onSelectedClear = {() => onSelectedClear(colIdx)}
+                //     isCheckBox={true}
+                //     isduplicate={true}
+                // />
+                <CBXMultiCheckBoxDataFilter 
+                    width = {100} 
                     option={status} 
-                    value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-                    onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+                    defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+                    onChange={(value : any) => changeMultiselect(value, colIdx)}
                     onSelectedClear = {() => onSelectedClear(colIdx)}
                     isCheckBox={true}
+                    multiple={true}
                     isduplicate={true}
+                    selectAllLabel="All"
+                    percentage={true} 
+                    disablePortal={true}
                 />
             );
         }
@@ -189,14 +211,16 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
       };
 
     const onSelectedClear = (colIdx: number) => {
+        setIsSearchableOnChange(true)
         setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
         let headCellReset = onSelectedIndividualClear(headCells,colIdx);
         setHeadCells(headCellReset);
       }
 
-    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+    const changeMultiselect = (val: renderCheckMultiselect[], colIdx: number) => {
         onSelection(val, colIdx)
         headCells[colIdx].headerArray = val;
+        setIsSearchableOnChange(true)
     }
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -221,10 +245,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "230",
+            minWidth: "300",
            
             visible: true,
-            attributeName: "UserName",
+            attributeName: "LoginId",
             attributeType: "String",
             attributeOperator: "contains"
         },
@@ -296,6 +320,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         console.log("searchData", searchData)
         if(searchData.length > 0)
             setIsSearchable(true)
+        if(isSearchableOnChange)
+            getFilteredUserData()
       }, [searchData]);
 
     const dataArrayBuilder = () => {
@@ -365,6 +391,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             dispatch(getUsersInfoAsync(pageiGrid));
         
         setIsSearchable(false)
+        setIsSearchableOnChange(false)
     }
 
     useEffect(() => {
@@ -375,6 +402,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     const sortingOrder = (sort: any) => {
         setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+        setOrder(sort.order)
+        setOrderBy(sort.orderBy)
         setPaging(true)
     }
 

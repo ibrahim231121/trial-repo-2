@@ -26,7 +26,7 @@ import {
   PageiGrid,
   GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import {CRXToaster,CRXAlert} from "@cb/shared";
+import {CRXToaster,CRXAlert, CRXTooltip} from "@cb/shared";
 import {getAllRetentionPoliciesInfoAsync} from '../../../../Redux/RetentionPolicies';
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
@@ -98,6 +98,7 @@ const RetentionPoliciesList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "RetentionPoliciesTemplateDataTable");
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   const history = useHistory();
@@ -113,8 +114,10 @@ const RetentionPoliciesList: React.FC = () => {
         return { 
             id: template.id,
             name:template.name + "_" + template.id,
-            retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
-            softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
+            // retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
+            // softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
+            retentionTimeOrSpace: template.retentionTimeOrSpace,
+            softDeleteTime: template.softDeleteTime,
             description: template.description , 
             isInfinite  : template.detail.limit.isInfinite          
         }
@@ -174,9 +177,16 @@ const RetentionPoliciesList: React.FC = () => {
   };
 
   const retentionInfiniteOrTimeSpace = (timeSpace: string): JSX.Element => {
-    if (timeSpace == "") {
+    if (timeSpace == "Indefinite") {
       return (
-        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+        <div className="rententionInfiniteTimeDate">
+          <div className="CRXLockTextIcon">
+            {t(timeSpace)}
+          </div>
+          <div className="CRXLockIcon">
+            <CRXTooltip arrow={false} disablePortal={true} iconName="fas fa-infinity" title="Indefinite" placement="top" className="CRXLock"/>
+          </div>
+        </div>
       );
 
     }
@@ -184,11 +194,7 @@ const RetentionPoliciesList: React.FC = () => {
       return textDisplay(timeSpace, " ")
     }
   }
-  const openEditForm = (rowId: number) => {
-    //if (getModuleIds().includes(67)) {
-    onClickOpenModel(true, Number(rowId), '')
-    //}
-  }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -237,6 +243,9 @@ const RetentionPoliciesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "400",
+      attributeName: "RetentionTimeOrSpace",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Soft_Delete_Time")}`,
@@ -247,6 +256,9 @@ const RetentionPoliciesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "400",
+      attributeName: "SoftDeleteTime",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Description")}`,
@@ -450,9 +462,9 @@ const RetentionPoliciesList: React.FC = () => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={130}
-            searchHeaderPosition={224}
-            dragableHeaderPosition={189}
+            stickyToolbar={129}
+            searchHeaderPosition={221}
+            dragableHeaderPosition={186}
           //End here
           showExpandViewOption={true}
           />

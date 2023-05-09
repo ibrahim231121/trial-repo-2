@@ -23,6 +23,7 @@ interface selectBoxProps {
   error?: boolean;
   errorMsg?: string;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onKeyUp : (event: React.KeyboardEvent<HTMLImageElement>) => void; 
 }
 
 const optionStyle = makeStyles(() =>
@@ -61,6 +62,7 @@ createStyles({
     boxShadow: "rgba(0,0,0,0.20) 0px 0px 5px 0px",
     marginTop: "3px !important",
     padding:"0px",
+    
     '& .MuiAutocomplete-paper' : {
       margin: "0px 0 !important",
     },
@@ -72,7 +74,9 @@ createStyles({
       maxHeight:"201px"
     }
   },
- 
+  popper : {
+    zIndex : "99999" as any,
+  },
   clearIndicator : {
     visibility: "hidden",
     '&:hover' : {
@@ -100,6 +104,7 @@ const CRXAutocomplete = ({
   error,
   errorMsg,
   onBlur,
+  onKeyUp,
 }: selectBoxProps) => {
 
   const data = options;
@@ -156,7 +161,8 @@ const CRXAutocomplete = ({
       classes={{
         option: classes.option,
         paper : classes.paper,
-        clearIndicator : classes.clearIndicator
+        clearIndicator : classes.clearIndicator,
+        popper : classes.popper
       }}
       onChange={(e,value) => {
         return onChange(e,value);
@@ -174,6 +180,8 @@ const CRXAutocomplete = ({
           variant="outlined"
           
           InputLabelProps={ { required: required }} 
+          onKeyUp = {(event: React.KeyboardEvent<HTMLImageElement>) =>
+            onKeyUp(event)}
         />
 
       )}

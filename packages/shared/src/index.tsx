@@ -64,3 +64,4 @@ export { default as useSelectBoxStyle } from "./controls/CRXMultiSelectAutocompl
 export { default as CBXMultiCheckBoxDataFilter } from "./controls/CBXMultiDataFilter/CBXMultiCheckBoxDataFilter"
 export { default as NumberField } from "./controls/CRXInputNumberField/CRXNumberField"
 export { default as CRXTruncation } from "./controls/CRXTextPopover/CRXTruncation"
+export { default as CRXRichTextBox } from "./CRXRichTextBox/CRXRichTextBox"

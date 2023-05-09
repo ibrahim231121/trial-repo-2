@@ -5,7 +5,6 @@ import Fade from '@material-ui/core/Fade';
 import { CRXPanelStyle, CRXLoader } from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { AssetThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbnail";
 import { useTranslation } from "react-i18next";
 import "../../evm/src/utils/Localizer/i18n";
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
@@ -30,11 +29,12 @@ import { AUTHENTICATION_NewAccessToken_URL, BASE_URL_SOCKET_SERVICE } from "./ut
 import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
 import { setgroups } from "process";
 import { getLoaderValue } from "./Redux/loaderSlice";
-import { getAccessAndRefreshTokenAsync } from "./Redux/AccessAndRefreshTokenReducer";
+import { getAccessAndRefreshTokenAsync, setAccessAndRefreshToken } from "./Redux/AccessAndRefreshTokenReducer";
 import { useInterval } from "usehooks-ts";
 import { logOutUser } from "./Logout/API/auth";
 import { useHistory } from "react-router-dom";
 import { RemoveSidePanelClass } from "./GlobalFunctions/globalDataTableFunctions";
+import { AssetBucketThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbialForBucket";
 
 declare const window: any;
 interface CounterState {
@@ -81,10 +81,20 @@ function App() {
   const [tenantId, setTenantId] = React.useState<number>(0);
 
   const isRefreshTokeSuccess: boolean = useSelector((state: RootState) => state.accessAndRefreshTokenSlice.success);
+  const accessToken = useSelector((state: RootState) => state.accessAndRefreshTokenSlice.accessToken);
   const history = useHistory();
 
 
   const classes = CRXPanelStyle();
+
+  useEffect(() => {
+    let accessTokenCookie = cookies.get('access_token');
+    let refreshTokenCookie = cookies.get('refreshToken');
+    if(accessTokenCookie != accessToken)
+    {
+      dispatch(setAccessAndRefreshToken({ refreshToken: refreshTokenCookie, accessToken: accessTokenCookie }))
+    }
+  }, [])
 
   useInterval(
     async () => {
@@ -207,9 +217,7 @@ function App() {
         if (
           accessTokenDecode && accessTokenDecode.AssignedGroups
         ) {
-          var groupIdsAssigned = accessTokenDecode.AssignedGroups.split(
-            ","
-          ).map((x) => parseInt(x));
+          let groupIdsAssigned  = JSON.parse(accessTokenDecode.AssignedGroups)?.map((x: any) => parseInt(x.Id));
           return groupIdsAssigned;
         } else {
           return [];
@@ -239,7 +247,7 @@ function App() {
     if (divMainBucket !== null && e.source.droppableId === "assetDataTable") {
       var ligthBg = document.createElement("div");
       ligthBg.id = "lightBgContent";
-
+      
       var bucketParentClass: any =
         document.getElementsByClassName("CRXBucketPanel");
       bucketParentClass[0].childNodes[0].style.borderBottomColor = "#EBA580";
@@ -266,6 +274,7 @@ function App() {
       let container = JSON.parse(assetContainer);
 
       let divCount = document.createElement("div");
+      let divBodyStart = document.querySelector("body");
       divCount.className = "divCount crxBadgeComponent-Grey";
       divCount.id = "divCount";
       divCount.innerHTML = container.length;
@@ -281,6 +290,7 @@ function App() {
         divInner.style.position = "absolute";
         divInner.style.top = top.toString() + "px";
         divInner.style.left = left.toString() + "px";
+        divBodyStart?.classList.add("divBodyDrag");
 
         var div1 = document.createElement("div");
         div1.className = "dragging";
@@ -297,15 +307,15 @@ function App() {
 
         // var i2 = document.createElement("i");
         // i2.className = AssetThumbnailIcon(con.assetType)
-        // div2.append(i2);
+        // 
         var i2 = (
-          <AssetThumbnail
-            assetName={con.assetName}
+          <AssetBucketThumbnail
             className="onDraggingThumb"
             assetType={con.assetType}
             fontSize="50pt"
           />
         );
+
         ReactDOM.render(i2, div2);
         divInner.appendChild(div2);
 
@@ -346,9 +356,10 @@ function App() {
   };
 
   const onDragEnd = (e: any) => {
+    let divBodyEnd = document.querySelector('body');
     var divOuter = document.getElementById("divOuter");
     if (divOuter !== null) divOuter.remove();
-
+    divBodyEnd?.classList.remove("divBodyDrag");
     const startBorder = document.getElementById("draggingStartBorder");
     startBorder && startBorder.remove();
 

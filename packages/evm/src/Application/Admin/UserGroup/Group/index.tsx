@@ -34,6 +34,7 @@ import { useTranslation } from "react-i18next";
 import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
 import { GroupSubModules, Module, UserGroups, MemberId } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
 import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PermissionData } from "./GroupTabs/TypeConstant/types";
 
 export type GroupInfoModel = {
   name: string;
@@ -66,6 +67,12 @@ const Group = () => {
   const [groupInfo, setGroupInfo] = React.useState<GroupInfoModel>({
     name: "",
     description: "",
+  });
+  const [AssignToSelfPermission, setassignToSelfPermission] = React.useState<PermissionData>({
+    id : -1,
+    permissionLevel : { value: 0 , label: "" },
+    permissionValue: { value: 0, label: "" },
+    type : {value : 0, label : ""}
   });
   const [userIds, setUserIds] = React.useState<Number[]>([]);
 
@@ -121,7 +128,11 @@ const Group = () => {
       filters: []
     },
     page: 0,
-    size: 25
+    size: 25,
+    gridSort: {
+      field: "LoginId",
+      dir: "asc"
+    }
   })
 
   function handleChange(event: any, newValue: number) {
@@ -275,9 +286,18 @@ const Group = () => {
   React.useEffect(() => {
     if (res !== undefined) {
       dispatch(enterPathActionCreator({ val: res.name }));
-
       setGroupInfo({ name: res.name, description: res.description });
       setGroupIdName({ id: res.id, name: res.name });
+
+      if(res?.selfPermission != null)
+      {
+        setassignToSelfPermission({
+          id : -1,
+          permissionLevel : { value: res?.selfPermission , label: "" },
+          permissionValue: { value: res?.selfPermission, label: "" },
+          type : {value : 3, label : ""}
+        })
+      }
 
       if (res.members !== undefined && res.members.users !== undefined) {
         let lstUserIds: number[] = [];
@@ -307,6 +327,15 @@ const Group = () => {
         });
       });
 
+      if (AssignToSelfPermission.type.value == 3) {
+        newDataPerModel.push({
+          containerMappingId: -1,
+          fieldType: AssignToSelfPermission.type.value,
+          mappingId: 3,
+          permission: AssignToSelfPermission?.permissionValue?.value,
+        });
+      }
+
       if(newDataPerModel.length <= 0){
         newDataPerModel.push({
            containerMappingId:0,
@@ -329,6 +358,24 @@ const Group = () => {
   };
 
   const onChangeDataPermission = (dataPermissionModel: DataPermissionModel[]) => {
+    let assignToSelfPermission = dataPermissionModel.find(x=> x.fieldType == 3);
+    if (assignToSelfPermission) {
+      setassignToSelfPermission({
+        id: -1,
+        permissionLevel: { value: assignToSelfPermission?.permission, label: "" },
+        permissionValue: { value: 3, label: "" },
+        type: { value: assignToSelfPermission?.fieldType, label: "" }
+      });
+    }
+    else
+    {
+      setassignToSelfPermission({
+        id : -1,
+        permissionLevel : { value: 0 , label: "" },
+        permissionValue: { value: 0, label: "" },
+        type : {value : 0, label : ""}
+      });
+    }
     setDataPermissions(dataPermissionModel);
   };
 
@@ -503,6 +550,7 @@ const Group = () => {
       name: groupInfo.name,
       description: groupInfo.description,
       groupSubModules: subModules,
+      selfPermission : AssignToSelfPermission?.permissionLevel?.value == 0 ? undefined : AssignToSelfPermission?.permissionLevel?.value,
       //  groupSubModules: subModules.map(x=> { return { "subModuleId": x?.id}}),
       //groupSubModules: appPermissionSample.map(x=> { return { "subModuleId": x.id}}),
 
@@ -577,7 +625,7 @@ const Group = () => {
   };
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
-    let permissionsToAdd = dataPermissions.filter(x=> x.fieldType !== 0  && x.mappingId !== 0 && x.permission !== 0)
+    let permissionsToAdd = dataPermissions.filter(x=> x.fieldType !== 0  && x.mappingId !== 0 && x.permission !== 0 )
                                           .map((x) => {
                                             return {
                                               id: x.containerMappingId,
@@ -589,11 +637,30 @@ const Group = () => {
                                               fieldType: x.fieldType,
                                             };
                                           });
+    permissionsToAdd = permissionsToAdd.filter(x=> x.fieldType !== 3);
+    let assignToSelfPermissionObj = dataPermissions.find(x=>x.fieldType == 3 && x.containerMappingId > 0);
+    let deletedPermissions = deletedDataPermissions;
+    if(assignToSelfPermissionObj)
+    {
+      deletedPermissions.push(assignToSelfPermissionObj?.containerMappingId)
+    }
+    permissionsToAdd = permissionsToAdd.filter(x=>x.fieldType !=3).map((x) => {
+      let containerMappingId = x?.id == -1 ? 0 : x?.id ;
+      return {
+        id: containerMappingId,
+        mappingId: x.mappingId,
+        groupMapping: {
+          groupId: groupId,
+          permission: x?.groupMapping?.permission,
+        },
+        fieldType: x.fieldType,
+      };
+    });
                                          
     let dataPermissionObj = {
       //  groupId : id,
       containerMappings: permissionsToAdd,
-      deletedContainerMappingIds: deletedDataPermissions,
+      deletedContainerMappingIds: deletedPermissions,
       groupId:groupId
     };
 
@@ -765,15 +832,17 @@ const Group = () => {
 
         <CrxTabPanel value={value} index={3}>
           <div className="crxGroupTab3">
-            <DataPermission
-              dataPermissionsInfo={dataPermissions}
-              onChangeDataPermission={onChangeDataPermission}
-              onDeletePermission={(id: number) => {
-                var deletedPermissions = deletedDataPermissions;
-                deletedPermissions.push(id);
-                setDeletedDataPermissions(deletedPermissions);
-              }}
-            ></DataPermission>
+          <DataPermission
+            AssignToSelfPermission={AssignToSelfPermission}
+            setassignToSelfPermission={setassignToSelfPermission}
+            dataPermissionsInfo={dataPermissions}
+            onChangeDataPermission={onChangeDataPermission}
+            onDeletePermission={(id: number) => {
+              var deletedPermissions = deletedDataPermissions;
+              deletedPermissions.push(id);
+              setDeletedDataPermissions(deletedPermissions);
+            }}
+          ></DataPermission>
           </div>
         </CrxTabPanel>
 

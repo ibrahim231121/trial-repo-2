@@ -54,7 +54,7 @@
             .multiDataTableCheckBox {
               padding-left: 15px;
               &:nth-child(1) {
-                border-bottom: 1px solid var(--color-ccc);
+                border-bottom: 0px solid var(--color-ccc);
               }
               .crxCheckForDarBg {
                 color: var(--color-333333) !important;
@@ -116,6 +116,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    padding-bottom: 9px;
     .application-permission-dropdown {
       width: 238px;
       border: 1px solid var(--color-d1d2d4);
