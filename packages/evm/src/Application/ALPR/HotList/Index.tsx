@@ -271,7 +271,6 @@ const HotList = () => {
       attributeOperator: "contains"
     },
   ]);
-
   const CreateHotListForm = () => {
     history.push(urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url);
     RemoveSidePanelClass()
@@ -283,7 +282,19 @@ const HotList = () => {
 
   useEffect(() => {
     debugger;
-    setRows(hotListData)
+    
+    var hotListDataTemp=hotListData.map((item:any)=>{
+    return {
+      id: item.id,
+  Name: item.Name,
+  description:item.description,
+  sourceName: SourceOptions.find((x: any) => x.id === item.sourceName)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === item.sourceName)?.label,
+  ruleExpressions: item.ruleExpressions,
+  color: item.color,
+  alertPriority: item.alertPriority,
+  audio: item.audio 
+    }})
+    setRows(hotListDataTemp)
   }, [hotListData])
 
   useEffect(() => {

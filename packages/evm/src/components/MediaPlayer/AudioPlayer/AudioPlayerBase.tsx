@@ -86,8 +86,8 @@ type TimelineGeneratorModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   setTimelinedetail: any
-  screenChangeVideoId : any
-  setscreenChangeVideoId : any
+  screenChangeVideoId: any
+  setscreenChangeVideoId: any
 }
 type ViewReasonTimerObject = {
   evidenceId: number;
@@ -252,7 +252,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   // await dispatch(addTimelineDetailActionCreator(rowdetail));
   if (screenChangeVideoId) {
     rowdetail.filter((y: any) => y.enableDisplay && y.id == screenChangeVideoId).forEach((x: any) => {
-      let videoElement : any = document.querySelector("#" + x.id);
+      let videoElement: any = document.querySelector("#" + x.id);
       videoElement?.load();
     })
     setscreenChangeVideoId(null);
@@ -276,7 +276,7 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     }
   }
   let duration = maximum_endpoint - minimum_startpont;
-  let durationround = (Math.ceil(duration/1000))*1000;
+  let durationround = (Math.ceil(duration / 1000)) * 1000;
   let durationInDateFormat = new Date(durationround);
   let durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
   await setfinalduration(durationinformat)
@@ -298,7 +298,7 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     setTimelineSyncHistoryCounter,
     setBufferingArray,
     setupdateVideoSelection,
-    isDetailPageAccess : isDetailPageAccess,
+    isDetailPageAccess: isDetailPageAccess,
     setTimelinedetail,
     screenChangeVideoId,
     setscreenChangeVideoId
@@ -376,7 +376,7 @@ const AudioPlayerBase = (props: any) => {
     },
   ];
 
-  const assetLog : AssetLogType = { evidenceId : props.evidenceId, assetId : props.data[0].id, action : "Update", notes : ""};
+  const assetLog: AssetLogType = { evidenceId: props.evidenceId, assetId: props.data[0].id, action: "Update", notes: "" };
   const dispatch = useDispatch();
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
 
@@ -403,7 +403,7 @@ const AudioPlayerBase = (props: any) => {
 
 
   const [styleScreen, setStyleScreen] = useState(false);
-  const [speed, setSpeed] = useState<number>(1000); 
+  const [speed, setSpeed] = useState<number>(1000);
   const [updateVideoSelection, setupdateVideoSelection] = useState<boolean>(false);
   const [timelineSyncHistory, setTimelineSyncHistory] = useState<TimelineSyncHistoryMain[]>([]);
   const [timelineSyncHistoryCounter, setTimelineSyncHistoryCounter] = useState<number>(0);
@@ -416,55 +416,118 @@ const AudioPlayerBase = (props: any) => {
   const [volume, setVolume] = useState<number>(100);
   const volumeIcon = useRef<any>(null);
   const [detailContent, setDetailContent] = useState<boolean>(false);
-  const [showControlConatiner , setShowControlConatiner] = useState(false);
+  const [showControlConatiner, setShowControlConatiner] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [screenChangeVideoId, setscreenChangeVideoId] = useState<any>();
   const assetViewed = useRef(false);
   const layoutRef = useRef(null);
   const settingRef = useRef(null);
   let htmlElement: any = document.querySelector("html");
+
+  //UPload Button work
+
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = () => {
+      if (hiddenFileInput?.current)
+          hiddenFileInput.current.click();
+
+  }
+  const getDuration = (file: any,auidData:any) => {
+      const reader = new FileReader();
+      // if(props.fileUpdatedData!==undefined && props.fileUpdatedData!==null)
+      // {
+        let audioDataTemp = props.data;
+        reader.readAsArrayBuffer(file);
+        reader.onloadend = (e: any) => {
+            const ctx = new AudioContext();
+            const audioArrayBuffer = e.target.result;
+            ctx.decodeAudioData(audioArrayBuffer, data => {
+                // this is the success callback
+                const duration = data.duration;
+                let fileStartDate = new Date();
+                let fileEndDate = new Date();
+                fileEndDate.setMinutes(fileEndDate.getMinutes() + (duration>59 ?(duration / 60):duration));
+                let recordingData = {
+                    started: new Date(fileStartDate).toISOString(),
+                    ended: new Date(fileEndDate).toISOString(),
+                    // ended: '2023-05-09T07:55:29.487Z',
+                    timeOffset: 0,
+                }
+                audioDataTemp[0].recording = recordingData;
+                audioDataTemp[0].assetduration = file.size;
+                let audioPayload: any =
+                {
+                    filename: file.name.split('.').slice(0, -1).join('.'),
+                    fileurl: auidData?.toString(),
+                    fileduration: file.size,
+                    downloadUri: auidData?.toString(),
+                    typeOfAsset: 'Audio'
+                }
+              audioDataTemp[0].assetduration = file.size;
+              audioDataTemp[0].name = file.name.split('.').slice(0, -1).join('.');
+              audioDataTemp[0].files.push(audioPayload)
+                props.uploadedFileData(audioDataTemp,true)
+                setdata(audioDataTemp);
+            }, error => {
+                // this is the error callback
+                console.error(error);
+            });
+        };
+      // }
+  };
+  const afterFileUpload = (event: any) => {
+      // if(props.fileUploadData!==undefined && props.fileUploadData!==null)
+      // {
+        let reader = new FileReader();
+        reader.readAsDataURL(event[0]);
+        
+        reader.onloadend = () => {
+            getDuration(event[0],reader.result);
+        }
+    // }
+  }
+  //upload button work end
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
-      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //shift + Space bar
-      if (!disabledModeRight && shiftKey && code == "Period") {
-        event.preventDefault(); 
-        modeSet(mode < 0 ? 2 : (mode + 2))
-      } //Shift + .>
-      if (!disabledModeLeft && shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
-      if (!disabledModeMinus && shiftKey && code == "Slash") {event.preventDefault(); modeSet(0)} // shift + /
-      if (code == "ArrowDown") {
-        event.preventDefault(); 
-        if(volume > 0)
-        {
-          setVolume(volume - 10);
-          setVolumeHandle(volume - 10);
-        }
-        else{
-          setVolumeHandle(volume);
-        }
-      } //down arrows
-      if (code == "ArrowUp") {
-        event.preventDefault(); 
-        if(volume < 100)
-        {
-          setVolume(volume + 10);
-          setVolumeHandle(volume + 10);
-        }
-        else{
-          setVolumeHandle(volume);
-        }
-      } //up arrows
-      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // F
-      if (code == "KeyM" && shiftKey && altKey) {event.preventDefault(); handleVoumeClick();} // M
+    if (code == "Space" && shiftKey) { event.preventDefault(); handlePlayPause() } //shift + Space bar
+    if (!disabledModeRight && shiftKey && code == "Period") {
+      event.preventDefault();
+      modeSet(mode < 0 ? 2 : (mode + 2))
+    } //Shift + .>
+    if (!disabledModeLeft && shiftKey && code == "Comma") { event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2)) } //Shift + ,
+    if (!disabledModeMinus && shiftKey && code == "Slash") { event.preventDefault(); modeSet(0) } // shift + /
+    if (code == "ArrowDown") {
+      event.preventDefault();
+      if (volume > 0) {
+        setVolume(volume - 10);
+        setVolumeHandle(volume - 10);
+      }
+      else {
+        setVolumeHandle(volume);
+      }
+    } //down arrows
+    if (code == "ArrowUp") {
+      event.preventDefault();
+      if (volume < 100) {
+        setVolume(volume + 10);
+        setVolumeHandle(volume + 10);
+      }
+      else {
+        setVolumeHandle(volume);
+      }
+    } //up arrows
+    if (code == "KeyF" && shiftKey && altKey) { event.preventDefault(); viewScreenEnter() } // F
+    if (code == "KeyM" && shiftKey && altKey) { event.preventDefault(); handleVoumeClick(); } // M
   };
 
   React.useEffect(() => {
-     htmlElement.style.overflow = "hidden";
-  },[])
+    htmlElement.style.overflow = "hidden";
+  }, [])
 
   if (window.performance) {
     if (performance.getEntriesByType("navigation")) {
-        htmlElement.style.overflow = "hidden";
+      htmlElement.style.overflow = "hidden";
     }
   }
 
@@ -509,7 +572,7 @@ const AudioPlayerBase = (props: any) => {
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
-  
+
   React.useEffect(() => {
     if (data.length > 0) {
       Durationfinder({
@@ -555,11 +618,11 @@ const AudioPlayerBase = (props: any) => {
   }, [updateVideoSelection]);
 
   React.useEffect(() => {
-    if (timelinedetail && timelinedetail.length>0) {
+    if (timelinedetail && timelinedetail.length > 0) {
       // work for multiview timeline
-      let count =0;
+      let count = 0;
       timelinedetail.forEach((x: any) => {
-        if(x.enableDisplay){
+        if (x.enableDisplay) {
           count++;
         }
       })
@@ -575,13 +638,12 @@ const AudioPlayerBase = (props: any) => {
       setVolumeHandle(50);
     }
 
-    if(isMute)
-    {
+    if (isMute) {
       assetLog.assetId = props.data[0].id;
       assetLog.notes = "Volume UnMuted";
       dispatch(addAssetLog(assetLog));
     }
-    else{
+    else {
       assetLog.assetId = props.data[0].id;
       assetLog.notes = "Volume Muted";
       dispatch(addAssetLog(assetLog));
@@ -616,26 +678,27 @@ const AudioPlayerBase = (props: any) => {
   useEffect(() => {
     let videoElements: any[] = [];
     timelinedetail.filter((y: any) => y.enableDisplay).forEach((x: any) => {
-      let videoElement = document.querySelector("#" + x.id);
-      videoElements.push(videoElement);
-      videoElement?.addEventListener("canplay", function () {
-        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        if(bufferingArrayObj){
-          bufferingArrayObj.buffering = true;
-          setBufferingArray(bufferingArray);
-        }
-      }, true);
+      if (x.id !== '-0') {
+        let videoElement = document.querySelector("#" + x.id);
+        videoElements.push(videoElement);
+        videoElement?.addEventListener("canplay", function () {
+          let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+          if (bufferingArrayObj) {
+            bufferingArrayObj.buffering = true;
+            setBufferingArray(bufferingArray);
+          }
+        }, true);
 
-      videoElement?.addEventListener("waiting", function () {
-        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        if(bufferingArrayObj){
-          bufferingArrayObj.buffering = false;
-          setBufferingArray(bufferingArray);
-        }
-      }, true);
+        videoElement?.addEventListener("waiting", function () {
+          let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+          if (bufferingArrayObj) {
+            bufferingArrayObj.buffering = false;
+            setBufferingArray(bufferingArray);
+          }
+        }, true);
+      }
     })
-    if(videoElements.length>0)
-    {
+    if (videoElements.length > 0) {
       setVideoHandlers(videoElements);
     }
   }, [timelinedetail]);
@@ -647,7 +710,7 @@ const AudioPlayerBase = (props: any) => {
     let currenttime = difference > 0 && endPointDifference > 0 ? difference : 0;
     let currenttimediff = Math.abs(videoHandle.currentTime - currenttime);
 
-    if(currenttimediff >= 0.5){
+    if (currenttimediff >= 0.5) {
       videoHandle.currentTime = currenttime;
     }
     if (applyAction) {
@@ -722,7 +785,7 @@ const AudioPlayerBase = (props: any) => {
     volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("fontSizeIn"));
 
     setTimeout(() => {
-      
+
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
@@ -799,30 +862,30 @@ const AudioPlayerBase = (props: any) => {
     sliderTest?.addEventListener("mousemove", () => {
       document?.querySelector<HTMLElement>("#SliderControlBar .MuiSlider-thumb")?.classList.add("cursorAdded");
     });
-  },[])
+  }, [])
 
   const gotoSeeMoreView = (e: any, targetId: any) => {
     let detailContentTemp = detailContent == false ? true : false;
     setDetailContent(detailContentTemp);
-    dispatch(setAssetDetailBottomTabs({assetDetailBottomTabs: detailContentTemp}))
+    dispatch(setAssetDetailBottomTabs({ assetDetailBottomTabs: detailContentTemp }))
     document.getElementById(targetId)?.scrollIntoView({
       behavior: 'smooth'
     });
 
-    const MainLayoutElement : undefined | any = document.querySelector("._bottom_arrow_seeMore");
-    const _video_player_main_containers : any = document.querySelector("._video_player_layout_main")
+    const MainLayoutElement: undefined | any = document.querySelector("._bottom_arrow_seeMore");
+    const _video_player_main_containers: any = document.querySelector("._video_player_layout_main")
     const _video_player_screens: undefined | any = document.querySelector("#video-player-screens");
     const _videoPlayerId: undefined | any = document.querySelector("#crx_video_player");
-    const _video_Multiview_Grid : undefined | any = document.querySelector("._Multiview_Grid")
-    if(targetId === "detail_view") {
-      
+    const _video_Multiview_Grid: undefined | any = document.querySelector("._Multiview_Grid")
+    if (targetId === "detail_view") {
+
       MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
       MainLayoutElement.style.top = "115px";
       _video_player_main_containers.style.background = "#fff"
       _videoPlayerId.style.background = "#fff"
       _video_Multiview_Grid.style.background = "#fff"
       _video_player_screens.classList.add("removeEXHeight")
-    }else {
+    } else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
       _videoPlayerId.style.background = "#000"
       _video_Multiview_Grid.style.background = "#000"
@@ -837,11 +900,11 @@ const AudioPlayerBase = (props: any) => {
     setShowControlConatiner(true);
   }
 
-  setTimeout(()=>{
+  setTimeout(() => {
     setShowControlConatiner(false);
-    
-  },3000)
- 
+
+  }, 3000)
+
 
 
   const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
@@ -863,11 +926,11 @@ const AudioPlayerBase = (props: any) => {
         videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
       }, 1200);
     } else {
-      if(assetViewed.current){
+      if (assetViewed.current) {
         assetLog.assetId = props.data[0].id;
         assetLog.notes = "Audio Paused";
         dispatch(addAssetLog(assetLog));
-      }else{
+      } else {
         assetViewed.current = true
         assetLog.assetId = props.data[0].id;
         assetLog.notes = "Asset Viewed";
@@ -885,176 +948,206 @@ const AudioPlayerBase = (props: any) => {
   }, [isPlaying]);
 
   return (
-    
-      <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
+
+    <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}    >
 
-      <div className="searchComponents" >
-        <div className="_video_player_container" id="_asset_detail_view_idx" ref={layoutRef}>
-        <div id="crx_video_player"  ref={settingRef}>
-      <div className="searchComponents">
-        <div className={`_video_player_container _thumbnailPosition_audiofalse_multifalse_view1`}>
-        <div id="crx_video_player" className={( false  && `video_with_multiple_timeline _Multiview_Grid_Spacer_1`) || "_Multiview_Grid"}>
-         
-          <CRXToaster ref={toasterMsgRef} />
-          
-            <div id="screens">
-                  <div id="videoFrontLayer" className={"videoFrontLayer fullWidthOverLay"}>
-                  {isPlaying ? (
-                    <div
-                      id="_video_play"
-                      className={`video_play_onScreen _video_button_size animated`}
-                    >
-                      <PlayButton />
-                    </div>
-                  ) : (
-                    <div
-                      id="_video_pause"
-                      className={`video_pause_onScreen _video_button_size animated`}
-                    >
-                      <PauseButton />
-                    </div>
-                  )}
-                </div>
-              <AudioScreen
-                setData={setdata}
-                evidenceId={EvidenceId}
-                data={data}
-                isPlaying={isPlaying}
-                timelinedetail={timelinedetail}
-                viewNumber={viewNumber}
-                videoHandlers={videoHandlers}
-                setupdateVideoSelection={setupdateVideoSelection}
-                setscreenChangeVideoId={setscreenChangeVideoId}
-              />
+        <div className="searchComponents" >
+          <div className="_video_player_container" id="_asset_detail_view_idx" ref={layoutRef}>
+            <div id="crx_video_player" ref={settingRef}>
+              <div className="searchComponents">
+                <div className={`_video_player_container _thumbnailPosition_audiofalse_multifalse_view1`}>
+                  <div id="crx_video_player" className={(false && `video_with_multiple_timeline _Multiview_Grid_Spacer_1`) || "_Multiview_Grid"}>
 
-             
-              <div id="volumePercentage" ref={volumeIcon}>
-                <div className="volume_video_icon animated">
-                  <i className={volumePer}></i>
-                  <div className={`volume_percent_text ${volumPercent == 100 ? "volPercentSpace" : ""} `}>{isMute ? 0 : volume}%</div>
-                </div>
+                    <CRXToaster ref={toasterMsgRef} />
+
+                    <div id="screens">
+                      <div id="videoFrontLayer" className={"videoFrontLayer fullWidthOverLay"}>
+                        {isPlaying ? (
+                          <div
+                            id="_video_play"
+                            className={`video_play_onScreen _video_button_size animated`}
+                          >
+                            <PlayButton />
+                          </div>
+                        ) : (
+                          <div
+                            id="_video_pause"
+                            className={`video_pause_onScreen _video_button_size animated`}
+                          >
+                            <PauseButton />
+                          </div>
+                        )}
+                      </div>
+                      <AudioScreen
+                        setData={setdata}
+                        evidenceId={EvidenceId}
+                        data={data}
+                        isPlaying={isPlaying}
+                        timelinedetail={timelinedetail}
+                        viewNumber={viewNumber}
+                        videoHandlers={videoHandlers}
+                        setupdateVideoSelection={setupdateVideoSelection}
+                        setscreenChangeVideoId={setscreenChangeVideoId}
+                      />
+
+
+                      <div id="volumePercentage" ref={volumeIcon}>
+                        <div className="volume_video_icon animated">
+                          <i className={volumePer}></i>
+                          <div className={`volume_percent_text ${volumPercent == 100 ? "volPercentSpace" : ""} `}>{isMute ? 0 : volume}%</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                    </div>
+
+                    <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} onMouseMove={fullViewScreenOn}    >
+                      <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
+                        <div className={`player_controls_inner `}>
+                          <div className="main-control-bar">
+                            <AudioPlayerSeekbar
+                              controlBar={controlBar}
+                              handleControlBarChange={handleControlBarChange}
+                              timelineduration={timelineduration} />
+                          </div>
+                          <div className="videoPlayer_Timeline_Time">
+                            <div className="playerViewFlexTimer">
+                              <div id="counter">{milliSecondsToTimeFormat(new Date(controlBar * 1000))}</div>
+                            </div>
+                            <div className="V_timeline_end_time">
+                              <div id="counter">{finalduration}</div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        {/* <div className="crx_video_graph"></div> */}
+                        <div className={`playerViewFlex enablebViewFlex`}>
+                          <div className="playerViewLeft">
+
+                            <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className={`videoPlayerBtn ${isPlaying ? "pauseBtn" : "playBtn"}`} >
+                              <CRXTooltip
+                                iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
+                                placement="top"
+                                title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Shift + Space</span></>}
+                                arrow={false}
+                                disablePortal={!ViewScreen ? true : false}
+                              />
+                            </CRXButton>
+                            <AudioVolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick} viewScreen={ViewScreen} />
+                          </div>
+                          <div className="playerViewMiddle">
+                            <div className="playBackMode">
+                              <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
+                                {mode < 0 ? <span className="modeIconUndoLinker" style={{ background: modeColorMinus }}><span>{modeMinus}</span>{"x"}</span> : ""}
+                                <CRXTooltip
+                                  iconName={"fas fa-undo-alt undoAltIcon"}
+                                  placement="top"
+                                  title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
+                                  arrow={false}
+                                  disablePortal={!ViewScreen ? true : false}
+                                />
+                              </button>
+                              <button className="MinusIconPosition" disabled={disabledModeMinus} onClick={() => modeSet(0)}>
+                                <CRXTooltip
+                                  iconName={"icon icon-minus iconMinusUndo"}
+                                  placement="top"
+                                  title={<>Normal speed <span className="normalSped">Shift + /</span></>}
+                                  arrow={false}
+                                  disablePortal={!ViewScreen ? true : false}
+                                />
+                              </button>
+                              <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
+                                {mode > 0 ? <span className="modeIconRedoLinker" style={{ background: modeColorPlus }}><span>{mode}</span>{"x"}</span> : ""}
+                                <CRXTooltip
+                                  iconName={"fas fa-redo-alt undoRedoIcon"}
+                                  placement="top"
+                                  title={<>Playback speed up <span className="playBackTooltipUp">Shift + .</span></>}
+                                  arrow={false}
+                                  disablePortal={!ViewScreen ? true : false}
+                                />
+                              </button>
+                            </div>
+                          </div>
+                          <div className={` playerViewRight`}>
+                          <div>
+                            <CRXButton color="primary"
+                                onClick={()=>handleFileUpload()}
+                                variant="contained"
+                                className={""}
+                            >
+                                Upload File
+                                <CRXTooltip
+                                    // iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
+                                    placement="top"
+                                    title={<> <span className="">Upload File</span></>}
+                                    arrow={false}
+                                // disablePortal={!ViewScreen ? true : false}
+                                />
+                            </CRXButton>
+                            <input
+                                type="file"
+                                accept=".mp3"
+                                ref={hiddenFileInput}
+                                style={{ display: 'none' }}
+                                id="contained"
+                                name="fileDetails"
+                                onChange={(event: any) => {
+                                    afterFileUpload(
+                                        event.currentTarget.files
+                                    )
+                                }}
+                            />
+                        </div>
+                            <div className="playerView">
+                              {ViewScreen ?
+                                <div onClick={viewScreenEnter} >
+                                  <CRXTooltip
+                                    iconName={"fas fa-expand-wide"}
+                                    placement="top"
+                                    title={<>Full screen <span className="FullScreenTooltip">Shift + ALT + F</span></>}
+                                    arrow={false}
+                                    disablePortal={!ViewScreen ? true : false}
+                                  />
+                                </div> :
+                                <div onClick={viewScreenExit}>
+                                  <CRXTooltip
+                                    iconName={"fas fa-compress-wide"}
+                                    placement="top"
+                                    title={<>Minimize screen <span className="FullScreenTooltip">ESC</span></>}
+                                    arrow={false}
+                                    disablePortal={!ViewScreen ? true : false}
+                                  />
+                                </div>}
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="_bottom_arrow_seeMore">
+                    {detailContent == false ?
+                      <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                        <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                      </button>
+                      :
+                      <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                        <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                      </button>
+                    }
+                  </div>
+                </div>{/** Video player container close div */}
               </div>
+
             </div>
-            
-            <div>
-            </div>
-         
-            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}    onMouseMove={fullViewScreenOn}    >
-             <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
-             <div className={`player_controls_inner `}>
-                <div className="main-control-bar">
-                  <AudioPlayerSeekbar
-                    controlBar={controlBar}
-                    handleControlBarChange={handleControlBarChange}
-                    timelineduration={timelineduration} />
-                </div>
-                <div className="videoPlayer_Timeline_Time">
-                  <div className="playerViewFlexTimer">
-                    <div id="counter">{milliSecondsToTimeFormat(new Date(controlBar * 1000))}</div>
-                  </div>
-                  <div className="V_timeline_end_time">
-                    <div id="counter">{finalduration}</div>
-                  </div>
-                  
-                </div>
-              </div>
-              
-              {/* <div className="crx_video_graph"></div> */}
-              <div className={`playerViewFlex enablebViewFlex`}>
-                <div className="playerViewLeft">
-                
-                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className={`videoPlayerBtn ${isPlaying ? "pauseBtn" : "playBtn"}`} >
-                      <CRXTooltip
-                        iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
-                        placement="top"
-                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Shift + Space</span></>}
-                        arrow={false}
-                        disablePortal={!ViewScreen ? true : false}
-                      />
-                    </CRXButton>
-                    <AudioVolumeControl  volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick} viewScreen={ViewScreen}/>
-                </div>
-                <div className="playerViewMiddle">
-                  <div className="playBackMode">
-                    <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
-                      {mode < 0 ? <span className="modeIconUndoLinker" style={{ background: modeColorMinus }}><span>{modeMinus}</span>{"x"}</span> : ""}
-                      <CRXTooltip
-                        iconName={"fas fa-undo-alt undoAltIcon"}
-                        placement="top"
-                        title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
-                        arrow={false}
-                        disablePortal={!ViewScreen ? true : false}
-                      />
-                    </button>
-                    <button className="MinusIconPosition" disabled={disabledModeMinus} onClick={() => modeSet(0)}>
-                      <CRXTooltip
-                        iconName={"icon icon-minus iconMinusUndo"}
-                        placement="top"
-                        title={<>Normal speed <span className="normalSped">Shift + /</span></>}
-                        arrow={false}
-                        disablePortal={!ViewScreen ? true : false}
-                      />
-                    </button>
-                    <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
-                      {mode > 0 ? <span className="modeIconRedoLinker" style={{ background: modeColorPlus }}><span>{mode}</span>{"x"}</span> : ""}
-                      <CRXTooltip
-                        iconName={"fas fa-redo-alt undoRedoIcon"}
-                        placement="top"
-                        title={<>Playback speed up <span className="playBackTooltipUp">Shift + .</span></>}
-                        arrow={false}
-                        disablePortal={!ViewScreen ? true : false}
-                      />
-                    </button>
-                  </div>
-                </div>
-                <div className={` playerViewRight`}>
-                  <div className="playerView">
-                    {ViewScreen ?
-                      <div onClick={viewScreenEnter} >
-                        <CRXTooltip
-                          iconName={"fas fa-expand-wide"}
-                          placement="top"
-                          title={<>Full screen <span className="FullScreenTooltip">Shift + ALT + F</span></>}
-                          arrow={false}
-                         disablePortal={!ViewScreen ? true : false}
-                        />
-                      </div> :
-                      <div onClick={viewScreenExit}>
-                        <CRXTooltip
-                          iconName={"fas fa-compress-wide"}
-                          placement="top"
-                          title={<>Minimize screen <span className="FullScreenTooltip">ESC</span></>}
-                          arrow={false}
-                          disablePortal={!ViewScreen ? true : false}
-                        />
-                      </div>}
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-            </div>
-            <div className="_bottom_arrow_seeMore">
-              {detailContent == false ?
-                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-                    </button>
-                    :
-                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-                    </button>
-                  }
-            </div>
-        </div>{/** Video player container close div */}
-      </div>
-      
-      </div>
-      </div>
-      </div>
+          </div>
+        </div>
       </FullScreen>
-      </div>
-    );
+    </div>
+  );
 }
 
 const PlayButton = () => {

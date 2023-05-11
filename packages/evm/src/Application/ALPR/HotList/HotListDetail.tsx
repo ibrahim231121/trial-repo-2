@@ -23,6 +23,7 @@ import './HotListDetail.scss';
 import AudioPlayerBase from "../../../components/MediaPlayer/AudioPlayer/AudioPlayerBase";
 import { assetdata } from "../../Assets/Detail/AssetDetailsTemplateModel";
 import { Recording } from "../../../utils/Api/models/EvidenceModels";
+import { CRXTooltip } from "@cb/shared";
 
 type HotListDetailProps = {
   id: number,
@@ -37,63 +38,35 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
   const [audioPaylod, setAudioPaylod] = React.useState<any>([{}])
   const [timeDuration, setTimeDuration] = React.useState<any>(
     {
-      started: '2023-05-09T07:52:27.000Z',
-      ended: '2023-05-09T07:55:29.507Z',
+      started: '',
+      ended: '',
       // ended: '2023-05-09T07:55:29.487Z',
       timeOffset: 0,
     })
   let [audioData, setAudioData] = React.useState<assetdata[]>([{
     name: '',
     files: [
-      //   {
-      //   filename: 'testing_123',
-      //   fileurl: 'https://g204redactiontest.blob.core.usgovcloudapi.net/tn-1/st-70/us-1/Evidence/town-10169_202305090751483760_202305091111024700.mp3',
-      //   fileduration: 5838889,
-      //   downloadUri: 'https://g204redactiontest.blob.core.usgovcloudapi.net/evm4/tn-1/st-70/us-1/Evidence/town-10169_202305090751483760_202305091111024700.mp3?sv=2020-04-08&se=2023-05-12T22%3A31%3A15Z&sr=b&sp=rcw&sig=G4z5dOrvXDveuEEIUSqfamyjm%2BSy0YjC/tgN/426UPI%3D',
-      //   typeOfAsset: 'Audio'
-      // }
+      {
+        filename: '',
+        fileurl: '',
+        fileduration: 0,
+        downloadUri: '',
+        typeOfAsset: ''
+      }
     ],
     assetduration: 0,
     assetbuffering: { pre: 0, post: 0 },
-    recording: timeDuration,
+    recording: {},
     bookmarks: [],
     id: 0,
     unitId: 0,
-    typeOfAsset: 'Audio',
+    typeOfAsset: '',
     notes: '',
     camera: '',
-    status: 'Available',
+    status: '',
 
   }])
-  // const [dummyData2, setdummyData2] = React.useState<HotListFileData[]>([{
-  //   filename: '',
-  //   fileurl: '',
-  //   fileduration: 0,
-  //   downloadUri: '',
-  //   typeOfAsset: ''
-  // }]);
-  // const [audioData, setdummyData] = React.useState<HotListdataTemplateAudio[]>([
-  //   {
-  //     name: '',
-  //     files: [{
-  //           filename: '',
-  //           fileurl: '',
-  //           fileduration: 0,
-  //           downloadUri: '',
-  //           typeOfAsset: ''
-  //         }],
-  //     assetduration: 0,
-  //     assetbuffering: '',
-  //     recording: '',
-  //     bookmarks: [],
-  //     id: 0,
-  //     unitId: 0,
-  //     typeOfAsset: '',
-  //     notes: '',
-  //     camera: '',
-  //     status: ''
-  //   }
-  // ]);
+
   const inputRef = useRef()
   //audio work end
 
@@ -145,7 +118,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
 
   const [openAudioPlayer, setOpenAudioPlayer] = React.useState<boolean>(false);
   const [audioFlag, setAudioFlag] = React.useState<number>(0);
-  const [audioFlag2, setAudioFlag2] = React.useState<boolean>(false);
+  const [loaderState, setLoaderState] = React.useState<boolean>(false);
 
   useEffect(() => {
     dispatch(GetHotListData())
@@ -219,30 +192,56 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
       urlList.filter((item: any) => item.name === urlNames.HotList)[0].url
     );
   }
-  // function getDuration() {
-
-  //  var audio = document.getElementById("audio");
-  //   audio?.addEventListener("loadedmetadata", function(_event) {
-  //     var duration = audio?.duration;
-  //     document.getElementsByTagName("body")[0].removeChild(audio?);
-  //   });
-  // }
+  const getDuration = (file: any) => {
+    const reader = new FileReader();
+    let audioDataTemp = audioData;
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = (e: any) => {
+      const ctx = new AudioContext();
+      const audioArrayBuffer = e.target.result;
+      ctx.decodeAudioData(audioArrayBuffer, data => {
+        // this is the success callback
+        const duration = data.duration;
+        let fileStartDate = new Date();
+        let fileEndDate = new Date();
+        fileEndDate.setMinutes(fileEndDate.getMinutes() + (duration / 60));
+        let recordingData = {
+          started: new Date(fileStartDate).toISOString(),
+          ended: new Date(fileEndDate).toISOString(),
+          // ended: '2023-05-09T07:55:29.487Z',
+          timeOffset: 0,
+        }
+        audioData[0].recording = recordingData;
+        audioData[0].assetduration = file.size;
+        setAudioData(audioDataTemp);
+        setOpenAudioPlayer(true)
+        setAudioFlag(1)
+      }, error => {
+        // this is the error callback
+        console.error(error);
+      });
+    };
+  };
   const afterFileUpload = (event: any) => {
     let reader = new FileReader();
-    let audioDataTemp=audioData
+    let audioDataTemp = audioData
     reader.readAsDataURL(event[0]);
+    getDuration(event[0])
     reader.onloadend = () => {
       let srcData = reader.result;
       let audioPayload: any =
       {
-        filename: event[0].name,
+        filename: event[0].name.split('.').slice(0, -1).join('.'),
         fileurl: srcData?.toString(),
         fileduration: event[0].size,
         downloadUri: srcData?.toString(),
         typeOfAsset: 'Audio'
       }
+      audioDataTemp[0].assetduration = event[0].size;
+      audioDataTemp[0].name = event[0].name.split('.').slice(0, -1).join('.');
       audioDataTemp[0].files.push(audioPayload)
-      setOpenAudioPlayer(true)
+      setAudioData(audioDataTemp);
+
       // setHotListPaylod({ ...HotListPaylod, audio: srcData !== undefined && srcData !== null ? srcData.toString() : '' })
       // setAudioPaylod(audioPayload);
 
@@ -256,19 +255,32 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
       // }
       // audioData[0].recording.push(recordingData);
       // audioData[0].assetduration = event[0].size;
-      setAudioFlag(1)
-      setAudioData(audioDataTemp);
+
 
     };
   }
 
+  const uploadFileData = (fileUpdatedData: any, audioFlag: boolean) => {
+    setAudioData(fileUpdatedData);
+    setOpenAudioPlayer(audioFlag)
+    setLoaderState(true);
+  }
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setLoaderState(false);
+      setOpenAudioPlayer(false);
+    }, 0);
+  }, [openAudioPlayer])
   return (
     <div>
       <div className="MainTabsPanel">
         <div className="tabsBodyControl">
-          <label>Audio: </label>
-          <audio controls={true} src={HotListPaylod.audio}>
-          </audio>
+          {<CRXTooltip iconName="fas fa-certificate" arrow={false} title="primary asset" placement="left" className="crxTooltipNotificationIcon" />}
+
+          {/*<label>Audio: </label>
+           <audio controls={true} src={HotListPaylod.audio}>
+          </audio> *
           <div className={classes.uploadButton} >
             <CRXButton
               onClick={fileUpload}
@@ -289,9 +301,11 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                 )
               }}
             />
-          </div>
-          <div style={{ display: audioFlag === 1 ? "block" : "none" }}>
-            {openAudioPlayer && <AudioPlayerBase data={audioData} evidenceId={evidenceId} />}
+            </div>*/}
+          <div className="tabsBodyControl">
+            <div style={{ display: true ? "block" : "none" }}>
+              {!loaderState ? <AudioPlayerBase data={audioData} evidenceId={evidenceId} uploadedFileData={uploadFileData} /> : ''}
+            </div>
           </div>
         </div>
       </div>
@@ -398,7 +412,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                               e: React.SyntheticEvent,
                               value: any
                             ) => {
-                              // setFieldValue("sourceName", value === null ? -1 : Number.parseInt(value?.id))
+                              setFieldValue("Tenant", value === null ? -1 : Number.parseInt(value?.id))
                             }
                             }
                             onOpen={(e: any) => {
@@ -415,8 +429,8 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                           />
                         </div>
                         <div><label>Audio: </label>
-                          <audio controls={true} src={HotListPaylod.audio}>
-                          </audio>
+                          {/* <audio controls={true} src={HotListPaylod.audio}>
+                          </audio> */}
                           <div className={classes.uploadButton} >
                             <CRXButton
                               onClick={fileUpload}

@@ -98,8 +98,7 @@ const DataSourceDetail = (props: any) => {
 
     //Use effect to check validation in initial payload state everytime whenever any changes occurs in text boxes
     useEffect(() => {
-        debugger;
-        if (DataSourcePaylod.Name !== "" && DataSourcePaylod.Password !== "" && DataSourcePaylod.ConfirmPassword === DataSourcePaylod.Password) {
+        if (DataSourcePaylod.Name !== "" && DataSourcePaylod.Password !== "" && DataSourcePaylod.ConfirmPassword.toUpperCase() === DataSourcePaylod.Password.toUpperCase()) {
             props.saveButtonDisable(false);
             props.dataSource(DataSourcePaylod);
         }

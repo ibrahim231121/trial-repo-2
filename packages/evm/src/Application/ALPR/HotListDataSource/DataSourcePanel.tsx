@@ -18,24 +18,25 @@ import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListData
 import { HotListDataSourceMappingTemplate } from "../../../utils/Api/models/HotlistDataSourceMapping";
 import { RootState } from "../../../Redux/rootReducer";
 import { GetAlprDataSourceList, SourceMapping } from "../../../Redux/AlprDataSourceReducer";
+import { CRXConfirmDialog } from "@cb/shared";
 
 const CategoryFormsAndFields = () => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
-  const [dataSourcePayload,setDataSourcePaylod]=React.useState<HotListDataSourceTemplate>();
-  const [dataSourceMappingPayload,setDataSourceMappingPaylod]=React.useState<HotListDataSourceMappingTemplate>();
+  const [dataSourcePayload, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>();
+  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>();
   const history = useHistory();
-  const [isDisabled,setisDisabled]=React.useState<boolean>(true);
+  const [isDisabled, setisDisabled] = React.useState<boolean>(true);
   const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
   const sourceMappingData: any = useSelector((state: RootState) => state.alprDataSourceReducer.SourceMapping);
-  const dispatch=useDispatch();
-  useEffect(()=>
-  {
-      dispatch(SourceMapping())
-      dispatch(GetAlprDataSourceList())
-  },[])
+  const [isOpen, setIsOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(SourceMapping())
+    dispatch(GetAlprDataSourceList())
+  }, [])
 
-  
+
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
   }
@@ -44,85 +45,102 @@ const CategoryFormsAndFields = () => {
     { label: t("Data_Source_Mappings"), index: 1 }
   ];
 
-  const dataSourceTab=(dataSourceTabValues:HotListDataSourceTemplate)=>
-  {
+  const dataSourceTab = (dataSourceTabValues: HotListDataSourceTemplate) => {
     setDataSourcePaylod(dataSourceTabValues);
-  
+
   }
-  const saveButtonDisable=(flag:boolean)=>
-  {
+  const saveButtonDisable = (flag: boolean) => {
     setisDisabled(flag);
   }
-  const dataSourceMappingTab=(dataSourceMappingTabValues:HotListDataSourceMappingTemplate)=>
-  {
+  const dataSourceMappingTab = (dataSourceMappingTabValues: HotListDataSourceMappingTemplate) => {
     setDataSourceMappingPaylod(dataSourceMappingTabValues);
 
   }
-  const onSave=()=>
-  {
-    
+  const onSave = () => {
+
     history.push(
       urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url
     );
   }
+  const handleClose = () => {
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url
+    );
+    setIsOpen(false)
+  };
+  const closeDialog = () => {
+    setIsOpen(true);
+  };
   return (
-    <div className="switchLeftComponents" style={{}}>
+    <div className="switchLeftComponents">
 
       {/* <CRXToaster ref={groupMsgRef} /> */}
 
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130} />
       <CrxTabPanel value={value} index={0}>
         <div>
-          <DataSourceDetail dataSource={dataSourceTab} saveButtonDisable={saveButtonDisable} DataSourceData={alprDataSource}/>
+          <DataSourceDetail dataSource={dataSourceTab} saveButtonDisable={saveButtonDisable} DataSourceData={alprDataSource} />
         </div>
       </CrxTabPanel>
 
       <CrxTabPanel value={value} index={1}>
         <div >
           {/* calling component here */}
-          <DataSourceMapping dataSourceMappingTab={dataSourceMappingTab} sourceMappingData={sourceMappingData}/>
+          <DataSourceMapping dataSourceMappingTab={dataSourceMappingTab} sourceMappingData={sourceMappingData} />
         </div>
       </CrxTabPanel>
       <div className="tab-bottom-buttons stickyFooter_Tab">
-          <div className="save-cancel-button-box">
-            <CRXButton
-              variant="contained"
-              className="groupInfoTabButtons"
-              onClick={onSave}
-              disabled={isDisabled}
-            >
-              {t("Save")}
-            </CRXButton>
-            <CRXButton
-              className="groupInfoTabButtons secondary"
-              color="secondary"
-              variant="outlined"
-              onClick={() =>
-                history.push(
-                  urlList.filter(
-                    (item: any) => item.name === urlNames.DataSource
-                  )[0].url
-                )
-              }
-            >
-              {t("Cancel")}
-            </CRXButton>
-          </div>
+        <div className="save-cancel-button-box">
           <CRXButton
-           onClick={() =>
-            history.push(
-              urlList.filter(
-                (item: any) => item.name === urlNames.DataSource
-              )[0].url
-            )
-          }
-            className="groupInfoTabButtons-Close secondary"
+            variant="contained"
+            className="groupInfoTabButtons"
+            onClick={onSave}
+            disabled={isDisabled}
+          >
+            {t("Save")}
+          </CRXButton>
+          <CRXButton
+            className="groupInfoTabButtons secondary"
             color="secondary"
             variant="outlined"
+            onClick={() =>
+              history.push(
+                urlList.filter(
+                  (item: any) => item.name === urlNames.DataSource
+                )[0].url
+              )
+            }
           >
-            {t("Close")}
+            {t("Cancel")}
           </CRXButton>
         </div>
+        <CRXButton
+          onClick={() => closeDialog()}
+          className="groupInfoTabButtons-Close secondary"
+          color="secondary"
+          variant="outlined"
+        >
+          {t("Close")}
+        </CRXButton>
+        <CRXConfirmDialog
+          setIsOpen={() => setIsOpen(false)}
+          onConfirm={handleClose}
+          isOpen={isOpen}
+          className="Categories_Confirm"
+          primary={t("Yes_close")}
+          secondary={t("No,_do_not_close")}
+          text="retention policy form"
+        >
+          <div className="confirmMessage">
+            {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+            <strong>{ }</strong>. {t("If_you_close_the_form")},
+            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+            </div>
+          </div>
+        </CRXConfirmDialog>
+      </div>
 
     </div>
   );
