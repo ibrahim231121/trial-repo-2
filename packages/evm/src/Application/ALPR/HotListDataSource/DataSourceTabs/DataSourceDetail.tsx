@@ -64,20 +64,6 @@ const DataSourceDetail = (props: any) => {
     //Connection Type DropDown from redux
     const ConnectionTypeOptions: any = useSelector((state: RootState) => state.alprDataSourceReducer.ConnectionType);
 
-    //     [{
-    //         id: 1,
-    //         label: "FTP"
-    //     },
-    //     {
-    //         id: 2,
-    //         label: "Local"
-    //     },
-    //     {
-    //         id: 3,
-    //         label: "UNC"
-    //     }
-    //     ]);
-
     //Initial state Payload 
     const [DataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>({
         id: 0,
@@ -177,18 +163,18 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={true}
-                                        label="Name:"
+                                        label={t("Name")+':'}
                                         value={DataSourcePaylod.Name}
                                         onChange={(e: any) => setFieldValue("Name", e.target.value)}
                                         error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
+                                        errorMsg={"Name_field_required"}
                                     />
                                 </div>
                                 <div className="crxEditFilter editFilterUi">
                                     <CRXMultiSelectBoxLight
 
                                         className="categortAutocomplete CrxUserEditForm"
-                                        label="Source Type:"
+                                        label={t("Source_Type")+':'}
                                         // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                         multiple={false}
                                         CheckBox={true}
@@ -212,7 +198,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label="Source Name:"
+                                        label={t("Source_Name")+':'}
                                         value={DataSourcePaylod.SourceName}
                                         onChange={(e: any) => setFieldValue("SourceName", e.target.value)}
 
@@ -221,7 +207,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label="User Id:"
+                                        label={t("User_Id")+':'}
                                         value={DataSourcePaylod.UserId}
                                         onChange={(e: any) => setFieldValue("UserId", e.target.value)}
 
@@ -230,22 +216,22 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={true}
-                                        label="Password:"
+                                        label={t("Password")+':'}
                                         value={DataSourcePaylod.Password}
                                         onChange={(e: any) => setFieldValue("Password", e.target.value)}
                                         error={DataSourcePaylod.Password === ''}
-                                        errorMsg={"Password is required"}
+                                        errorMsg={t("Password_is_required")}
                                     // onBlur={(e: any) => checkRequiredFields(e.target.value)}
                                     />
                                 </div>
                                 <div >
                                     <TextField
                                         required={true}
-                                        label="Confirm Password:"
+                                        label={t("Confirm_Password")+':'}
                                         value={DataSourcePaylod.ConfirmPassword}
                                         onChange={(e: any) => setFieldValue("ConfirmPassword", e.target.value)}
                                         error={DataSourcePaylod.Password !== DataSourcePaylod.ConfirmPassword}
-                                        errorMsg={"Password didn't match"}
+                                        errorMsg={t("Password_didn't_match")}
                                     />
                                 </div>
                             </Grid>
@@ -258,7 +244,7 @@ const DataSourceDetail = (props: any) => {
                                         <CRXMultiSelectBoxLight
 
                                             className="categortAutocomplete CrxUserEditForm"
-                                            label="Connection Type:"
+                                            label={t("Connection_Type")+':'}
                                             // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                             multiple={false}
                                             CheckBox={true}
@@ -284,7 +270,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label="Schedule Period:"
+                                        label={t("Schedule_Period")+':'}
                                         multiline={false}
                                         value={DataSourcePaylod.SchedulePeriod === 0 ? "" : DataSourcePaylod.SchedulePeriod}
                                         onChange={(e: any) => setFieldValue("SchedulePeriod", e.target.value)}
@@ -294,7 +280,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label="Location Path:"
+                                        label={t("Location_Path")+':'}
                                         multiline={false}
                                         value={DataSourcePaylod.LocationPath}
                                         onChange={(e: any) => setFieldValue("LocationPath", e.target.value)}
@@ -304,7 +290,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label="Port:"
+                                        label={t("Port")+':'}
                                         multiline={false}
                                         value={DataSourcePaylod.Port}
                                         onChange={(e: any) => setFieldValue("Port", e.target.value)}
@@ -316,30 +302,6 @@ const DataSourceDetail = (props: any) => {
                         </Grid>
                     </div>
 
-
-                    {/* <CRXConfirmDialog
-                                //   setIsOpen={() => setIsOpen(false)}
-                                //   onConfirm={handleClose}
-                                //   isOpen={isOpen}
-                                //   className="Categories_Confirm"
-                                //   primary={t("Yes_close")}
-                                //   secondary={t("No,_do_not_close")}
-                                //   text="retention policy form"
-                                >
-                                    <div className="confirmMessage">
-                                        {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                                        <strong>{ }</strong>. {t("If_you_close_the_form")},
-                                        {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-                                        <div className="confirmMessageBottom">
-                                            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-                                        </div>
-                                    </div>
-                                </CRXConfirmDialog> */}
-
-
-                    {/* </Form>
-                        )}
-                    </Formik> */}
                 </div>
 
 

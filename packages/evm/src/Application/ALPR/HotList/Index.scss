@@ -1,0 +1,227 @@
+.HotListTableTemplate {
+    margin-top: -3px;
+
+    tr {
+        &:nth-child(odd) {
+            .col-three {
+                background-color: var(--color-White);
+                left: 0 !important;
+
+                ::selection {
+                    background-color: red !important;
+                }
+            }
+
+            &:hover {
+                .col-three {
+                    background-color: var(--color-333333) !important;
+                }
+            }
+        }
+
+        &:nth-child(even) {
+            .col-three {
+                background-color: var(--color-f2f2f2) !important;
+                left: 0 !important;
+            }
+
+            &:hover {
+                .col-three {
+                    background-color: var(--color-333333) !important;
+                }
+            }
+        }
+
+        .col-three {
+            position: sticky !important;
+            left: 0;
+            right: 0;
+
+            button {
+                position: relative;
+                top: 5px;
+            }
+        }
+    }
+
+    .crx-global-Select {
+        width: auto !important;
+    }
+
+    tbody {
+        tr {
+            td {
+                &:nth-child(3) {
+                    a {
+                        color: var(--color-d74b00) !important;
+                    }
+
+                    &:hover {
+                        a {
+                            text-decoration: none !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .DataTableBodyCell {
+        vertical-align: middle;
+        text-indent: 5px;
+
+        &:first-child {
+            text-indent: 5px;
+
+            .CRXCheckBox {
+                .fal {
+                    background: transparent;
+                }
+            }
+        }
+    }
+
+    .CRXDataTableCustom {
+        tbody {
+            tr {
+                &:first-child {
+                    td {
+                        &:nth-child(2) {
+                            .rc-menu {
+                                margin-top: 43px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.HotListTableTemplate {
+    margin-top: -3px;
+    tr {
+      &:nth-child(odd) {
+        .col-three {
+          background-color: var(--color-White);
+          left: 0 !important;
+          ::selection {
+            background-color: red !important;
+          }
+        }
+        &:hover {
+          .col-three {
+            background-color: var(--color-333333) !important;
+          }
+        }
+      }
+      &:nth-child(even) {
+        .col-three {
+          background-color: var(--color-f2f2f2) !important;
+          left: 0 !important;
+        }
+        &:hover {
+          .col-three {
+            background-color: var(--color-333333) !important;
+          }
+        }
+      }
+      .col-three {
+        position: sticky !important;
+        left: 0;
+        right: 0;
+        button {
+          position: relative;
+          top: 5px;
+        }
+      }
+    }
+
+    .crx-global-Select {
+      width: auto !important;
+    }
+    thead {
+      &:nth-child(2) {
+        tr {
+          th {
+            &:nth-child(3) {
+              input {
+                background-color: var(--color-d1d2d4) !important;
+                margin: 0 -4px;
+              }
+            }
+            &:nth-child(6) {
+              input {
+                background-color: var(--color-d1d2d4) !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          &:nth-child(3) {
+            a {
+              color: var(--color-d74b00) !important;
+            }
+            &:hover {
+              a {
+                text-decoration: none !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    .DataTableBodyCell {
+      vertical-align: middle;
+      text-indent: 5px;
+      &:first-child {
+        text-indent: 5px;
+        .CRXCheckBox {
+          .fal {
+            background: transparent;
+          }
+        }
+      }
+    }
+    .CRXDataTableCustom {
+      tbody {
+        tr {
+          &:first-child {
+            td {
+              &:nth-child(2) {
+                .rc-menu {
+                  margin-top: 43px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+.HotListIndex {
+    thead {
+        &:nth-child(2) {
+            th {
+                &:nth-child(8) {
+                    .gridFilterGlobal {
+                        .crx-global-Select {
+                            width: 118px;
+                        }
+                    }
+                }
+
+                &:nth-child(9) {
+                    .MuiGrid-item {
+                        max-width: 100%;
+                    }
+                }
+            }
+
+        }
+    }
+}

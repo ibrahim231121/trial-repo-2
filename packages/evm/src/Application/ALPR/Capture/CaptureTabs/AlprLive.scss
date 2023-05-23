@@ -1,0 +1,131 @@
+.liveDataTableParent {
+  // margin: 0px 81px;
+  position: relative;
+  font-family: var(--base-font-family);
+
+  .dataTableColumnShoHide {
+    button {
+      font-size: 14px;
+    }
+  }
+
+  .stickyPos {
+    z-index: 7;
+    position: sticky !important;
+    padding-right: 0px !important;
+    width: 100% !important;
+  }
+
+  .overlaySticky-content {
+    display: none;
+  }
+}
+
+.liveInnerPage {
+  .dataTablePages {
+    position: inherit !important;
+    border-top: none !important;
+  }
+}
+
+.liveDataTable {
+  .CRXSimpleSelect {
+    background: var(--color-d1d2d4);
+    color: var(--color-333333);
+  }
+
+  .CRXLock {
+    margin-top: 30px;
+  }
+
+  .CBX-input {
+    input {
+      background: var(--color-d1d2d4);
+      color: var(--color-333333);
+      font-size: 14px;
+      height: 26px;
+      text-indent: 10px;
+      outline: 1px solid var(--color-888787);
+      border: 2px solid var(--color-transparent);
+      margin: 0px 0;
+    }
+
+    .Mui-focused {
+      input {
+        border: 2px solid var(--color-White);
+        outline: 1px solid var(--color-888787);
+      }
+    }
+  }
+
+  .CRXDataTableLabelCell {
+    .makeStyles-headerStickness-6 {
+      label {
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .assetDataTableMultiSelect {
+    .cbx_multi_data_filter {
+      width: 96% !important;
+    }
+  }
+}
+
+.alprLiveDataTable {
+  min-height: 408px;
+
+  &::before {
+    background: transparent !important;
+  }
+
+  .CRXDataTableCustom {
+    thead {
+      z-index: 7 !important;
+    }
+  }
+
+  overflow: auto !important;
+}
+
+.alprLiveDataTable {
+  display: block !important;
+  padding-right: 0px !important;
+
+  table {
+    thead {
+      tr {
+        th {
+          top: 0px !important;
+          left: 0px !important
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          left: 0px !important;
+        }
+      }
+    }
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+//own css
+.ALprLiveDataTable {
+  justify-content: right;
+}
+
+.ALprLiveImageSrc {
+  justify-content: left;
+  width: 50%;
+  height: 300px;
+  margin: 67px 20px 0 0;
+  background-color: rgb(0, 0, 0);
+}

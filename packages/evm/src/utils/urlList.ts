@@ -101,7 +101,10 @@ export const urlNames: any = {
     HotList: 'HotList',
     HotListDetail: 'HotListDetail',
     DataSource: 'DataSource',
-    DataSourceTab: 'DataSourceTab'
+    DataSourceTab: 'DataSourceTab',
+    AlprCapturePanel: 'AlprCapturePanel',
+    LicensePlateList: 'LicensePlateList',
+    LicensePlateDetail: 'LicensePlateDetail'
 };
 
 export const urlList: any = [
@@ -593,31 +596,62 @@ export const urlList: any = [
         name: urlNames.HotList,
         url: "/Alpr/HotList",
         details: [
-            { routeTo: "/Alpr/HotList", type: "link", label: "Manage Hot List", },
+            { type: 'text', label: 'Alpr' },
+            { routeTo: "/Alpr/HotList", type: "text", label: "Manage Hot List", },
         ],
     }, {
         name: urlNames.HotListDetail,
-        url: '/ALPR/HotList/HotListDetail/:id',
+        url: '/Alpr/HotList/HotListDetail/:id',
         details: [
-            { routeTo: '/ALPR/HotList' ,type: 'text', label: 'Manage Hot List' },
-            { routeTo: 'ALPR/HotList/HotListDetail', type: 'text', label: 'Hot List' },
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/HotList' ,type: 'link', label: 'Manage Hot List' },
+            { routeTo: 'Alpr/HotList/HotListDetail', type: 'text', label: 'Manage Hot List' },
 
         ]
     }, {
         name: urlNames.DataSource,
-        url: '/ALPR/DataSource',
+        url: '/Alpr/DataSource',
         details: [
-            { type: 'text', label: 'ALPR' },
-            { routeTo: '/ALPR/DataSource', type: 'text', label: 'Hot List Data Source' },
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/DataSource', type: 'text', label: 'Hot List Data Source' },
 
         ]
     },
     {
         name: urlNames.DataSourceTab,
-        url: '/ALPR/DataSourceTab/:id',
+        url: '/Alpr/DataSourceTab/:id',
         details: [
-            { type: 'text', label: 'ALPR' },
-            { routeTo: '/ALPR/DataSourceTab', type: 'text', label: 'Hot List Data Source' },
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/DataSource' ,type: 'link', label: 'Hot List Data Source' },
+            { routeTo: '/Alpr/DataSourceTab', type: 'text', label: 'Hot List Data Source' },
+
+        ]
+    },
+    {
+        name: urlNames.AlprCapturePanel,
+        url: '/Alpr/Capture',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/Capture', type: 'text', label: 'Automatic License Plate Capture (ALPR)' },
+
+        ]
+    },
+    {
+        name: urlNames.LicensePlateList,
+        url: '/Alpr/LicensePlate',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/LicensePlate', type: 'text', label: 'License Plate' },
+
+        ]
+    },
+    {
+        name: urlNames.LicensePlateDetail,
+        url: '/Alpr/LicensePlateDetail/:id',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/LicensePlate' ,type: 'link', label: 'License Plate' },
+            { routeTo: '/Alpr/LicensePlateDetail', type: 'text', label: 'License Plate' },
 
         ]
     },

@@ -901,7 +901,12 @@ export const resources = {
       "View_Only" : "hr-View Only",
       "Contribute": "hr-Contribute",
       "Case_Sharing_Saved_Successfully" : "hr-Case Sharing Saved Successfully",
-      "Case_Sharing_Update_Successfully" : "hr-Case Sharing Update Successfully"
+      "Case_Sharing_Update_Successfully" : "hr-Case Sharing Update Successfully",
+
+
+      //------------------ ALPR ----------
+      "Hot_List" : "hr-Hot List"
+
     }
   }
 };

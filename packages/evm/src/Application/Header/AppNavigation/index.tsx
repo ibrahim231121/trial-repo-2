@@ -249,7 +249,7 @@ const CRXLefNavigation = () => {
       items: [{moduleIds: 5,
         label: t("Captures"),
         command: () => {
-          navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url);
         },
       },{
         moduleIds: 5,
@@ -267,7 +267,7 @@ const CRXLefNavigation = () => {
         {moduleIds: 5,
         label: t("License Plates"),
         command: () => {
-          navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url);
         },
       },
         

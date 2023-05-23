@@ -1,0 +1,164 @@
+.captureDataTableParent {
+    // margin: 0px 81px;
+    position: relative;
+    font-family: var(--base-font-family);
+  
+    .dataTableColumnShoHide {
+      button {
+        font-size: 14px;
+      }
+    }
+  
+    .stickyPos {
+      z-index: 7;
+      position: sticky !important;
+      padding-right: 0px !important;
+      width: 100% !important;
+    }
+  
+    .overlaySticky-content {
+      display: none;
+    }
+  }
+  
+  .captureInnerPage {
+    .dataTablePages {
+      position: inherit !important;
+      border-top: none !important;
+    }
+  }
+  
+  .captureDataTable {
+    .CRXSimpleSelect {
+      background: var(--color-d1d2d4);
+      color: var(--color-333333);
+    }
+  
+    .CRXLock {
+      margin-top: 30px;
+    }
+  
+    .CBX-input {
+      input {
+        background: var(--color-d1d2d4);
+        color: var(--color-333333);
+        font-size: 14px;
+        height: 26px;
+        text-indent: 10px;
+        outline: 1px solid var(--color-888787);
+        border: 2px solid var(--color-transparent);
+        margin: 0px 0;
+      }
+  
+      .Mui-focused {
+        input {
+          border: 2px solid var(--color-White);
+          outline: 1px solid var(--color-888787);
+        }
+      }
+    }
+  
+    .CRXDataTableLabelCell {
+      .makeStyles-headerStickness-6 {
+        label {
+          white-space: nowrap;
+        }
+      }
+    }
+  
+  }
+  
+  .ui {
+    display: flex;
+    justify-content: right;
+    align-items: center
+  }
+
+
+  .LicensePlateTableTemplate {
+    margin-top: -3px;
+    tr {
+      &:nth-child(odd) {
+        .col-three {
+          background-color: var(--color-White);
+          left: 0 !important;
+          ::selection {
+            background-color: red !important;
+          }
+        }
+        &:hover {
+          .col-three {
+            background-color: var(--color-333333) !important;
+          }
+        }
+      }
+      &:nth-child(even) {
+        .col-three {
+          background-color: var(--color-f2f2f2) !important;
+          left: 0 !important;
+        }
+        &:hover {
+          .col-three {
+            background-color: var(--color-333333) !important;
+          }
+        }
+      }
+      .col-three {
+        position: sticky !important;
+        left: 0;
+        right: 0;
+        button {
+          position: relative;
+          top: 5px;
+        }
+      }
+    }
+
+    .crx-global-Select {
+      width: auto !important;
+    }
+
+    tbody {
+      tr {
+        td {
+          &:nth-child(3) {
+            a {
+              color: var(--color-d74b00) !important;
+            }
+            &:hover {
+              a {
+                text-decoration: none !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    .DataTableBodyCell {
+      vertical-align: middle;
+      text-indent: 5px;
+      &:first-child {
+        text-indent: 5px;
+        .CRXCheckBox {
+          .fal {
+            background: transparent;
+          }
+        }
+      }
+    }
+    .CRXDataTableCustom {
+      tbody {
+        tr {
+          &:first-child {
+            td {
+              &:nth-child(2) {
+                .rc-menu {
+                  margin-top: 43px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

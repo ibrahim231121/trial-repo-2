@@ -1011,7 +1011,81 @@ export const resources = {
       "View_Only" : "View Only",
       "Contribute": "Contribute",
       "Case_Sharing_Saved_Successfully" : "Case Sharing Saved Successfully",
-      "Case_Sharing_Update_Successfully" : "Case Sharing Update Successfully"
+      "Case_Sharing_Update_Successfully" : "Case Sharing Update Successfully",
+
+      //--------------------- ALPR ----------------------
+      "Plate":"Plate",
+      "Hot_List":"Hot List",
+      "Description":"Description",
+      "Captured":"Captured",
+      "Unit":"Unit",
+      "User":"User",
+      "Confidence":"Confidence",
+      "State":"State",
+      "Notes":"Notes",
+      "Ticket_No":"Ticket No",
+      "Latitude":"Latitude",
+      "Longitude":"Longitude",
+      "Life_Span":"Life Span",
+      "Custom_Range":"Custom Range",
+      
+      
+      "Plate_Number":"Plate Number",
+      "Captured_At":"Captured At",
+      "Notification":"Notification",
+      "Notes":"Notes",
+      "Name_field_required":"Name field required",
+
+      "Source_Name":"Source Name",
+      "Rule_Expression":"Rule Expression",
+      "Alert_Priority":"Alert Priority",
+      "Color":"Color",
+      "Audio":"Audio",
+      "Source_Id":"Source Id",
+      "Tenant":"Tenant",
+      "Create_Hot_List":"Create Hot List",
+
+
+      "Password_is_required":"Password is required",
+      "Password_didn't_match":"Password didn't match",
+      
+
+      "Data_Source":"Data Source",
+      "Data_Source_Mappings":"Data Source Mappings",
+
+      "Source_Type":"Source Type",
+      "Schedule_Period_(In_Hrs)":"Schedule Period (In Hrs)",
+      "Connection_Type":"Connection Type",
+      "Last_Run":"Last Run",
+      "Status_Description":"Status Description",
+      "Port":"Port",
+
+      "User_Id":"User Id",
+      "Schedule_Period":"Schedule Period",
+      "Location_Path":"Location Path",
+      "Date_of_Interest_field_required":"Date of Interest field required",
+      "License_Plate_field_required":"License Plate field required",
+      
+      "License_Plate":"License Plate",
+      "Date_of_Interest":"Date Of Interest",
+      "License_Type":"License Type",
+      "Agency_Id":"Agency Id",
+      "State_Id":"State Id",
+      "Alias":"Alias",
+      "Vehicle_Year":"Vehicle Year",
+      "Vehicle_Make":"Vehicle Make",
+      "Vehicle_Model":"Vehicle Model",
+      "Vehicle_Color":"Vehicle Color",
+      "Vehicle_Style":"Vehicle Style",
+      "Notes":"Notes",
+      "NCIC_Number":"NCIC Number",
+      "Import_Serial_Id":"Import Serial Id",
+      "Violation_Info":"Violation Info",
+
+      "License_Year":"License Year",
+      "Edit_Data_Source":"Edit Data Source",
+      "Run_Data_Source":"Run Data Source",
+      //ALPR End
     }
   }
 };

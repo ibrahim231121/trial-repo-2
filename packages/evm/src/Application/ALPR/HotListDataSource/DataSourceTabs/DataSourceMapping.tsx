@@ -8,11 +8,11 @@ import React, { useEffect } from "react";
 import { HotListDataSourceMappingTemplate } from "../../../../utils/Api/models/HotlistDataSourceMapping";
 import { RootState } from "../../../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
-import {SourceMapping } from "../../../../Redux/AlprDataSourceReducer"
+import { SourceMapping } from "../../../../Redux/AlprDataSourceReducer"
 
 
 const DataSourceMapping = (props: any) => {
-    const [sourceMappingData,setsourceMappingData]=React.useState<any>([]);
+    const [sourceMappingData, setsourceMappingData] = React.useState<any>([]);
     const [mappingPayload, setmappingPayload]: any = React.useState<HotListDataSourceMappingTemplate>(
         {
             id: 0,
@@ -117,18 +117,26 @@ const DataSourceMapping = (props: any) => {
             default:
                 break;
         }
-        props.dataSourceMappingTab(mappingPayload);
     }
-    useEffect(()=>
-    {
+    useEffect(() => {
         setsourceMappingData(props.sourceMappingData)
-    },[])
+    }, [])
 
-    useEffect(()=>
-    {
-        if(sourceMappingData.length>0)
-        setmappingPayload(sourceMappingData[0])
-    },[sourceMappingData])
+    useEffect(() => {
+        if (sourceMappingData.length > 0)
+            setmappingPayload(sourceMappingData[0])
+    }, [sourceMappingData])
+
+    useEffect(() => {
+        if (mappingPayload.length > 0 && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
+            props.dataSourceMappingTab(mappingPayload);
+            props.saveBtnDisblFromMapping(false);
+        }else
+        {
+            props.saveBtnDisblFromMapping(true);
+        }
+
+    }, [mappingPayload])
     return (
         <div className="CrxCreateDataSourceMapping CreateDataSourceMappingUi">
             <div className="modalEditCrx">
@@ -137,14 +145,22 @@ const DataSourceMapping = (props: any) => {
 
                         <Grid item xs={11} sm={12} md={12} lg={5} >
                             <TextField
-                                required={false}
-                                label="License Plate:"
+                                required={true}
+                                label={t("License_Plate") + ':'}
                                 value={mappingPayload.LicensePlate}
                                 onChange={(e: any) => setFieldValue("LicensePlate", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"License Plate field required"}
+                                error={mappingPayload.LicensePlate === ''}
+                                errorMsg={t("License_Plate_field_required")}
                             />
-                            <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
+                            <TextField
+                                required={true}
+                                label={t("Date_of_Interest") + ':'}
+                                value={mappingPayload.DateOfInterest}
+                                onChange={(e: any) => setFieldValue("DateOfInterest", e.target.value)}
+                                error={mappingPayload.DateOfInterest === ''}
+                                errorMsg={t("Date_of_Interest_field_required")}
+                            />
+                            {/* <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
                                 <label>{t("Date_of_Interest")}</label>
                                 <CRXInputDatePicker
                                     value={mappingPayload.DateOfInterest}
@@ -154,46 +170,37 @@ const DataSourceMapping = (props: any) => {
                                     minDate={minStartDate()}
                                     maxDate=''
                                 />
-                            </div>
+                            </div> */}
                             <TextField
                                 required={false}
-                                label="License Type:"
+                                label={t("License_Type") + ':'}
                                 value={mappingPayload.LicenseType}
                                 onChange={(e: any) => setFieldValue("LicenseType", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"Name field required"}
+
                             />
                             <TextField
                                 required={false}
-                                label="Agency ID:"
+                                label={t("Agency_Id") + ":"}
                                 value={mappingPayload.AgencyId}
                                 onChange={(e: any) => setFieldValue("AgencyId", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"Name field required"}
                             />
                             <TextField
                                 required={false}
-                                label="State ID:"
+                                label={t("State_Id") + ":"}
                                 value={mappingPayload.StateId}
                                 onChange={(e: any) => setFieldValue("StateId", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"Name field required"}
                             />
                             <TextField
                                 required={false}
-                                label="First Name:"
+                                label={t("First_Name") + ":"}
                                 value={mappingPayload.FirstName}
                                 onChange={(e: any) => setFieldValue("FirstName", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"Name field required"}
                             />
                             <TextField
                                 required={false}
-                                label="Last Name:"
+                                label={t("Last_Name") + ":"}
                                 value={mappingPayload.LastName}
                                 onChange={(e: any) => setFieldValue("LastName", e.target.value)}
-                                // error={DataSourcePaylod.Name === ''}
-                                errorMsg={"Name field required"}
                             />
                         </Grid>
 
@@ -203,52 +210,40 @@ const DataSourceMapping = (props: any) => {
                                 <div className="">
                                     <TextField
                                         required={false}
-                                        label="Alias:"
+                                        label={t("Alias") + ":"}
                                         value={mappingPayload.Alias}
                                         onChange={(e: any) => setFieldValue("Alias", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
 
                                     <TextField
                                         required={false}
-                                        label="Vehicle Year:"
+                                        label={t("Vehicle_Year") + ":"}
                                         value={mappingPayload.VehicleYear}
                                         onChange={(e: any) => setFieldValue("VehicleYear", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Vehicle Make:"
+                                        label={t("Vehicle_Make") + ":"}
                                         value={mappingPayload.VehicleMake}
                                         onChange={(e: any) => setFieldValue("VehicleMake", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Vehicle Model:"
+                                        label={t("Vehicle_Model") + ":"}
                                         value={mappingPayload.VehicleModel}
                                         onChange={(e: any) => setFieldValue("VehicleModel", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Vehicle Color:"
+                                        label={t("Vehicle_Color") + ":"}
                                         value={mappingPayload.VehicleColor}
                                         onChange={(e: any) => setFieldValue("VehicleColor", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Vehicle Style:"
+                                        label={t("Vehicle_Style") + ":"}
                                         value={mappingPayload.VehicleStyle}
                                         onChange={(e: any) => setFieldValue("VehicleStyle", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                 </div>
                             </div>
@@ -258,36 +253,28 @@ const DataSourceMapping = (props: any) => {
                                 <div className="">
                                     <TextField
                                         required={false}
-                                        label="Notes:"
+                                        label={t("Notes") + ":"}
                                         value={mappingPayload.Notes}
                                         onChange={(e: any) => setFieldValue("Notes", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
 
                                     <TextField
                                         required={false}
-                                        label="NCIC Number:"
+                                        label={t("NCIC_Number") + ":"}
                                         value={mappingPayload.NcicNumber}
                                         onChange={(e: any) => setFieldValue("NcicNumber", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Import Serial Id:"
+                                        label={t("Import_Serial_Id") + ":"}
                                         value={mappingPayload.serialId}
                                         onChange={(e: any) => setFieldValue("serialId", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                     <TextField
                                         required={false}
-                                        label="Violation Info:"
+                                        label={t("Violation_Info") + ":"}
                                         value={mappingPayload.ViolationInfo}
                                         onChange={(e: any) => setFieldValue("ViolationInfo", e.target.value)}
-                                        // error={DataSourcePaylod.Name === ''}
-                                        errorMsg={"Name field required"}
                                     />
                                 </div>
                             </div>

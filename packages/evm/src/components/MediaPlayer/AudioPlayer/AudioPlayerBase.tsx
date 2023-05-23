@@ -1078,9 +1078,9 @@ const AudioPlayerBase = (props: any) => {
                                 variant="contained"
                                 className={""}
                             >
-                                Upload File
+                                {/* Upload File */}
                                 <CRXTooltip
-                                    // iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
+                                    iconName={"fas fa-upload" }
                                     placement="top"
                                     title={<> <span className="">Upload File</span></>}
                                     arrow={false}

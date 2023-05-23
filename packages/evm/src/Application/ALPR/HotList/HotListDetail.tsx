@@ -2,7 +2,7 @@ import { Field, Form, Formik } from "formik";
 import React, { FC, useContext, useEffect, useRef } from "react";
 import { HotListdataTemplateAudio, HotListFileData, HotListTemplate } from "../../../utils/Api/models/HotListModels";
 import Grid from '@material-ui/core/Grid';
-import { Link } from 'react-router-dom';
+import { Link, Route, Router, Switch } from 'react-router-dom';
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useTranslation } from "react-i18next";
 import { useStyles } from "./HotListCss";
@@ -24,6 +24,7 @@ import AudioPlayerBase from "../../../components/MediaPlayer/AudioPlayer/AudioPl
 import { assetdata } from "../../Assets/Detail/AssetDetailsTemplateModel";
 import { Recording } from "../../../utils/Api/models/EvidenceModels";
 import { CRXTooltip } from "@cb/shared";
+import Index from "./Index";
 
 type HotListDetailProps = {
   id: number,
@@ -122,18 +123,6 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
 
   useEffect(() => {
     dispatch(GetHotListData())
-    let reader = new FileReader();
-
-    // reader.readAsDataURL(event[0]);
-
-    // reader.onloadend = () => {
-    //   let srcData = reader.result;
-    //   console.log('base64:', srcData)
-    //   // if (srcData !== undefined) 
-    //   // {
-    //   setHotListPaylod({ ...HotListPaylod, audio: srcData !== undefined && srcData !== null ? srcData.toString() : '' })
-    //   // }
-    // };
   }, [])
 
   useEffect(() => {
@@ -302,11 +291,13 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
               }}
             />
             </div>*/}
+            
           <div className="tabsBodyControl">
             <div style={{ display: true ? "block" : "none" }}>
               {!loaderState ? <AudioPlayerBase data={audioData} evidenceId={evidenceId} uploadedFileData={uploadFileData} /> : ''}
             </div>
           </div>
+          
         </div>
       </div>
       <div className="createHotList CrxCreateUser CreatHotListUi hotListSearchComponents">
@@ -325,7 +316,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
         />
         <div >
           <div className='CrxIndicates'>
-            <sup>*</sup> {("Indicates required field")}
+            <sup>*</sup> {t("Indicates_required_field")}
           </div>
           <div className="modalEditCrx">
             <Formik
@@ -347,18 +338,18 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                           <TextField
                             id="sourceName"
                             required={true}
-                            label="Name:"
+                            label={t("Name") + ':'}
                             value={values.Name}
                             onChange={(e: any) => setFieldValue("Name", e.target.value)}
                             error={values.Name === ''}
-                            errorMsg={"Name field required"}
+                            errorMsg={t("Name_field_required")}
                           />
                         </div>
                         <div className='crxEditFilter editFilterUi'>
                           <CRXMultiSelectBoxLight
 
                             className="categortAutocomplete CrxUserEditForm"
-                            label="Source Id:"
+                            label={t("Source_Id") + ':'}
                             // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                             multiple={false}
                             CheckBox={true}
@@ -377,30 +368,15 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                             onOpen={(e: any) => {
 
                             }}
-                          // disableClearable
-                          // onOpen={(e: any) => {
-                          //   handleBlur(e);
-                          //   setTouched({
-                          //     ...touched,
-                          //     ["sourceName"]: true,
-                          //   });
-                          // }}
-                          // err
                           />
                         </div>
                         <div className={classes.HotlistAutoComplete}></div>
                         <div className="crxEditFilter editFilterUi " >
-                          {/* <TextField
-                          required={false}
-                          label="Tenant:"
-                          onChange={(e: any) => setFieldValue("", e.target.value)}
 
-                        /> */}
                           <CRXMultiSelectBoxLight
 
                             className="categortAutocomplete CrxUserEditForm"
-                            label="Tenant:"
-                            // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
+                            label={t("Tenant") + ':'}
                             multiple={false}
                             CheckBox={true}
                             options={TenantOptions}
@@ -422,36 +398,13 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                         <div className={classes.HotlistAutoComplete}>
                           <TextField
                             required={false}
-                            label="Alert Priority:"
+                            label={t("Alert_Priority") + ':'}
                             value={values.alertPriority === 0 ? "" : values.alertPriority}
                             onChange={(e: any) => setFieldValue("alertPriority", e.target.value)}
 
                           />
                         </div>
-                        <div><label>Audio: </label>
-                          {/* <audio controls={true} src={HotListPaylod.audio}>
-                          </audio> */}
-                          <div className={classes.uploadButton} >
-                            <CRXButton
-                              onClick={fileUpload}
-                              variant="contained"
-                            >
-                              Audio Upload
-                            </CRXButton>
-                            <input
-                              type="file"
-                              accept=".mp3"
-                              ref={hiddenFileInput}
-                              style={{ display: 'none' }}
-                              id="contained"
-                              name="fileDetails"
-                              onChange={(event) => {
-                                afterFileUpload(
-                                  event.currentTarget.files
-                                )
-                              }}
-                            />
-                          </div></div>
+
                       </Grid>
                       <div className='grid_spacer'>
                       </div>
@@ -460,7 +413,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                         <div >
                           <TextField
                             required={false}
-                            label="Color:"
+                            label={t("Color") + ':'}
                             value={values.color}
                             onChange={(e: any) => setFieldValue("color", e.target.value)}
 
@@ -469,7 +422,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                         <div >
                           <TextField
                             required={false}
-                            label="Rule Expression:"
+                            label={t("Rule_Expression") + ':'}
                             multiline={true}
                             value={values.ruleExpressions}
                             onChange={(e: any) => setFieldValue("ruleExpressions", e.target.value)}
@@ -479,7 +432,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                         <div >
                           <TextField
                             required={false}
-                            label="Description:"
+                            label={t("Description") + ':'}
                             multiline={true}
                             value={values.description}
                             onChange={(e: any) => setFieldValue("description", e.target.value)}
@@ -498,7 +451,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                       >
                         {t("Save")}
                       </CRXButton>
-
+                      
                       <Link to={urlList.filter((item: any) => item.name === urlNames.HotList)[0].url} className="btnCancelAssign">
                         {t("Cancel")}
                       </Link>

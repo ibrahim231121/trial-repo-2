@@ -38,6 +38,7 @@ import VideoPlayerSettingsSlice from './VideoPlayerSettingsReducer';
 import ActionMenuEffectSlice from './ActionMenuEffectReducer';
 import caseSharingSlice from './CaseSharingReducer';
 import AlprDataSourceSlice from './AlprDataSourceReducer';
+import LicensePlateSlice from './AlprLicensePlateReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -79,6 +80,7 @@ export const reducer = combineReducers({
   caseSharingSlice : caseSharingSlice.reducer,
   hotListReducer: HotListSlice.reducer,
   alprDataSourceReducer: AlprDataSourceSlice.reducer,
+  alprLicensePlateReducer: LicensePlateSlice.reducer,
 
 })
 export type RootState = ReturnType<typeof reducer>

@@ -49,35 +49,6 @@ const HotListDataSource = () => {
   const dispatch = useDispatch();
 
   const [rows, setRows] = React.useState<HotListDataSourceTemplate[]>();
-  // const [SourceOptions, setSourceOptions] = React.useState<any>(
-  //   [{
-  //     id: 1,
-  //     label: "CSV"
-  //   },
-  //   {
-  //     id: 2,
-  //     label: "Manual"
-  //   },
-  //   {
-  //     id: 3,
-  //     label: "XML"
-  //   }
-  //   ]);
-  // const [ConnectionTypeOptions, setConnectionTypeOptions] = React.useState<any>(
-  //   [{
-  //     id: 1,
-  //     label: "FTP"
-  //   },
-  //   {
-  //     id: 2,
-  //     label: "Local"
-  //   },
-  //   {
-  //     id: 3,
-  //     label: "UNC"
-  //   }
-  //   ]);
-
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -198,7 +169,7 @@ const HotListDataSource = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Source Name")}`,
+      label: `${t("Source_Name")}`,
       id: "SourceName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -206,12 +177,12 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "sourceName",
+      attributeName: "SourceName",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Source Type")}`,
+      label: `${t("Source_Type")}`,
       id: "SourceType",
       align: "center",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -219,12 +190,12 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "sourceName",
+      attributeName: "SourceType",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Schedule_Period (In Hrs)")}`,
+      label: `${t("Schedule_Period_(In_Hrs)")}`,
       id: "SchedulePeriod",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -232,12 +203,12 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "220",
-      attributeName: "sourceName",
+      attributeName: "SchedulePeriod",
       attributeType: "number",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Connection Type")}`,
+      label: `${t("Connection_Type")}`,
       id: "ConnectionType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -245,12 +216,12 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "sourceName",
+      attributeName: "ConnectionType",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Last Run")}`,
+      label: `${t("Last_Run")}`,
       id: "LastRun",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -258,7 +229,7 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "sourceName",
+      attributeName: "LastRun",
       attributeType: "String",
       attributeOperator: "contains"
     },
@@ -271,12 +242,12 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "150",
-      attributeName: "sourceName",
+      attributeName: "Status",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Status Description")}`,
+      label: `${t("Status_Description")}`,
       id: "StatusDescription",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -284,7 +255,7 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "sourceName",
+      attributeName: "StatusDescription",
       attributeType: "String",
       attributeOperator: "contains"
     }

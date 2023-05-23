@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import {
   Menu,
@@ -17,7 +19,7 @@ type Props = {
   gridData: any;
 };
 
-const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) => {
+const LicensePlateMenu: React.FC<Props> = ({ selectedItems, row, gridData }) => {
 
   const { t } = useTranslation<string>();
   const history = useHistory();
@@ -27,8 +29,9 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
 
   const editCategories = () => {
-    const path = `${urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Data_Source"));
+    localStorage.setItem('selectedRow', JSON.stringify(row));
+    const path = `${urlList.filter((item: any) => item.name === urlNames.LicensePlateDetail)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit License Plate"));
   };
 
   const deleteCategory = () => {
@@ -56,7 +59,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           <>
             {showAlert && (
               <CRXAlert
-                className="DataSourceActionAlert"
+                className="UserActionAlert"
                 message={""}
                 alertType="inline"
                 type="error"
@@ -66,7 +69,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
             )}
             <div className="crxUplockContent">
               <p>
-                {t("You are about todelete ")} <b>{row?.name}</b> {t("this entry")}
+                {t("You are about to delete ")} <b>{row?.name}</b> {t("this entry")}
               </p>
             </div>
           </>
@@ -99,7 +102,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
                     <i className="far fa-pencil"></i>
                   </div>
                   <div className="crx-menu-list">
-                    {t("Edit Data Source")}
+                    {t("Edit License Plate")}
                   </div>
                 </div>
               </Restricted>
@@ -107,15 +110,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           ) : (
             <div></div>
           )}
-          {/* <MenuItem onClick={deleteCategory}> */}
-          <MenuItem>
-            <Restricted moduleId={11}>
-              <div className="crx-meu-content" >
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Run_Data_Source")}</div>
-              </div>
-            </Restricted>
-          </MenuItem>
           <MenuItem onClick={deleteCategory}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
@@ -124,10 +118,9 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
               </div>
             </Restricted>
           </MenuItem>
-          
         </Menu>
       </div>
     </React.Fragment>
   );
 };
-export default HotListActionMenu;
+export default LicensePlateMenu;

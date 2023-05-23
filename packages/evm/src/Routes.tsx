@@ -57,6 +57,9 @@ import HotList from "./Application/ALPR/HotList/Index";
 import HotListDetail from "./Application/ALPR/HotList/HotListDetail";
 import HotListDataSource from "./Application/ALPR/HotListDataSource/Index";
 import DataSourceTab from "./Application/ALPR/HotListDataSource/DataSourcePanel";
+import CaptureFormPanel from "./Application/ALPR/Capture/CapturePanel";
+import LicensePlate from "./Application/ALPR/LicensePlate/Index";
+import LicensePlateDetail from "./Application/ALPR/LicensePlate/LicensePlateDetail";
 
 
 const cookies = new Cookies();
@@ -181,6 +184,9 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url} exact={true} component={HotListDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url} exact={true} component={HotListDataSource} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url} exact={true} component={DataSourceTab} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url} exact={true} component={CaptureFormPanel} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url} exact={true} component={LicensePlate} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetail)[0].url} exact={true} component={LicensePlateDetail} />
                 {/* ALPR End*/}
 
                 <Route path="/notfound" component={ErrorPage} />
