@@ -1085,6 +1085,9 @@ export const resources = {
       "License_Year":"License Year",
       "Edit_Data_Source":"Edit Data Source",
       "Run_Data_Source":"Run Data Source",
+      "Edit_License_Plate":"Edit License Plate",
+      "You_are_about_to_delete":"You are about to delete",
+      "this_entry":"this entry",
       //ALPR End
     }
   }

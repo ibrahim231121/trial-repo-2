@@ -445,28 +445,29 @@ const AudioPlayerBase = (props: any) => {
             ctx.decodeAudioData(audioArrayBuffer, data => {
                 // this is the success callback
                 const duration = data.duration;
-                let fileStartDate = new Date();
-                let fileEndDate = new Date();
-                fileEndDate.setMinutes(fileEndDate.getMinutes() + (duration>59 ?(duration / 60):duration));
+                let fileStartDate         = new Date();
+                let fileEndDate           = new Date(fileStartDate);
+                // fileEndDate.setMinutes(fileEndDate.getMinutes() + (fileDurationInMinutes));
+                fileEndDate.setSeconds(fileEndDate.getSeconds() + (duration));
                 let recordingData = {
                     started: new Date(fileStartDate).toISOString(),
                     ended: new Date(fileEndDate).toISOString(),
-                    // ended: '2023-05-09T07:55:29.487Z',
                     timeOffset: 0,
                 }
                 audioDataTemp[0].recording = recordingData;
                 audioDataTemp[0].assetduration = file.size;
-                let audioPayload: any =
+                let audioPayload: any =[
                 {
                     filename: file.name.split('.').slice(0, -1).join('.'),
                     fileurl: auidData?.toString(),
                     fileduration: file.size,
                     downloadUri: auidData?.toString(),
                     typeOfAsset: 'Audio'
-                }
+                }]
+              audioDataTemp[0].typeOfAsset = "Audio";
               audioDataTemp[0].assetduration = file.size;
               audioDataTemp[0].name = file.name.split('.').slice(0, -1).join('.');
-              audioDataTemp[0].files.push(audioPayload)
+              audioDataTemp[0].files=audioPayload
                 props.uploadedFileData(audioDataTemp,true)
                 setdata(audioDataTemp);
             }, error => {

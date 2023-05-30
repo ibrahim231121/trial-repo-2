@@ -26,12 +26,12 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
   const [IsOpen, setIsOpen] = React.useState<boolean>(false);
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
 
-  const editCategories = () => {
+  const editDataSource = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url}`;
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Data_Source"));
   };
 
-  const deleteCategory = () => {
+  const deleteDataSource = () => {
     setPrimary(t("Yes"));
     setSecondary(t("No"));
     setIsOpen(true);
@@ -66,7 +66,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
             )}
             <div className="crxUplockContent">
               <p>
-                {t("You are about todelete ")} <b>{row?.name}</b> {t("this entry")}
+                {t("You are about to delete ")} <b>{row?.name}</b> {t("this entry")}
               </p>
             </div>
           </>
@@ -92,7 +92,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           }
         >
           {selectedItems.length <= 1 ? (
-            <MenuItem onClick={editCategories}>
+            <MenuItem onClick={editDataSource}>
               <Restricted moduleId={54}>
                 <div className="crx-meu-content   crx-spac"  >
                   <div className="crx-menu-icon">
@@ -116,7 +116,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
               </div>
             </Restricted>
           </MenuItem>
-          <MenuItem onClick={deleteCategory}>
+          <MenuItem onClick={deleteDataSource}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
                 <div className="crx-menu-icon"></div>

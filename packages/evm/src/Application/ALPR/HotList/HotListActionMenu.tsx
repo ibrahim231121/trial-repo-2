@@ -26,13 +26,12 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
   const [IsOpen, setIsOpen] = React.useState<boolean>(false);
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
 
-  const editCategories = () => {
-    localStorage.setItem('selectedRow', JSON.stringify(row));
+  const editHotList = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url}`;
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit Hot List"));
   };
 
-  const deleteCategory = () => {
+  const deleteHotlist = () => {
     setPrimary(t("Yes"));
     setSecondary(t("No"));
     setIsOpen(true);
@@ -93,7 +92,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           }
         >
           {selectedItems.length <= 1 ? (
-            <MenuItem onClick={editCategories}>
+            <MenuItem onClick={editHotList}>
               <Restricted moduleId={54}>
                 <div className="crx-meu-content   crx-spac"  >
                   <div className="crx-menu-icon">
@@ -108,7 +107,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           ) : (
             <div></div>
           )}
-          <MenuItem onClick={deleteCategory}>
+          <MenuItem onClick={deleteHotlist}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
                 <div className="crx-menu-icon"></div>

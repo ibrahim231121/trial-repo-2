@@ -56,6 +56,22 @@ const HotList = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<HotListTemplate[]>([]);
+
+  const [, setSateUpdate] = React.useState<boolean>();
+
+  const paging = React.useRef<boolean>(false);
+  const isSearchable = React.useRef<boolean>(false);
+  const isSearchableOnChange = React.useRef<boolean>(false);
+  const [rows, setRows] = React.useState<HotListTemplate[]>();
+
+  const [order, setOrder] = React.useState<any>({
+    order: '',
+    orderBy: ''
+  });
+
+
+  const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
+
   const SourceOptions = (
     [{
       id: 1,
@@ -65,8 +81,7 @@ const HotList = () => {
       id: 2,
       label: "Source 2"
     }]);
-  const [rows, setRows] = React.useState<HotListTemplate[]>();
-  
+
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -75,13 +90,7 @@ const HotList = () => {
     page: page,
     size: rowsPerPage,
   });
-  const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
-  const [paging, setPaging] = React.useState<boolean>();
-  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
-  const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false);
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("Name");
- 
+
   useEffect(() => {
     dispatch(GetHotListData());
   }, [])
@@ -103,24 +112,26 @@ const HotList = () => {
   }, [hotListData])
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: 'name', dir: 'name' } });
-    setPaging(true)
-
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: order.order, dir: order.orderBy } });
+    paging.current = true;
+    setSateUpdate(prevState => !prevState)
   }, [page, rowsPerPage]);
 
   useEffect(() => {
-    if (paging) {
+    if (paging.current) {
       dispatch(GetHotListData(pageiGrid));
     }
-    setPaging(false)
+    paging.current = false;
+    setSateUpdate(prevState => !prevState)
   }, [pageiGrid])
 
 
   useEffect(() => {
     if (searchData.length > 0) {
-      setIsSearchable(true)
+      isSearchable.current = true
+      setSateUpdate(prevState=>!prevState)
     }
-    if (isSearchableOnChange)
+    if (isSearchableOnChange.current)
       getFilteredHotListData()
   }, [searchData]);
 
@@ -155,10 +166,10 @@ const HotList = () => {
   };
 
   const audioIconDisplay = (audioValue: string) => {
-    return audioValue !== null && audioValue !== "" ? <div><VolumeUpIcon/> </div> : <div></div>
+    return audioValue !== null && audioValue !== "" ? <div><VolumeUpIcon /> </div> : <div></div>
   }
 
-  const createTheme = (colorValue: string) => {
+  const colorDisplay = (colorValue: string) => {
     return <div className={classes.colorPalette} style={{ background: colorValue }} />
   };
 
@@ -172,10 +183,12 @@ const HotList = () => {
   };
 
   const onSelectedClear = (colIdx: number) => {
-    setIsSearchableOnChange(true)
+    isSearchableOnChange.current=true;
     setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
     let headCellReset = onSelectedIndividualClear(headCells, colIdx);
     setHeadCells(headCellReset);
+
+    setSateUpdate(prevState=>!prevState)
   }
 
   const changeMultiselect = (
@@ -184,7 +197,8 @@ const HotList = () => {
   ) => {
     onSelection(val, colIdx);
     headCells[colIdx].headerArray = val;
-    setIsSearchableOnChange(true)
+    isSearchableOnChange.current=true;
+    setSateUpdate(prevState=>!prevState);
   };
 
   const multiSelectCheckbox = (rowParam: HotListTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
@@ -295,8 +309,7 @@ const HotList = () => {
       label: `${t("Color")}`,
       id: "color",
       align: "center",
-      // dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
-      dataComponent: (e: string) => createTheme(e),
+      dataComponent: (e: string) => colorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: () => null,
@@ -309,7 +322,6 @@ const HotList = () => {
       label: `${t("Audio")}`,
       id: "audio",
       align: "center",
-      // dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       dataComponent: (e: string) => audioIconDisplay(e),
       sort: true,
       searchFilter: true,
@@ -346,8 +358,9 @@ const HotList = () => {
     else {
       dispatch(GetHotListData(pageiGrid));
     }
-    setIsSearchable(false)
-    setIsSearchableOnChange(false)
+    isSearchable.current = false
+    isSearchableOnChange.current=false;
+    setSateUpdate(prevState=>!prevState)
   }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
@@ -357,7 +370,6 @@ const HotList = () => {
 
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    // dispatch(getAllCategoriesFilter(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -365,9 +377,10 @@ const HotList = () => {
 
   const sortingOrder = (sort: any) => {
     setPageiGrid({ ...pageiGrid, gridSort: { field: sort.orderBy, dir: sort.order } })
-    setOrder(sort.order)
-    setOrderBy(sort.orderBy)
-    setPaging(true)
+    setOrder({ ...order, order: sort.order })
+    setOrder({ ...order, orderBy: sort.orderBy })
+    paging.current = true;
+    setSateUpdate(prevState => !prevState)
   }
 
   const onSetHeadCells = (e: HeadCellProps[]) => {
@@ -377,7 +390,7 @@ const HotList = () => {
   };
 
   const handleBlur = () => {
-    if (isSearchable) {
+    if (isSearchable.current) {
       getFilteredHotListData()
     }
   }
@@ -396,7 +409,7 @@ const HotList = () => {
           <CRXDataTable
             id="HotListTemplateDataTable"
             actionComponent={
-              <HotListActionMenu  row={selectedActionRow} selectedItems={selectedItems} gridData={rows}/>
+              <HotListActionMenu row={selectedActionRow} selectedItems={selectedItems} gridData={rows} />
             }
             toolBarButton={
               <>
@@ -415,8 +428,8 @@ const HotList = () => {
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
-            orderParam={order}
-            orderByParam={orderBy}
+            orderParam={order.order}
+            orderByParam={order.orderBy}
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}

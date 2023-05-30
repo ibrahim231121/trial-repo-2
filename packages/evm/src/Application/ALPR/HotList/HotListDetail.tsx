@@ -22,29 +22,57 @@ import { GetHotListData, UpdateHotListData } from "../../../Redux/AlprHotListRed
 import './HotListDetail.scss';
 import AudioPlayerBase from "../../../components/MediaPlayer/AudioPlayer/AudioPlayerBase";
 import { assetdata } from "../../Assets/Detail/AssetDetailsTemplateModel";
-import { Recording } from "../../../utils/Api/models/EvidenceModels";
 import { CRXTooltip } from "@cb/shared";
-import Index from "./Index";
 
-type HotListDetailProps = {
-  id: number,
-  row: any[]
+
+const HotListPayload:HotListTemplate= {
+  id: 0,
+  Name: "",
+  description: "",
+  sourceName: 0,
+  ruleExpressions: "",
+  alertPriority: 0,
+  Tenant: 0,
+  color: "",
+  audio: "",
 }
 
+const HotListDetail = () => {
+  let evidenceId: any = {};
+  const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation<string>();
+  const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
 
-const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
+  const SourceOptions =
+    [{
+      id: 1,
+      label: "Source 1"
+    },
+    {
+      id: 2,
+      label: "Source 2"
+    }];
+  const TenantOptions =
+    [{
+      id: 1,
+      label: "Tenant 1"
+    },
+    {
+      id: 2,
+      label: "Tenant 2"
+    }];
+  const [, setIsStateUpdate] = React.useState<boolean>(false);
+  const openAudioPlayer = React.useRef<boolean>(false);
+  const isOpen = React.useRef<boolean>(false);
 
+  const [HotListInitialState, setHotListInitialState] = React.useState<HotListTemplate>(HotListPayload);
 
   //audio work
-  const [audioPaylod, setAudioPaylod] = React.useState<any>([{}])
-  const [timeDuration, setTimeDuration] = React.useState<any>(
-    {
-      started: '',
-      ended: '',
-      // ended: '2023-05-09T07:55:29.487Z',
-      timeOffset: 0,
-    })
-  let [audioData, setAudioData] = React.useState<assetdata[]>([{
+  let [audioDataState, setAudioDataState] = React.useState<assetdata[]>([{
     name: '',
     files: [
       {
@@ -56,8 +84,8 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
       }
     ],
     assetduration: 0,
-    assetbuffering: { pre: 0, post: 0 },
-    recording: {},
+    assetbuffering: { pre: 20, post: 20 },
+    recording: {ended:'0',started:'',timeOffset:0},
     bookmarks: [],
     id: 0,
     unitId: 0,
@@ -67,70 +95,16 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
     status: '',
 
   }])
-
-  const inputRef = useRef()
   //audio work end
-
-  const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation<string>();
-  const classes = useStyles();
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [responseError, setResponseError] = React.useState<string>('');
-  const [alert, setAlert] = React.useState<boolean>(false);
-  const alertRef = useRef(null);
-  const userMsgFormRef = useRef<typeof CRXToaster>(null);
-  const [alertType, setAlertType] = React.useState<string>('inline');
-  const [errorType, setErrorType] = React.useState<string>('error');
-  const [ErrorCheck, setErrorCheck] = React.useState<boolean>(false);
-  const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
-  const [GridData, setGridData]: any = React.useState<HotListTemplate[]>([]);
-  const [HotListPaylod, setHotListPaylod] = React.useState<HotListTemplate>({
-    id: 0,
-    Name: "",
-    description: "",
-    sourceName: 0,
-    ruleExpressions: "",
-    alertPriority: 0,
-    Tenant: 0,
-    color: "",
-    audio: "",
-  });
-  const [SourceOptions, setSourceOptions] = React.useState<any>(
-    [{
-      id: 1,
-      label: "Source 1"
-    },
-    {
-      id: 2,
-      label: "Source 2"
-    }]);
-  const [TenantOptions, setTenantOptions] = React.useState<any>(
-    [{
-      id: 1,
-      label: "Tenant 1"
-    },
-    {
-      id: 2,
-      label: "Tenant 2"
-    }]);
-
-  const [openAudioPlayer, setOpenAudioPlayer] = React.useState<boolean>(false);
-  const [audioFlag, setAudioFlag] = React.useState<number>(0);
-  const [loaderState, setLoaderState] = React.useState<boolean>(false);
-
   useEffect(() => {
     dispatch(GetHotListData())
   }, [])
 
   useEffect(() => {
     if (hotListData.length > 0) {
-      setGridData(hotListData);
       const selectedData = hotListData?.filter((item: any) => { return (item.id == id) })
-      if (selectedData !== undefined && selectedData !== null && selectedData.length > 0)
-        setHotListPaylod(selectedData[0])
+      if (HotListInitialState !== undefined && selectedData !== null && selectedData.length > 0)
+      setHotListInitialState(selectedData[0])
     }
   }, [hotListData])
 
@@ -138,16 +112,23 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
     if (hiddenFileInput?.current)
       hiddenFileInput.current.click();
   };
-  let evidenceId: any = {};
 
   const handleClose = () => {
     history.push(
       urlList.filter((item: any) => item.name === urlNames.HotList)[0].url
     );
-    setIsOpen(false)
+    isOpen.current = false;
+    setIsStateUpdate(prevState => !prevState)
   };
   const closeDialog = () => {
-    setIsOpen(true);
+
+    isOpen.current = true;
+    setIsStateUpdate(prevState => !prevState)
+  };
+  const closeConfirmDialog = () => {
+
+    isOpen.current = false;
+    setIsStateUpdate(prevState => !prevState)
   };
 
   const HotListValidationSchema = Yup.object().shape({
@@ -156,8 +137,8 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
 
   const onSubmit = (values: any) => {
     if (parseInt(id) > 0) {//updation
-      let selectedData = GridData?.filter((item: any) => { return (item.id == id) });
-      let indexNew = GridData.indexOf(selectedData[0])
+      let selectedData = hotListData?.filter((item: any) => { return (item.id == id) });
+      let indexNew = hotListData.indexOf(selectedData[0])
       let keys = Object.keys(selectedData[0])
 
       let newDataObject = selectedData[0]
@@ -165,7 +146,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
       keys.map((item: any) => {
         newDataObject = { ...newDataObject, [item]: values[item] }
       })
-      let newGridData = [...GridData]
+      let newGridData = [...hotListData]
 
       newGridData.map((item: any, index: any) => {
         if (index == indexNew) {
@@ -183,7 +164,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
   }
   const getDuration = (file: any) => {
     const reader = new FileReader();
-    let audioDataTemp = audioData;
+    let audioDataTemp = audioDataState;
     reader.readAsArrayBuffer(file);
     reader.onloadend = (e: any) => {
       const ctx = new AudioContext();
@@ -200,11 +181,12 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
           // ended: '2023-05-09T07:55:29.487Z',
           timeOffset: 0,
         }
-        audioData[0].recording = recordingData;
-        audioData[0].assetduration = file.size;
-        setAudioData(audioDataTemp);
-        setOpenAudioPlayer(true)
-        setAudioFlag(1)
+        audioDataState[0].recording = recordingData;
+        audioDataState[0].assetduration = file.size;
+        setAudioDataState(audioDataTemp);
+        // setOpenAudioPlayer(true)
+        openAudioPlayer.current = true;
+        setIsStateUpdate(prevState => !prevState)
       }, error => {
         // this is the error callback
         console.error(error);
@@ -213,7 +195,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
   };
   const afterFileUpload = (event: any) => {
     let reader = new FileReader();
-    let audioDataTemp = audioData
+    let audioDataTemp = audioDataState
     reader.readAsDataURL(event[0]);
     getDuration(event[0])
     reader.onloadend = () => {
@@ -229,91 +211,38 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
       audioDataTemp[0].assetduration = event[0].size;
       audioDataTemp[0].name = event[0].name.split('.').slice(0, -1).join('.');
       audioDataTemp[0].files.push(audioPayload)
-      setAudioData(audioDataTemp);
-
-      // setHotListPaylod({ ...HotListPaylod, audio: srcData !== undefined && srcData !== null ? srcData.toString() : '' })
-      // setAudioPaylod(audioPayload);
-
-      // let filedate = new Date();
-      // filedate.setMinutes(filedate.getMinutes() + 3);
-      // let recordingData = {
-      //   started: new Date().toISOString(),
-      //   ended: new Date(filedate).toISOString(),
-      //   // ended: '2023-05-09T07:55:29.487Z',
-      //   timeOffset: 0,
-      // }
-      // audioData[0].recording.push(recordingData);
-      // audioData[0].assetduration = event[0].size;
-
+      setAudioDataState(audioDataTemp);
 
     };
   }
 
   const uploadFileData = (fileUpdatedData: any, audioFlag: boolean) => {
-    setAudioData(fileUpdatedData);
-    setOpenAudioPlayer(audioFlag)
-    setLoaderState(true);
-  }
+    setAudioDataState(fileUpdatedData);
+    openAudioPlayer.current = audioFlag;
+    setIsStateUpdate(prevState => !prevState)
 
-  React.useEffect(() => {
     setTimeout(() => {
-      setLoaderState(false);
-      setOpenAudioPlayer(false);
-    }, 0);
-  }, [openAudioPlayer])
+      openAudioPlayer.current = false;
+      setIsStateUpdate(prevState => !prevState)
+    }, 10);
+  }
   return (
     <div>
       <div className="MainTabsPanel">
         <div className="tabsBodyControl">
           {<CRXTooltip iconName="fas fa-certificate" arrow={false} title="primary asset" placement="left" className="crxTooltipNotificationIcon" />}
-
-          {/*<label>Audio: </label>
-           <audio controls={true} src={HotListPaylod.audio}>
-          </audio> *
-          <div className={classes.uploadButton} >
-            <CRXButton
-              onClick={fileUpload}
-              variant="contained"
-            >
-              Audio Upload
-            </CRXButton>
-            <input
-              type="file"
-              accept=".mp3"
-              ref={hiddenFileInput}
-              style={{ display: 'none' }}
-              id="contained"
-              name="fileDetails"
-              onChange={(event) => {
-                afterFileUpload(
-                  event.currentTarget.files
-                )
-              }}
-            />
-            </div>*/}
-            
           <div className="tabsBodyControl">
-            <div style={{ display: true ? "block" : "none" }}>
-              {!loaderState ? <AudioPlayerBase data={audioData} evidenceId={evidenceId} uploadedFileData={uploadFileData} /> : ''}
+            <div style={{ display: false ? "block" : "none" }}>
+              {!openAudioPlayer.current ? <AudioPlayerBase data={audioDataState} evidenceId={evidenceId} uploadedFileData={uploadFileData} /> : ''}
             </div>
           </div>
-          
+
         </div>
       </div>
       <div className="createHotList CrxCreateUser CreatHotListUi hotListSearchComponents">
         <div >
 
         </div>
-        <CRXToaster ref={userMsgFormRef} />
-        <CRXAlert
-          ref={alertRef}
-          message={responseError}
-          className='crxAlertHotListEditForm'
-          alertType={alertType}
-          type={errorType}
-          open={alert}
-          setShowSucess={() => null}
-        />
         <div >
           <div className='CrxIndicates'>
             <sup>*</sup> {t("Indicates_required_field")}
@@ -321,13 +250,13 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
           <div className="modalEditCrx">
             <Formik
               enableReinitialize={true}
-              initialValues={HotListPaylod}
+              initialValues={HotListInitialState}
               validationSchema={HotListValidationSchema}
               onSubmit={(values) => {
                 console.log("SUBMIT : " + values);
               }}
             >
-              {({ setFieldValue, values, errors, isValid, dirty }) => (
+              {({ setFieldValue, values, errors, isValid, dirty ,touched}) => (
                 <Form>
                   <div className="CrxEditForm">
 
@@ -341,7 +270,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                             label={t("Name") + ':'}
                             value={values.Name}
                             onChange={(e: any) => setFieldValue("Name", e.target.value)}
-                            error={values.Name === ''}
+                            error={errors.Name != undefined && touched.Name}
                             errorMsg={t("Name_field_required")}
                           />
                         </div>
@@ -350,7 +279,6 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
 
                             className="categortAutocomplete CrxUserEditForm"
                             label={t("Source_Id") + ':'}
-                            // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                             multiple={false}
                             CheckBox={true}
                             options={SourceOptions}
@@ -451,7 +379,7 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                       >
                         {t("Save")}
                       </CRXButton>
-                      
+
                       <Link to={urlList.filter((item: any) => item.name === urlNames.HotList)[0].url} className="btnCancelAssign">
                         {t("Cancel")}
                       </Link>
@@ -469,11 +397,11 @@ const HotListDetail: FC<HotListDetailProps> = (props: HotListDetailProps) => {
                   </div>
 
                   <CRXConfirmDialog
-                    setIsOpen={() => setIsOpen(false)}
-                    onConfirm={handleClose}
-                    isOpen={isOpen}
+                    setIsOpen={closeConfirmDialog}
+                    onConfirm={()=>handleClose()}
+                    isOpen={isOpen.current}
                     className="Categories_Confirm"
-                    primary={t("Yes_close")}
+                    primary={t("Yes_close")}  
                     secondary={t("No,_do_not_close")}
                     text="retention policy form"
                   >
