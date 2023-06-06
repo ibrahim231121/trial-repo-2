@@ -14,7 +14,7 @@ import {
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import React from "react";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
-import { HotListCaptureTemplate } from "../../../../utils/Api/models/HotlistCapture";
+import { AlprCapturePlateInfo } from "../../../../utils/Api/models/AlprCapturePlateInfo";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { useTranslation } from "react-i18next";
 import "./AlprLive.scss"
@@ -23,13 +23,13 @@ import "./AlprLive.scss"
 
 
 const AlprLive = () => {
-    const [rows, setRows] = React.useState<HotListCaptureTemplate[]>([]);
+    const [rows, setRows] = React.useState<AlprCapturePlateInfo[]>([]);
 
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const { t } = useTranslation<string>();
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("Name");
-    const [selectedItems, setSelectedItems] = React.useState<HotListCaptureTemplate[]>([]);
+    const [selectedItems, setSelectedItems] = React.useState<AlprCapturePlateInfo[]>([]);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
     const [page, setPage] = React.useState<number>(0);
 
@@ -63,7 +63,7 @@ const AlprLive = () => {
         }
     }
 
-    const searchText = (rowsParam: HotListCaptureTemplate[], headCell: HeadCellProps[], colIdx: number) => {
+    const searchText = (rowsParam: AlprCapturePlateInfo[], headCell: HeadCellProps[], colIdx: number) => {
         const onChange = (valuesObject: ValueString[]) => {
             headCells[colIdx].headerArray = valuesObject;
             onSelection(valuesObject, colIdx);

@@ -91,58 +91,7 @@ const CaptureFormPanel = () => {
           <AlprLive />
         </div>
       </CrxTabPanel>
-      <div className="tab-bottom-buttons stickyFooter_Tab">
-        <div className="save-cancel-button-box">
-          <CRXButton
-            variant="contained"
-            className="captureTabButtons"
-            onClick={onSave}
-            disabled={isDisabled}
-          >
-            {t("Save")}
-          </CRXButton>
-          <CRXButton
-            className="captureTabButtons secondary"
-            color="secondary"
-            variant="outlined"
-            onClick={() =>
-              history.push(
-                urlList.filter(
-                  (item: any) => item.name === urlNames.DataSource
-                )[0].url
-              )
-            }
-          >
-            {t("Cancel")}
-          </CRXButton>
-        </div>
-        <CRXButton
-          onClick={() => closeDialog()}
-          className="captureTabButtons-Close secondary"
-          color="secondary"
-          variant="outlined"
-        >
-          {t("Close")}
-        </CRXButton>
-        <CRXConfirmDialog
-          setIsOpen={() => setIsOpen(false)}
-          onConfirm={handleClose}
-          isOpen={isOpen}
-          className="Categories_Confirm"
-          primary={t("Yes_close")}
-          secondary={t("No,_do_not_close")}
-          text="retention policy form"
-        >
-          <div className="confirmMessage">
-            {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-            <strong>{ }</strong>. {t("If_you_close_the_form")},
-            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-            <div className="confirmMessageBottom">
-              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-            </div>
-          </div>
-        </CRXConfirmDialog>
-      </div>
+      
 
     </div>
   );

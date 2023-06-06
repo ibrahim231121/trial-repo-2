@@ -89,6 +89,7 @@ import { Case, TCaseHighlight, TCaseTimeline } from '../../Application/Cases/Cas
 import { StationPolicyConfigurationTemplate } from '../../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
 import { Job, Project } from './models/AICoordinatorModels';
 import { HotListTemplate } from './models/HotListModels';
+import { AlprCapturePlateInfo } from './models/AlprCapturePlateInfo';
 
 
 
@@ -537,5 +538,8 @@ export const HotListAgent = {
     deleteHotListItemAsync:(url: string) => requests.delete<void>(BASE_URL_ALPR, url, config),
     }
 
+export const AlprCapturePlatesAgent={
+    getAlprCapturePlatesInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+}
 
 

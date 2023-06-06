@@ -39,6 +39,7 @@ import ActionMenuEffectSlice from './ActionMenuEffectReducer';
 import caseSharingSlice from './CaseSharingReducer';
 import AlprDataSourceSlice from './AlprDataSourceReducer';
 import LicensePlateSlice from './AlprLicensePlateReducer';
+import alprCapturePlateSlice from './AlprCapturePlateReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -81,6 +82,6 @@ export const reducer = combineReducers({
   hotListReducer: HotListSlice.reducer,
   alprDataSourceReducer: AlprDataSourceSlice.reducer,
   alprLicensePlateReducer: LicensePlateSlice.reducer,
-
+  alprCapturePlateReducer: alprCapturePlateSlice.reducer,
 })
 export type RootState = ReturnType<typeof reducer>
