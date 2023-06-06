@@ -1088,6 +1088,8 @@ export const resources = {
       "Edit_License_Plate":"Edit License Plate",
       "You_are_about_to_delete":"You are about to delete",
       "this_entry":"this entry",
+      "Hotlist_deleted":"Hotlist deleted successfully"
+
       //ALPR End
     }
   }

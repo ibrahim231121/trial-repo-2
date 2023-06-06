@@ -48,7 +48,7 @@ import {
     BASE_URL_DeviceHeartBeat_SERVICE,
     BASE_URL_COMMAND_SERVICE,
     FILE_SERVICE_URL_V2,
-    BASE_URL_HOTLIST
+    BASE_URL_ALPR
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -530,8 +530,11 @@ export const AICoordinatorAgent = {
 
 export const HotListAgent = {
 
-    getHotListInfoAsync: (url: string, extraHeader?: Headers[]) => requests.get<HotListTemplate[]>(BASE_URL_HOTLIST, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-        
+    getAllHotListInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getHotListInfoAsync: (url: string, extraHeader?: Headers[]) => requests.get<HotListTemplate>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    addHotListItemAsync:(url: string, body: HotListTemplate) => requests.post<number>(BASE_URL_ALPR, url, body, config),
+    updateHotListItemAsync:(url: string, body: any) => requests.put<void>(BASE_URL_ALPR, url, body, config),
+    deleteHotListItemAsync:(url: string) => requests.delete<void>(BASE_URL_ALPR, url, config),
     }
 
 

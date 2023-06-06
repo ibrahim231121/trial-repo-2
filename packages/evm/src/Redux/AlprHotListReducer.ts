@@ -1,6 +1,9 @@
 import { responsiveFontSizes } from '@material-ui/core';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import React from 'react';
+import { setLoaderValue } from './loaderSlice';
+import { ALPR_HOTLIST } from '../utils/Api/url';
+import { HotListAgent } from '../utils/Api/ApiAgent';
 const rows = [{
   id: 1,
   Name: 'John',
@@ -90,52 +93,68 @@ const rows = [{
 }
 ];
 
+export const GetAllHotListData: any = createAsyncThunk(
+  'GetAllHotListData',
+  async (param: any, thunkAPI) => {
+    thunkAPI.dispatch(setLoaderValue({isLoading: true}))
+    
+    const url = ALPR_HOTLIST + `?Page=${param.page+1}&Size=${param.size}`
+        let headers = [
+            {   
+                key : 'GridFilter', 
+                value : JSON.stringify(param.gridFilter)
+            },
+            {
+                key: 'GridSort', 
+                value : JSON.stringify(param.gridSort)
+            }]
+             return await HotListAgent
+             .getAllHotListInfosAsync(url, headers)
+             .then((response) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+                return response
+            }).catch((error: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+                console.error(error.response.data);
+                return error.response.status
+              });
+  }
+);
+
 export const GetHotListData: any = createAsyncThunk(
   'GetHotListData',
-  async (param: any) => {
-    let temp: any = rows;
-    if (param!==undefined && param.gridFilter.filters.length > 0) {
-      param.gridFilter.filters.map((item: any) => {
-        if (item.value.includes('@')) 
-        {
-          temp = temp.filter((x: any) =>item.value.toLowerCase().includes( x[`${item.field}`].toString().toLowerCase()));
-        }
-        else 
-        {
-          temp = temp.filter((x: any) => x[`${item.field}`].toString().toLowerCase().includes(item.value.toLowerCase()));
-        }
-      });
-      return temp;
-    }
-    else {
-
-      return rows;
-    }
+  async (param: any, thunkAPI) => {
+    thunkAPI.dispatch(setLoaderValue({isLoading: true}))
+    
+    const url = ALPR_HOTLIST + `/${param}`
+        
+             return await HotListAgent
+             .getHotListInfoAsync(url)
+             .then((response) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+                return response
+            }).catch((error: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+                console.error(error.response.data);
+                return error.response.status
+              });
   }
 );
 
-
-
-export const UpdateHotListData: any = createAsyncThunk(
-  'UpdateHotListData',
-  async (params: any) => {
-    return params.newGridData;
-  }
-);
 
 
 
 export const HotListSlice = createSlice({
   name: 'hotList',
-  initialState: { HotList: [] },
+  initialState: { HotList: [], hotListDetails:{} },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(GetHotListData.fulfilled, (state: any, { payload }) => {
+    builder.addCase(GetAllHotListData.fulfilled, (state: any, { payload }) => {
       state.HotList = payload;
     })
-      .addCase(UpdateHotListData.fulfilled, (state: any, { payload }) => {
-        state.HotList = payload;
-      })
+    .addCase(GetHotListData.fulfilled, (state: any, { payload }) => {
+      state.hotListDetails = payload;
+    })
   }
 });
 

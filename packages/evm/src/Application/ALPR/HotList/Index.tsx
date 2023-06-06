@@ -27,19 +27,22 @@ import HotListActionMenu from "./HotListActionMenu";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useStyles } from "./HotListCss";
 import './Index.scss'
-import { GetHotListData } from "../../../Redux/AlprHotListReducer";
+import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { ClickAwayListener } from "@material-ui/core";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
+import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
+import moment from "moment";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 
 type HotListTemplate = {
   id: number,
   Name: string,
   description: string,
   sourceName: string,
-  ruleExpressions: string,
+  rulesExpression: string,
   alertPriority: number,
   color: string,
   audio: string
@@ -51,7 +54,7 @@ const HotList = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [page, setPage] = React.useState<number>(0);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListTemplate[]>([]);
@@ -62,11 +65,12 @@ const HotList = () => {
   const paging = React.useRef<boolean>(false);
   const isSearchable = React.useRef<boolean>(false);
   const isSearchableOnChange = React.useRef<boolean>(false);
+  const toasterRef = useRef<typeof CRXToaster>(null);
   const [rows, setRows] = React.useState<HotListTemplate[]>();
 
   const [order, setOrder] = React.useState<any>({
-    order: '',
-    orderBy: ''
+    order: 'asc',
+    orderBy: 'Name'
   });
 
 
@@ -89,37 +93,50 @@ const HotList = () => {
     },
     page: page,
     size: rowsPerPage,
+    gridSort:{
+      field: order.orderBy,
+       dir: order.order
+      }
   });
 
   useEffect(() => {
-    dispatch(GetHotListData());
+    dispatch(GetAllHotListData(pageiGrid));
   }, [])
 
   useEffect(() => {
-    let hotListDataTemp = hotListData.map((item: any) => {
+    if(hotListData && hotListData.data){
+      let hotListDataTemp = hotListData.data.map((item: any) => {
       return {
-        id: item.id,
-        Name: item.Name,
+        id: item.sysSerial,
+        Name: item.name,
         description: item.description,
-        sourceName: SourceOptions.find((x: any) => x.id === item.sourceName)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === item.sourceName)?.label,
-        ruleExpressions: item.ruleExpressions,
+        sourceName: item.sourceName,
+        rulesExpression: item.rulesExpression,
         color: item.color,
         alertPriority: item.alertPriority,
         audio: item.audio
       }
-    })
-    setRows(hotListDataTemp)
-  }, [hotListData])
+    });
+    setRows(hotListDataTemp);
+    }
+    
+  }, [hotListData.data])
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: order.order, dir: order.orderBy } });
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
     paging.current = true;
     setSateUpdate(prevState => !prevState)
   }, [page, rowsPerPage]);
 
   useEffect(() => {
+    setPageiGrid({ ...pageiGrid, gridSort:{ field: order.orderBy, dir: order.order } });
+    paging.current = true;
+    setSateUpdate(prevState => !prevState)
+  }, [order]);
+
+  useEffect(() => {
     if (paging.current) {
-      dispatch(GetHotListData(pageiGrid));
+      dispatch(GetAllHotListData(pageiGrid));
     }
     paging.current = false;
     setSateUpdate(prevState => !prevState)
@@ -241,7 +258,7 @@ const HotList = () => {
       minWidth: "150",
     },
     {
-      label: `${t("Name")}`,
+      label: t("Name"),
       id: "Name",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -254,7 +271,7 @@ const HotList = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Description")}`,
+      label: t("Description"),
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -267,7 +284,7 @@ const HotList = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Source_Name")}`,
+      label: t("Source_Name"),
       id: "sourceName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
@@ -275,25 +292,25 @@ const HotList = () => {
       searchFilter: true,
       searchComponent: (rowParam: HotListTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "230",
-      attributeName: "sourceName",
-      attributeType: "String",
+      attributeName: "SourceName",
+      attributeType: "List",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Rule_Expression")}`,
-      id: "ruleExpression",
+      label: t("Rule_Expression"),
+      id: "rulesExpression",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "230",
-      attributeName: "ruleExpression",
+      attributeName: "RulesExpression",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Alert_Priority")}`,
+      label: t("Alert_Priority"),
       id: "alertPriority",
       align: "center",
       dataComponent: (e: string) => textDisplay(e, "", "top"),
@@ -301,12 +318,12 @@ const HotList = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "130",
-      attributeName: "alertPriority",
-      attributeType: "String",
-      attributeOperator: "contains"
+      attributeName: "AlertPriority",
+      attributeType: "int",
+      attributeOperator: "eq"
     },
     {
-      label: `${t("Color")}`,
+      label: t("Color"),
       id: "color",
       align: "center",
       dataComponent: (e: string) => colorDisplay(e),
@@ -314,12 +331,12 @@ const HotList = () => {
       searchFilter: true,
       searchComponent: () => null,
       minWidth: "150",
-      attributeName: "color",
+      attributeName: "Color",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
-      label: `${t("Audio")}`,
+      label: t("Audio"),
       id: "audio",
       align: "center",
       dataComponent: (e: string) => audioIconDisplay(e),
@@ -327,11 +344,30 @@ const HotList = () => {
       searchFilter: true,
       searchComponent: () => null,
       minWidth: "150",
-      attributeName: "audio",
+      attributeName: "Audio",
       attributeType: "String",
       attributeOperator: "contains"
     },
   ]);
+
+  const showToastMsg = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration
+    });
+    if (obj.message !== undefined && obj.message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("Hot_List"),
+        message: obj.message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  };
 
   const CreateHotListForm = () => {
     history.push(urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url);
@@ -356,7 +392,7 @@ const HotList = () => {
       setPage(0)
     }
     else {
-      dispatch(GetHotListData(pageiGrid));
+      dispatch(GetAllHotListData(pageiGrid));
     }
     isSearchable.current = false
     isSearchableOnChange.current=false;
@@ -404,12 +440,12 @@ const HotList = () => {
   return (
     <ClickAwayListener onClickAway={handleBlur}>
       <div className="switchLeftComponents" onKeyDown={handleKeyDown}>
-        <CRXToaster />
+        <CRXToaster ref={toasterRef}/>
         {rows && (
           <CRXDataTable
             id="HotListTemplateDataTable"
             actionComponent={
-              <HotListActionMenu row={selectedActionRow} selectedItems={selectedItems} gridData={rows} />
+              <HotListActionMenu row={selectedActionRow} selectedItems={selectedItems} gridData={rows} pageiGrid={pageiGrid} showToastMsg={showToastMsg} />
             }
             toolBarButton={
               <>
@@ -447,8 +483,8 @@ const HotList = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
-            totalRecords={rows?.length}
-            setSortOrder={(sort: any) => sortingOrder(sort)}
+            totalRecords={hotListData.totalCount}
+            setSortOrder={(sort: any) => setOrder(sort)}
 
             //Please dont miss this block.
             offsetY={119}

@@ -1,13 +1,17 @@
 export type HotListTemplate={
-  id:number;
-    Name:string;
+    id:number;
+    name:string;
     description:string;
-    sourceName:number;
-    Tenant:number;
-    ruleExpressions:string;
+    sourceId: number;
+    sourceName:string;
+    stationId:number;
+    rulesExpression:string;
     alertPriority:number;
     color:string;
     audio:string;
+    lastTimeStamp: [];
+    createdOn: string;
+    lastUpdatedOn: string;
   }
 
   export type HotListdataTemplateAudio = {

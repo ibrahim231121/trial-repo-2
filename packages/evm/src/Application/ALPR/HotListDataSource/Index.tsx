@@ -27,7 +27,7 @@ import DataSourceActionMenu from "../HotListDataSource/DataSourceActionMenu";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useStyles } from "../HotList/HotListCss";
 
-import { GetHotListData } from "../../../Redux/AlprHotListReducer";
+import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { ClickAwayListener } from "@material-ui/core";
@@ -303,7 +303,7 @@ const HotListDataSource = () => {
   }, [page, rowsPerPage]);
   useEffect(() => {
     if (paging) {
-      dispatch(GetHotListData(pageiGrid));
+      dispatch(GetAllHotListData(pageiGrid));
     }
     setPaging(false)
   }, [pageiGrid])

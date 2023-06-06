@@ -26,6 +26,6 @@ type EnvType = {
   REACT_APP_COMMAND_SERVICE_URL: string
   REACT_APP_SOCKET_SERVICE_URL: string
   REACT_APP_AICOORDINATOR_SERVICE_Redirect_URL: string
-  REACT_APP_HOTLIST_URL: string
+  REACT_APP_ALPR_URL: string
 }
 export const env: EnvType = { ...process.env, ...window.env }

@@ -10,15 +10,21 @@ import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
+import { HotListAgent } from "../../../utils/Api/ApiAgent";
+import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
+import { useDispatch } from "react-redux";
 
 type Props = {
   selectedItems?: any;
   row?: any;
   gridData: any;
+  pageiGrid: PageiGrid;
+  showToastMsg(obj:any): any;
 };
 
-const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) => {
-
+const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, pageiGrid, showToastMsg}) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation<string>();
   const history = useHistory();
   const [primary, setPrimary] = React.useState<string>("");
@@ -37,8 +43,26 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
     setIsOpen(true);
     // setModalType("deactivate");
   }
-  const onConfirm = () => {
-
+  const onConfirm = (e:any) => {
+    HotListAgent.deleteHotListItemAsync("/HotList/" + row?.id).then(()=>{
+      setIsOpen(false);
+      showToastMsg?.({
+        message: t("Hotlist_deleted"),
+        variant: "success",
+        duration: 7000,
+        clearButtton: true
+      });
+      dispatch(GetAllHotListData(pageiGrid));
+    }).catch((error:any)=>{
+      console.log(error);
+      showToastMsg?.({
+        message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+        variant: "error",
+        duration: 5000,
+        clearButtton: true
+      });
+      return error;
+    })
   }
 
   return (
@@ -66,7 +90,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
             )}
             <div className="crxUplockContent">
               <p>
-                {t("You are about to delete ")} <b>{row?.name}</b> {t("this entry")}
+                {t("You are about to delete ")} <b>{row?.Name}</b> {t("this entry")}
               </p>
             </div>
           </>

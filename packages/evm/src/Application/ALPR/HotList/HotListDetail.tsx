@@ -18,23 +18,30 @@ import { useParams, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
-import { GetHotListData, UpdateHotListData } from "../../../Redux/AlprHotListReducer";
+import { GetAllHotListData, GetHotListData } from "../../../Redux/AlprHotListReducer";
 import './HotListDetail.scss';
 import AudioPlayerBase from "../../../components/MediaPlayer/AudioPlayer/AudioPlayerBase";
 import { assetdata } from "../../Assets/Detail/AssetDetailsTemplateModel";
 import { CRXTooltip } from "@cb/shared";
+import { HotListAgent } from "../../../utils/Api/ApiAgent";
+import moment from "moment";
+import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 
 const HotListPayload:HotListTemplate= {
   id: 0,
-  Name: "",
+  name: "",
   description: "",
-  sourceName: 0,
-  ruleExpressions: "",
+  sourceId: 0,
+  sourceName: "",
+  rulesExpression: "",
   alertPriority: 0,
-  Tenant: 0,
+  stationId: 0,
   color: "",
   audio: "",
+  lastTimeStamp: [],
+  createdOn: "",
+  lastUpdatedOn: ""
 }
 
 const HotListDetail = () => {
@@ -44,16 +51,17 @@ const HotListDetail = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const isFirstTime = React.useRef<boolean>(true);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
+  const hotListDetails: any = useSelector((state: RootState) => state.hotListReducer.hotListDetails);
 
   const SourceOptions =
     [{
-      id: 1,
+      id: 3,
       label: "Source 1"
     },
     {
-      id: 2,
+      id: 4,
       label: "Source 2"
     }];
   const TenantOptions =
@@ -95,18 +103,26 @@ const HotListDetail = () => {
     status: '',
 
   }])
-  //audio work end
-  useEffect(() => {
-    dispatch(GetHotListData())
-  }, [])
 
   useEffect(() => {
-    if (hotListData.length > 0) {
-      const selectedData = hotListData?.filter((item: any) => { return (item.id == id) })
-      if (HotListInitialState !== undefined && selectedData !== null && selectedData.length > 0)
-      setHotListInitialState(selectedData[0])
+    if(!isFirstTime.current){
+      if (hotListDetails && HotListInitialState !== undefined) {
+        setHotListInitialState(hotListDetails)
+      }
     }
-  }, [hotListData])
+    
+  }, [hotListDetails])
+
+  //audio work end
+  useEffect(() => {
+    if(!isNaN(Number(+id))){
+      dispatch(GetHotListData(id))
+    }
+    
+    isFirstTime.current = false;
+  }, [])
+
+
 
   const fileUpload = () => {
     if (hiddenFileInput?.current)
@@ -132,35 +148,66 @@ const HotListDetail = () => {
   };
 
   const HotListValidationSchema = Yup.object().shape({
-    Name: Yup.string().required("Name is required"),
+    name: Yup.string().required("Name is required"),
   });
 
   const onSubmit = (values: any) => {
     if (parseInt(id) > 0) {//updation
-      let selectedData = hotListData?.filter((item: any) => { return (item.id == id) });
-      let indexNew = hotListData.indexOf(selectedData[0])
-      let keys = Object.keys(selectedData[0])
+      let selectedData = hotListDetails;
+      let keys = Object.keys(selectedData)
 
-      let newDataObject = selectedData[0]
+      let newDataObject = selectedData
+      values.lastUpdatedOn = moment(new Date()).toISOString()
+
+      if(!values.audio){
+        values.audio = ""
+      }
+
+      if(!values.color){
+        values.color = ""
+      }
 
       keys.map((item: any) => {
         newDataObject = { ...newDataObject, [item]: values[item] }
       })
-      let newGridData = [...hotListData]
 
-      newGridData.map((item: any, index: any) => {
-        if (index == indexNew) {
-          newGridData[index] = newDataObject
-        }
+      dispatch(setLoaderValue({isLoading: true}));
+      HotListAgent.updateHotListItemAsync("/HotList/" + id, newDataObject).then(()=>{
+        dispatch(setLoaderValue({isLoading: false}));
+        history.push(
+          urlList.filter((item: any) => item.name === urlNames.HotList)[0].url
+        );
+      }).catch((error:any)=>{
+        dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
+        console.error(error);
       })
-      dispatch(UpdateHotListData({ newGridData }));
     }
-    //else//Insertion
-    //{
-    //}
-    history.push(
-      urlList.filter((item: any) => item.name === urlNames.HotList)[0].url
-    );
+    else//Insertion
+    {
+      let selectedData = HotListInitialState;
+      let keys = Object.keys(selectedData)
+      let newDataObject = selectedData;
+
+      keys.map((item: any) => {
+        newDataObject = { ...newDataObject, [item]: values[item] }
+      })
+
+      newDataObject.createdOn = moment(new Date()).toISOString()
+      newDataObject.lastUpdatedOn = moment(new Date()).toISOString()
+      newDataObject.lastTimeStamp = [];
+      
+      dispatch(setLoaderValue({isLoading: true}));
+      HotListAgent.addHotListItemAsync("/HotList", newDataObject).then((res)=>{
+        dispatch(setLoaderValue({isLoading: false}));
+        history.push(
+          urlList.filter((item: any) => item.name === urlNames.HotList)[0].url
+        );
+      }).catch((error:any) => {
+        dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
+        console.error(error);
+      })
+    }
+    
   }
   const getDuration = (file: any) => {
     const reader = new FileReader();
@@ -265,12 +312,15 @@ const HotListDetail = () => {
 
                         <div >
                           <TextField
-                            id="sourceName"
+                            id="name"
                             required={true}
                             label={t("Name") + ':'}
-                            value={values.Name}
-                            onChange={(e: any) => setFieldValue("Name", e.target.value)}
-                            error={errors.Name != undefined && touched.Name}
+                            value={values.name}
+                            onChange={(e: any) => {
+                              console.log(e);
+                              setFieldValue("name", e.target.value)
+                            }}
+                            error={errors.name != undefined && touched.name}
                             errorMsg={t("Name_field_required")}
                           />
                         </div>
@@ -284,13 +334,14 @@ const HotListDetail = () => {
                             options={SourceOptions}
                             required={false}
                             isSearchable={true}
-                            value={values.sourceName === 0 ? "" : { id: values.sourceName, label: SourceOptions.find((x: any) => x.id === values.sourceName)?.label }}
-
+                            value={{id: values.sourceId, label:values.sourceName == null ? "":values.sourceName}}
+                            
                             onChange={(
                               e: React.SyntheticEvent,
                               value: any
                             ) => {
-                              setFieldValue("sourceName", value === null ? -1 : Number.parseInt(value?.id))
+                              setFieldValue("sourceId", value === null ? -1 : Number.parseInt(value?.id))
+                              setFieldValue("sourceName", value === null ? "" : value?.label)
                             }
                             }
                             onOpen={(e: any) => {
@@ -299,29 +350,15 @@ const HotListDetail = () => {
                           />
                         </div>
                         <div className={classes.HotlistAutoComplete}></div>
-                        <div className="crxEditFilter editFilterUi " >
+                        <div >
+                          <TextField
+                              required={false}
+                              label={t("Tenant") + ':'}
+                              value={values.stationId}
+                              onChange={(e: any) => setFieldValue("stationId", e.target.value)}
 
-                          <CRXMultiSelectBoxLight
-
-                            className="categortAutocomplete CrxUserEditForm"
-                            label={t("Tenant") + ':'}
-                            multiple={false}
-                            CheckBox={true}
-                            options={TenantOptions}
-                            required={false}
-                            isSearchable={true}
-                            value={values.Tenant === 0 ? "" : { id: values.Tenant, label: TenantOptions.find((x: any) => x.id === values.Tenant)?.label }}
-
-                            onChange={(
-                              e: React.SyntheticEvent,
-                              value: any
-                            ) => {
-                              setFieldValue("Tenant", value === null ? -1 : Number.parseInt(value?.id))
-                            }
-                            }
-                            onOpen={(e: any) => {
-
-                            }} />
+                            />
+                          
                         </div>
                         <div className={classes.HotlistAutoComplete}>
                           <TextField
@@ -352,8 +389,8 @@ const HotListDetail = () => {
                             required={false}
                             label={t("Rule_Expression") + ':'}
                             multiline={true}
-                            value={values.ruleExpressions}
-                            onChange={(e: any) => setFieldValue("ruleExpressions", e.target.value)}
+                            value={values.rulesExpression}
+                            onChange={(e: any) => setFieldValue("rulesExpression", e.target.value)}
 
                           />
                         </div>
