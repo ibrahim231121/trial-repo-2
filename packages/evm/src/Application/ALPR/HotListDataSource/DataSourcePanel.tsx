@@ -32,10 +32,11 @@ const DataSourceFormsAndFields = () => {
   const sourceMappingData: any = useSelector((state: RootState) => state.alprDataSourceReducer.SourceMapping);
   const [isOpen, setIsOpen] = React.useState(false);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(SourceMapping())
-    dispatch(GetAlprDataSourceList())
-  }, [])
+  
+  // useEffect(() => {
+  //   dispatch(SourceMapping())
+  //   dispatch(GetAlprDataSourceList())
+  // }, [])
 
 
   function handleChange(event: any, newValue: number) {

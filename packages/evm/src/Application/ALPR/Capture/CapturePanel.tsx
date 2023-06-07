@@ -25,19 +25,6 @@ import AlprLive from "./CaptureTabs/AlprLive";
 const CaptureFormPanel = () => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
-  const [dataSourcePayload, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>();
-  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>();
-  const history = useHistory();
-  const [isDisabled, setisDisabled] = React.useState<boolean>(true);
-  const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
-  const sourceMappingData: any = useSelector((state: RootState) => state.alprDataSourceReducer.SourceMapping);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(SourceMapping())
-    dispatch(GetAlprDataSourceList())
-  }, [])
-
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -46,33 +33,6 @@ const CaptureFormPanel = () => {
     { label: t("Capture"), index: 0 },
     { label: t("Live"), index: 1 }
   ];
-
-  const dataSourceTab = (dataSourceTabValues: HotListDataSourceTemplate) => {
-    setDataSourcePaylod(dataSourceTabValues);
-
-  }
-  const saveButtonDisable = (flag: boolean) => {
-    setisDisabled(flag);
-  }
-  const dataSourceMappingTab = (dataSourceMappingTabValues: HotListDataSourceMappingTemplate) => {
-    setDataSourceMappingPaylod(dataSourceMappingTabValues);
-
-  }
-  const onSave = () => {
-
-    history.push(
-      urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url
-    );
-  }
-  const handleClose = () => {
-    history.push(
-      urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url
-    );
-    setIsOpen(false)
-  };
-  const closeDialog = () => {
-    setIsOpen(true);
-  };
   return (
     <div className="switchLeftComponents">
 

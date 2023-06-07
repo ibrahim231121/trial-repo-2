@@ -1,16 +1,16 @@
 export type HotListDataSourceTemplate = {
   id: number;
-  Name: string;
-  SourceName: string;
-  SourceType: number;
-  UserId: string;
-  Password: string;
-  ConfirmPassword: string;
-  ConnectionType: number;
-  SchedulePeriod: number;
-  LocationPath: string;
-  Port: string;
-  LastRun: string;
-  Status: string;
-  StatusDescription: string;
+  name: string;
+  sourceName: string;
+  sourceTypeId: number;
+  userId: string;
+  password: string;
+  confirmPassword: string;
+  connectionType: number;
+  schedulePeriod: number;
+  locationPath: string;
+  port: string;
+  lastRun: string;
+  status: string;
+  statusDesc: string;
 }

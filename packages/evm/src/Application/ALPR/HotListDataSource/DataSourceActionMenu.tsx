@@ -28,7 +28,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
 
   const editDataSource = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Data_Source"));
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.sysSerial, t("Edit_Data_Source"));
   };
 
   const deleteDataSource = () => {

@@ -48,7 +48,7 @@ import {
     BASE_URL_DeviceHeartBeat_SERVICE,
     BASE_URL_COMMAND_SERVICE,
     FILE_SERVICE_URL_V2,
-    BASE_URL_ALPR
+    BASE_URL_ALPR_Service
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -89,6 +89,7 @@ import { Case, TCaseHighlight, TCaseTimeline } from '../../Application/Cases/Cas
 import { StationPolicyConfigurationTemplate } from '../../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
 import { Job, Project } from './models/AICoordinatorModels';
 import { HotListTemplate } from './models/HotListModels';
+import { HotListDataSourceTemplate } from './models/HotListDataSourceModels';
 import { AlprCapturePlateInfo } from './models/AlprCapturePlateInfo';
 
 
@@ -531,15 +532,21 @@ export const AICoordinatorAgent = {
 
 export const HotListAgent = {
 
-    getAllHotListInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-    getHotListInfoAsync: (url: string, extraHeader?: Headers[]) => requests.get<HotListTemplate>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-    addHotListItemAsync:(url: string, body: HotListTemplate) => requests.post<number>(BASE_URL_ALPR, url, body, config),
-    updateHotListItemAsync:(url: string, body: any) => requests.put<void>(BASE_URL_ALPR, url, body, config),
-    deleteHotListItemAsync:(url: string) => requests.delete<void>(BASE_URL_ALPR, url, config),
-    }
+    getAllHotListInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getHotListInfoAsync: (url: string, extraHeader?: Headers[]) => requests.get<HotListTemplate>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    addHotListItemAsync:(url: string, body: HotListTemplate) => requests.post<number>(BASE_URL_ALPR_Service, url, body, config),
+    updateHotListItemAsync:(url: string, body: any) => requests.put<void>(BASE_URL_ALPR_Service, url, body, config),
+    deleteHotListItemAsync:(url: string) => requests.delete<void>(BASE_URL_ALPR_Service, url, config),
+}
+
 
 export const AlprCapturePlatesAgent={
-    getAlprCapturePlatesInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getAlprCapturePlatesInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
 }
+export const ALPRDataSource = {
+    getDataSourceInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<HotListDataSourceTemplate[]>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+        
+}
+
 
 

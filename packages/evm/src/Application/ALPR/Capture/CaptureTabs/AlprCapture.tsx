@@ -68,7 +68,7 @@ const AlprCapture = () => {
     const [isSearchable, setIsSearchableState] = React.useState<boolean>(false)
     const { t } = useTranslation<string>();
     const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<string>("");
+    const [orderBy, setOrderBy] = React.useState<string>("NumberPlate");
     const [selectedItems, setSelectedItems] = React.useState<AlprCapturePlateInfo[]>([]);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
     const [page, setPage] = React.useState<number>(0);

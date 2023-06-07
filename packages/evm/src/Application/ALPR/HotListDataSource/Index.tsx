@@ -27,7 +27,6 @@ import DataSourceActionMenu from "../HotListDataSource/DataSourceActionMenu";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useStyles } from "../HotList/HotListCss";
 
-import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { ClickAwayListener } from "@material-ui/core";
@@ -39,7 +38,7 @@ import { ConnectionTypeDropDown, GetAlprDataSourceList, SourceTypeDropDown } fro
 
 const HotListDataSource = () => {
   const classes = useStyles();
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [page, setPage] = React.useState<number>(0);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListDataSourceTemplate[]>([]);
@@ -48,7 +47,7 @@ const HotListDataSource = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [rows, setRows] = React.useState<HotListDataSourceTemplate[]>();
+  const [rows, setRows] = React.useState<HotListDataSourceTemplate[]>([]);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -58,8 +57,36 @@ const HotListDataSource = () => {
     size: rowsPerPage,
   });
   const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
-  const SourceOptions: any = useSelector((state: RootState) => state.alprDataSourceReducer.SourceType);
-  const ConnectionTypeOptions: any = useSelector((state: RootState) => state.alprDataSourceReducer.ConnectionType);
+  const SourceOptions =
+  [{
+    id: 2,
+    label: "CSV"
+  },
+  {
+    id: 1,
+    label: "Manual"
+  },
+  {
+    id: 3,
+    label: "XML"
+  }
+  ];
+  const ConnectionTypeOptions = 
+  [{
+    id: 1,
+    label: "FTP"
+  },
+  {
+    id: 2,
+    label: "Local"
+  },
+  {
+    id: 3,
+    label: "UNC"
+  }
+  ];
+  const [sourceOptionsData, setSourceOptionsData] = React.useState<any>([]);
+  const [connectionType, setConnectionTypeOptions] = React.useState<any>([]);
   const [paging, setPaging] = React.useState<boolean>();
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
@@ -83,6 +110,53 @@ const HotListDataSource = () => {
       );
     }
   }
+
+  useEffect(() => {
+    dispatch(GetAlprDataSourceList(pageiGrid));
+    dispatch(ConnectionTypeDropDown());
+    dispatch(SourceTypeDropDown());
+  }, [])
+
+
+  useEffect(() => {
+    let alprDataSourceCopy: HotListDataSourceTemplate[] = [];
+    if (alprDataSource && alprDataSource.data!==undefined && alprDataSource.data!==null && alprDataSource.data.length>0) {
+      alprDataSourceCopy = alprDataSource.data.map((data: any) => {
+        return {
+          sysSerial: data.sysSerial,
+          name: data.name,
+          sourceName: data.sourceName,
+          userId: data.userId,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+          // connectionType: ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label === undefined ? '' : ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label,
+          connectionType: data.connectionType,
+          schedulePeriod: data.schedulePeriod,
+          locationPath: data.locationPath,
+          port: data.port,
+          lastRun: data.lastRun,
+          status: data.status,
+          statusDescription: data.statusDescription,
+          sourceTypeId: SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label
+        }
+      });
+      setRows(alprDataSourceCopy)
+    }
+  }, [alprDataSource])
+
+  useEffect(() => {
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: 'name', dir: 'asc' } });
+    setPaging(true)
+
+  }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    if (paging) {
+      dispatch(GetAlprDataSourceList(pageiGrid));
+    }
+    setPaging(false)
+  }, [pageiGrid])
+
 
   const searchText = (rowsParam: HotListDataSourceTemplate[], headCell: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
@@ -118,34 +192,45 @@ const HotListDataSource = () => {
     setIsSearchableOnChange(true)
   };
   const multiSelectCheckbox = (rowParam: HotListDataSourceTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
-    if (colIdx === 3 || colIdx === 5) {
-      let status: any = [{ id: 0, value: t("No Source") }];
+    let dropDownOption: any = []
+    let checkboxFlag: boolean = false;
+    if (colIdx === 3) {
+      dropDownOption = [{ id: 0, value: t("No Source") }];
       SourceOptions.map((x: any) => {
-        status.push({ id: x.id, value: x.label });
+        dropDownOption.push({ id: x.id, value: x.label });
       });
-
-      return (
-        <div>
-          <CBXMultiCheckBoxDataFilter
-            width={100}
-            percentage={true}
-            option={status}
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-            onChange={(value: any) => changeMultiselect(value, colIdx)}
-            onSelectedClear={() => onSelectedClear(colIdx)}
-            isCheckBox={true}
-            multiple={true}
-            selectAllLabel="All"
-          />
-        </div>
-      )
+      checkboxFlag = true;
     }
+    else if (colIdx === 5) {
+      dropDownOption = [{ id: 0, value: t("No Connection Type") }];
+      ConnectionTypeOptions.map((x: any) => {
+        dropDownOption.push({ id: x.id, value: x.label });
+      });
+      checkboxFlag = true;
+    }
+    // if (checkboxFlag) {
+    return (
+      <div>
+        <CBXMultiCheckBoxDataFilter
+          width={100}
+          percentage={true}
+          option={dropDownOption}
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(value: any) => changeMultiselect(value, colIdx)}
+          onSelectedClear={() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          multiple={true}
+          selectAllLabel="All"
+        />
+      </div>
+    )
+    // }
 
   }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
-      id: "id",
+      id: "sysSerial",
       align: "right",
       dataComponent: () => null,
       sort: false,
@@ -157,105 +242,105 @@ const HotListDataSource = () => {
     },
     {
       label: `${t("Name")}`,
-      id: "Name",
+      id: "name",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "190",
-      attributeName: "Name",
+      attributeName: "name",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
       label: `${t("Source_Name")}`,
-      id: "SourceName",
+      id: "sourceName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "SourceName",
+      attributeName: "sourceName",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
       label: `${t("Source_Type")}`,
-      id: "SourceType",
+      id: "sourceTypeId",
       align: "center",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "SourceType",
-      attributeType: "String",
+      attributeName: "sourceTypeId",
+      attributeType: "List",
       attributeOperator: "contains"
     },
     {
       label: `${t("Schedule_Period_(In_Hrs)")}`,
-      id: "SchedulePeriod",
+      id: "schedulePeriod",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "220",
-      attributeName: "SchedulePeriod",
+      attributeName: "schedulePeriod",
       attributeType: "number",
       attributeOperator: "contains"
     },
     {
       label: `${t("Connection_Type")}`,
-      id: "ConnectionType",
+      id: "connectionType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "ConnectionType",
+      attributeName: "connectionType",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
       label: `${t("Last_Run")}`,
-      id: "LastRun",
+      id: "lastRun",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "LastRun",
+      attributeName: "lastRun",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
       label: `${t("Status")}`,
-      id: "Status",
+      id: "status",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "150",
-      attributeName: "Status",
+      attributeName: "status",
       attributeType: "String",
       attributeOperator: "contains"
     },
     {
       label: `${t("Status_Description")}`,
-      id: "StatusDescription",
+      id: "statusDesc",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      attributeName: "StatusDescription",
+      attributeName: "statusDesc",
       attributeType: "String",
       attributeOperator: "contains"
     }
@@ -265,90 +350,47 @@ const HotListDataSource = () => {
     history.push(urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url);
     RemoveSidePanelClass()
   }
-  useEffect(() => {
-    debugger;
-    dispatch(GetAlprDataSourceList());
-    dispatch(ConnectionTypeDropDown());
-    dispatch(SourceTypeDropDown());
-  }, [])
-
-  useEffect(() => {
-    debugger;
-    let alprDataSourceCopy: HotListDataSourceTemplate[] = [];
-    alprDataSourceCopy = alprDataSource.map((data: any) => {
-      return {
-        id: data.id,
-        Name: data.Name,
-        SourceName: data.SourceName,
-        UserId: data.UserId,
-        Password: data.Password,
-        ConfirmPassword: data.ConfirmPassword,
-        ConnectionType: ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label === undefined ? '' : ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label,
-        SchedulePeriod: data.SchedulePeriod,
-        LocationPath: data.LocationPath,
-        Port: data.Port,
-        LastRun: data.LastRun,
-        Status: data.Status,
-        StatusDescription: data.StatusDescription,
-        SourceType: SourceOptions.find((x: any) => x.id === data.SourceType)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.SourceType)?.label
-      }
-    });
-    setRows(alprDataSourceCopy)
-  }, [alprDataSource,SourceOptions,ConnectionTypeOptions])
-
-  useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: 'name', dir: 'name' } });
-    setPaging(true)
-
-  }, [page, rowsPerPage]);
-  useEffect(() => {
-    if (paging) {
-      dispatch(GetAllHotListData(pageiGrid));
-    }
-    setPaging(false)
-  }, [pageiGrid])
 
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("Name");
 
-  //   const getFilteredHotListData = () => {
-  //     pageiGrid.gridFilter.filters = []
-  //     searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
-  //       let x: GridFilter = {
-  //         operator: headCells[item.colIdx].attributeOperator,
-  //         //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-  //         field: headCells[item.colIdx].id,
-  //         value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-  //         fieldType: headCells[item.colIdx].attributeType,
-  //       }
-  //       pageiGrid.gridFilter.filters?.push(x)
-  //     })
-  //     pageiGrid.page = 0
-  //     pageiGrid.size = rowsPerPage
+  const getFilteredDataSourceData = () => {
+    pageiGrid.gridFilter.filters = []
+    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
+      let x: GridFilter = {
+        operator: headCells[item.colIdx].attributeOperator,
+        //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+        field: headCells[item.colIdx].id,
+        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+        fieldType: headCells[item.colIdx].attributeType,
+      }
+      pageiGrid.gridFilter.filters?.push(x)
+    })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
 
-  //     if (page !== 0) {
-  //       setPage(0)
-  //     }
-  //     else {
-  //       dispatch(GetHotListData(pageiGrid));
-  //     }
-  //     setIsSearchable(false)
-  //     setIsSearchableOnChange(false)
-  //   }
-  //   const handleBlur = () => {
-  //     debugger;
-  //     if (isSearchable) {
-  //       getFilteredHotListData()
-  //     }
-  //   }
+    if (page !== 0) {
+      setPage(0)
+    }
+    else {
+      dispatch(GetAlprDataSourceList(pageiGrid));
+    }
+    setIsSearchable(false)
+    setIsSearchableOnChange(false)
+  }
+  const handleBlur = () => {
+    if (isSearchable) {
+      getFilteredDataSourceData()
+    }
+  }
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    // dispatch(getAllCategoriesFilter(pageiGrid));
+    dispatch(GetAlprDataSourceList(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -374,85 +416,84 @@ const HotListDataSource = () => {
   }, [searchData]);
 
   const handleKeyDown = (event: any) => {
-    debugger;
     if (event.key === 'Enter') {
-      //   getFilteredHotListData()
+      getFilteredDataSourceData()
     }
   }
   return (
-    // <ClickAwayListener >
+    <ClickAwayListener onClickAway={handleBlur}>
 
-    <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}>
-      <CRXToaster />
-      {rows && (
-        <CRXDataTable
-          id="CategoriesTemplateDataTable"
-          actionComponent={
+      <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}>
+        <CRXToaster />
+        {rows && (
+          <CRXDataTable
+            id="CategoriesTemplateDataTable"
+            actionComponent={
 
-            <DataSourceActionMenu
-              row={selectedActionRow}
-              selectedItems={selectedItems}
-              gridData={rows}
-            />
+              <DataSourceActionMenu
+                row={selectedActionRow}
+                selectedItems={selectedItems}
+                gridData={rows}
+              />
 
-          }
-          toolBarButton={
-            <>
-              <Restricted moduleId={0}>
-                <CRXButton
-                  id={"createHotList"}
-                  className="primary CategoriesBtn"
-                  onClick={CreateDataSourceForm}
-                >
-                  {t("Create Data Source")}
-                </CRXButton>
-              </Restricted>
-            </>
-          }
-          showTotalSelectedText={false}
-          showToolbar={true}
-          showCountText={false}
-          columnVisibilityBar={true}
-          showCustomizeIcon={true}
-          getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-          dataRows={rows}
-          headCells={headCells}
-          orderParam={order}
-          orderByParam={orderBy}
-          dragVisibility={false}
-          showCheckBoxesCol={true}
-          showActionCol={true}
-          searchHeader={true}
-          allowDragableToList={false}
-          showActionSearchHeaderCell={false}
-          className="crxTableHeight crxTableDataUi"
-          // onClearAll={clearAll}
-          getSelectedItems={(v: HotListDataSourceTemplate[]) => setSelectedItems(v)}
-          onResizeRow={resizeRowConfigTemp}
-          onHeadCellChange={onSetHeadCells}
-          setSelectedItems={setSelectedItems}
-          selectedItems={selectedItems}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          setPage={(pages: any) => setPage(pages)}
-          setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
-          totalRecords={rows?.length}
-          // setSortOrder={(sort: any) => sortingOrder(sort)}
+            }
+            toolBarButton={
+              <>
+                <Restricted moduleId={0}>
+                  <CRXButton
+                    id={"createHotList"}
+                    className="primary CategoriesBtn"
+                    onClick={CreateDataSourceForm}
+                  >
+                    {t("Create Data Source")}
+                  </CRXButton>
+                </Restricted>
+              </>
+            }
+            showTotalSelectedText={false}
+            showToolbar={true}
+            showCountText={false}
+            columnVisibilityBar={true}
+            showCustomizeIcon={true}
+            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+            dataRows={rows}
+            headCells={headCells}
+            orderParam={order}
+            orderByParam={orderBy}
+            dragVisibility={false}
+            showCheckBoxesCol={true}
+            showActionCol={true}
+            searchHeader={true}
+            allowDragableToList={false}
+            showActionSearchHeaderCell={false}
+            className="crxTableHeight crxTableDataUi"
+            // onClearAll={clearAll}
+            getSelectedItems={(v: HotListDataSourceTemplate[]) => setSelectedItems(v)}
+            onResizeRow={resizeRowConfigTemp}
+            onHeadCellChange={onSetHeadCells}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            setPage={(pages: any) => setPage(pages)}
+            setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
+            totalRecords={alprDataSource?.totalCount}
+            setSortOrder={(sort: any) => sortingOrder(sort)}
 
-          //Please dont miss this block.
-          offsetY={119}
-          stickyToolbar={130}
-          searchHeaderPosition={224}
-          dragableHeaderPosition={188}
-          //End here
+            //Please dont miss this block.
+            offsetY={119}
+            stickyToolbar={130}
+            searchHeaderPosition={224}
+            dragableHeaderPosition={188}
+            //End here
 
-          showExpandViewOption={true}
-          initialRows={rows}
-        />
-      )}
+            showExpandViewOption={true}
+            initialRows={rows}
+          />
+        )}
 
-    </div>
-    // </ClickAwayListener>
+      </div>
+    </ClickAwayListener>
 
   );
 }

@@ -1,7 +1,7 @@
 import { env } from "../../env";
 import { MAX_REQUEST_SIZE_FOR } from '../constant'
 
-export const BASE_URL_ALPR = env.REACT_APP_ALPR_URL;
+export const BASE_URL_ALPR_Service = env.REACT_APP_ALPR_SERVICE_URL;
 
 
 export const BASE_URL_SOCKET_SERVICE = env.REACT_APP_SOCKET_SERVICE_URL;
@@ -93,8 +93,8 @@ export const UPLOAD_POLICIES_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/Policies/
 export const UPLOAD_POLICIES = `${BASE_URL_SETUP_SERVICE}/Policies/UpsertUploadPolicy`;
 export const UPLOAD_POLICIES_GET_ALL_UPLOAD_POLICIES_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/GetAllUploadPolicies`;
 
-export const ALPR_HOTLIST = `${BASE_URL_ALPR}/HotList`
+export const ALPR_HOTLIST = `${BASE_URL_ALPR_Service}/HotList`
 
-export const ALPR_CAPTURE_PLATE = `${BASE_URL_ALPR}/CapturedPlate`
+export const ALPR_CAPTURE_PLATE = `${BASE_URL_ALPR_Service}/CapturedPlate`
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID

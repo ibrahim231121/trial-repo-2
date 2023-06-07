@@ -89,55 +89,55 @@ const rows = [{
   ruleExpressions: '',
   color: '',
   alertPriority: 20,
-  audio: 'as' 
+  audio: 'as'
 }
 ];
 
 export const GetAllHotListData: any = createAsyncThunk(
   'GetAllHotListData',
   async (param: any, thunkAPI) => {
-    thunkAPI.dispatch(setLoaderValue({isLoading: true}))
-    
-    const url = ALPR_HOTLIST + `?Page=${param.page+1}&Size=${param.size}`
-        let headers = [
-            {   
-                key : 'GridFilter', 
-                value : JSON.stringify(param.gridFilter)
-            },
-            {
-                key: 'GridSort', 
-                value : JSON.stringify(param.gridSort)
-            }]
-             return await HotListAgent
-             .getAllHotListInfosAsync(url, headers)
-             .then((response) => {
-                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
-                return response
-            }).catch((error: any) => {
-                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
-                console.error(error.response.data);
-                return error.response.status
-              });
+    thunkAPI.dispatch(setLoaderValue({ isLoading: true }))
+
+    const url = ALPR_HOTLIST + `?Page=${param.page + 1}&Size=${param.size}`
+    let headers = [
+      {
+        key: 'GridFilter',
+        value: JSON.stringify(param.gridFilter)
+      },
+      {
+        key: 'GridSort',
+        value: JSON.stringify(param.gridSort)
+      }]
+    return await HotListAgent
+      .getAllHotListInfosAsync(url, headers)
+      .then((response) => {
+        thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
+        return response
+      }).catch((error: any) => {
+        thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
+        console.error(error.response.data);
+        return error.response.status
+      });
   }
 );
 
 export const GetHotListData: any = createAsyncThunk(
   'GetHotListData',
   async (param: any, thunkAPI) => {
-    thunkAPI.dispatch(setLoaderValue({isLoading: true}))
-    
+    thunkAPI.dispatch(setLoaderValue({ isLoading: true }))
+
     const url = ALPR_HOTLIST + `/${param}`
-        
-             return await HotListAgent
-             .getHotListInfoAsync(url)
-             .then((response) => {
-                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
-                return response
-            }).catch((error: any) => {
-                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
-                console.error(error.response.data);
-                return error.response.status
-              });
+
+    return await HotListAgent
+      .getHotListInfoAsync(url)
+      .then((response) => {
+        thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
+        return response
+      }).catch((error: any) => {
+        thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
+        console.error(error.response.data);
+        return error.response.status
+      });
   }
 );
 
@@ -146,15 +146,15 @@ export const GetHotListData: any = createAsyncThunk(
 
 export const HotListSlice = createSlice({
   name: 'hotList',
-  initialState: { HotList: [], hotListDetails:{} },
+  initialState: { HotList: [], hotListDetails: {} },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(GetAllHotListData.fulfilled, (state: any, { payload }) => {
       state.HotList = payload;
     })
-    .addCase(GetHotListData.fulfilled, (state: any, { payload }) => {
-      state.hotListDetails = payload;
-    })
+      .addCase(GetHotListData.fulfilled, (state: any, { payload }) => {
+        state.hotListDetails = payload;
+      })
   }
 });
 

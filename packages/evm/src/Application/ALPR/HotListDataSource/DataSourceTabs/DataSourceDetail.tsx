@@ -67,24 +67,24 @@ const DataSourceDetail = (props: any) => {
     //Initial state Payload 
     const [DataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>({
         id: 0,
-        Name: '',
-        SourceName: "",
-        SourceType: 0,
-        UserId: "",
-        Password: "",
-        ConfirmPassword: "",
-        ConnectionType: 0,
-        SchedulePeriod: 0,
-        LocationPath: "",
-        Port: "",
-        LastRun: '',
-        Status: "",
-        StatusDescription: "",
+        name: '',
+        sourceName: "",
+        sourceTypeId: 0,
+        userId: "",
+        password: "",
+        confirmPassword: "",
+        connectionType: 0,
+        schedulePeriod: 0,
+        locationPath: "",
+        port: "",
+        lastRun: '',
+        status: "",
+        statusDesc: "",
     });
 
     //Use effect to check validation in initial payload state everytime whenever any changes occurs in text boxes
     useEffect(() => {
-        if (DataSourcePaylod.Name !== "" && DataSourcePaylod.Password !== "" && DataSourcePaylod.ConfirmPassword.toUpperCase() === DataSourcePaylod.Password.toUpperCase()) {
+        if (DataSourcePaylod.name !== "" && DataSourcePaylod.password !== "" && DataSourcePaylod.confirmPassword.toUpperCase() === DataSourcePaylod.password.toUpperCase()) {
             props.saveButtonDisable(false);
             props.dataSource(DataSourcePaylod);
         }
@@ -110,34 +110,34 @@ const DataSourceDetail = (props: any) => {
     // on text box change function
     const setFieldValue = (field: string, e: any) => {
         if (field === "Name") {
-            setDataSourcePaylod({ ...DataSourcePaylod, Name: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, name: e });
         }
         else if (field === "SourceType") {
-            setDataSourcePaylod({ ...DataSourcePaylod, SourceType: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, sourceTypeId: e });
         }
         else if (field === "SourceName") {
-            setDataSourcePaylod({ ...DataSourcePaylod, SourceName: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, sourceName: e });
         }
         else if (field === "UserId") {
-            setDataSourcePaylod({ ...DataSourcePaylod, UserId: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, userId: e });
         }
         else if (field === "Password") {
-            setDataSourcePaylod({ ...DataSourcePaylod, Password: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, password: e });
         }
         else if (field === "ConfirmPassword") {
-            setDataSourcePaylod({ ...DataSourcePaylod, ConfirmPassword: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, confirmPassword: e });
         }
         else if (field === "ConnectionType") {
-            setDataSourcePaylod({ ...DataSourcePaylod, ConnectionType: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, connectionType: e });
         }
         else if (field === "SchedulePeriod") {
-            setDataSourcePaylod({ ...DataSourcePaylod, SchedulePeriod: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, schedulePeriod: e });
         }
         else if (field === "LocationPath") {
-            setDataSourcePaylod({ ...DataSourcePaylod, LocationPath: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, locationPath: e });
         }
         else if (field === "Port") {
-            setDataSourcePaylod({ ...DataSourcePaylod, Port: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, port: e });
         }
 
     }
@@ -164,9 +164,9 @@ const DataSourceDetail = (props: any) => {
                                     <TextField
                                         required={true}
                                         label={t("Name")+':'}
-                                        value={DataSourcePaylod.Name}
+                                        value={DataSourcePaylod.name}
                                         onChange={(e: any) => setFieldValue("Name", e.target.value)}
-                                        error={DataSourcePaylod.Name === ''}
+                                        error={DataSourcePaylod.name === ''}
                                         errorMsg={"Name_field_required"}
                                     />
                                 </div>
@@ -181,7 +181,7 @@ const DataSourceDetail = (props: any) => {
                                         options={SourceOptions}
                                         required={false}
                                         isSearchable={true}
-                                        value={DataSourcePaylod.SourceType === 0 ? "" : { id: DataSourcePaylod.SourceType, label: SourceOptions.find((x: any) => x.id === DataSourcePaylod.SourceType)?.label }}
+                                        value={DataSourcePaylod.sourceTypeId === 0 ? "" : { id: DataSourcePaylod.sourceTypeId, label: SourceOptions.find((x: any) => x.id === DataSourcePaylod.sourceTypeId)?.label }}
 
                                         onChange={(
                                             e: React.SyntheticEvent,
@@ -199,7 +199,7 @@ const DataSourceDetail = (props: any) => {
                                     <TextField
                                         required={false}
                                         label={t("Source_Name")+':'}
-                                        value={DataSourcePaylod.SourceName}
+                                        value={DataSourcePaylod.sourceName}
                                         onChange={(e: any) => setFieldValue("SourceName", e.target.value)}
 
                                     />
@@ -208,7 +208,7 @@ const DataSourceDetail = (props: any) => {
                                     <TextField
                                         required={false}
                                         label={t("User_Id")+':'}
-                                        value={DataSourcePaylod.UserId}
+                                        value={DataSourcePaylod.userId}
                                         onChange={(e: any) => setFieldValue("UserId", e.target.value)}
 
                                     />
@@ -217,9 +217,9 @@ const DataSourceDetail = (props: any) => {
                                     <TextField
                                         required={true}
                                         label={t("Password")+':'}
-                                        value={DataSourcePaylod.Password}
+                                        value={DataSourcePaylod.password}
                                         onChange={(e: any) => setFieldValue("Password", e.target.value)}
-                                        error={DataSourcePaylod.Password === ''}
+                                        error={DataSourcePaylod.password === ''}
                                         errorMsg={t("Password_is_required")}
                                     // onBlur={(e: any) => checkRequiredFields(e.target.value)}
                                     />
@@ -228,9 +228,9 @@ const DataSourceDetail = (props: any) => {
                                     <TextField
                                         required={true}
                                         label={t("Confirm_Password")+':'}
-                                        value={DataSourcePaylod.ConfirmPassword}
+                                        value={DataSourcePaylod.confirmPassword}
                                         onChange={(e: any) => setFieldValue("ConfirmPassword", e.target.value)}
-                                        error={DataSourcePaylod.Password !== DataSourcePaylod.ConfirmPassword}
+                                        error={DataSourcePaylod.password !== DataSourcePaylod.confirmPassword}
                                         errorMsg={t("Password_didn't_match")}
                                     />
                                 </div>
@@ -251,8 +251,8 @@ const DataSourceDetail = (props: any) => {
                                             options={ConnectionTypeOptions}
                                             required={false}
                                             isSearchable={true}
-                                            value={DataSourcePaylod.ConnectionType === 0 ? { id: 1, label: 'FTP' } :
-                                                { id: DataSourcePaylod.ConnectionType, label: ConnectionTypeOptions.find((x: any) => x.id === DataSourcePaylod.ConnectionType)?.label }}
+                                            value={DataSourcePaylod.connectionType === 0 ? { id: 1, label: 'FTP' } :
+                                                { id: DataSourcePaylod.connectionType, label: ConnectionTypeOptions.find((x: any) => x.id === DataSourcePaylod.connectionType)?.label }}
 
                                             onChange={(
                                                 e: React.SyntheticEvent,
@@ -272,7 +272,7 @@ const DataSourceDetail = (props: any) => {
                                         required={false}
                                         label={t("Schedule_Period")+':'}
                                         multiline={false}
-                                        value={DataSourcePaylod.SchedulePeriod === 0 ? "" : DataSourcePaylod.SchedulePeriod}
+                                        value={DataSourcePaylod.schedulePeriod === 0 ? "" : DataSourcePaylod.schedulePeriod}
                                         onChange={(e: any) => setFieldValue("SchedulePeriod", e.target.value)}
 
                                     />
@@ -282,7 +282,7 @@ const DataSourceDetail = (props: any) => {
                                         required={false}
                                         label={t("Location_Path")+':'}
                                         multiline={false}
-                                        value={DataSourcePaylod.LocationPath}
+                                        value={DataSourcePaylod.locationPath}
                                         onChange={(e: any) => setFieldValue("LocationPath", e.target.value)}
 
                                     />
@@ -292,7 +292,7 @@ const DataSourceDetail = (props: any) => {
                                         required={false}
                                         label={t("Port")+':'}
                                         multiline={false}
-                                        value={DataSourcePaylod.Port}
+                                        value={DataSourcePaylod.port}
                                         onChange={(e: any) => setFieldValue("Port", e.target.value)}
 
                                     />

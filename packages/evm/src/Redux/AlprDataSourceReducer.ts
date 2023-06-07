@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { ALPRDataSource } from '../utils/Api/ApiAgent';
+import { setLoaderValue } from './loaderSlice';
 const rows = [{
   id: 1,
   Name: 'John',
@@ -138,11 +140,11 @@ const rows = [{
 //Source Options DropDown
 const SourceOptions =
   [{
-    id: 1,
+    id: 2,
     label: "CSV"
   },
   {
-    id: 2,
+    id: 1,
     label: "Manual"
   },
   {
@@ -186,27 +188,31 @@ const MappingData=[
     ImportSerialId: '',
     ViolationInfo: ''
   }]
+  let Datasource="HotListDataSource";
+
 export const GetAlprDataSourceList: any = createAsyncThunk(
   'GetAlprDataSourceList',
-  async () => {
-    // let temp: any = rows;
-    // if (param.gridFilter.filters.length > 0) {
-    //   const array = param.gridFilter.filters.map((item: any) => {
-    //     if (item.value.includes('@')) {
-    //       let temp2 = item.value.split('@');
-    //       temp = temp.filter((x: any) => item.value.toLowerCase().includes(x[`${item.field}`].toString().toLowerCase()));
-    //     }
-    //     else {
-    //       temp = temp.filter((x: any) => x[`${item.field}`].toString().toLowerCase().includes(item.value.toLowerCase()));
-    //     }
-    //   });
-    //   console.log("filterd array", temp);
-    //   return temp;
-    // }
-    // else {
-
-      return rows;
-    // }
+    async (pageiFilter: any, thunkAPI) => {
+      thunkAPI.dispatch(setLoaderValue({isLoading: true}))
+      const url = Datasource+`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
+      let headers = [
+          {   
+              key : 'GridFilter', 
+              value : JSON.stringify(pageiFilter.gridFilter)
+          },
+          {
+              key: 'GridSort', 
+              value : JSON.stringify(pageiFilter.gridSort)
+          }]
+      return await ALPRDataSource.getDataSourceInfoAsync(url, headers)
+      .then((response:any) => {
+        debugger;
+          thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+          return response
+      }).catch((error: any) => {
+          thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+          console.error(error.response.data);
+        });
   }
 );
 
