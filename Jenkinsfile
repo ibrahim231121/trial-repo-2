@@ -107,8 +107,12 @@ pipeline {
         dir('publish') {
           script {
             def dockerImageName = scm.branches[0].name.replaceAll('^origin/', '').toLowerCase().replaceAll('[^a-z0-9]', '-').replaceAll('-+', '-').replaceAll('(^-+|-+$)', '')
+            def image = docker.build("evm4-ui-alpr-${dockerImageName}:${currentBuild.displayName}")
             docker.withRegistry(env.NEXUS_DOCKER_HOSTED_URL, 'nexus-jenkins') {
-              def image = docker.build("evm4-ui-alpr-${dockerImageName}:${currentBuild.displayName}")
+              image.push(currentBuild.displayName)
+              image.push('latest')
+            }
+            docker.withRegistry(env.AZURE_CONTAINER_REGISTRY_URL, 'azure-cr-service-principal-userpass') {
               image.push(currentBuild.displayName)
               image.push('latest')
             }
