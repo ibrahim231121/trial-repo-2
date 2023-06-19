@@ -116,14 +116,14 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
               </div>
             </Restricted>
           </MenuItem>
-          <MenuItem onClick={deleteDataSource}>
+          {/* <MenuItem onClick={deleteDataSource}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Delete")}</div>
               </div>
             </Restricted>
-          </MenuItem>
+          </MenuItem> */}
           
         </Menu>
       </div>

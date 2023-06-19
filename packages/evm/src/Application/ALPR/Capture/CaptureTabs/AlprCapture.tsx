@@ -197,7 +197,7 @@ const AlprCapture = () => {
     } 
 
     return (
-      <CRXColumn item xs={11}>
+      <CRXColumn item xs={11} >
         <DateTimeComponent
           showCompact={false}
           reset={reset}

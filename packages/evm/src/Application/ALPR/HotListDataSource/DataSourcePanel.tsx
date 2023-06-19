@@ -17,27 +17,96 @@ import "./DataSourcePanel.scss"
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import { HotListDataSourceMappingTemplate } from "../../../utils/Api/models/HotlistDataSourceMapping";
 import { RootState } from "../../../Redux/rootReducer";
-import { GetAlprDataSourceList, SourceMapping } from "../../../Redux/AlprDataSourceReducer";
+import { GetAlprDataSourceById } from "../../../Redux/AlprDataSourceReducer";
 import { CRXConfirmDialog } from "@cb/shared";
+import { ALPRDataSource } from "../../../utils/Api/ApiAgent";
 
 const DataSourceFormsAndFields = () => {
+  const { id } = useParams<{ id: string }>();//get data from url 
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
-  const [dataSourcePayload, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>();
-  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>();
+  const [dataSourcePayload, setDataSourcePayload] = React.useState<HotListDataSourceTemplate>({
+    syserial: 0,
+    sourceTypeId: 0,
+    name: '',
+    sourceName: '',
+    sourceTypeName: '',
+    user: '',
+    password: '',
+    confirmPassword: '',
+    connectionType: '',
+    schedulePeriod: '',
+    locationPath: '',
+    port: '',
+    lastRun: '',
+    status: '',
+    statusDesc: '',
+    sourceType:{sysSerial:0,sourceTypeName:''}
+  });
+  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>({ LicensePlate: '',
+  DateOfInterest: '',
+  LicenseType: '',
+  AgencyId: '',
+  State: '',
+  FirstName: '',
+  LastName: '',
+  Alias: '',
+  Year: '',
+  Make: '',
+  Model: '',
+  Color: '',
+  Style: '',
+  Notes: '',
+  NCICNumber: '',
+  ImportSerial: '',
+  ViolationInfo: ''});
   const history = useHistory();
   const [isDisabled, setisDisabled] = React.useState<boolean>(true);
   const [isDisabledMapping, setIsDisabledMapping] = React.useState<boolean>(true);
-  const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
-  const sourceMappingData: any = useSelector((state: RootState) => state.alprDataSourceReducer.SourceMapping);
+  const dataSourceDataById: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSourceDataById);
   const [isOpen, setIsOpen] = React.useState(false);
   const dispatch = useDispatch();
-  
-  // useEffect(() => {
-  //   dispatch(SourceMapping())
-  //   dispatch(GetAlprDataSourceList())
-  // }, [])
+  const Datasource = "HotListDataSource";
 
+  useEffect(() => {
+    if (id !== ':id') {
+      dispatch(GetAlprDataSourceById(id))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (id !== ':id' && Object.keys(dataSourceDataById).length > 0) {
+      setDataSourcePayload(dataSourceDataById)
+      let dataSouceMappingData: HotListDataSourceMappingTemplate = JSON.parse(dataSourceDataById?.schemaDefinition) as HotListDataSourceMappingTemplate
+      if (dataSouceMappingData && dataSouceMappingData.DateOfInterest !== '' && dataSouceMappingData?.LicensePlate !== '') {
+        setIsDisabledMapping(false);
+      } else {
+        setIsDisabledMapping(true);
+      }
+      setDataSourceMappingPaylod(dataSouceMappingData)
+    }else
+    {
+      let temp={ LicensePlate: '',
+      DateOfInterest: '',
+      LicenseType: '',
+      AgencyId: '',
+      State: '',
+      FirstName: '',
+      LastName: '',
+      Alias: '',
+      Year: '',
+      Make: '',
+      Model: '',
+      Color: '',
+      Style: '',
+      Notes: '',
+      NCICNumber: '',
+      ImportSerial: '',
+      ViolationInfo: '',
+      sourceType:{syserial:0,sourceTypeName:''}}
+      setDataSourceMappingPaylod(temp);
+    }
+  }, [dataSourceDataById])
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -48,7 +117,7 @@ const DataSourceFormsAndFields = () => {
   ];
 
   const dataSourceTab = (dataSourceTabValues: HotListDataSourceTemplate) => {
-    setDataSourcePaylod(dataSourceTabValues);
+    setDataSourcePayload(dataSourceTabValues);
 
   }
   const saveButtonDisable = (flag: boolean) => {
@@ -63,7 +132,64 @@ const DataSourceFormsAndFields = () => {
 
   }
   const onSave = () => {
+    if (+id > 0) {
+      console.log (dataSourcePayload?.sourceType)
+      let requestBody = {
+        syserial: +id,
+        name: dataSourcePayload?.name,
+        sourceName: dataSourcePayload?.sourceName,
+        sourceTypeName: dataSourcePayload?.sourceTypeName,
+        sourceTypeId: dataSourcePayload?.sourceTypeId,
+        userId: dataSourcePayload?.user,
+        password: dataSourcePayload?.password,
+        confirmPassword: dataSourcePayload?.password,
+        connectionType: dataSourcePayload?.connectionType,
+        schedulePeriod: dataSourcePayload?.schedulePeriod,
+        locationPath: dataSourcePayload?.locationPath,
+        port: dataSourcePayload?.port,
+        lastRun: dataSourcePayload?.lastRun,
+        status: dataSourcePayload?.status,
+        statusDesc: dataSourcePayload?.statusDesc,
+        schemaDefinition: JSON.stringify(dataSourceMappingPayload),
+        sourceType: dataSourcePayload?.sourceType,
+      }
+      const urlEdit = Datasource + '/' + `${id}`;
+      ALPRDataSource.updateDataSource(urlEdit, requestBody).then(() => {
 
+      }).catch((e: any) => {
+        //      catchError(e);
+      });
+    }else
+    {
+      let requestBody = {
+        syserial: 0,
+        name: dataSourcePayload?.name,
+        sourceName: dataSourcePayload?.sourceName,
+        sourceTypeName: dataSourcePayload?.sourceTypeName,
+        sourceTypeId: dataSourcePayload?.sourceTypeId,
+        userId: dataSourcePayload?.user,
+        password: dataSourcePayload?.password,
+        confirmPassword: dataSourcePayload?.password,
+        connectionType: dataSourcePayload?.connectionType,
+        schedulePeriod: dataSourcePayload?.schedulePeriod,
+        locationPath: dataSourcePayload?.locationPath,
+        port: dataSourcePayload?.port,
+        lastRun: dataSourcePayload?.lastRun,
+        status: dataSourcePayload?.status,
+        statusDesc: dataSourcePayload?.statusDesc,
+        schemaDefinition: '',
+        sourceType: {
+          SysSerial: dataSourcePayload?.sourceTypeId,
+          SourceTypeName: dataSourcePayload?.sourceTypeName
+        },
+      }
+      const urlEdit = Datasource;
+      ALPRDataSource.addDataSource(urlEdit, requestBody).then(() => {
+
+      }).catch((e: any) => {
+        //      catchError(e);
+      });
+    }
     history.push(
       urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url
     );
@@ -85,14 +211,17 @@ const DataSourceFormsAndFields = () => {
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130} />
       <CrxTabPanel value={value} index={0}>
         <div>
-          <DataSourceDetail dataSource={dataSourceTab} saveButtonDisable={saveButtonDisable} DataSourceData={alprDataSource} />
+          {Object.keys(dataSourcePayload).length > 0 ?
+            // {dataSourcePayload ?
+            <DataSourceDetail dataSource={dataSourceTab} saveButtonDisable={saveButtonDisable} dataSourceData={dataSourcePayload} /> : <div></div>}
         </div>
       </CrxTabPanel>
 
       <CrxTabPanel value={value} index={1}>
         <div >
           {/* calling component here */}
-          <DataSourceMapping dataSourceMappingTab={dataSourceMappingTab} saveBtnDisblFromMapping={saveBtnDisblFromMapping} sourceMappingData={sourceMappingData} />
+          {dataSourceMappingPayload ?
+            <DataSourceMapping dataSourceMappingTab={dataSourceMappingTab} saveBtnDisblFromMapping={saveBtnDisblFromMapping} sourceMappingData={dataSourceMappingPayload} /> : <div></div>}
         </div>
       </CrxTabPanel>
       <div className="tab-bottom-buttons stickyFooter_Tab">

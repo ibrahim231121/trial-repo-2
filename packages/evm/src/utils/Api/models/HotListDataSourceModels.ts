@@ -20,18 +20,19 @@ export type HotListDataSourceMappingTemplate = {
 
 export type HotListDataSourceTemplate = {
   syserial: number;
+  sourceTypeId: number;
   name: string;
   sourceName: string;
   sourceTypeName: string;
-  userId: string;
+  user: string;
   password: string;
   confirmPassword: string;
-  connectionType: number;
-  schedulePeriod: number;
+  connectionType: string;
+  schedulePeriod: string;
   locationPath: string;
   port: string;
   lastRun: string;
   status: string;
   statusDesc: string;
-  mappingFields:HotListDataSourceMappingTemplate
+  sourceType:{sysSerial:number,sourceTypeName:string}
 }

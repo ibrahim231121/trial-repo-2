@@ -145,7 +145,7 @@ const HotListDataSource = () => {
   }, [alprDataSource])
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: 'name', dir: 'asc' } });
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: orderBy, dir: order } });
     setPaging(true)
 
   }, [page, rowsPerPage]);

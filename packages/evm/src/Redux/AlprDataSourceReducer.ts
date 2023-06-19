@@ -204,10 +204,26 @@ export const GetAlprDataSourceList: any = createAsyncThunk(
               key: 'GridSort', 
               value : JSON.stringify(pageiFilter.gridSort)
           }]
-      return await ALPRDataSource.getDataSourceInfoAsync(url, headers)
+      return await ALPRDataSource.getAllDataSourceInfoAsync(url, headers)
       .then((response:any) => {
           thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
           return response
+      }).catch((error: any) => {
+          thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+          console.error(error.response.data);
+        });
+  }
+);
+
+export const GetAlprDataSourceById: any = createAsyncThunk(
+  'GetAlprDataSourceById',
+    async (id:number, thunkAPI) => {
+      thunkAPI.dispatch(setLoaderValue({isLoading: true}))
+      const url = Datasource+`/${id}`
+      return await ALPRDataSource.getDataSourceData(url)
+      .then((response:any) => {
+          thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+          return response;
       }).catch((error: any) => {
           thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
           console.error(error.response.data);
@@ -250,7 +266,7 @@ export const SourceMapping:any=createAsyncThunk
 export const AlprDataSourceSlice = createSlice({
   
   name: 'AlprDataSource',
-  initialState: { DataSource: [], ConnectionType:[],SourceType:[] ,SourceMapping:[]},
+  initialState: { DataSource: [], ConnectionType:[],SourceType:[] ,SourceMapping:[],DataSourceDataById:{}},
   reducers: {},
   
   extraReducers: (builder) => {
@@ -265,6 +281,9 @@ export const AlprDataSourceSlice = createSlice({
       })
       .addCase(SourceMapping.fulfilled, (state: any, { payload }) => {
         state.SourceMapping = payload;
+      })
+      .addCase(GetAlprDataSourceById.fulfilled, (state: any, { payload }) => {
+        state.DataSourceDataById = payload;
       })
   }
 });

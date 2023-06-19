@@ -12,40 +12,28 @@ import { SourceMapping } from "../../../../Redux/AlprDataSourceReducer"
 
 
 const DataSourceMapping = (props: any) => {
-    const [sourceMappingData, setsourceMappingData] = React.useState<any>([]);
     const [mappingPayload, setmappingPayload]: any = React.useState<HotListDataSourceMappingTemplate>(
         {
-            id: 0,
             LicensePlate: '',
             DateOfInterest: '',
             LicenseType: '',
             AgencyId: '',
-            StateId: '',
+            State: '',
             FirstName: '',
             LastName: '',
             Alias: '',
-            VehicleYear: '',
-            VehicleMake: '',
-            VehicleModel: '',
-            VehicleColor: '',
-            VehicleStyle: '',
+            Year: '',
+            Make: '',
+            Model: '',
+            Color: '',
+            Style: '',
             Notes: '',
             NCICNumber: '',
-            ImportSerialId: '',
+            ImportSerial: '',
             ViolationInfo: '',
         });
 
     const { t } = useTranslation<string>();
-    const minStartDate = () => {
-        var currentDate = new Date();
-        var mm = '' + (currentDate.getMonth() + 1);
-        var dd = '' + currentDate.getDate();
-        var yyyy = currentDate.getFullYear();
-
-        if (mm.length < 2) mm = '0' + mm;
-        if (dd.length < 2) dd = '0' + dd;
-        return [yyyy, mm, dd].join('-') + 'T00:00:00';
-    };
     const setFieldValue = (field: string, e: any) => {
         switch (field) {
             case "LicensePlate":
@@ -65,7 +53,7 @@ const DataSourceMapping = (props: any) => {
                 break;
 
             case "StateId":
-                setmappingPayload({ ...mappingPayload, StateId: e });
+                setmappingPayload({ ...mappingPayload, State: e });
                 break;
 
             case "FirstName":
@@ -81,23 +69,23 @@ const DataSourceMapping = (props: any) => {
                 break;
 
             case "VehicleYear":
-                setmappingPayload({ ...mappingPayload, VehicleYear: e });
+                setmappingPayload({ ...mappingPayload, Year: e });
                 break;
 
             case "VehicleMake":
-                setmappingPayload({ ...mappingPayload, VehicleMake: e });
+                setmappingPayload({ ...mappingPayload, Make: e });
                 break;
 
             case "VehicleModel":
-                setmappingPayload({ ...mappingPayload, VehicleModel: e });
+                setmappingPayload({ ...mappingPayload, Model: e });
                 break;
 
             case "VehicleColor":
-                setmappingPayload({ ...mappingPayload, VehicleColor: e });
+                setmappingPayload({ ...mappingPayload, Color: e });
                 break;
 
             case "VehicleStyle":
-                setmappingPayload({ ...mappingPayload, VehicleStyle: e });
+                setmappingPayload({ ...mappingPayload, Style: e });
                 break;
             case "Notes":
                 setmappingPayload({ ...mappingPayload, Notes: e });
@@ -108,7 +96,7 @@ const DataSourceMapping = (props: any) => {
                 break;
 
             case "serialId":
-                setmappingPayload({ ...mappingPayload, ImportSerialId: e });
+                setmappingPayload({ ...mappingPayload, ImportSerial: e });
                 break;
             case "ViolationInfo":
                 setmappingPayload({ ...mappingPayload, ViolationInfo: e });
@@ -119,16 +107,15 @@ const DataSourceMapping = (props: any) => {
         }
     }
     useEffect(() => {
-        setsourceMappingData(props.sourceMappingData)
+        console.log(props?.sourceMappingData)
+        if (props?.sourceMappingData) {
+            setmappingPayload(props.sourceMappingData)
+        }
     }, [])
 
-    useEffect(() => {
-        if (sourceMappingData.length > 0)
-            setmappingPayload(sourceMappingData[0])
-    }, [sourceMappingData])
 
     useEffect(() => {
-        if (mappingPayload.length > 0 && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
+        if (mappingPayload && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
             props.dataSourceMappingTab(mappingPayload);
             props.saveBtnDisblFromMapping(false);
         }else
@@ -147,59 +134,48 @@ const DataSourceMapping = (props: any) => {
                             <TextField
                                 required={true}
                                 label={t("License_Plate") + ':'}
-                                value={mappingPayload.LicensePlate}
+                                value={mappingPayload?.LicensePlate}
                                 onChange={(e: any) => setFieldValue("LicensePlate", e.target.value)}
-                                error={mappingPayload.LicensePlate === ''}
+                                error={mappingPayload?.LicensePlate === ''}
                                 errorMsg={t("License_Plate_field_required")}
                             />
                             <TextField
                                 required={true}
                                 label={t("Date_of_Interest") + ':'}
-                                value={mappingPayload.DateOfInterest}
+                                value={mappingPayload?.DateOfInterest}
                                 onChange={(e: any) => setFieldValue("DateOfInterest", e.target.value)}
-                                error={mappingPayload.DateOfInterest === ''}
+                                error={mappingPayload?.DateOfInterest === ''}
                                 errorMsg={t("Date_of_Interest_field_required")}
                             />
-                            {/* <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
-                                <label>{t("Date_of_Interest")}</label>
-                                <CRXInputDatePicker
-                                    value={mappingPayload.DateOfInterest}
-                                    type='datetime-local'
-                                    className='dateTimeInput'
-                                    onChange={(e: any) => setFieldValue('DateOfInterest', e.target.value)}
-                                    minDate={minStartDate()}
-                                    maxDate=''
-                                />
-                            </div> */}
                             <TextField
                                 required={false}
                                 label={t("License_Type") + ':'}
-                                value={mappingPayload.LicenseType}
+                                value={mappingPayload?.LicenseType}
                                 onChange={(e: any) => setFieldValue("LicenseType", e.target.value)}
 
                             />
                             <TextField
                                 required={false}
                                 label={t("Agency_Id") + ":"}
-                                value={mappingPayload.AgencyId}
+                                value={mappingPayload?.AgencyId}
                                 onChange={(e: any) => setFieldValue("AgencyId", e.target.value)}
                             />
                             <TextField
                                 required={false}
                                 label={t("State_Id") + ":"}
-                                value={mappingPayload.StateId}
+                                value={mappingPayload?.State}
                                 onChange={(e: any) => setFieldValue("StateId", e.target.value)}
                             />
                             <TextField
                                 required={false}
                                 label={t("First_Name") + ":"}
-                                value={mappingPayload.FirstName}
+                                value={mappingPayload?.FirstName}
                                 onChange={(e: any) => setFieldValue("FirstName", e.target.value)}
                             />
                             <TextField
                                 required={false}
                                 label={t("Last_Name") + ":"}
-                                value={mappingPayload.LastName}
+                                value={mappingPayload?.LastName}
                                 onChange={(e: any) => setFieldValue("LastName", e.target.value)}
                             />
                         </Grid>
@@ -211,38 +187,38 @@ const DataSourceMapping = (props: any) => {
                                     <TextField
                                         required={false}
                                         label={t("Alias") + ":"}
-                                        value={mappingPayload.Alias}
+                                        value={mappingPayload?.Alias}
                                         onChange={(e: any) => setFieldValue("Alias", e.target.value)}
                                     />
 
                                     <TextField
                                         required={false}
                                         label={t("Vehicle_Year") + ":"}
-                                        value={mappingPayload.VehicleYear}
+                                        value={mappingPayload?.Year}
                                         onChange={(e: any) => setFieldValue("VehicleYear", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Vehicle_Make") + ":"}
-                                        value={mappingPayload.VehicleMake}
+                                        value={mappingPayload?.Make}
                                         onChange={(e: any) => setFieldValue("VehicleMake", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Vehicle_Model") + ":"}
-                                        value={mappingPayload.VehicleModel}
+                                        value={mappingPayload?.Model}
                                         onChange={(e: any) => setFieldValue("VehicleModel", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Vehicle_Color") + ":"}
-                                        value={mappingPayload.VehicleColor}
+                                        value={mappingPayload?.Color}
                                         onChange={(e: any) => setFieldValue("VehicleColor", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Vehicle_Style") + ":"}
-                                        value={mappingPayload.VehicleStyle}
+                                        value={mappingPayload?.Style}
                                         onChange={(e: any) => setFieldValue("VehicleStyle", e.target.value)}
                                     />
                                 </div>
@@ -254,26 +230,26 @@ const DataSourceMapping = (props: any) => {
                                     <TextField
                                         required={false}
                                         label={t("Notes") + ":"}
-                                        value={mappingPayload.Notes}
+                                        value={mappingPayload?.Notes}
                                         onChange={(e: any) => setFieldValue("Notes", e.target.value)}
                                     />
 
                                     <TextField
                                         required={false}
                                         label={t("NCIC_Number") + ":"}
-                                        value={mappingPayload.NcicNumber}
+                                        value={mappingPayload?.NCICNumber}
                                         onChange={(e: any) => setFieldValue("NcicNumber", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Import_Serial_Id") + ":"}
-                                        value={mappingPayload.serialId}
+                                        value={mappingPayload?.ImportSerial}
                                         onChange={(e: any) => setFieldValue("serialId", e.target.value)}
                                     />
                                     <TextField
                                         required={false}
                                         label={t("Violation_Info") + ":"}
-                                        value={mappingPayload.ViolationInfo}
+                                        value={mappingPayload?.ViolationInfo}
                                         onChange={(e: any) => setFieldValue("ViolationInfo", e.target.value)}
                                     />
                                 </div>
