@@ -25,9 +25,27 @@ const dataSouceInitialPayload={
     ViolationInfo: '',
 }
 const DataSourceMapping = (props: any) => {
+    
+    const { t } = useTranslation<string>();
     const [mappingPayload, setmappingPayload]: any = React.useState<HotListDataSourceMappingTemplate>(dataSouceInitialPayload);
 
-    const { t } = useTranslation<string>();
+    useEffect(() => {
+        if (props?.sourceMappingData) {
+            setmappingPayload(props.sourceMappingData)
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if (mappingPayload && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
+            props.dataSourceMappingTab(mappingPayload);
+            props.saveBtnDisblFromMapping(false);
+        } else {
+            props.saveBtnDisblFromMapping(true);
+        }
+
+    }, [mappingPayload])
+    
     const setFieldValue = (field: string, e: any) => {
         let lengthRegex = /^.{0,20}$/;
         switch (field) {
@@ -118,23 +136,6 @@ const DataSourceMapping = (props: any) => {
                 break;
         }
     }
-    useEffect(() => {
-        console.log(props?.sourceMappingData)
-        if (props?.sourceMappingData) {
-            setmappingPayload(props.sourceMappingData)
-        }
-    }, [])
-
-
-    useEffect(() => {
-        if (mappingPayload && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
-            props.dataSourceMappingTab(mappingPayload);
-            props.saveBtnDisblFromMapping(false);
-        } else {
-            props.saveBtnDisblFromMapping(true);
-        }
-
-    }, [mappingPayload])
     return (
         <div className="CrxCreateDataSourceMapping CreateDataSourceMappingUi">
             <div className="modalEditCrx">

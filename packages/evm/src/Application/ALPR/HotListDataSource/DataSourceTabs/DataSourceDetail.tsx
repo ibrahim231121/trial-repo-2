@@ -10,12 +10,8 @@ import { useTranslation } from "react-i18next";
 import { HotListDataSourceMappingTemplate, HotListDataSourceTemplate } from "../../../../utils/Api/models/HotListDataSourceModels";
 import './DataSourceDetail.scss';
 import { useStyles } from "../DataSourceStyling/DataSource";
-import * as Yup from "yup";
-import { urlList, urlNames } from "../../../../utils/urlList";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../Redux/rootReducer";
-import {  GetAlprDataSourceList } from "../../../../Redux/AlprDataSourceReducer"
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../../GlobalDropdown'
 
 
@@ -35,39 +31,13 @@ const DataSourceInitialData: HotListDataSourceTemplate = {
     lastRun: '',
     status: "",
     statusDesc: "",
-    sourceType: { sysSerial: 0, sourceTypeName: '' }
-    // mappingFields: mappingInitialData
-}
-
-
-const DataSourceInitialData: HotListDataSourceTemplate = {
-    syserial: 0,
-    sourceTypeId: 0,
-    name: '',
-    sourceName: "",
-    sourceTypeName: '',
-    user: "",
-    password: "",
-    confirmPassword: "",
-    connectionType: '',
-    schedulePeriod: '',
-    locationPath: "",
-    port: "",
-    lastRun: '',
-    status: "",
-    statusDesc: "",
-    sourceType:{sysSerial:0,sourceTypeName:''}
+    sourceType: { sysSerial: 10002, sourceTypeName: 'CSV' }
     // mappingFields: mappingInitialData
 }
 const DataSourceDetail = (props: any) => {
     const { id } = useParams<{ id: string }>();//get data from url 
     const classes: any = useStyles();
     const { t } = useTranslation<string>();
-    const history = useHistory();
-    const dispatch = useDispatch();
-    const [alprDataSource, setalprDataSource] = React.useState<HotListDataSourceTemplate>(DataSourceInitialData);
-    //flag when all validation passed
-    const [validationFlag, setvalidationFlag] = React.useState<boolean>(true);
 
     //Initial state Payload 
     const [dataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>(DataSourceInitialData);
@@ -89,17 +59,7 @@ const DataSourceDetail = (props: any) => {
     }, [dataSourcePaylod]);
 
     useEffect(() => {
-        if (props?.dataSourceData) {
-
-            setDataSourcePaylod(props?.dataSourceData);
-
-        }
-    }, [alprDataSource]);
-
-    useEffect(() => {
-        console.log(props?.dataSourceData)
         if (Object.keys(props?.dataSourceData).length > 0) {
-            setalprDataSource(props?.dataSourceData)
             setDataSourcePaylod(props?.dataSourceData);
         }
     }, [props?.dataSourceData])
@@ -138,8 +98,6 @@ const DataSourceDetail = (props: any) => {
             setDataSourcePaylod({ ...dataSourcePaylod, confirmPassword: e });
         }
         else if (field === "ConnectionType") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e))
             setDataSourcePaylod({ ...dataSourcePaylod, connectionType: e });
         }
         else if (field === "SchedulePeriod") {
@@ -191,7 +149,8 @@ const DataSourceDetail = (props: any) => {
                                         defaultValue={{ id: 10002, label: "CSV" }}
                                         required={false}
                                         isSearchable={true}
-                                        value={dataSourcePaylod?.sourceType?.sysSerial === 0 ? "" : { id: dataSourcePaylod?.sourceType?.sysSerial, label: dataSourcePaylod?.sourceType?.sourceTypeName }}
+                                        value={dataSourcePaylod?.sourceType?.sysSerial === 0 ? { id: 10002, label: 'CSV' } : 
+                                        { id: dataSourcePaylod?.sourceType?.sysSerial, label: dataSourcePaylod?.sourceType?.sourceTypeName }}
                                         id='DataSourceType'
                                         onChange={(
                                             e: React.SyntheticEvent,
@@ -234,7 +193,6 @@ const DataSourceDetail = (props: any) => {
                                         onChange={(e: any) => setFieldValue("Password", e.target.value)}
                                         error={id === ':id' && dataSourcePaylod.password === ''}
                                         errorMsg={t("Password_is_required")}
-                                    // onBlur={(e: any) => checkRequiredFields(e.target.value)}
                                     />
                                 </div>
                                 <div >

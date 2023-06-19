@@ -21,47 +21,50 @@ import { GetAlprDataSourceById } from "../../../Redux/AlprDataSourceReducer";
 import { CRXConfirmDialog } from "@cb/shared";
 import { ALPRDataSource } from "../../../utils/Api/ApiAgent";
 
+
+const dataSourceInitialPayload = {
+  syserial: 0,
+  sourceTypeId: 0,
+  name: '',
+  sourceName: '',
+  sourceTypeName: '',
+  userId: '',
+  password: '',
+  confirmPassword: '',
+  connectionType: '',
+  schedulePeriod: '',
+  locationPath: '',
+  port: '',
+  lastRun: '',
+  status: '',
+  statusDesc: '',
+  sourceType: { sysSerial: 10002, sourceTypeName: 'CSV' }
+}
+const dataSourceMappingInitialPayload = {
+  LicensePlate: '',
+  DateOfInterest: '',
+  LicenseType: '',
+  AgencyId: '',
+  State: '',
+  FirstName: '',
+  LastName: '',
+  Alias: '',
+  Year: '',
+  Make: '',
+  Model: '',
+  Color: '',
+  Style: '',
+  Notes: '',
+  NCICNumber: '',
+  ImportSerial: '',
+  ViolationInfo: ''
+}
 const DataSourceFormsAndFields = () => {
   const { id } = useParams<{ id: string }>();//get data from url 
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
-  const [dataSourcePayload, setDataSourcePayload] = React.useState<HotListDataSourceTemplate>({
-    syserial: 0,
-    sourceTypeId: 0,
-    name: '',
-    sourceName: '',
-    sourceTypeName: '',
-    userId: '',
-    password: '',
-    confirmPassword: '',
-    connectionType: '',
-    schedulePeriod: '',
-    locationPath: '',
-    port: '',
-    lastRun: '',
-    status: '',
-    statusDesc: '',
-    sourceType: { sysSerial: 0, sourceTypeName: '' }
-  });
-  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>({
-    LicensePlate: '',
-    DateOfInterest: '',
-    LicenseType: '',
-    AgencyId: '',
-    State: '',
-    FirstName: '',
-    LastName: '',
-    Alias: '',
-    Year: '',
-    Make: '',
-    Model: '',
-    Color: '',
-    Style: '',
-    Notes: '',
-    NCICNumber: '',
-    ImportSerial: '',
-    ViolationInfo: ''
-  });
+  const [dataSourcePayload, setDataSourcePayload] = React.useState<HotListDataSourceTemplate>(dataSourceInitialPayload);
+  const [dataSourceMappingPayload, setDataSourceMappingPaylod] = React.useState<HotListDataSourceMappingTemplate>(dataSourceMappingInitialPayload);
   const history = useHistory();
   const [isDisabled, setisDisabled] = React.useState<boolean>(true);
   const [isDisabledMapping, setIsDisabledMapping] = React.useState<boolean>(true);
@@ -77,8 +80,8 @@ const DataSourceFormsAndFields = () => {
   }, [])
 
   useEffect(() => {
-    if (id !== ':id' && dataSourceDataById && Object.keys(dataSourceDataById).length > 0) {
-      setDataSourcePayload({...dataSourceDataById,confirmPassword:''})
+    if (id !== ':id' && Object.keys(dataSourceDataById).length > 0) {
+      setDataSourcePayload({ ...dataSourceDataById, confirmPassword: '' })
       let dataSouceMappingData: HotListDataSourceMappingTemplate = JSON.parse(dataSourceDataById?.schemaDefinition) as HotListDataSourceMappingTemplate
       if (dataSouceMappingData && dataSouceMappingData.DateOfInterest !== '' && dataSouceMappingData?.LicensePlate !== '') {
         setIsDisabledMapping(false);
@@ -87,34 +90,14 @@ const DataSourceFormsAndFields = () => {
       }
       setDataSourceMappingPaylod(dataSouceMappingData)
     } else {
-      let temp = {
-        LicensePlate: '',
-        DateOfInterest: '',
-        LicenseType: '',
-        AgencyId: '',
-        State: '',
-        FirstName: '',
-        LastName: '',
-        Alias: '',
-        Year: '',
-        Make: '',
-        Model: '',
-        Color: '',
-        Style: '',
-        Notes: '',
-        NCICNumber: '',
-        ImportSerial: '',
-        ViolationInfo: '',
-        sourceType: { syserial: 0, sourceTypeName: '' }
-      }
-      setDataSourceMappingPaylod(temp);
+      setDataSourceMappingPaylod(dataSourceMappingInitialPayload);
     }
   }, [dataSourceDataById])
 
   function handleChange(event: any, newValue: number) {
-    if(id===':id' && newValue===1)
+    if (id === ':id' && newValue === 1)
       setValue(0);
-    else{setValue(newValue);}
+    else { setValue(newValue); }
   }
   const tabs = [
     { label: t("Data_Source"), index: 0 },
@@ -138,7 +121,6 @@ const DataSourceFormsAndFields = () => {
   }
   const onSave = () => {
     if (+id > 0) {
-      console.log(dataSourcePayload?.sourceType)
       let requestBody = {
         syserial: +id,
         name: dataSourcePayload?.name,
@@ -148,7 +130,7 @@ const DataSourceFormsAndFields = () => {
         userId: dataSourcePayload?.userId,
         password: dataSourcePayload?.password,
         confirmPassword: dataSourcePayload?.password,
-        connectionType: dataSourcePayload?.connectionType,
+        connectionType: dataSourcePayload?.connectionType===''?'FTP':dataSourcePayload?.connectionType,
         schedulePeriod: dataSourcePayload?.schedulePeriod,
         locationPath: dataSourcePayload?.locationPath,
         port: dataSourcePayload?.port,
@@ -177,7 +159,7 @@ const DataSourceFormsAndFields = () => {
         userId: dataSourcePayload?.userId,
         password: dataSourcePayload?.password,
         confirmPassword: dataSourcePayload?.password,
-        connectionType: dataSourcePayload?.connectionType,
+        connectionType: dataSourcePayload?.connectionType===''?'FTP':dataSourcePayload?.connectionType,
         schedulePeriod: dataSourcePayload?.schedulePeriod,
         locationPath: dataSourcePayload?.locationPath,
         port: +dataSourcePayload?.port,
@@ -185,7 +167,7 @@ const DataSourceFormsAndFields = () => {
         status: 0,
         statusDesc: dataSourcePayload?.statusDesc,
         schemaDefinition: '',
-        sourceType: { sourceTypeName: dataSourcePayload?.sourceType?.sourceTypeName },
+        sourceType: { sourceTypeName: dataSourcePayload?.sourceType?.sourceTypeName===''?'CSV': dataSourcePayload?.sourceType?.sourceTypeName},
         //extra payload data
         hotlists: [],
         isExpire: false,
@@ -213,12 +195,17 @@ const DataSourceFormsAndFields = () => {
   const closeDialog = () => {
     setIsOpen(true);
   };
+
+  const closeConfirmDialog = () => {
+    setIsOpen(true);
+  };
+
   return (
     <div className="switchLeftComponents">
 
       {/* <CRXToaster ref={groupMsgRef} /> */}
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130}  disabled={true}/>
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130} disabled={true} />
       <CrxTabPanel value={value} index={0}>
         <div>
           {Object.keys(dataSourcePayload).length > 0 ?
@@ -226,7 +213,7 @@ const DataSourceFormsAndFields = () => {
             <DataSourceDetail dataSource={dataSourceTab} saveButtonDisable={saveButtonDisable} dataSourceData={dataSourcePayload} /> : <div></div>}
         </div>
       </CrxTabPanel>
-      
+
       <CrxTabPanel value={value} index={1} >
         <div >
           {/* calling component here */}
@@ -240,7 +227,7 @@ const DataSourceFormsAndFields = () => {
             variant="contained"
             className="dataSourceTabButtons"
             onClick={onSave}
-            disabled={isDisabled || (id!==':id' && isDisabledMapping)}
+            disabled={isDisabled || (id !== ':id' && isDisabledMapping)}
           >
             {t("Save")}
           </CRXButton>
@@ -267,9 +254,26 @@ const DataSourceFormsAndFields = () => {
         >
           {t("Close")}
         </CRXButton>
-
+        
       </div>
-
+      <CRXConfirmDialog
+          setIsOpen={() => setIsOpen(false)}
+          onConfirm={handleClose}
+          isOpen={isOpen}
+          className="DataSource_Confirm"
+          primary={t("Yes_close")}
+          secondary={t("No,_do_not_close")}
+          text="hotlist datasource form"
+        >
+          <div className="confirmMessage">
+            {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" Form"}
+            <strong>{ }</strong>. {t("If_you_close_the_form")},
+            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+            </div>
+          </div>
+        </CRXConfirmDialog>
     </div>
   );
 };

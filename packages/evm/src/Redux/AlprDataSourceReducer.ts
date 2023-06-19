@@ -58,9 +58,6 @@ export const AlprDataSourceSlice = createSlice({
       .addCase(GetAlprDataSourceById.fulfilled, (state: any, { payload }) => {
         state.DataSourceDataById = payload;
       })
-      .addCase(GetAlprDataSourceById.fulfilled, (state: any, { payload }) => {
-        state.DataSourceDataById = payload;
-      })
   }
 });
 
