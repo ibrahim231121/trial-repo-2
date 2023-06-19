@@ -398,7 +398,7 @@
     .crxEditFilter {
       flex-direction: column;
     }
-    .CrxUserEditForm {
+    .CrxDataSourceDropDownEditForm {
       width: 100% !important;
     }
     .requiredLable {
@@ -883,3 +883,10 @@
             }
           }
         }
+
+        
+  .DataSourceAutocomplete {
+    .fa-caret-down {
+      padding-top: 3px;
+    }
+  }

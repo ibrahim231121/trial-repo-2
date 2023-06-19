@@ -43,36 +43,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
 
   return (
     <React.Fragment>
-      <CRXConfirmDialog
-        className="crx-unblock-modal"
-        title="Delete an Entry"
-        setIsOpen={setIsOpen}
-        onConfirm={onConfirm}
-        isOpen={IsOpen}
-        primary={primary}
-        secondary={secondary}
-      >
-        {
-          <>
-            {showAlert && (
-              <CRXAlert
-                className="DataSourceActionAlert"
-                message={""}
-                alertType="inline"
-                type="error"
-                open={showAlert}
-                setShowSucess={() => null}
-              />
-            )}
-            <div className="crxUplockContent">
-              <p>
-                {t("You are about to delete ")} <b>{row?.name}</b> {t("this entry")}
-              </p>
-            </div>
-          </>
-        }
-      </CRXConfirmDialog>
-
       <div className="table_Inner_Action">
 
         <Menu
@@ -99,7 +69,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
                     <i className="far fa-pencil"></i>
                   </div>
                   <div className="crx-menu-list">
-                    {t("Edit Data Source")}
+                    {t("Edit_Data_Source")}
                   </div>
                 </div>
               </Restricted>
@@ -115,7 +85,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
                 <div className="crx-menu-list">{t("Run_Data_Source")}</div>
               </div>
             </Restricted>
-          </MenuItem>
+          </MenuItem> 
           {/* <MenuItem onClick={deleteDataSource}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
@@ -124,7 +94,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
               </div>
             </Restricted>
           </MenuItem> */}
-          
+
         </Menu>
       </div>
     </React.Fragment>

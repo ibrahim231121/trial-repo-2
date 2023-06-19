@@ -24,7 +24,7 @@ export type HotListDataSourceTemplate = {
   name: string;
   sourceName: string;
   sourceTypeName: string;
-  user: string;
+  userId: string;
   password: string;
   confirmPassword: string;
   connectionType: string;
@@ -34,5 +34,5 @@ export type HotListDataSourceTemplate = {
   lastRun: string;
   status: string;
   statusDesc: string;
-  sourceType:{sysSerial:number,sourceTypeName:string}
+  sourceType:{sysSerial:number,sourceTypeName:string | undefined}
 }

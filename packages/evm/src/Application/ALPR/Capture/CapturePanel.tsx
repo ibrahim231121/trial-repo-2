@@ -17,7 +17,6 @@ import "./CapturePanel.scss"
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import { HotListDataSourceMappingTemplate } from "../../../utils/Api/models/HotlistDataSourceMapping";
 import { RootState } from "../../../Redux/rootReducer";
-import { GetAlprDataSourceList, SourceMapping } from "../../../Redux/AlprDataSourceReducer";
 import { CRXConfirmDialog } from "@cb/shared";
 import AlprCapture from "./CaptureTabs/AlprCapture";
 import AlprLive from "./CaptureTabs/AlprLive";

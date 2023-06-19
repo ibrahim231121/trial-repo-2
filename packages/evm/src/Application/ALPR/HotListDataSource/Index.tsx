@@ -32,10 +32,11 @@ import { ClickAwayListener } from "@material-ui/core";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
-import { ConnectionTypeDropDown, GetAlprDataSourceList, SourceTypeDropDown } from "../../../Redux/AlprDataSourceReducer";
-
+import {  GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
+import {SourceTypeDropDown,ConnectionTypeDropDown} from '../GlobalDropdown'
 
 const HotListDataSource = () => {
+  console.log('dropdown',SourceTypeDropDown)
   const initalPagination:number=25;
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(initalPagination);
   const [page, setPage] = React.useState<number>(0);
@@ -56,34 +57,34 @@ const HotListDataSource = () => {
     size: rowsPerPage,
   });
   const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
-  const SourceOptions =
-    [{
-      id: 1,
-      label: "Manual"
-    },
-    {
-      id: 2,
-      label: "CSV"
-    },
-    {
-      id: 3,
-      label: "XML"
-    }
-    ];
-  const ConnectionTypeOptions =
-    [{
-      id: 'FTP',
-      label: "FTP"
-    },
-    {
-      id: 'Local',
-      label: "Local"
-    },
-    {
-      id: 'UNC',
-      label: "UNC"
-    }
-    ];
+  // const SourceOptions =
+  //   [{
+  //     id: 1,
+  //     label: "Manual"
+  //   },
+  //   {
+  //     id: 2,
+  //     label: "CSV"
+  //   },
+  //   {
+  //     id: 3,
+  //     label: "XML"
+  //   }
+  //   ];
+  // const ConnectionTypeOptions =
+  //   [{
+  //     id: 'FTP',
+  //     label: "FTP"
+  //   },
+  //   {
+  //     id: 'Local',
+  //     label: "Local"
+  //   },
+  //   {
+  //     id: 'UNC',
+  //     label: "UNC"
+  //   }
+  //   ];
   const [paging, setPaging] = React.useState<boolean>();
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
@@ -110,8 +111,6 @@ const HotListDataSource = () => {
 
   useEffect(() => {
     dispatch(GetAlprDataSourceList(pageiGrid));
-    dispatch(ConnectionTypeDropDown());
-    dispatch(SourceTypeDropDown());
   }, [])
 
 
@@ -135,7 +134,7 @@ const HotListDataSource = () => {
           status: data.status,
           statusDescription: data.statusDescription,
           // sourceTypeId: SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label
-          sourceTypeName: data.sourceTypeName,
+          sourceTypeName: data?.sourceType.sourceTypeName,
         }
       });
       setRows(alprDataSourceCopy)
@@ -197,12 +196,12 @@ const HotListDataSource = () => {
     let dropDownOption: any = []
     let checkboxFlag: boolean = false;
     if (colIdx === 3) {
-      SourceOptions.map((x: any) => {
+      SourceTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
     }
     else if (colIdx === 5) {
-      ConnectionTypeOptions.map((x: any) => {
+      ConnectionTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
     }
@@ -271,7 +270,7 @@ const HotListDataSource = () => {
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "SourceTypeName",
+      attributeName: "sourceTypeName",
       attributeType: "List",
       attributeOperator: "contains"
     },
