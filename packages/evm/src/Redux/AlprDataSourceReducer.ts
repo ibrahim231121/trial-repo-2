@@ -206,7 +206,6 @@ export const GetAlprDataSourceList: any = createAsyncThunk(
           }]
       return await ALPRDataSource.getDataSourceInfoAsync(url, headers)
       .then((response:any) => {
-        debugger;
           thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
           return response
       }).catch((error: any) => {

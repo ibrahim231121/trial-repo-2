@@ -24,8 +24,7 @@ import {
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import DataSourceActionMenu from "../HotListDataSource/DataSourceActionMenu";
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { useStyles } from "../HotList/HotListCss";
+import "./Index.scss";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
@@ -37,8 +36,8 @@ import { ConnectionTypeDropDown, GetAlprDataSourceList, SourceTypeDropDown } fro
 
 
 const HotListDataSource = () => {
-  const classes = useStyles();
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const initalPagination:number=25;
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(initalPagination);
   const [page, setPage] = React.useState<number>(0);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListDataSourceTemplate[]>([]);
@@ -58,39 +57,37 @@ const HotListDataSource = () => {
   });
   const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
   const SourceOptions =
-  [{
-    id: 2,
-    label: "CSV"
-  },
-  {
-    id: 1,
-    label: "Manual"
-  },
-  {
-    id: 3,
-    label: "XML"
-  }
-  ];
-  const ConnectionTypeOptions = 
-  [{
-    id: 1,
-    label: "FTP"
-  },
-  {
-    id: 2,
-    label: "Local"
-  },
-  {
-    id: 3,
-    label: "UNC"
-  }
-  ];
-  const [sourceOptionsData, setSourceOptionsData] = React.useState<any>([]);
-  const [connectionType, setConnectionTypeOptions] = React.useState<any>([]);
+    [{
+      id: 1,
+      label: "Manual"
+    },
+    {
+      id: 2,
+      label: "CSV"
+    },
+    {
+      id: 3,
+      label: "XML"
+    }
+    ];
+  const ConnectionTypeOptions =
+    [{
+      id: 'FTP',
+      label: "FTP"
+    },
+    {
+      id: 'Local',
+      label: "Local"
+    },
+    {
+      id: 'UNC',
+      label: "UNC"
+    }
+    ];
   const [paging, setPaging] = React.useState<boolean>();
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
-
+  const [clearFlag, setClearFlag] = React.useState<number>(0);
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
       for (let i = 0; i < v.length; i++) {
@@ -120,7 +117,7 @@ const HotListDataSource = () => {
 
   useEffect(() => {
     let alprDataSourceCopy: HotListDataSourceTemplate[] = [];
-    if (alprDataSource && alprDataSource.data!==undefined && alprDataSource.data!==null && alprDataSource.data.length>0) {
+    if (alprDataSource && alprDataSource.data !== undefined && alprDataSource.data !== null && alprDataSource.data.length > 0) {
       alprDataSourceCopy = alprDataSource.data.map((data: any) => {
         return {
           sysSerial: data.sysSerial,
@@ -137,10 +134,13 @@ const HotListDataSource = () => {
           lastRun: data.lastRun,
           status: data.status,
           statusDescription: data.statusDescription,
-          sourceTypeId: SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label
+          // sourceTypeId: SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label
+          sourceTypeName: data.sourceTypeName,
         }
       });
       setRows(alprDataSourceCopy)
+    } else {
+      setRows([])
     }
   }, [alprDataSource])
 
@@ -178,10 +178,12 @@ const HotListDataSource = () => {
   };
   const onSelectedClear = (colIdx: number) => {
     setIsSearchableOnChange(true)
-    setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+    setClearFlag(colIdx);
+    setSearchData((prevArr) => prevArr.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[colIdx].id.toString().toLocaleLowerCase()));
     let headCellReset = onSelectedIndividualClear(headCells, colIdx);
     setHeadCells(headCellReset);
   }
+
 
   const changeMultiselect = (
     val: renderCheckMultiselect[],
@@ -195,20 +197,15 @@ const HotListDataSource = () => {
     let dropDownOption: any = []
     let checkboxFlag: boolean = false;
     if (colIdx === 3) {
-      dropDownOption = [{ id: 0, value: t("No Source") }];
       SourceOptions.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
-      checkboxFlag = true;
     }
     else if (colIdx === 5) {
-      dropDownOption = [{ id: 0, value: t("No Connection Type") }];
       ConnectionTypeOptions.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
-      checkboxFlag = true;
     }
-    // if (checkboxFlag) {
     return (
       <div>
         <CBXMultiCheckBoxDataFilter
@@ -224,7 +221,6 @@ const HotListDataSource = () => {
         />
       </div>
     )
-    // }
 
   }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -268,14 +264,14 @@ const HotListDataSource = () => {
     },
     {
       label: `${t("Source_Type")}`,
-      id: "sourceTypeId",
+      id: "sourceTypeName",
       align: "center",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
-      attributeName: "sourceTypeId",
+      attributeName: "SourceTypeName",
       attributeType: "List",
       attributeOperator: "contains"
     },
@@ -356,12 +352,17 @@ const HotListDataSource = () => {
   const [orderBy, setOrderBy] = React.useState<string>("Name");
 
   const getFilteredDataSourceData = () => {
+    let searchDataClear = searchData;
+    if (clearFlag === 3 || clearFlag === 5) {
+      searchDataClear = searchDataClear.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[clearFlag].id.toString().toLocaleLowerCase());
+      setSearchData(searchDataClear);
+    }
     pageiGrid.gridFilter.filters = []
-    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
+
+    searchDataClear.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
       let x: GridFilter = {
         operator: headCells[item.colIdx].attributeOperator,
-        //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-        field: headCells[item.colIdx].id,
+        field: headCells[item.colIdx].attributeName,
         value: item.value.length > 1 ? item.value.join('@') : item.value[0],
         fieldType: headCells[item.colIdx].attributeType,
       }
@@ -369,7 +370,7 @@ const HotListDataSource = () => {
     })
     pageiGrid.page = 0
     pageiGrid.size = rowsPerPage
-
+    setClearFlag(0);
     if (page !== 0) {
       setPage(0)
     }
@@ -411,8 +412,10 @@ const HotListDataSource = () => {
     if (searchData.length > 0) {
       setIsSearchable(true)
     }
-    // if (isSearchableOnChange)
-    //   getFilteredHotListData()
+    if (isSearchableOnChange) {
+
+      getFilteredDataSourceData()
+    }
   }, [searchData]);
 
   const handleKeyDown = (event: any) => {
@@ -423,11 +426,11 @@ const HotListDataSource = () => {
   return (
     <ClickAwayListener onClickAway={handleBlur}>
 
-      <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}>
+      <div className="switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}>
         <CRXToaster />
         {rows && (
           <CRXDataTable
-            id="CategoriesTemplateDataTable"
+            id="DataSourceTemplateDataTable"
             actionComponent={
 
               <DataSourceActionMenu
@@ -441,11 +444,11 @@ const HotListDataSource = () => {
               <>
                 <Restricted moduleId={0}>
                   <CRXButton
-                    id={"createHotList"}
-                    className="primary CategoriesBtn"
+                    id={"createHotListDataSource"}
+                    className="primary DataSourceBtn"
                     onClick={CreateDataSourceForm}
                   >
-                    {t("Create Data Source")}
+                    {t("Create_Data_Source")}
                   </CRXButton>
                 </Restricted>
               </>
@@ -467,7 +470,7 @@ const HotListDataSource = () => {
             allowDragableToList={false}
             showActionSearchHeaderCell={false}
             className="crxTableHeight crxTableDataUi"
-            // onClearAll={clearAll}
+            onClearAll={clearAll}
             getSelectedItems={(v: HotListDataSourceTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
             onHeadCellChange={onSetHeadCells}
@@ -477,7 +480,7 @@ const HotListDataSource = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
-            totalRecords={alprDataSource?.totalCount}
+            totalRecords={alprDataSource?.totalCount === undefined || alprDataSource?.totalCount == null ? 0 : alprDataSource?.totalCount}
             setSortOrder={(sort: any) => sortingOrder(sort)}
 
             //Please dont miss this block.

@@ -7,7 +7,7 @@ import { Grid } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { HotListDataSourceTemplate } from "../../../../utils/Api/models/HotListDataSourceModels";
+import { HotListDataSourceMappingTemplate, HotListDataSourceTemplate } from "../../../../utils/Api/models/HotListDataSourceModels";
 import './DataSourceDetail.scss';
 import { useStyles } from "../DataSourceStyling/DataSource";
 import * as Yup from "yup";
@@ -16,6 +16,43 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
 import { ConnectionTypeDropDown, GetAlprDataSourceList, SourceTypeDropDown } from "../../../../Redux/AlprDataSourceReducer"
+
+const mappingInitialData: HotListDataSourceMappingTemplate={
+    licensePlate: '',
+    dateOfInterest: '',
+    licenseType: '',
+    agencyId: '',
+    stateId: '',
+    firstName: '',
+    lastName: '',
+    alias: '',
+    vehicleYear: '',
+    vehicleMake: '',
+    vehicleModel: '',
+    vehicleColor: '',
+    vehicleStyle: '',
+    notes: '',
+    ncicNumber: '',
+    importSerialId: '',
+    violationInfo: '',
+}
+const DataSourceInitialData: HotListDataSourceTemplate = {
+    syserial: 0,
+    name: '',
+    sourceName: "",
+    sourceTypeName: '',
+    userId: "",
+    password: "",
+    confirmPassword: "",
+    connectionType: 0,
+    schedulePeriod: 0,
+    locationPath: "",
+    port: "",
+    lastRun: '',
+    status: "",
+    statusDesc: "",
+    mappingFields: mappingInitialData
+}
 const DataSourceDetail = (props: any) => {
     const { id } = useParams<{ id: string }>();//get data from url 
     const classes: any = useStyles();
@@ -65,22 +102,7 @@ const DataSourceDetail = (props: any) => {
     const ConnectionTypeOptions: any = useSelector((state: RootState) => state.alprDataSourceReducer.ConnectionType);
 
     //Initial state Payload 
-    const [DataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>({
-        id: 0,
-        name: '',
-        sourceName: "",
-        sourceTypeId: 0,
-        userId: "",
-        password: "",
-        confirmPassword: "",
-        connectionType: 0,
-        schedulePeriod: 0,
-        locationPath: "",
-        port: "",
-        lastRun: '',
-        status: "",
-        statusDesc: "",
-    });
+    const [DataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>(DataSourceInitialData);
 
     //Use effect to check validation in initial payload state everytime whenever any changes occurs in text boxes
     useEffect(() => {
@@ -92,9 +114,9 @@ const DataSourceDetail = (props: any) => {
             props.saveButtonDisable(true)
         }
     }, [DataSourcePaylod]);
-    
+
     useEffect(() => {
-        if (alprDataSource !== undefined) {
+        if (alprDataSource !== undefined && alprDataSource.length > 0) {
             let selectedRow = alprDataSource.filter((x: any) => x.id == id);
             if (selectedRow !== undefined && selectedRow !== null && selectedRow.length > 0) {
                 setDataSourcePaylod(selectedRow[0]);
@@ -113,7 +135,7 @@ const DataSourceDetail = (props: any) => {
             setDataSourcePaylod({ ...DataSourcePaylod, name: e });
         }
         else if (field === "SourceType") {
-            setDataSourcePaylod({ ...DataSourcePaylod, sourceTypeId: e });
+            setDataSourcePaylod({ ...DataSourcePaylod, sourceTypeName: e });
         }
         else if (field === "SourceName") {
             setDataSourcePaylod({ ...DataSourcePaylod, sourceName: e });
@@ -163,7 +185,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={true}
-                                        label={t("Name")+':'}
+                                        label={t("Name") + ':'}
                                         value={DataSourcePaylod.name}
                                         onChange={(e: any) => setFieldValue("Name", e.target.value)}
                                         error={DataSourcePaylod.name === ''}
@@ -174,14 +196,14 @@ const DataSourceDetail = (props: any) => {
                                     <CRXMultiSelectBoxLight
 
                                         className="categortAutocomplete CrxUserEditForm"
-                                        label={t("Source_Type")+':'}
+                                        label={t("Source_Type") + ':'}
                                         // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                         multiple={false}
                                         CheckBox={true}
                                         options={SourceOptions}
                                         required={false}
                                         isSearchable={true}
-                                        value={DataSourcePaylod.sourceTypeId === 0 ? "" : { id: DataSourcePaylod.sourceTypeId, label: SourceOptions.find((x: any) => x.id === DataSourcePaylod.sourceTypeId)?.label }}
+                                        value={DataSourcePaylod.sourceTypeName === "" ? "" : { id: SourceOptions.find((x: any) => x.label === DataSourcePaylod.sourceTypeName)?.id, label: DataSourcePaylod.sourceTypeName }}
 
                                         onChange={(
                                             e: React.SyntheticEvent,
@@ -198,7 +220,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label={t("Source_Name")+':'}
+                                        label={t("Source_Name") + ':'}
                                         value={DataSourcePaylod.sourceName}
                                         onChange={(e: any) => setFieldValue("SourceName", e.target.value)}
 
@@ -207,7 +229,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label={t("User_Id")+':'}
+                                        label={t("User_Id") + ':'}
                                         value={DataSourcePaylod.userId}
                                         onChange={(e: any) => setFieldValue("UserId", e.target.value)}
 
@@ -216,7 +238,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={true}
-                                        label={t("Password")+':'}
+                                        label={t("Password") + ':'}
                                         value={DataSourcePaylod.password}
                                         onChange={(e: any) => setFieldValue("Password", e.target.value)}
                                         error={DataSourcePaylod.password === ''}
@@ -227,7 +249,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={true}
-                                        label={t("Confirm_Password")+':'}
+                                        label={t("Confirm_Password") + ':'}
                                         value={DataSourcePaylod.confirmPassword}
                                         onChange={(e: any) => setFieldValue("ConfirmPassword", e.target.value)}
                                         error={DataSourcePaylod.password !== DataSourcePaylod.confirmPassword}
@@ -244,7 +266,7 @@ const DataSourceDetail = (props: any) => {
                                         <CRXMultiSelectBoxLight
 
                                             className="categortAutocomplete CrxUserEditForm"
-                                            label={t("Connection_Type")+':'}
+                                            label={t("Connection_Type") + ':'}
                                             // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                             multiple={false}
                                             CheckBox={true}
@@ -270,7 +292,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label={t("Schedule_Period")+':'}
+                                        label={t("Schedule_Period") + ':'}
                                         multiline={false}
                                         value={DataSourcePaylod.schedulePeriod === 0 ? "" : DataSourcePaylod.schedulePeriod}
                                         onChange={(e: any) => setFieldValue("SchedulePeriod", e.target.value)}
@@ -280,7 +302,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label={t("Location_Path")+':'}
+                                        label={t("Location_Path") + ':'}
                                         multiline={false}
                                         value={DataSourcePaylod.locationPath}
                                         onChange={(e: any) => setFieldValue("LocationPath", e.target.value)}
@@ -290,7 +312,7 @@ const DataSourceDetail = (props: any) => {
                                 <div >
                                     <TextField
                                         required={false}
-                                        label={t("Port")+':'}
+                                        label={t("Port") + ':'}
                                         multiline={false}
                                         value={DataSourcePaylod.port}
                                         onChange={(e: any) => setFieldValue("Port", e.target.value)}
