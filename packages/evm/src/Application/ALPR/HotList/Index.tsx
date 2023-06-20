@@ -107,7 +107,7 @@ const HotList = () => {
     if(hotListData && hotListData.data){
       let hotListDataTemp = hotListData.data.map((item: any) => {
       return {
-        id: item.sysSerial,
+        id: item.recId,
         Name: item.name,
         description: item.description,
         sourceName: item.sourceName,
@@ -405,7 +405,17 @@ const HotList = () => {
   };
 
   const clearAll = () => {
-    pageiGrid.gridFilter.filters = []
+    paging.current = true
+    setPageiGrid(
+      {
+        ...pageiGrid,
+        gridFilter:{
+          ...pageiGrid.gridFilter,
+          filters:[]
+        }
+      }
+    )
+
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);

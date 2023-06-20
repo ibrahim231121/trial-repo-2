@@ -5,5 +5,5 @@ export type GetAlprCapturePayload = {
     userId:number,
     startDate: string,
     endDate:string,
-    hotListIds:any[]
+    hotListId:number
 }

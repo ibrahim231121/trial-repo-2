@@ -7,7 +7,7 @@ import { GetAlprCapturePayload } from "../Application/ALPR/ALPRTypes";
 export const getAllAlprCapturePlatesInfo = createAsyncThunk("getAlprCapturePlates", async (payload: GetAlprCapturePayload, thunkAPI)=>{
     thunkAPI.dispatch(setLoaderValue({isLoading: true}))
 
-    const url = ALPR_CAPTURE_PLATE + `?&userId=${payload.userId}&Page=${payload.pageiGrid.page+1}&Size=${payload.pageiGrid.size}&startDate=${payload.startDate}&endDate=${payload.endDate}`
+    const url = ALPR_CAPTURE_PLATE + `?userId=${payload.userId}&hotListId=${payload.hotListId}&Page=${payload.pageiGrid.page+1}&Size=${payload.pageiGrid.size}&startDate=${payload.startDate}&endDate=${payload.endDate}`
         let headers = [
             {   
                 key : 'GridFilter', 
@@ -16,10 +16,6 @@ export const getAllAlprCapturePlatesInfo = createAsyncThunk("getAlprCapturePlate
             {
                 key: 'GridSort', 
                 value : JSON.stringify(payload.pageiGrid.gridSort)
-            },
-            {
-                key: 'HotListIds', 
-                value : JSON.stringify(payload.hotListIds)
             }]
              return await AlprCapturePlatesAgent
              .getAlprCapturePlatesInfoAsync(url, headers)

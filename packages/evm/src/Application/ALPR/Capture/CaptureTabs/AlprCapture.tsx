@@ -35,6 +35,59 @@ import { CBXMultiSelectForDatatable } from "@cb/shared";
 import { ClickAwayListener } from "@material-ui/core";
 import { GetAllHotListData } from "../../../../Redux/AlprHotListReducer";
 
+const states = [
+    {id: 1,label:"TX"},  
+    {id: 2,label:"NY"},  
+    {id: 3,label:"CA"},  
+    {id: 4,label:"FL"},  
+    {id: 5,label:"AL"},  
+    {id: 6,label:"AK"},  
+    {id: 7,label:"AZ"},  
+    {id: 8,label:"AR"},  
+    {id: 9,label:"CO"},  
+    {id: 10,label:"CT"},  
+    {id: 12,label:"DE"},  
+    {id: 13,label:"GA"},  
+    {id: 14,label:"HI"},  
+    {id: 15,label:"ID"},  
+    {id: 16,label:"IL"},  
+    {id: 17,label:"IN"},  
+    {id: 18,label:"IA"},  
+    {id: 19,label:"KS"},  
+    {id: 20,label:"KY"},  
+    {id: 21,label:"LA"},  
+    {id: 22,label:"ME"},  
+    {id: 23,label:"MD"},  
+    {id: 24,label:"MA"},  
+    {id: 25,label:"MI"},  
+    {id: 26,label:"MN"},  
+    {id: 27,label:"MS"},  
+    {id: 28,label:"MO"},  
+    {id: 29,label:"MT"},  
+    {id: 30,label:"NE"},  
+    {id: 31,label:"NV"},  
+    {id: 32,label:"NH"},  
+    {id: 33,label:"NJ"},  
+    {id: 34,label:"NM"},  
+    {id: 35,label:"NC"},  
+    {id: 36,label:"ND"},  
+    {id: 37,label:"OH"},  
+    {id: 38,label:"OK"},  
+    {id: 39,label:"OR"},  
+    {id: 40,label:"PA"},  
+    {id: 41,label:"RI"},  
+    {id: 42,label:"SC"},  
+    {id: 43,label:"SD"},  
+    {id: 44,label:"TN"},  
+    {id: 45,label:"UT"},  
+    {id: 46,label:"VT"},  
+    {id: 47,label:"VA"},  
+    {id: 48,label:"WA"},  
+    {id: 49,label:"WV"},  
+    {id: 50,label:"WI"},  
+    {id: 51,label:"WY"}
+  
+  ]
 
 const AlprCapture = () => {
     const [capturedPlatesRows, setCapturedPlatesRowsState] = React.useState<AlprCapturePlateInfo[]>([]);
@@ -64,8 +117,10 @@ const AlprCapture = () => {
 
     const userDataLoadedRef = React.useRef<boolean>(false);
     const hotListDataLoadedRef = React.useRef<boolean>(false);
+    const isSearchable = React.useRef<boolean>(false);
+    const isSearchableOnChange = React.useRef<boolean>(false);
+
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-    const [isSearchable, setIsSearchableState] = React.useState<boolean>(false)
     const { t } = useTranslation<string>();
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("NumberPlate");
@@ -88,7 +143,7 @@ const AlprCapture = () => {
         userId:selectedUser.id,
         startDate: moment(selectedDateTimeRange.startDate).toISOString(),
         endDate: moment(selectedDateTimeRange.endDate).toISOString(),
-        hotListIds:[]
+        hotListId:0
       })
 
 
@@ -125,21 +180,47 @@ const AlprCapture = () => {
         if (v.length > 0) {
             for (let i = 0; i < v.length; i++) {
                 let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-                
-                const filteredSearchData =  searchData.filter((e) => e.columnName !== headCells[colIdx].id.toString());
 
-                /* setSearchData((prevArr) =>
-                    prevArr.filter(
-                        (e) => e.columnName !== headCells[colIdx].id.toString()
-                    )
-                ); */
-                setSearchData([...filteredSearchData, searchDataValue]);
+                setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));              
+                
+                setSearchData((prevArr) => [...prevArr, searchDataValue]);
             }
         } else {
-            const filteredSearchData =  searchData.filter((e) => e.columnName !== headCells[colIdx].id.toString());
-            setSearchData(filteredSearchData);
+            setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
         }
     }
+
+    const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
+        let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
+          if (colIdx === index)
+            headCell.headerArray = [{ value: "" }];
+          return headCell;
+        });
+        return headCellReset;
+      };
+    
+      const onSelectedClear = (colIdx: number) => {
+        isSearchableOnChange.current=true;
+        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+        let headCellReset = onSelectedIndividualClear(headCells, colIdx);
+        setHeadCells(headCellReset);
+      }
+
+      const clearAll = () => {
+        setAlprCapturePayloadState({
+            ...getAlprCapturePayload,
+            pageiGrid:{
+                ...getAlprCapturePayload.pageiGrid,
+                gridFilter:{
+                    ...getAlprCapturePayload.pageiGrid.gridFilter,
+                    filters:[]
+                }
+            }
+        })
+        setSearchData([]);
+        let headCellReset = onClearAll(headCells);
+        setHeadCells(headCellReset);
+      };
 
     
   const searchDate = (
@@ -241,18 +322,80 @@ const AlprCapture = () => {
             option={users} 
             //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
-            onChange={(value : any) => {                
+            onChange={(value : any) => { 
+                isSearchableOnChange.current = true;               
                 onSelection(value.map((user: { id: any; })=>{return {id: user.id, value: user.id}}), colIdx);
                 headCells[colIdx].headerArray = value;
             }}
-            onSelectedClear = {() =>  console.log("clear")}
+            onSelectedClear = {() =>  onSelectedClear(colIdx)}
             isCheckBox={true}
             multiple={true}
             isduplicate={true}
             selectAllLabel="All"
             percentage={true}
           />);
-    }    
+    }
+       
+    if(colIdx === 3 && initialRows && initialRows.hotListData && initialRows.hotListData.length > 0){
+        let hotlists: {id: number, value: string }[] = [];
+        initialRows.hotListData.map((x: any) => {
+            if(x.id != 0)
+                hotlists.push({id : x.id, value: x.label });
+        });
+
+        return (            
+            <CBXMultiCheckBoxDataFilter 
+            width = {100} 
+            option={hotlists} 
+            //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            onChange={(value : any) => {     
+                if(!isSearchableOnChange.current){
+                    isSearchableOnChange.current = true;          
+                    onSelection(value.map((hotlist: { id: any; value:any})=>{return {id: hotlist.id, value: hotlist.value}}), colIdx);
+                    headCells[colIdx].headerArray = value;
+                } 
+            }}
+            onSelectedClear = {(value : any) => { 
+                onSelectedClear(colIdx);
+            }}
+            isCheckBox={true}
+            multiple={true}
+            isduplicate={true}
+            selectAllLabel="All"
+            percentage={true}
+          />);
+    } 
+
+    if(colIdx === 8 && initialRows && initialRows.states && initialRows.states.length > 0){
+        let statesList: {id: number, value: string }[] = [];
+        initialRows.states.map((x: any) => {
+            statesList.push({id : x.id, value: x.label });
+        });
+
+        return (            
+            <CBXMultiCheckBoxDataFilter 
+            width = {100} 
+            option={statesList} 
+            //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            onChange={(value : any) => {     
+                if(!isSearchableOnChange.current){
+                    isSearchableOnChange.current = true;          
+                    onSelection(value.map((state: { id: any; value:any})=>{return {id: state.id, value: state.value}}), colIdx);
+                    headCells[colIdx].headerArray = value;
+                } 
+            }}
+            onSelectedClear = {(value : any) => { 
+                onSelectedClear(colIdx);
+            }}
+            isCheckBox={true}
+            multiple={true}
+            isduplicate={true}
+            selectAllLabel="All"
+            percentage={true}
+          />);
+    } 
   };
 
     const searchText = (rowsParam: AlprCapturePlateInfo[], headCell: HeadCellProps[], colIdx: number) => {
@@ -308,16 +451,16 @@ const AlprCapture = () => {
         },
         {
             label: `${t("Hot_List")}`,
-            id: "HotlistName",
+            id: "hotlistName",
             align: "center",
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
             //   searchComponent: (rowParam: HotListCaptureTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
-            searchComponent: searchText,
+            searchComponent: searchAndNonSearchMultiDropDown,
             minWidth: "180",
-            attributeName: "hotlistName",
-            attributeType: "String",
+            attributeName: "HotlistName",
+            attributeType: "List",
             attributeOperator: "contains"
         },
         {
@@ -376,16 +519,16 @@ const AlprCapture = () => {
         ,
         {
             label: `${t("State")}`,
-            id: "state",
+            id: "stateName",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,
+            searchComponent: searchAndNonSearchMultiDropDown,
             minWidth: "180",
-            attributeName: "State",
-            attributeType: "short",
-            attributeOperator: "eq"
+            attributeName: "StateName",
+            attributeType: "List",
+            attributeOperator: "contains"
         }
         ,
         {
@@ -521,7 +664,7 @@ const AlprCapture = () => {
             let hotListDataSource = hotListInfos.data.map((hotList:any)=>{
                 return {
                     label: hotList.name,
-                    id: hotList.sysSerial,
+                    id: hotList.recId,
                     inputValue:hotList.name
                 }
             });
@@ -559,7 +702,7 @@ const AlprCapture = () => {
             });
 
             setCapturedPlatesRowsState(capturedPlatesRowItems);
-            setReformattedRows({...reformattedRows, rowsDataItems: capturedPlates.data, usersData: usersData});
+            setReformattedRows({...reformattedRows, rowsDataItems: capturedPlates.data, usersData: usersData, hotListData: hotListData, states:states});
         }
     }
 
@@ -570,7 +713,7 @@ const AlprCapture = () => {
       }
       
       const handleBlur = () => {
-        if(isSearchable) {     
+        if(isSearchable.current) {     
             getCapturedPlateFilteredData()
         }
       }
@@ -599,7 +742,7 @@ const AlprCapture = () => {
             }
         })
 
-        setIsSearchableState(false);
+        isSearchable.current = false;
     }
 
     useEffect(()=>{
@@ -615,7 +758,7 @@ const AlprCapture = () => {
             setAlprCapturePayloadState({
                 ...getAlprCapturePayload,
                 userId: selectedUser.id,
-                hotListIds:[selectedHotList.id]
+                hotListId:selectedHotList.id
             })
         }
     },[selectedUser, selectedHotList]);
@@ -675,8 +818,14 @@ const AlprCapture = () => {
 
     useEffect(()=>{
         if(searchData && searchData.length > 0){
-            setIsSearchableState(true);
+            isSearchable.current = true;
         }
+
+        if(isSearchableOnChange.current){
+            isSearchableOnChange.current = false; 
+            getCapturedPlateFilteredData();
+        }
+
     },[searchData])
 
     return (
@@ -765,7 +914,7 @@ const AlprCapture = () => {
                     columnVisibilityBar={true}
                     allowDragableToList={true}
                     className="captureDataTable usersGroupDataTable"
-                    // onClearAll={clearAll}
+                    onClearAll={clearAll}
                     getSelectedItems={(v: AlprCapturePlateInfo[]) => setSelectedItems(v)}
                     onResizeRow={resizeRowCaptureTemp}
                     onHeadCellChange={onSetHeadCells}
