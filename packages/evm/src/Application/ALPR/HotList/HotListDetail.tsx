@@ -26,6 +26,7 @@ import { CRXTooltip } from "@cb/shared";
 import { HotListAgent } from "../../../utils/Api/ApiAgent";
 import moment from "moment";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
+import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 
 
 const HotListPayload:HotListTemplate= {
@@ -54,16 +55,10 @@ const HotListDetail = () => {
   const isFirstTime = React.useRef<boolean>(true);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const hotListDetails: any = useSelector((state: RootState) => state.hotListReducer.hotListDetails);
+  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
 
-  const SourceOptions =
-    [{
-      id: 3,
-      label: "Source 1"
-    },
-    {
-      id: 4,
-      label: "Source 2"
-    }];
+  const [sourceOptions, setSourceOptions] = React.useState([]);
+
   const TenantOptions =
     [{
       id: 1,
@@ -113,11 +108,32 @@ const HotListDetail = () => {
     
   }, [hotListDetails])
 
+  useEffect(()=>{
+    if(hotListDatasourceData && hotListDatasourceData.data){
+      let sources: any = [];
+      hotListDatasourceData.data.map((x: any) => {
+        sources.push({ id: x.sysSerial, label: x.sourceName });
+        });
+      setSourceOptions(sources);
+    }
+    
+  }, [hotListDatasourceData.data])
+
   //audio work end
   useEffect(() => {
     if(!isNaN(Number(+id))){
       dispatch(GetHotListData(id))
     }
+    var sourcesPageiGrid = {
+      gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: 0,
+      size: 1000
+    }
+
+    dispatch(GetAlprDataSourceList(sourcesPageiGrid))
     
     isFirstTime.current = false;
   }, [])
@@ -331,7 +347,7 @@ const HotListDetail = () => {
                             label={t("Source_Id") + ':'}
                             multiple={false}
                             CheckBox={true}
-                            options={SourceOptions}
+                            options={sourceOptions}
                             required={false}
                             isSearchable={true}
                             value={{id: values.sourceId, label:values.sourceName == null ? "":values.sourceName}}
@@ -375,14 +391,18 @@ const HotListDetail = () => {
                       </div>
                       <Grid item xs={12} sm={12} md={12} lg={5} >
 
-                        <div >
-                          <TextField
+                        <div className="createHotlistColorContainer">
+                          <label className="createHotlistColorLabel">Color:</label>
+                          <input type="color" id="hotlistcolor" name="color" value={values.color} className="createHotlistColorInput" onChange={(e:any)=>{
+                            setFieldValue("color", e.target.value);
+                            }}></input>
+                          {/* <TextField
                             required={false}
                             label={t("Color") + ':'}
                             value={values.color}
                             onChange={(e: any) => setFieldValue("color", e.target.value)}
 
-                          />
+                          /> */}
                         </div>
                         <div >
                           <TextField

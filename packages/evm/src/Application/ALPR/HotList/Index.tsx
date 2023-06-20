@@ -36,6 +36,7 @@ import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
+import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 
 type HotListTemplate = {
   id: number,
@@ -67,6 +68,7 @@ const HotList = () => {
   const isSearchableOnChange = React.useRef<boolean>(false);
   const toasterRef = useRef<typeof CRXToaster>(null);
   const [rows, setRows] = React.useState<HotListTemplate[]>();
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
 
   const [order, setOrder] = React.useState<any>({
     order: 'asc',
@@ -75,6 +77,7 @@ const HotList = () => {
 
 
   const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
+  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
 
   const SourceOptions = (
     [{
@@ -101,6 +104,17 @@ const HotList = () => {
 
   useEffect(() => {
     dispatch(GetAllHotListData(pageiGrid));
+
+    var sourcesPageiGrid = {
+      gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: 0,
+      size: 1000
+    }
+
+    dispatch(GetAlprDataSourceList(sourcesPageiGrid))
   }, [])
 
   useEffect(() => {
@@ -118,10 +132,23 @@ const HotList = () => {
       }
     });
     setRows(hotListDataTemp);
+    setReformattedRows({...reformattedRows, rowsDataItems: hotListDataTemp});
     }
     
   }, [hotListData.data])
 
+  useEffect(()=>{
+    if(hotListDatasourceData && hotListDatasourceData.data){
+      let sources: any = [];
+      hotListDatasourceData.data.map((x: any) => {
+        sources.push({ id: x.sysSerial, value: x.sourceName });
+        });
+
+        setReformattedRows({...reformattedRows, sources: sources});
+    }
+    
+  },[hotListDatasourceData.data]);
+  
   useEffect(() => {
     setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
     paging.current = true;
@@ -219,18 +246,14 @@ const HotList = () => {
   };
 
   const multiSelectCheckbox = (rowParam: HotListTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
-    if (colIdx === 3) {
-      let status: any = [{ id: 0, value: t("No Source") }];
-      SourceOptions.map((x: any) => {
-        status.push({ id: x.id, value: x.label });
-      });
+    if (colIdx === 3 && initialRows && initialRows.sources) {      
 
       return (
         <div>
           <CBXMultiCheckBoxDataFilter
             width={100}
             percentage={true}
-            option={status}
+            option={initialRows.sources}
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value: any) => changeMultiselect(value, colIdx)}
             onSelectedClear={() => onSelectedClear(colIdx)}
@@ -504,7 +527,7 @@ const HotList = () => {
             //End here
 
             showExpandViewOption={true}
-            initialRows={rows}
+            initialRows={reformattedRows}
           />
         )}
 

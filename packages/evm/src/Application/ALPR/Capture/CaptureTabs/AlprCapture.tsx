@@ -609,7 +609,7 @@ const AlprCapture = () => {
                 filters: []
             },
             page: 0,
-            size: 10,
+            size: 1000,
         }
         dispatch(getUsersInfoAsync(pageiGrid))
     },[]);
@@ -621,7 +621,7 @@ const AlprCapture = () => {
                 filters: []
             },
             page: 0,
-            size: 100,
+            size: 1000,
             gridSort:{
                 field: "name",
                  dir: "asc"
@@ -853,7 +853,8 @@ const AlprCapture = () => {
                             value: any
                         ) => {
                             // setFieldValue("sourceName", value === null ? -1 : Number.parseInt(value?.id))
-                            setSelectedUserState(value);
+                            if(value)
+                                setSelectedUserState(value);
                         }
                         }
                         onOpen={(e: any) => {
@@ -878,7 +879,8 @@ const AlprCapture = () => {
                             e: React.SyntheticEvent,
                             value: any
                         ) => {
-                            setSelectedHotListState(value);
+                            if(value)
+                                setSelectedHotListState(value);
                         }
                         }
                         onOpen={(e: any) => {
