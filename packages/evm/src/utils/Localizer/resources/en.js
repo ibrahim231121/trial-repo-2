@@ -1088,9 +1088,23 @@ export const resources = {
       "Edit_License_Plate":"Edit License Plate",
       "You_are_about_to_delete":"You are about to delete",
       "this_entry":"this entry",
-      "Hotlist_deleted":"Hotlist deleted successfully",
-      "Create_Data_Source":"Create Data Source"
-
+      "Hotlist_deleted":"Hotlist(s) deleted successfully",
+      "Hotlist_delete_failed":"We 're sorry. Selected Hotlist(s) can not be deleted. Please retry or contact your Systems Administrator.",
+      "Hotlist_delete_not_allowed": "Selected Hotlist(s) can not be deleted as \"[hotlistnames]\" have number plate associated with them.",
+      "Hotlist_creation_failed": "We 're sorry. Hotlist can not be created. Please retry or contact your Systems Administrator.",
+      "Hotlist_duplicate_not_allowed": "Hotlist with same name is not allowed.",
+      "Hotlist_not_found": "Hotlist with id: [id] does not exist.",
+      "Hotlist_updation_failed": "We 're sorry. Hotlist can not be updated. Please retry or contact your Systems Administrator.",
+      "Hotlist_name_required": "Hotlist name is required.",
+      "Hotlist_name_char_limit" : "Hotlist Name should not exceed 50 characters limit",
+      "Hotlist_Rules_Expression_char_limit": "Rules expression should not exceed 1000 characters limit",
+      "Hotlist_Description_char_limit": "Description should not exceed 500 characters limit",
+      "Hotlist_Alert_Priority_Should_be_number":"AlertPriority should be any number.",
+      "Hotlist_Alert_Priority_greater_than_zero":"AlertPriority should be greater then or equal to 0.",
+      "Hotlist_Tenant_Should_be_number":"Tenant should be any number.",
+      "Hotlist_Tenant_greater_than_zero":"Tenant should be greater then or equal to 0.",
+      "Hotlist_color_should_be_hash_code":"Color should be a hash code for color.",
+      "Hotlist_delete_failed_invalid_parameter":"We 're sorry. Selected Hotlist(s) can not be deleted as parameters are invalid."
       //ALPR End
     }
   }

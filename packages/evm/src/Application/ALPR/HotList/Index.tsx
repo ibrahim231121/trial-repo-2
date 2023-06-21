@@ -37,17 +37,7 @@ import { NotificationMessage } from "../../Header/CRXNotifications/notifications
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
-
-type HotListTemplate = {
-  id: number,
-  Name: string,
-  description: string,
-  sourceName: string,
-  rulesExpression: string,
-  alertPriority: number,
-  color: string,
-  audio: string
-}
+import { HotListTemplate } from "../../../utils/Api/models/HotListModels";
 
 const HotList = () => {
   const classes = useStyles();
@@ -78,6 +68,9 @@ const HotList = () => {
 
   const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
   const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
+
+  const ALERT_PRIORITY_COLID:number = 5;
+  const SOURCE_COLID:number = 3;
 
   const SourceOptions = (
     [{
@@ -136,7 +129,6 @@ const HotList = () => {
     }
     
   }, [hotListData.data])
-
   useEffect(()=>{
     if(hotListDatasourceData && hotListDatasourceData.data){
       let sources: any = [];
@@ -201,8 +193,22 @@ const HotList = () => {
 
   const searchText = (rowsParam: HotListTemplate[], headCell: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
-      headCells[colIdx].headerArray = valuesObject;
-      onSelection(valuesObject, colIdx);
+      let filter = false;
+
+      if(colIdx == ALERT_PRIORITY_COLID && valuesObject && valuesObject.length > 0){
+        if(!isNaN(Number(valuesObject[0].value))){
+          filter = true;
+        }
+      }else{
+        filter = true;
+      }
+
+      
+      if(filter){
+        headCells[colIdx].headerArray = valuesObject;
+        onSelection(valuesObject, colIdx);
+      }
+      
     }
     return (
       <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
@@ -246,7 +252,7 @@ const HotList = () => {
   };
 
   const multiSelectCheckbox = (rowParam: HotListTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
-    if (colIdx === 3 && initialRows && initialRows.sources) {      
+    if (colIdx === SOURCE_COLID && initialRows && initialRows.sources) {      
 
       return (
         <div>
@@ -402,7 +408,7 @@ const HotList = () => {
     searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
       let x: GridFilter = {
         operator: headCells[item.colIdx].attributeOperator,
-        field: headCells[item.colIdx].id,
+        field: headCells[item.colIdx].attributeName,
         value: item.value.length > 1 ? item.value.join('@') : item.value[0],
         fieldType: headCells[item.colIdx].attributeType,
       }

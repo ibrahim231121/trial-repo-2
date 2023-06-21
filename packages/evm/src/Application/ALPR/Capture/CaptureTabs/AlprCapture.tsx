@@ -145,6 +145,14 @@ const AlprCapture = () => {
         endDate: moment(selectedDateTimeRange.endDate).toISOString(),
         hotListId:0
       })
+    
+    const USER_COLID:number = 6;
+    const HOTLIST_COLID:number = 3;
+    const STATES_COLID:number = 8;
+    const CONFIDENCE_COLID:number = 7;
+    const TICKET_NUMBER_COLID:number = 10;
+    const LATITUDE_COLID:number = 11;
+    const LONGITUDE_COLID:number = 12;
 
 
     type DateTimeProps = {
@@ -307,7 +315,7 @@ const AlprCapture = () => {
     isSearchable: boolean
   ) => {
 
-    if(colIdx === 6 && initialRows && initialRows.usersData && initialRows.usersData.length > 0){
+    if(colIdx === USER_COLID && initialRows && initialRows.usersData && initialRows.usersData.length > 0){
         let users: {id: number, value: string }[] = [];
         initialRows.usersData.map((x: any) => {
             let userRows = initialRows.rowsDataItems.filter((row: { user: any; })=>row.user == x.id);
@@ -336,7 +344,7 @@ const AlprCapture = () => {
           />);
     }
        
-    if(colIdx === 3 && initialRows && initialRows.hotListData && initialRows.hotListData.length > 0){
+    if(colIdx === HOTLIST_COLID && initialRows && initialRows.hotListData && initialRows.hotListData.length > 0){
         let hotlists: {id: number, value: string }[] = [];
         initialRows.hotListData.map((x: any) => {
             if(x.id != 0)
@@ -367,7 +375,7 @@ const AlprCapture = () => {
           />);
     } 
 
-    if(colIdx === 8 && initialRows && initialRows.states && initialRows.states.length > 0){
+    if(colIdx === STATES_COLID && initialRows && initialRows.states && initialRows.states.length > 0){
         let statesList: {id: number, value: string }[] = [];
         initialRows.states.map((x: any) => {
             statesList.push({id : x.id, value: x.label });
@@ -400,8 +408,21 @@ const AlprCapture = () => {
 
     const searchText = (rowsParam: AlprCapturePlateInfo[], headCell: HeadCellProps[], colIdx: number) => {
         const onChange = (valuesObject: ValueString[]) => {
-            headCells[colIdx].headerArray = valuesObject;
-            onSelection(valuesObject, colIdx);
+            let filter = false;
+
+            if((colIdx == CONFIDENCE_COLID || colIdx == TICKET_NUMBER_COLID || colIdx == LATITUDE_COLID || colIdx == LONGITUDE_COLID) &&
+                valuesObject && valuesObject.length > 0){
+                if(!isNaN(Number(valuesObject[0].value))){
+                    filter = true;
+                }
+            }else{
+                filter = true;
+            }
+            
+            if(filter){
+                headCells[colIdx].headerArray = valuesObject;
+                onSelection(valuesObject, colIdx);
+            }
         }
         return (
             <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
@@ -513,7 +534,7 @@ const AlprCapture = () => {
             searchComponent: searchText,
             minWidth: "150",
             attributeName: "Confidence",
-            attributeType: "var",
+            attributeType: "int",
             attributeOperator: "eq"
         }
         ,

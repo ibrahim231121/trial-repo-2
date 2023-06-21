@@ -14,6 +14,7 @@ import { HotListAgent } from "../../../utils/Api/ApiAgent";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { useDispatch } from "react-redux";
+import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 type Props = {
   selectedItems?: any;
@@ -44,7 +45,10 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
     // setModalType("deactivate");
   }
   const onConfirm = (e:any) => {
-    HotListAgent.deleteHotListItemAsync("/HotList/" + row?.id).then(()=>{
+    dispatch(setLoaderValue({isLoading: true}));
+    const seletedIds = selectedItems.map((item:any)=>item.id).join(",");
+    HotListAgent.deleteHotListItemAsync("/HotList" + ((selectedItems.length > 1) ? "?hotlistIds=" + seletedIds : "/" + row?.id)).then(()=>{
+      dispatch(setLoaderValue({isLoading: false}));
       setIsOpen(false);
       showToastMsg?.({
         message: t("Hotlist_deleted"),
@@ -54,13 +58,59 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
       });
       dispatch(GetAllHotListData(pageiGrid));
     }).catch((error:any)=>{
+      dispatch(setLoaderValue({isLoading: false}));
       console.log(error);
-      showToastMsg?.({
-        message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
-        variant: "error",
-        duration: 5000,
-        clearButtton: true
-      });
+      setIsOpen(false);
+
+      if(error && error.response && error.response.status == 405){
+        let names:string = "";
+        let ids = error.response.data.split(',')
+
+        if(selectedItems.length > 0){
+          selectedItems.forEach((item:any)=>{
+            if(names.length >= 70){            
+              return false;
+            }
+  
+            if(ids.indexOf(item.id.toString()) >= 0){
+              if(names.length + item.Name.length < 70){
+                names += ", " + item.Name 
+              }else{
+                names += "...";
+              }            
+            }
+          });
+  
+          names = names.substring(2);
+        }else{
+          names = row.Name;
+        }
+        
+
+        showToastMsg?.({
+          message: t("Hotlist_delete_not_allowed").replace("[hotlistnames]", names),
+          variant: "error",
+          duration: 7000,
+          clearButtton: true
+        });
+      }else if(error && error.response && error.response.status == 403){
+        showToastMsg?.({
+          message: t("Hotlist_delete_failed_invalid_parameter"),
+          variant: "error",
+          duration: 7000,
+          clearButtton: true
+        });
+      }
+      else{
+        showToastMsg?.({
+          message: t("Hotlist_delete_failed"),
+          variant: "error",
+          duration: 7000,
+          clearButtton: true
+        });
+      }
+
+      
       return error;
     })
   }

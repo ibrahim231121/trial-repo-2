@@ -27,6 +27,8 @@ import { HotListAgent } from "../../../utils/Api/ApiAgent";
 import moment from "moment";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
+import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 
 
 const HotListPayload:HotListTemplate= {
@@ -54,6 +56,7 @@ const HotListDetail = () => {
   const dispatch = useDispatch();
   const isFirstTime = React.useRef<boolean>(true);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const toasterRef = useRef<typeof CRXToaster>(null);
   const hotListDetails: any = useSelector((state: RootState) => state.hotListReducer.hotListDetails);
   const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
 
@@ -138,7 +141,24 @@ const HotListDetail = () => {
     isFirstTime.current = false;
   }, [])
 
-
+  const showToastMsg = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration
+    });
+    if (obj.message !== undefined && obj.message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("Hot_List"),
+        message: obj.message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  };
 
   const fileUpload = () => {
     if (hiddenFileInput?.current)
@@ -164,7 +184,13 @@ const HotListDetail = () => {
   };
 
   const HotListValidationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string().required(t("Hotlist_name_required"))
+      .max(50, t("Hotlist_name_char_limit")),
+    rulesExpression: Yup.string().max(1000, t("Hotlist_Rules_Expression_char_limit")),
+    description: Yup.string().max(500,t("Hotlist_Description_char_limit")),
+    alertPriority: Yup.number().defined(t("Hotlist_Alert_Priority_Should_be_number")).typeError(t("Hotlist_Alert_Priority_Should_be_number")).min(0,t("Hotlist_Alert_Priority_greater_than_zero")),
+    stationId: Yup.number().typeError(t("Hotlist_Tenant_Should_be_number")).nullable(true),
+    color: Yup.string().matches(/#[0-9a-fA-F]{6}\b/gm, t("Hotlist_color_should_be_hash_code"))
   });
 
   const onSubmit = (values: any) => {
@@ -195,6 +221,30 @@ const HotListDetail = () => {
         );
       }).catch((error:any)=>{
         dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
+        if(error && error.response && error.response.status == 409){
+          showToastMsg?.({
+            message: t("Hotlist_duplicate_not_allowed"),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
+        }
+        else if(error && error.response && error.response.status == 404){
+          showToastMsg?.({
+            message: t("Hotlist_not_found").replace("[id]", id),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
+        }
+        else{
+          showToastMsg?.({
+            message: t("Hotlist_updation_failed"),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
+        }
         console.error(error);
       })
     }
@@ -220,6 +270,24 @@ const HotListDetail = () => {
         );
       }).catch((error:any) => {
         dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
+        
+        if(error && error.response && error.response.status == 409){
+          showToastMsg?.({
+            message: t("Hotlist_duplicate_not_allowed"),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
+        }else{
+          showToastMsg?.({
+            message: t("Hotlist_creation_failed"),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
+        }
+        
+        
         console.error(error);
       })
     }
@@ -304,7 +372,7 @@ const HotListDetail = () => {
       </div>
       <div className="createHotList CrxCreateUser CreatHotListUi hotListSearchComponents">
         <div >
-
+          <CRXToaster ref={toasterRef}/>
         </div>
         <div >
           <div className='CrxIndicates'>
@@ -319,7 +387,7 @@ const HotListDetail = () => {
                 console.log("SUBMIT : " + values);
               }}
             >
-              {({ setFieldValue, values, errors, isValid, dirty ,touched}) => (
+              {({ setFieldValue, values, errors, isValid, dirty ,touched, setFieldTouched}) => (
                 <Form>
                   <div className="CrxEditForm">
 
@@ -329,15 +397,15 @@ const HotListDetail = () => {
                         <div >
                           <TextField
                             id="name"
-                            required={true}
+                            required={true}                            
                             label={t("Name") + ':'}
                             value={values.name}
                             onChange={(e: any) => {
-                              console.log(e);
+                              setFieldTouched("name", true);
                               setFieldValue("name", e.target.value)
                             }}
-                            error={errors.name != undefined && touched.name}
-                            errorMsg={t("Name_field_required")}
+                            error={touched?.name && (errors.name ?? "").length > 0}
+                            errorMsg={errors.name}
                           />
                         </div>
                         <div className='crxEditFilter editFilterUi'>
@@ -370,9 +438,13 @@ const HotListDetail = () => {
                           <TextField
                               required={false}
                               label={t("Tenant") + ':'}
-                              value={values.stationId}
-                              onChange={(e: any) => setFieldValue("stationId", e.target.value)}
-
+                              value={values.stationId <= 0 ? "": values.stationId }
+                              onChange={(e: any) => {
+                                setFieldTouched("stationId", true);
+                                setFieldValue("stationId", e.target.value)}
+                              }
+                              error={touched?.stationId && (errors.stationId ?? "").length > 0}
+                              errorMsg={errors.stationId}
                             />
                           
                         </div>
@@ -380,9 +452,14 @@ const HotListDetail = () => {
                           <TextField
                             required={false}
                             label={t("Alert_Priority") + ':'}
-                            value={values.alertPriority === 0 ? "" : values.alertPriority}
-                            onChange={(e: any) => setFieldValue("alertPriority", e.target.value)}
-
+                            value={values.alertPriority }
+                            onChange={(e: any) => {
+                              setFieldTouched("alertPriority", true);
+                              setFieldValue("alertPriority", e.target.value)
+                            }
+                            }
+                            error={touched?.alertPriority && (errors.alertPriority ?? "").length > 0}
+                            errorMsg={errors.alertPriority}
                           />
                         </div>
 
@@ -393,16 +470,29 @@ const HotListDetail = () => {
 
                         <div className="createHotlistColorContainer">
                           <label className="createHotlistColorLabel">Color:</label>
-                          <input type="color" id="hotlistcolor" name="color" value={values.color} className="createHotlistColorInput" onChange={(e:any)=>{
+                          <div className="createHotlistColorInput">
+                            <Field
+                              id="color"
+                              key="color"
+                              name="color"
+                              onChange={(e: any) => {
+                                e.preventDefault();
+                                setFieldTouched("color", true);
+                                setFieldValue("color", e.target.value, true);
+                              }}
+                              className={(touched?.color && (errors.color ?? "").length > 0) ? "error" : ""}
+                            />
+                            { touched?.color && (errors.color ?? "").length > 0 ? (
+                            <div className="MuiTypography-root errorStateContent MuiTypography-caption MuiTypography-gutterBottom MuiTypography-displayBlock">
+                                <i className="fas fa-exclamation-circle">
+                                  <span className="crxErrorMsg"> {errors.color}</span>
+                                </i>                                
+                            </div>
+                            ) : null }
+                          </div>
+                          <input type="color" id="hotlistcolor" name="color" value={values.color} className="createHotlistColorPicker" onChange={(e:any)=>{
                             setFieldValue("color", e.target.value);
-                            }}></input>
-                          {/* <TextField
-                            required={false}
-                            label={t("Color") + ':'}
-                            value={values.color}
-                            onChange={(e: any) => setFieldValue("color", e.target.value)}
-
-                          /> */}
+                            }}></input>                          
                         </div>
                         <div >
                           <TextField
@@ -410,8 +500,14 @@ const HotListDetail = () => {
                             label={t("Rule_Expression") + ':'}
                             multiline={true}
                             value={values.rulesExpression}
-                            onChange={(e: any) => setFieldValue("rulesExpression", e.target.value)}
-
+                            onChange={(e: any) => {
+                              setFieldTouched("rulesExpression", true);
+                              setFieldValue("rulesExpression", e.target.value)
+                            }
+                            }
+                            error={touched?.rulesExpression && (errors.rulesExpression ?? "").length > 0}
+                            errorMsg={errors.rulesExpression}
+                            rows={6}
                           />
                         </div>
                         <div >
@@ -420,8 +516,14 @@ const HotListDetail = () => {
                             label={t("Description") + ':'}
                             multiline={true}
                             value={values.description}
-                            onChange={(e: any) => setFieldValue("description", e.target.value)}
-
+                            onChange={(e: any) => {
+                              setFieldTouched("description", true);
+                              setFieldValue("description", e.target.value)
+                            }
+                            }
+                            error={touched?.description && (errors.description ?? "").length > 0}
+                            errorMsg={errors.description}
+                            rows={6}
                           />
                         </div>
 
@@ -431,7 +533,7 @@ const HotListDetail = () => {
                   <div className='crxFooterEditFormBtn'>
                     <div className='__crxFooterBtnUser__'>
                       <CRXButton className='primary'
-                        disabled={!isValid}
+                        disabled={!(isValid && dirty)}
                         onClick={() => onSubmit(values)}
                       >
                         {t("Save")}
