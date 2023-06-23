@@ -38,6 +38,10 @@ import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import { HotListTemplate } from "../../../utils/Api/models/HotListModels";
+import AnchorDisplay from "../../../utils/AnchorDisplay";
+import { getToken } from "../../../Login/API/auth";
+import jwt_decode from "jwt-decode";
+import NumberSearch from "../../../GlobalComponents/DataTableSearch/NumberSearch";
 
 const HotList = () => {
   const classes = useStyles();
@@ -69,18 +73,7 @@ const HotList = () => {
   const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
   const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
 
-  const ALERT_PRIORITY_COLID:number = 5;
   const SOURCE_COLID:number = 3;
-
-  const SourceOptions = (
-    [{
-      id: 1,
-      label: "Source 1"
-    },
-    {
-      id: 2,
-      label: "Source 2"
-    }]);
 
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -115,6 +108,7 @@ const HotList = () => {
       let hotListDataTemp = hotListData.data.map((item: any) => {
       return {
         id: item.recId,
+        nameWithId: item.name + "_" + item.recId,
         Name: item.name,
         description: item.description,
         sourceName: item.sourceName,
@@ -171,6 +165,16 @@ const HotList = () => {
       getFilteredHotListData()
   }, [searchData]);
 
+  const userIdPreset = () =>{
+    var token = getToken();
+    if (token) {
+        var accessTokenDecode: any = jwt_decode(token);
+        return accessTokenDecode.LoginId
+    }
+    else
+     return ""
+  }
+
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
       for (let i = 0; i < v.length; i++) {
@@ -191,27 +195,29 @@ const HotList = () => {
     }
   }
 
+  const searchNumber = (
+    rowsParam: HotListTemplate[],
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
+
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
+    };
+
+    return (
+      <NumberSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
+    );
+  };
+  
   const searchText = (rowsParam: HotListTemplate[], headCell: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
-      let filter = false;
-
-      if(colIdx == ALERT_PRIORITY_COLID && valuesObject && valuesObject.length > 0){
-        if(!isNaN(Number(valuesObject[0].value))){
-          filter = true;
-        }
-      }else{
-        filter = true;
-      }
-
-      
-      if(filter){
         headCells[colIdx].headerArray = valuesObject;
         onSelection(valuesObject, colIdx);
-      }
-      
     }
     return (
-      <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
+        <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
     );
   };
 
@@ -288,16 +294,17 @@ const HotList = () => {
     },
     {
       label: t("Name"),
-      id: "Name",
+      id: "nameWithId",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
+      dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
       attributeName: "Name",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
     {
       label: t("Description"),
@@ -310,7 +317,8 @@ const HotList = () => {
       minWidth: "300",
       attributeName: "Description",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
     {
       label: t("Source_Name"),
@@ -323,7 +331,8 @@ const HotList = () => {
       minWidth: "230",
       attributeName: "SourceName",
       attributeType: "List",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
     {
       label: t("Rule_Expression"),
@@ -336,7 +345,8 @@ const HotList = () => {
       minWidth: "230",
       attributeName: "RulesExpression",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
     {
       label: t("Alert_Priority"),
@@ -345,11 +355,12 @@ const HotList = () => {
       dataComponent: (e: string) => textDisplay(e, "", "top"),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: searchNumber,
       minWidth: "130",
       attributeName: "AlertPriority",
       attributeType: "int",
-      attributeOperator: "eq"
+      attributeOperator: "eq",
+      visible: true
     },
     {
       label: t("Color"),
@@ -362,7 +373,8 @@ const HotList = () => {
       minWidth: "150",
       attributeName: "Color",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
     {
       label: t("Audio"),
@@ -375,7 +387,8 @@ const HotList = () => {
       minWidth: "150",
       attributeName: "Audio",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
+      visible: true
     },
   ]);
 
@@ -511,7 +524,7 @@ const HotList = () => {
             searchHeader={true}
             allowDragableToList={false}
             showActionSearchHeaderCell={false}
-            className="crxTableHeight crxTableDataUi CategoriesTableTemplate"
+            className="crxTableHeight crxTableDataUi hotlistDataTable"
             onClearAll={clearAll}
             getSelectedItems={(v: HotListTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}

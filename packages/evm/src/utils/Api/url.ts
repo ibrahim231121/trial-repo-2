@@ -96,5 +96,6 @@ export const UPLOAD_POLICIES_GET_ALL_UPLOAD_POLICIES_DATA = `${SETUP_CONFIGURATI
 export const ALPR_HOTLIST = `${BASE_URL_ALPR_Service}/HotList`
 
 export const ALPR_CAPTURE_PLATE = `${BASE_URL_ALPR_Service}/CapturedPlate`
+export const ALPR_PLATE_HISTORY = `${BASE_URL_ALPR_Service}/LicensePlate/{numberPlateId}/history`
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID

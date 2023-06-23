@@ -31,6 +31,7 @@ import { GetLicensePlateData } from "../../../Redux/AlprLicensePlateReducer";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { dateOptionsTypes } from "../../../utils/constant";
 import moment from "moment";
+import AnchorDisplay from "../../../GlobalComponents/Display/AnchorDisplay";
 
 type DateTimeObject = {
     startDate: string;
@@ -217,7 +218,7 @@ const LicensePlate = () => {
             label: `${t("Plate")}`,
             id: "LicensePlate",
             align: "left",
-            dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
+            dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.LicensePlateHistory)[0].url),
             sort: true,
             searchFilter: true,
             searchComponent: searchText,

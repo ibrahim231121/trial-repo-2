@@ -33,6 +33,7 @@ import { addNotificationMessages } from "../../../Redux/notificationPanelMessage
 
 const HotListPayload:HotListTemplate= {
   id: 0,
+  nameWithId:"",
   name: "",
   description: "",
   sourceId: 0,

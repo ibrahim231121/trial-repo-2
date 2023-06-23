@@ -7,3 +7,8 @@ export type GetAlprCapturePayload = {
     endDate:string,
     hotListId:number
 }
+
+export type GetAlprPlateHistoryPayload = {
+    pageiGrid:PageiGrid,
+    numberPlateId:number
+}

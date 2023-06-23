@@ -551,5 +551,8 @@ export const ALPRDataSource = {
     deleteDataSource:(url: string) => requests.delete<void>(BASE_URL_ALPR_Service, url, config),
 }
 
+export const AlprPlateHistoryAgent={
+    getAlprPlateHistoryInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+}
 
 

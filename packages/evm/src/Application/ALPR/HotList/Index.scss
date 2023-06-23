@@ -228,3 +228,21 @@ html{
         }
     }
 }
+
+.hotlistDataTable {
+  .CRXDataTableCustom {
+    .searchable_header {
+      tr {
+        th {
+          padding: 13px 12px;
+          .number_field_textBox {
+            input {
+              width: 100%;
+              background: var(--color-d1d2d4);
+            }
+          }
+        }
+      }
+    }
+  }
+}

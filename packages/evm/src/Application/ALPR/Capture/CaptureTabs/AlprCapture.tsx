@@ -34,6 +34,9 @@ import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { CBXMultiSelectForDatatable } from "@cb/shared";
 import { ClickAwayListener } from "@material-ui/core";
 import { GetAllHotListData } from "../../../../Redux/AlprHotListReducer";
+import { getToken } from "../../../../Login/API/auth";
+import jwt_decode from "jwt-decode";
+import NumberSearch from "../../../../GlobalComponents/DataTableSearch/NumberSearch";
 
 const states = [
     {id: 1,label:"TX"},  
@@ -149,10 +152,6 @@ const AlprCapture = () => {
     const USER_COLID:number = 6;
     const HOTLIST_COLID:number = 3;
     const STATES_COLID:number = 8;
-    const CONFIDENCE_COLID:number = 7;
-    const TICKET_NUMBER_COLID:number = 10;
-    const LATITUDE_COLID:number = 11;
-    const LONGITUDE_COLID:number = 12;
 
 
     type DateTimeProps = {
@@ -230,6 +229,15 @@ const AlprCapture = () => {
         setHeadCells(headCellReset);
       };
 
+    const userIdPreset = () =>{
+        var token = getToken();
+        if (token) {
+            var accessTokenDecode: any = jwt_decode(token);
+            return accessTokenDecode.LoginId
+        }
+        else
+         return ""
+      }
     
   const searchDate = (
     rowsParam: AlprCapturePlateInfo[],
@@ -406,28 +414,31 @@ const AlprCapture = () => {
     } 
   };
 
-    const searchText = (rowsParam: AlprCapturePlateInfo[], headCell: HeadCellProps[], colIdx: number) => {
-        const onChange = (valuesObject: ValueString[]) => {
-            let filter = false;
+  const searchNumber = (
+    rowsParam: AlprCapturePlateInfo[],
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
 
-            if((colIdx == CONFIDENCE_COLID || colIdx == TICKET_NUMBER_COLID || colIdx == LATITUDE_COLID || colIdx == LONGITUDE_COLID) &&
-                valuesObject && valuesObject.length > 0){
-                if(!isNaN(Number(valuesObject[0].value))){
-                    filter = true;
-                }
-            }else{
-                filter = true;
-            }
-            
-            if(filter){
-                headCells[colIdx].headerArray = valuesObject;
-                onSelection(valuesObject, colIdx);
-            }
-        }
-        return (
-            <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
-        );
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
     };
+
+    return (
+      <NumberSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
+    );
+  };
+  
+  const searchText = (rowsParam: AlprCapturePlateInfo[], headCell: HeadCellProps[], colIdx: number) => {
+    const onChange = (valuesObject: ValueString[]) => {
+        headCells[colIdx].headerArray = valuesObject;
+        onSelection(valuesObject, colIdx);
+    }
+    return (
+        <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
+    );
+  };
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
@@ -455,7 +466,8 @@ const AlprCapture = () => {
             minWidth: "190",
             attributeName: "numberPlate",
             attributeType: "string",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         },
         {
             label: `${t("Description")}`,
@@ -468,7 +480,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "description",
             attributeType: "String",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         },
         {
             label: `${t("Hot_List")}`,
@@ -482,7 +495,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "HotlistName",
             attributeType: "List",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         },
         {
             label: `${t("Captured")}`,
@@ -495,7 +509,8 @@ const AlprCapture = () => {
             minWidth: "220",
             attributeName: "CapturedAt",
             attributeType: "DateTime",
-            attributeOperator: "between"
+            attributeOperator: "between",
+            visible: true
         },
         {
             label: `${t("Unit")}`,
@@ -507,9 +522,10 @@ const AlprCapture = () => {
             //   searchComponent: (rowParam: HotListCaptureTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
             searchComponent: searchText,
             minWidth: "180",
-            attributeName: "unitId",
+            attributeName: "UnitId",
             attributeType: "String",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         },
         {
             label: `${t("User")}`,
@@ -522,7 +538,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "UserId",
             attributeType: "List",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         },
         {
             label: `${t("Confidence")}`,
@@ -531,11 +548,12 @@ const AlprCapture = () => {
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,
+            searchComponent: searchNumber,
             minWidth: "150",
             attributeName: "Confidence",
             attributeType: "int",
-            attributeOperator: "eq"
+            attributeOperator: "eq",
+            visible: true
         }
         ,
         {
@@ -549,7 +567,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "StateName",
             attributeType: "List",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         }
         ,
         {
@@ -563,7 +582,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "notes",
             attributeType: "String",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         }
         ,
         {
@@ -573,11 +593,12 @@ const AlprCapture = () => {
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,
+            searchComponent: searchNumber,
             minWidth: "180",
             attributeName: "TicketNumber",
             attributeType: "double",
-            attributeOperator: "eq"
+            attributeOperator: "eq",
+            visible: true
         }
         ,
         {
@@ -587,11 +608,12 @@ const AlprCapture = () => {
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,
+            searchComponent: searchNumber,
             minWidth: "180",
             attributeName: "Latitude",
             attributeType: "double",
-            attributeOperator: "eq"
+            attributeOperator: "eq",
+            visible: true
         }
         ,
         {
@@ -601,11 +623,12 @@ const AlprCapture = () => {
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,
+            searchComponent: searchNumber,
             minWidth: "180",
             attributeName: "Longitude",
             attributeType: "double",
-            attributeOperator: "eq"
+            attributeOperator: "eq",
+            visible: true
         }
         ,
         {
@@ -619,7 +642,8 @@ const AlprCapture = () => {
             minWidth: "180",
             attributeName: "lifeSpan",
             attributeType: "String",
-            attributeOperator: "contains"
+            attributeOperator: "contains",
+            visible: true
         }
     ]);
    
@@ -948,7 +972,7 @@ const AlprCapture = () => {
                     showActionCol={false}
                     showActionSearchHeaderCell={false}
                     showCountText={false}
-                    showCustomizeIcon={false}
+                    showCustomizeIcon={true}
                     showTotalSelectedText={false}
                     lightMode={false}
                     //Please dont miss this block.

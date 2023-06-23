@@ -40,6 +40,7 @@ import caseSharingSlice from './CaseSharingReducer';
 import AlprDataSourceSlice from './AlprDataSourceReducer';
 import LicensePlateSlice from './AlprLicensePlateReducer';
 import alprCapturePlateSlice from './AlprCapturePlateReducer';
+import alprPlateHistorySlice from './AlprPlateHistoryReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -83,5 +84,6 @@ export const reducer = combineReducers({
   alprDataSourceReducer: AlprDataSourceSlice.reducer,
   alprLicensePlateReducer: LicensePlateSlice.reducer,
   alprCapturePlateReducer: alprCapturePlateSlice.reducer,
+  alprPlateHistoryReducer: alprPlateHistorySlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const rows = [{
     id:1,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_1',
     DateOfInterest: '',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -23,7 +23,7 @@ const rows = [{
 },
 {
     id:2,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_2',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -44,7 +44,7 @@ const rows = [{
 },
 {
     id:3,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_3',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -65,7 +65,7 @@ const rows = [{
 } ,
 {
     id:4,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_4',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -86,7 +86,7 @@ const rows = [{
 },
 {
     id:5,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_5',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -107,7 +107,7 @@ const rows = [{
 },
 {
     id:6,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_6',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,
@@ -128,7 +128,7 @@ const rows = [{
 },
 {
     id:7,
-    LicensePlate: 'ASF-123',
+    LicensePlate: 'ASF-123_7',
     DateOfInterest: '2021/02/02',
     LicenseType: 'dummy',
     LicenseYear: 0,

@@ -1,6 +1,7 @@
 export type HotListTemplate={
     id:number;
     name:string;
+    nameWithId:string,
     description:string;
     sourceId: number;
     sourceName:string;

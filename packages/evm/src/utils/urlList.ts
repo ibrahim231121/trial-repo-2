@@ -104,7 +104,8 @@ export const urlNames: any = {
     DataSourceTab: 'DataSourceTab',
     AlprCapturePanel: 'AlprCapturePanel',
     LicensePlateList: 'LicensePlateList',
-    LicensePlateDetail: 'LicensePlateDetail'
+    LicensePlateDetail: 'LicensePlateDetail',
+    LicensePlateHistory: 'LicensePlateHistory'
 };
 
 export const urlList: any = [
@@ -655,4 +656,12 @@ export const urlList: any = [
 
         ]
     },
+    {
+        name: urlNames.LicensePlateHistory,
+        url: '/Alpr/LicensePlateHistory/:id',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/LicensePlate' ,type: 'link', label: 'License Plate' }
+        ]
+    }
 ];
