@@ -1,23 +1,24 @@
-.LicensePlateModalEditCrx {
+.LicensePlate_ModalEditCrx {
   padding-right: 11px;
 }
 
-.LicensePlateSearchComponents {
+.LicensePlate_SearchComponents {
   padding: 0 4px 0px 65px;
   padding-top: 96px;
   transition: 0.5s padding ease-out;
 }
 
-.createLicensePlate {
+.LicensePlate_Create {
   .modalEditCrx {
     padding-right: 11px;
   }
 }
 
-.CrxCreateLicensePlate {
+.LicensePlate_CrxCreate {
   .modalEditCrx {
     padding-right: 11px;
   }
+
   .CrxEditForm {
     //padding: 40px 52px 47px 26px;
     color: #333333;
@@ -28,8 +29,10 @@
     h6 {
       width: 168.66px;
     }
-    > span {
+
+    >span {
       margin: 0 0 34px;
+
       label.requiredLable {
         .inputLabelReq {
           line-height: 24px;
@@ -38,22 +41,26 @@
           color: #333333;
         }
       }
+
       span {
         font-size: 14px;
         color: #333333;
         font-family: var(--Arial-font-family);
-        
+
       }
+
       .users-input {
         width: 380px;
       }
+
       .errorStateContent {
         font-size: 12px;
         color: #aa1d1d;
       }
     }
   }
-  .CrxIndicates {
+
+  .LicensePlateCrxIndicates {
     margin-top: 2px;
     padding-bottom: 33px;
     padding-left: 0px;
@@ -76,7 +83,7 @@
   }
 }
 
-.CreatLicensePlateUi {
+.LicensePlate_CreatUI {
   margin-left: 62px;
 
   .grid_spacer {
@@ -120,14 +127,15 @@
   .inputLabelReq {
     left: 9px !important;
   }
-  .DateTimeInputLabelReq
-  {
+
+  .DateTimeInputLabelReq {
     left: 3px !important;
     font-size: 20px;
     position: relative;
     top: -5px;
     font-weight: var(--Font-style-bold);
   }
+
   .DeactivationDateUi {
     flex-direction: row;
     align-items: baseline;
@@ -199,7 +207,7 @@
 
   .crxFooterEditFormBtn {
     padding: 0 28px 0 89px !important;
-    bottom: 55px;
+    bottom: 0px;
     position: fixed;
     border: none;
     place-content: space-between;
@@ -588,7 +596,58 @@
 
 
 //own css
-.dateTimeFIeldRequiredMsg
-{
-  margin:41px 0 0 150px !important;
+.LicensePlate_DateTimeFIeldRequired_Msg {
+  margin: 41px 0 0 150px !important;
+}
+
+
+.LicensePlate_UserGroupCustom {
+  .crxEditFilter {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  input {
+    width: 184px !important;
+
+    &::placeholder {
+      padding-left: 12px;
+    }
+  }
+}
+
+.LicensePlate_CrxEditFilter {
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.LicensePlate_EditFilterUi {
+  padding: 0 5px 0 5px;
+  flex-direction: row;
+
+  .requiredLable {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--color-333333);
+    font-family: var(--Arial-font-family);
+
+    >span {
+      font-size: 20px;
+      padding-left: 2px !important;
+      margin-left: 8px !important;
+    }
+  }
+
+  .inputError {
+    margin-bottom: 0px !important;
+  }
+
+  >span {
+    width: 167px;
+  }
+
+  .selectInner_content {
+    width: 100%;
+  }
 }

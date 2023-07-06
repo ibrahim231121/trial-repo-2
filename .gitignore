@@ -104,3 +104,4 @@ dist
 .tern-port
 /*.lock
 /packages/evm/build.zip
+/.vs

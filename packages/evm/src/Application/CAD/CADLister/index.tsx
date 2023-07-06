@@ -83,7 +83,7 @@ const CADList: React.FC = () => {
   const rowsRef = useRef<any>([]);
   const statusJson = useRef<any>();
   const intervalRef = useRef<any>();
-  const CAD: any = useSelector((state: RootState) => state.cadReducer.CadInfo);
+  //const CAD: any = useSelector((state: RootState) => state.cadReducer.CadInfo);
   //const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
   const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
   const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);

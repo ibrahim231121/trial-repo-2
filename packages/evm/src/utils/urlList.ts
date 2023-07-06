@@ -647,13 +647,20 @@ export const urlList: any = [
         ]
     },
     {
-        name: urlNames.LicensePlateDetail,
+        name: urlNames.LicensePlateDetailEdit,
         url: '/Alpr/LicensePlateDetail/:id',
         details: [
             { type: 'text', label: 'Alpr' },
             { routeTo: '/Alpr/LicensePlate' ,type: 'link', label: 'License Plate' },
-            { routeTo: '/Alpr/LicensePlateDetail', type: 'text', label: 'License Plate' },
 
+        ]
+    },
+    {
+        name: urlNames.LicensePlateDetailCreate,
+        url: '/Alpr/LicensePlateDetail',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/LicensePlate', type: 'link', label: 'License Plate' }
         ]
     },
     {
@@ -663,5 +670,5 @@ export const urlList: any = [
             { type: 'text', label: 'Alpr' },
             { routeTo: '/Alpr/LicensePlate' ,type: 'link', label: 'License Plate' }
         ]
-    }
+    },
 ];

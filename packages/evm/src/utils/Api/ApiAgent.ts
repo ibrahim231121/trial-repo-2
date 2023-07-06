@@ -4,7 +4,8 @@ import { StringIfPlural } from 'react-i18next';
 import { Category, CategoryModel } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
 import { Cases } from './models/CasesModels';
-import {CaseSharing} from './models/CaseSharingModels'
+import { LicensePlate } from './models/NumberPlateModel';
+import { CaseSharing } from './models/CaseSharingModels'
 import { CRXLoader } from "@cb/shared"
 import jwt_decode from 'jwt-decode';
 
@@ -341,7 +342,7 @@ export const FileAgent = {
     getDownloadFileUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL_V2, url, config),
     getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL + "/Files", url, config),
     getFile: (url: string) => requests.get<FileF>(FILE_SERVICE_URL_V2, url, config),
-    getThumbnail: (name: string, accessCode:string, isVideoFile: boolean) => requests.get<any>(FILE_SERVICE_URL_V2, "/Files/FetchThumbnail/" + name + '/' + accessCode + '/' + isVideoFile, config),
+    getThumbnail: (name: string, accessCode: string, isVideoFile: boolean) => requests.get<any>(FILE_SERVICE_URL_V2, "/Files/FetchThumbnail/" + name + '/' + accessCode + '/' + isVideoFile, config),
     getHealthCheck: () => requests.get<string>(FILE_SERVICE_URL, '/Files/HealthCheck', config),
     getFileBuildVersion: () => requests.get<any>(FILE_SERVICE_URL, "/Files/Health/BuildVersion"),
     changeFileUploadStatus: (url: any, body: any) => requests.patch<any>(FILE_SERVICE_URL_V2, url, body, config),
@@ -363,7 +364,7 @@ export const UsersAndIdentitiesServiceAgent = {
     },
 
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
-    getADGroups: (authServer : any) => requests.get<ADGroups[]>(BASE_URL_USER_SERVICE, authServer, config),
+    getADGroups: (authServer: any) => requests.get<ADGroups[]>(BASE_URL_USER_SERVICE, authServer, config),
     getADGroupsMapping: () => requests.get<AddGroup[]>(ADGROUP_GET_URL, '', config),
     deleteADGroupsMapping: (url: string) => requests.delete<void>(BASE_URL_USER_SERVICE, url, config),
     upsertADRecords: (url: string, body: AddGroup[]) => requests.post<number>(BASE_URL_USER_SERVICE, url, body, config),
@@ -392,7 +393,7 @@ export const UnitsAndDevicesAgent = {
     getUnit: (url: string) => requests.get<UnitAndDevice[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAssignedUsers: (url: string) => requests.get<CMTEntityRecord[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAssignedGroups: (url: string) => requests.get<CMTEntityRecord[]>(BASE_URL_UNIT_SERVICES, url, config),
- 
+
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
@@ -442,7 +443,7 @@ export const UnitsAndDevicesAgent = {
     getStationPolicies: (stationId: number) => requests.get<StationPolicy[]>(BASE_URL_UNIT_SERVICES, `/Stations/${stationId}/StationPolicies`, config),
 
     addUsersToUnits: (url: string, body: AssignUsersToUnit) => requests.post<number>(BASE_URL_UNIT_SERVICES, url, body, config),
-   
+
 }
 
 export const CommonAgent = {
@@ -477,11 +478,11 @@ export const CasesAgent = {
     updateCaseHighlight: (url: string) => requests.put<void>(BASE_URL_CASES_SERVICE, url, {}, config),
     getPredictiveCaseIds: (predictiveText: string) => requests.get<any>(BASE_URL_CASES_SERVICE, `/Case/GetPredictiveCaseIds?predictiveText=${predictiveText}`, config),
     getAllCaseSharing: (url: string, extraHeader?: Headers[]) => {
-        return requests.getAll<Paginated<CaseSharing[]>>(BASE_URL_CASES_SERVICE,url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+        return requests.getAll<Paginated<CaseSharing[]>>(BASE_URL_CASES_SERVICE, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
-    addCaseSharing: (url: string, body:any) => requests.post<any>(BASE_URL_CASES_SERVICE,url, body, config),
-    editCaseSharing: (url: string, body: any) => requests.put<any>(BASE_URL_CASES_SERVICE,url, body, config),
-    getCaseSharing: (url: any) => requests.get<any>(BASE_URL_CASES_SERVICE,url,config)
+    addCaseSharing: (url: string, body: any) => requests.post<any>(BASE_URL_CASES_SERVICE, url, body, config),
+    editCaseSharing: (url: string, body: any) => requests.put<any>(BASE_URL_CASES_SERVICE, url, body, config),
+    getCaseSharing: (url: any) => requests.get<any>(BASE_URL_CASES_SERVICE, url, config)
 
 }
 
@@ -551,6 +552,14 @@ export const ALPRDataSource = {
     deleteDataSource:(url: string) => requests.delete<void>(BASE_URL_ALPR_Service, url, config),
 }
 
+export const LicensePlateAgent = {
+    getLicensePlates: (url:string,extraHeader?: Headers[]) => requests.getAll<Paginated<LicensePlate[]>>(BASE_URL_ALPR_Service, `LicensePlate`+url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getLicensePlateById: (id: number) => requests.get<LicensePlate>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, config),
+    addLicensePlate: (body: LicensePlate) => requests.post<number>(BASE_URL_ALPR_Service, `LicensePlate`, body, config),
+    updateLicensePlate: (id: number, body: LicensePlate) => requests.put<number>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, body,config),
+    deleteLicensePlateById: (id: number) => requests.delete<void>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, config),
+    deleteLicensePlates: () => requests.delete<void>(BASE_URL_ALPR_Service, `LicensePlate`, config)
+}
 export const AlprPlateHistoryAgent={
     getAlprPlateHistoryInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
 }

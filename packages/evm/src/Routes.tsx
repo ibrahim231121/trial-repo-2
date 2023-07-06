@@ -58,7 +58,7 @@ import HotListDetail from "./Application/ALPR/HotList/HotListDetail";
 import HotListDataSource from "./Application/ALPR/HotListDataSource/Index";
 import DataSourceTab from "./Application/ALPR/HotListDataSource/DataSourcePanel";
 import CaptureFormPanel from "./Application/ALPR/Capture/CapturePanel";
-import LicensePlate from "./Application/ALPR/LicensePlate/Index";
+import {LicensePlate} from "./Application/ALPR/LicensePlate/Index";
 import LicensePlateDetail from "./Application/ALPR/LicensePlate/LicensePlateDetail";
 import LicensePlateHistory from "./Application/ALPR/LicensePlate/LicensePlateHistory";
 
@@ -187,7 +187,8 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url} exact={true} component={DataSourceTab} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url} exact={true} component={CaptureFormPanel} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url} exact={true} component={LicensePlate} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetail)[0].url} exact={true} component={LicensePlateDetail} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailEdit)[0].url} exact={true} component={LicensePlateDetail} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailCreate)[0].url} exact={true} component={LicensePlateDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateHistory)[0].url} exact={true} component={LicensePlateHistory} />
                 {/* ALPR End*/}
 
