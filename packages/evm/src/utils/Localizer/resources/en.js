@@ -322,6 +322,7 @@ export const resources = {
       "Secondary_Email_is_required": "Secondary Email is required",
       "Password_is_required": "Password is required",
       "Confirm_Password_is_required": "Confirm Password is required",
+      "Passwords_must_match": "Passwords must match",
       "Passwords_are_not_same": "Passwords are not same",
       "(Link_will_be_sent_after_saving_this_form.)": "(Link will be sent after saving this form.)",
       "Please_provide_a_valid_mobile_number.": "Please provide a valid Mobile number.",
@@ -1045,6 +1046,9 @@ export const resources = {
       "Tenant": "Tenant",
       "Create_Hot_List": "Create Hot List",
 
+      "Data_Source":"Data Source",
+      "Create_Data_Source":"Create Data Source",
+      "Data_Source_Mappings":"Data Source Mappings",
 
       "Password_is_required": "Password is required",
       "Password_didn't_match": "Password didn't match",

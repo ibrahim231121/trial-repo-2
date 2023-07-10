@@ -27,119 +27,97 @@ const dataSouceInitialPayload={
 const DataSourceMapping = (props: any) => {
     
     const { t } = useTranslation<string>();
-    const [mappingPayload, setmappingPayload]: any = React.useState<HotListDataSourceMappingTemplate>(dataSouceInitialPayload);
+    const [mappingPayload, setmappingPayload]= React.useState<HotListDataSourceMappingTemplate>(dataSouceInitialPayload);
 
     useEffect(() => {
-        if (props?.sourceMappingData) {
-            setmappingPayload(props.sourceMappingData)
+        if (props?.mappingTabValues?.dataSourceMappingData) {
+            setmappingPayload(props.mappingTabValues.dataSourceMappingData)
         }
-    }, [])
+    }, [props?.mappingTabValues?.dataSourceMappingData])
 
-
-    useEffect(() => {
-        if (mappingPayload && mappingPayload.LicensePlate.trim() !== '' && mappingPayload.DateOfInterest.trim() !== '') {
-            props.dataSourceMappingTab(mappingPayload);
-            props.saveBtnDisblFromMapping(false);
-        } else {
-            props.saveBtnDisblFromMapping(true);
-        }
-
-    }, [mappingPayload])
     
-    const setFieldValue = (field: string, e: any) => {
-        let lengthRegex = /^.{0,20}$/;
+    const updateStateInParentComponent = (field: string, updateData: any) => {
+       
         switch (field) {
             case "LicensePlate":
-                if (lengthRegex.test(e))
-                    setmappingPayload({ ...mappingPayload, LicensePlate: e });
+                
+                    props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, LicensePlate: updateData });
                 break;
 
             case "DateOfInterest":
-                if (lengthRegex.test(e))
-                    setmappingPayload({ ...mappingPayload, DateOfInterest: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, DateOfInterest: updateData });
                 break;
 
             case "LicenseType":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, LicenseType: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, LicenseType: updateData });
                 break;
 
             case "AgencyId":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, AgencyId: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, AgencyId: updateData });
                 break;
 
-            case "StateId":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, State: e });
+            case "State":
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, State: updateData });
                 break;
 
             case "FirstName":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, FirstName: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, FirstName: updateData });
                 break;
 
             case "LastName":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, LastName: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, LastName: updateData });
                 break;
 
             case "Alias":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Alias: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Alias: updateData });
                 break;
 
             case "VehicleYear":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Year: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Year: updateData });
                 break;
 
             case "VehicleMake":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Make: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Make: updateData });
                 break;
 
             case "VehicleModel":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Model: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Model: updateData });
                 break;
 
             case "VehicleColor":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Color: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Color: updateData });
                 break;
 
             case "VehicleStyle":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Style: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Style: updateData });
                 break;
             case "Notes":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, Notes: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Notes: updateData });
                 break;
 
             case "NcicNumber":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, NCICNumber: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, NCICNumber: updateData });
                 break;
 
             case "serialId":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, ImportSerial: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, ImportSerial: updateData });
                 break;
             case "ViolationInfo":
-                if (lengthRegex.test(e))
-                setmappingPayload({ ...mappingPayload, ViolationInfo: e });
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, ViolationInfo: updateData });
                 break;
 
             default:
                 break;
         }
     }
+
+  
+
     return (
-        <div className="CrxCreateDataSourceMapping CreateDataSourceMappingUi">
-            <div className="modalEditCrx">
-                <div className="CrxEditForm">
+        <div className="Alpr_DataSourceMapping_CrxCreate Alpr_DataSourceMapping_Ui">
+            <div className="Alpr_DataSourceMapping_ModalEditCrx">
+                <div className="Alpr_DataSourceMapping_CrxEditForm">
+                
                     <Grid container className="containerFlex">
 
                         <Grid item xs={11} sm={12} md={12} lg={5} >
@@ -148,67 +126,103 @@ const DataSourceMapping = (props: any) => {
                                 required={true}
                                 label={t("License_Plate") + ':'}
                                 value={mappingPayload?.LicensePlate}
-                                onChange={(e: any) => setFieldValue("LicensePlate", e.target.value)}
-                                error={mappingPayload?.LicensePlate === ''}
-                                errorMsg={t("License_Plate_field_required")}
+                                onChange={(e: any) => {
+                                   
+                                    props.setFieldTouched('LicensePlate',true)
+                                    updateStateInParentComponent("LicensePlate",e.target.value);
+                            }}
+                                error={props.touched.LicensePlate &&  (props.formValidationError?.dataSourceMappingData?.LicensePlate ?? "").length > 0}
+                                errorMsg={props.formValidationError?.dataSourceMappingData?.LicensePlate}
                             />
                             <TextField
                                 id='MappingDateOfIntereset'
                                 required={true}
                                 label={t("Date_of_Interest") + ':'}
                                 value={mappingPayload?.DateOfInterest}
-                                onChange={(e: any) => setFieldValue("DateOfInterest", e.target.value)}
-                                error={mappingPayload?.DateOfInterest === ''}
-                                errorMsg={t("Date_of_Interest_field_required")}
+                                onChange={(e: any) =>{ 
+                                    props.setFieldTouched('DateOfInterest',true)
+                                updateStateInParentComponent("DateOfInterest",e.target.value)
+                            }}
+                            error={props.touched?.DateOfInterest && (props.formValidationError?.dataSourceMappingData?.DateOfInterest ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.DateOfInterest}
                             />
                             <TextField
                                 id='MappingLicenseType'
                                 required={false}
                                 label={t("License_Type") + ':'}
                                 value={mappingPayload?.LicenseType}
-                                onChange={(e: any) => setFieldValue("LicenseType", e.target.value)}
-
+                                onChange={(e: any) => {
+                                props.setFieldTouched('LicenseType',true)
+                                updateStateInParentComponent("LicenseType",e.target.value)
+                            }}
+                            error={props.touched.LicenseType &&  (props.formValidationError?.dataSourceMappingData?.LicenseType ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.LicenseType}
                             />
                             <TextField
                                 id='MappingAgency'
                                 required={false}
                                 label={t("Agency_Id") + ":"}
                                 value={mappingPayload?.AgencyId}
-                                onChange={(e: any) => setFieldValue("AgencyId", e.target.value)}
+                                onChange={(e: any) => {
+                                props.setFieldTouched('AgencyId',true)
+                                updateStateInParentComponent("AgencyId",e.target.value)
+                            }}
+                            error={props.touched.AgencyId &&  (props.formValidationError?.dataSourceMappingData?.AgencyId ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.AgencyId}
                             />
                             <TextField
                                 id='MappingStates'
                                 required={false}
                                 label={t("State_Id") + ":"}
                                 value={mappingPayload?.State}
-                                onChange={(e: any) => setFieldValue("StateId", e.target.value)}
+                                onChange={(e: any) => {
+                                    props.setFieldTouched('State',true)
+                                updateStateInParentComponent("State",e.target.value)
+                            }}
+                            error={props.touched.State &&  (props.formValidationError?.dataSourceMappingData?.State ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.State}
                             />
                             <TextField
                                 id='MappingFirstName'
                                 required={false}
                                 label={t("First_Name") + ":"}
                                 value={mappingPayload?.FirstName}
-                                onChange={(e: any) => setFieldValue("FirstName", e.target.value)}
+                                onChange={(e: any) => {
+                                    props.setFieldTouched('FirstName',true)
+                                updateStateInParentComponent("FirstName",e.target.value)
+                            }}
+                            error={props.touched.FirstName &&  (props.formValidationError?.dataSourceMappingData?.FirstName ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.FirstName}
                             />
                             <TextField
                                 id='MappingLastName'
                                 required={false}
                                 label={t("Last_Name") + ":"}
                                 value={mappingPayload?.LastName}
-                                onChange={(e: any) => setFieldValue("LastName", e.target.value)}
+                                onChange={(e: any) => {
+                                props.setFieldTouched('LastName',true)
+                                updateStateInParentComponent("LastName",e.target.value)
+                            }}
+                            error={props.touched.LastName &&  (props.formValidationError?.dataSourceMappingData?.LastName ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.LastName}
                             />
                         </Grid>
 
 
                         <Grid item xs={11} sm={12} md={12} lg={5} >
-                            <div className="">
-                                <div className="">
+                           
+                                <div>
                                     <TextField
                                         id='MappingAlias'
                                         required={false}
                                         label={t("Alias") + ":"}
                                         value={mappingPayload?.Alias}
-                                        onChange={(e: any) => setFieldValue("Alias", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('FirstName',true)
+                                        updateStateInParentComponent("Alias",e.target.value)
+                                    }}
+                                    error={props.touched.Alias &&  (props.formValidationError?.dataSourceMappingData?.Alias ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.Alias}
                                     />
 
                                     <TextField
@@ -216,48 +230,77 @@ const DataSourceMapping = (props: any) => {
                                         required={false}
                                         label={t("Vehicle_Year") + ":"}
                                         value={mappingPayload?.Year}
-                                        onChange={(e: any) => setFieldValue("VehicleYear", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('FirstName',true)
+                                        updateStateInParentComponent("VehicleYear",e.target.value)
+                                    }}
+                                    error={props.touched.Year &&  (props.formValidationError?.dataSourceMappingData?.Year ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.Year}
                                     />
                                     <TextField
                                         id='MappingVehicleMake'
                                         required={false}
                                         label={t("Vehicle_Make") + ":"}
                                         value={mappingPayload?.Make}
-                                        onChange={(e: any) => setFieldValue("VehicleMake", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('Make',true)
+                                        updateStateInParentComponent("VehicleMake",e.target.value)
+                                        }}
+                                        error={props.touched.Make &&  (props.formValidationError?.dataSourceMappingData?.Make ?? "").length > 0}
+                                        errorMsg={props.formValidationError?.dataSourceMappingData?.Make}
                                     />
                                     <TextField
                                         id='MappingVehicleModel'
                                         required={false}
                                         label={t("Vehicle_Model") + ":"}
                                         value={mappingPayload?.Model}
-                                        onChange={(e: any) => setFieldValue("VehicleModel", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('Model',true)
+                                        updateStateInParentComponent("VehicleModel",e.target.value)}
+                                    }
+                                    error={props.touched.Model &&  (props.formValidationError?.dataSourceMappingData?.Model ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.Model}
                                     />
                                     <TextField
                                         id='MappingVehicleColor'
                                         required={false}
                                         label={t("Vehicle_Color") + ":"}
                                         value={mappingPayload?.Color}
-                                        onChange={(e: any) => setFieldValue("VehicleColor", e.target.value)}
+                                        onChange={(e: any) =>{ 
+                                            props.setFieldTouched('Color',true)
+                                        updateStateInParentComponent("VehicleColor",e.target.value)
+                                    }}
+                                    error={props.touched.Color &&  (props.formValidationError?.dataSourceMappingData?.Color ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.Color}
                                     />
                                     <TextField
                                         id='MappingVehicleStyle'
                                         required={false}
                                         label={t("Vehicle_Style") + ":"}
                                         value={mappingPayload?.Style}
-                                        onChange={(e: any) => setFieldValue("VehicleStyle", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('Style',true)
+                                        updateStateInParentComponent("VehicleStyle",e.target.value)
+                                    }}
+                                    error={props.touched.Style &&  (props.formValidationError?.dataSourceMappingData?.Style ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.Style}
                                     />
                                 </div>
-                            </div>
+                            
                         </Grid>
                         <Grid item xs={11} sm={12} md={12} lg={5} >
-                            <div className="">
-                                <div className="">
+                                <div>
                                     <TextField
                                         id='MappingNotes'
                                         required={false}
                                         label={t("Notes") + ":"}
                                         value={mappingPayload?.Notes}
-                                        onChange={(e: any) => setFieldValue("Notes", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('Notes',true)
+                                            updateStateInParentComponent("Notes",e.target.value)
+                                        }}
+                                        error={props.touched.Notes &&  (props.formValidationError?.dataSourceMappingData?.Notes ?? "").length > 0}
+                                        errorMsg={props.formValidationError?.dataSourceMappingData?.Notes}
                                     />
 
                                     <TextField
@@ -265,26 +308,41 @@ const DataSourceMapping = (props: any) => {
                                         required={false}
                                         label={t("NCIC_Number") + ":"}
                                         value={mappingPayload?.NCICNumber}
-                                        onChange={(e: any) => setFieldValue("NcicNumber", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('NCICNumber',true)
+                                            updateStateInParentComponent("NcicNumber",e.target.value)
+                                        }}
+                                        error={props.touched.NCICNumber &&  (props.formValidationError?.dataSourceMappingData?.NCICNumber ?? "").length > 0}
+                                        errorMsg={props.formValidationError?.dataSourceMappingData?.NCICNumber}
                                     />
                                     <TextField
                                         id='MappingImportSerialId'
                                         required={false}
                                         label={t("Import_Serial_Id") + ":"}
                                         value={mappingPayload?.ImportSerial}
-                                        onChange={(e: any) => setFieldValue("serialId", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('FirstName',true)
+                                        updateStateInParentComponent("serialId",e.target.value)
+                                    }}
+                                    error={props.touched.ImportSerial &&  (props.formValidationError?.dataSourceMappingData?.ImportSerial ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.ImportSerial}
                                     />
                                     <TextField
                                         id='MappingViolationInfo'
                                         required={false}
                                         label={t("Violation_Info") + ":"}
                                         value={mappingPayload?.ViolationInfo}
-                                        onChange={(e: any) => setFieldValue("ViolationInfo", e.target.value)}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('ViolationInfo',true)
+                                        updateStateInParentComponent("ViolationInfo",e.target.value)
+                                    }}
+                                    error={props.touched.ViolationInfo &&  (props.formValidationError?.dataSourceMappingData?.ViolationInfo ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceMappingData?.ViolationInfo}
                                     />
                                 </div>
-                            </div>
                         </Grid>
                     </Grid>
+                    
                 </div>
             </div>
         </div >

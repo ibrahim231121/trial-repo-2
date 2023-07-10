@@ -100,8 +100,9 @@ export const urlNames: any = {
     filterUpdateVersionEdit: 'filterUpdateVersionEdit',
     HotList: 'HotList',
     HotListDetail: 'HotListDetail',
-    DataSource: 'DataSource',
-    DataSourceTab: 'DataSourceTab',
+    dataSourceList: 'dataSourceList',
+    createDataSourceTab: 'createDataSourceTab',
+    editDataSourceTab: 'editDataSourceTab',
     AlprCapturePanel: 'AlprCapturePanel',
     LicensePlateList: 'LicensePlateList',
     LicensePlateDetail: 'LicensePlateDetail',
@@ -610,21 +611,31 @@ export const urlList: any = [
 
         ]
     }, {
-        name: urlNames.DataSource,
-        url: '/Alpr/DataSource',
+        name: urlNames.dataSourceList,
+        url: '/Alpr/dataSourceList',
         details: [
             { type: 'text', label: 'Alpr' },
-            { routeTo: '/Alpr/DataSource', type: 'text', label: 'Hot List Data Source' },
+            { routeTo: '/Alpr/dataSourceList', type: 'text', label: 'Hot List Data Source' },
 
         ]
     },
     {
-        name: urlNames.DataSourceTab,
-        url: '/Alpr/DataSourceTab/:id',
+        name: urlNames.createDataSourceTab,
+        url: '/Alpr/createDataSourceTab',
         details: [
             { type: 'text', label: 'Alpr' },
-            { routeTo: '/Alpr/DataSource' ,type: 'link', label: 'Hot List Data Source' },
-            { routeTo: '/Alpr/DataSourceTab', type: 'text', label: 'Hot List Data Source' },
+            { routeTo: '/Alpr/dataSourceList' ,type: 'link', label: 'Hot List Data Source' },
+            { routeTo: '/Alpr/dataSourceTab', type: 'text', label: 'Hot List Data Source' },
+
+        ]
+    },
+    {
+        name: urlNames.editDataSourceTab,
+        url: '/Alpr/editDataSourceTab/:id',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/dataSourceList' ,type: 'link', label: 'Hot List Data Source' },
+            { routeTo: '/Alpr/dataSourceTab', type: 'text', label: 'Hot List Data Source' },
 
         ]
     },

@@ -19,7 +19,7 @@ export type HotListDataSourceMappingTemplate = {
 }
 
 export type HotListDataSourceTemplate = {
-  syserial: number;
+  recId: number;
   sourceTypeId: number;
   name: string;
   sourceName: string;
@@ -34,5 +34,5 @@ export type HotListDataSourceTemplate = {
   lastRun: string;
   status: string;
   statusDesc: string;
-  sourceType:{sysSerial:number,sourceTypeName:string | undefined}
+  sourceType:{recId:number,sourceTypeName:string | undefined};
 }

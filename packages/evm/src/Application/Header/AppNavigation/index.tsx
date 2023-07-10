@@ -261,7 +261,7 @@ const CRXLefNavigation = () => {
         {moduleIds: 5,
         label: t("HotList Data Source"),
         command: () => {;
-          navigateToPage(urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url);
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url);
         },
       },
         {moduleIds: 5,

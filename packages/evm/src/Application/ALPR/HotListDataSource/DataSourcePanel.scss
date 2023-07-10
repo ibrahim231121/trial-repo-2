@@ -1,4 +1,4 @@
-.crxFooterEditFormBtn {
+.Alpr_DataSource_crxFooterEditFormBtn {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -66,14 +66,14 @@
   }
   .save-cancel-button-box {
     width: 100%;
-    .dataSourceTabButtons {
+    .Alpr_DataSource_TabButtons {
       min-width: 80px !important;
       height: 30px;
       margin-right: 31px;
     }
   }
 
-  .DataSource_Confirm {
+  .AlprDataSource_Confirm {
     .confirmMessage {
       line-height: 22px;
       padding-bottom: 35px;
@@ -84,3 +84,8 @@
     }
   }
   
+  .Alpr_DataSourceDetail_switchLeftComponents {
+    padding: 0 4px 0px 65px;
+    padding-top: 96px;
+    transition: 0.5s padding ease-out;
+  }

@@ -71,7 +71,7 @@ const HotList = () => {
 
 
   const hotListData: any = useSelector((state: RootState) => state.hotListReducer.HotList);
-  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
+  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.dataSource);
 
   const SOURCE_COLID:number = 3;
 

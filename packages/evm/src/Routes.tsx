@@ -183,8 +183,9 @@ const Routes = () => {
                 {/* ALPR Start*/}
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.HotList)[0].url} exact={true} component={HotList} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url} exact={true} component={HotListDetail} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSource)[0].url} exact={true} component={HotListDataSource} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url} exact={true} component={DataSourceTab} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url} exact={true} component={HotListDataSource} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editDataSourceTab)[0].url} exact={true} component={DataSourceTab} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createDataSourceTab)[0].url} exact={true} component={DataSourceTab} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url} exact={true} component={CaptureFormPanel} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url} exact={true} component={LicensePlate} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailEdit)[0].url} exact={true} component={LicensePlateDetail} />

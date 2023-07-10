@@ -1,4 +1,4 @@
-.CrxCreateDataSourceMapping {
+.Alpr_DataSourceMapping_CrxCreate {
   .CRXContent {
     overflow-x: hidden;
   }
@@ -21,7 +21,7 @@
     }
   }
 
-  .CrxEditForm {
+  .Alpr_DataSourceMapping_CrxEditForm {
     //padding: 40px 52px 47px 26px;
     color: var(--color-333333);
     // height: calc(100% - 97px);
@@ -430,21 +430,21 @@
     }
   }
 
-  .modalEditCrx {
+  .Alpr_DataSourceMapping_ModalEditCrx {
     padding-right: 11px;
     padding-top: 2px;
   }
 
 }
 
-.CreateDataSourceMappingUi {
+.Alpr_DataSourceMapping_Ui {
   // margin-left: 62px;
 
   .grid_spacer {
     width: 92px;
   }
 
-  .modalEditCrx {
+  .Alpr_DataSourceMapping_ModalEditCrx {
     // padding: 0 130px 0 30px;
   }
 
@@ -720,7 +720,7 @@
     }
   }
 
-  .CrxEditForm {
+  .Alpr_DataSourceMapping_CrxEditForm {
     h6 {
       width: 220.66px !important;
     }
@@ -809,7 +809,7 @@
   }
 
   @media screen and (max-width: 1786px) {
-    .CrxEditForm {
+    .Alpr_DataSourceMapping_CrxEditForm {
       .crxRadioBtn {
         flex-direction: column;
       }
@@ -822,7 +822,7 @@
       }
     }
 
-    .CrxEditForm {
+    .Alpr_DataSourceMapping_CrxEditForm {
       padding-bottom: 40px;
     }
 
@@ -854,7 +854,7 @@
       }
     }
 
-    .CrxEditForm {
+    .Alpr_DataSourceMapping_CrxEditForm {
       padding-bottom: 40px;
     }
 
@@ -874,7 +874,7 @@
       }
     }
 
-    .CrxEditForm {
+    .Alpr_DataSourceMapping_CrxEditForm {
       padding-bottom: 60px;
     }
 
@@ -888,7 +888,7 @@
       display: none;
     }
 
-    .modalEditCrx {
+    .Alpr_DataSourceMapping_ModalEditCrx {
       padding: 0 185px !important;
     }
 

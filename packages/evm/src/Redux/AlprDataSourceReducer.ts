@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { ALPRDataSource } from '../utils/Api/ApiAgent';
+import { AlprDataSource } from '../utils/Api/ApiAgent';
 import { setLoaderValue } from './loaderSlice';
 
 const Datasource = "HotListDataSource";
@@ -18,7 +18,7 @@ export const GetAlprDataSourceList: any = createAsyncThunk(
         key: 'GridSort',
         value: JSON.stringify(pageiFilter.gridSort)
       }]
-    return await ALPRDataSource.getAllDataSourceInfoAsync(url, headers)
+    return await AlprDataSource.getAllDataSourceInfoAsync(url, headers)
       .then((response: any) => {
         thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
         return response
@@ -34,7 +34,7 @@ export const GetAlprDataSourceById: any = createAsyncThunk(
   async (id: number, thunkAPI) => {
     thunkAPI.dispatch(setLoaderValue({ isLoading: true }))
     const url = Datasource + `/${id}`
-    return await ALPRDataSource.getDataSourceData(url)
+    return await AlprDataSource.getDataSourceData(url)
       .then((response: any) => {
         thunkAPI.dispatch(setLoaderValue({ isLoading: false, message: "" }))
         return response;
@@ -48,15 +48,15 @@ export const GetAlprDataSourceById: any = createAsyncThunk(
 export const AlprDataSourceSlice = createSlice({
 
   name: 'AlprDataSource',
-  initialState: { DataSource: [], SourceMapping: [], DataSourceDataById: {} },
+  initialState: { dataSource: [], dataSourceDataById: {} },
   reducers: {},
 
   extraReducers: (builder) => {
     builder.addCase(GetAlprDataSourceList.fulfilled, (state: any, { payload }) => {
-      state.DataSource = payload;
+      state.dataSource = payload;
     })
       .addCase(GetAlprDataSourceById.fulfilled, (state: any, { payload }) => {
-        state.DataSourceDataById = payload;
+        state.dataSourceDataById = payload;
       })
   }
 });

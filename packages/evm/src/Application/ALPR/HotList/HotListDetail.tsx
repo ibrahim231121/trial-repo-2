@@ -59,7 +59,7 @@ const HotListDetail = () => {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const toasterRef = useRef<typeof CRXToaster>(null);
   const hotListDetails: any = useSelector((state: RootState) => state.hotListReducer.hotListDetails);
-  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.DataSource);
+  const hotListDatasourceData: any = useSelector((state: RootState)=> state.alprDataSourceReducer.dataSource);
 
   const [sourceOptions, setSourceOptions] = React.useState([]);
 

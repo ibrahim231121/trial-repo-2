@@ -544,12 +544,12 @@ export const HotListAgent = {
 export const AlprCapturePlatesAgent={
     getAlprCapturePlatesInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
 }
-export const ALPRDataSource = {
+export const AlprDataSource = {
     getAllDataSourceInfoAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<HotListDataSourceTemplate[]>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
     getDataSourceData: (url:string) => requests.get<number>(BASE_URL_ALPR_Service,url,  config),
     updateDataSource: (url:string, body: any) => requests.put<number>(BASE_URL_ALPR_Service,url, body,config),
     addDataSource:(url: string, body: any) => requests.post<number>(BASE_URL_ALPR_Service, url, body, config),
-    deleteDataSource:(url: string) => requests.delete<void>(BASE_URL_ALPR_Service, url, config),
+    runDataSource:(url: string) => requests.get<number>(BASE_URL_ALPR_Service, url, config),
 }
 
 export const LicensePlateAgent = {
@@ -563,5 +563,4 @@ export const LicensePlateAgent = {
 export const AlprPlateHistoryAgent={
     getAlprPlateHistoryInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
 }
-
 

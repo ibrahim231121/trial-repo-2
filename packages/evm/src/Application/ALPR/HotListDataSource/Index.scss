@@ -1,4 +1,4 @@
-.DataSourceBtn {
+.Alpr_DataSource_Btn {
     margin-top: -16px !important;
     color: var(--color-d1d2d4) !important;
     background-color: var(--color-333333) !important;
@@ -23,3 +23,31 @@
       border-color: var(--color-231f20) !important ;
     }
   }
+
+  .Alpr_DataSource_Index {
+    thead {
+        &:nth-child(2) {    
+            th {
+                &:nth-child(8) {
+                   .gridFilterGlobal {
+                    .crx-global-Select  {
+                        width: 118px;
+                    }
+                   }
+                }
+                &:nth-child(9) {
+                    .MuiGrid-item {
+                        max-width: 100%;
+                    }
+                }
+            }
+    
+        }
+    }
+}
+
+.Alpr_DataSource_SwitchLeftComponents {
+  padding: 0 4px 0px 65px;
+  padding-top: 96px;
+  transition: 0.5s padding ease-out;
+}

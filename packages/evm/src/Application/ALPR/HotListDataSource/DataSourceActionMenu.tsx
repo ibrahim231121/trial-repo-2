@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Menu,
   MenuItem,
@@ -10,6 +10,9 @@ import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
+import { AlprDataSource } from "../../../utils/Api/ApiAgent";
+import { alprToasterMessages } from "../AlprGlobalConfiguration";
+import { CRXToaster } from "@cb/shared";
 
 type Props = {
   selectedItems?: any;
@@ -21,29 +24,41 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
 
   const { t } = useTranslation<string>();
   const history = useHistory();
-  const [primary, setPrimary] = React.useState<string>("");
-  const [secondary, setSecondary] = React.useState<string>("");
-  const [IsOpen, setIsOpen] = React.useState<boolean>(false);
-  const [showAlert, setShowAlert] = React.useState<boolean>(false);
+
+  const dataSourceMsgFormRef = useRef<typeof CRXToaster>(null);
 
   const editDataSource = () => {
-    const path = `${urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.sysSerial, t("Edit_Data_Source"));
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editDataSourceTab)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.recId, t("Edit_Data_Source"));
   };
-
-  const deleteDataSource = () => {
-    setPrimary(t("Yes"));
-    setSecondary(t("No"));
-    setIsOpen(true);
-    // setModalType("deactivate");
+  
+  const datasourceServiceUrl='DataSourceMapping/ExecuteMapping';
+  const toasterErrorMsg=t('Something_went_wrong.Please_again_later');
+  const toasterSuccessMsg=t('Process_Initiated_Successfully.');
+  const toasterDuration=7000;
+  
+  const runDataSource=()=>
+  {
+    const runServiceUrl = datasourceServiceUrl + `/${row?.recId}`;
+    AlprDataSource.runDataSource(runServiceUrl).then(() => {
+        alprToasterMessages({
+          message: toasterSuccessMsg,
+          variant: 'success',
+          duration: toasterDuration
+        },dataSourceMsgFormRef);
+      })    
+      .catch((e: any) => {
+        alprToasterMessages({
+          message: toasterErrorMsg,
+          variant: 'error',
+          duration: toasterDuration
+        },dataSourceMsgFormRef);
+      });
   }
-  const onConfirm = () => {
-
-  }
-
   return (
     <React.Fragment>
-      <div className="table_Inner_Action">
+      <CRXToaster ref={dataSourceMsgFormRef} />
+      <div className="Alpr_DataSource_TableInnerAction">
 
         <Menu
           key="right"
@@ -54,7 +69,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           offsetX={-15}
           offsetY={0}
           portal={true}
-          className="menuCss "
           menuButton={
             <MenuButton>
               <i className="far fa-ellipsis-v"></i>
@@ -64,7 +78,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           {selectedItems.length <= 1 ? (
             <MenuItem onClick={editDataSource}>
               <Restricted moduleId={54}>
-                <div className="crx-meu-content   crx-spac"  >
+                <div className="crx-meu-content crx-spac"  >
                   <div className="crx-menu-icon">
                     <i className="far fa-pencil"></i>
                   </div>
@@ -77,8 +91,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
           ) : (
             <div></div>
           )}
-          {/* <MenuItem onClick={deleteCategory}> */}
-          <MenuItem>
+          <MenuItem onClick={runDataSource}>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" >
                 <div className="crx-menu-icon"></div>
@@ -86,15 +99,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
               </div>
             </Restricted>
           </MenuItem> 
-          {/* <MenuItem onClick={deleteDataSource}>
-            <Restricted moduleId={11}>
-              <div className="crx-meu-content" >
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Delete")}</div>
-              </div>
-            </Restricted>
-          </MenuItem> */}
-
         </Menu>
       </div>
     </React.Fragment>

@@ -1,8 +1,8 @@
-.CrxCreateDataSource {
+.Alpr_DataSource_CrxCreate {
     .CRXContent {
       overflow-x: hidden;
     }
-    .crxAlertDataSourceEditForm {
+    .Alpr_DataSource_crxAlertEditForm {
       margin-bottom: 20px;
     }
     .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
@@ -17,7 +17,7 @@
         font-weight: var(--Font-style-normal);
       }
     }
-    .CrxEditForm {
+    .Alpr_DataSource_CrxEditForm {
       //padding: 40px 52px 47px 26px;
       color: var(--color-333333);
       // height: calc(100% - 97px);
@@ -73,23 +73,7 @@
           }
         }
       }
-      .crxCreateEditDate {
-        margin-bottom: 33px;
-        margin-top: 33px;
-        label {
-          width: 169px;
-        }
-        input {
-          padding-right: 8px;
-          text-indent: 8px;
-        }
-        .users-input {
-          width: 380px;
-          padding: 0;
-          // left: -51px;
-        }
-      }
-      .crxEditFilter {
+      .Alpr_DataSource_CrxEditFilter {
         display: flex;
         > span {
           display: inline-flex;
@@ -107,34 +91,7 @@
             }
           }
         }
-        .CrxDataSourceEditForm {
-          
-          display: inline-flex;
-          input {
-            display: inline-block;
-            height: auto;
-            min-width: auto;
-            margin-left: 5px;
-            margin-top: -5px;
-            font-size: 14px;
-          }
-          &.inputError {
-            margin-bottom: 24px;
-          }
-          .MuiAutocomplete-tag {
-            .MuiChip-label {
-              padding-left: 9px;
-              padding-right: 2px;
-            }
-          }
-        }
-        .crxDropdownValidationError {
-          font-size: 14px;
-          color: var(--color-aa1d1d);
-          margin: 7px 0 0;
-          line-height: 16px;
-          padding: 0;
-        }
+        
         p {
           &.Mui-error {
             margin: 0 -7px;
@@ -142,240 +99,11 @@
         }
       }
       
-      .crxRadioBtn {
-        padding-top: 27px;
-        padding-bottom: 29px;
-        label {
-          margin-right: 45px;
-        }
-       
-  
-        .crxEditRadioBtn {
-          label {
-            margin-bottom: 30px;
-            .MuiButtonBase-root {
-              padding: 0 13px 0 0;
-              &:hover {
-                background-color: var(--color-transparent);
-              }
-            }
-            &:last-child {
-              margin-bottom: 33px;
-            }
-          }
-  
-          .crx-Generate-pass {
-            padding: 0 0 0 34px;
-            display: block;
-            width: 100%;
-            .crxGeneratePassword {
-              display: flex;
-              h6 {
-                width: auto;
-              }
-              .primary {
-                margin-right: 33px;
-                width: 90px;
-                border: none;
-              }
-            }
-            .crx-generate-btn {
-              width: 212px;
-            }
-            .copyButton {
-              background: none;
-              color: var(--color-979797);
-              border: none;
-              padding: 0;
-              justify-content: flex-end;
-              text-align: right;
-              font-size: 14px;
-              color: var(--color-d74b00);
-              padding-top: 4px;
-              padding-bottom: 22px;
-              font-family: var(--base-font-family);
-              &:hover {
-                background: none;
-                border: none;
-              }
-              &:focus {
-                background: none;
-                border: none;
-              }
-            }
-          }
-          .MuiCheckbox-root {
-            padding-left: 0;
-            padding-right: 14px;
-          }
-          .crx-requird-check {
-            label {
-              width: 146px;
-              display: inline-flex;
-              margin-bottom: 27px;
-              font-size: 14px;
-            }
-            .crxSelectedDark {
-              color: var(--color-333333);
-            }
-            // .crxCheckBoxCreate  {
-            //   .MuiIconButton-label {
-            //     span[class*="makeStyles-icon-"] {
-            //       &:hover {
-            //         color:var(--color-333333) !important;
-            //       }
-            //     }
-            //   }
-            // }
-          }
-        }
-        .crx-manually-generate-pass {
-          padding: 0 0 0 35px;
-          > span {
-            margin: 2px 0 35px;
-            display: flex !important;
-          }
-          h6 {
-            font-size: 14px;
-            display: inline-block;
-            max-width: 132px;
-            min-width: 132px;
-            margin-right: 30px;
-            .requiredLable {
-              margin-bottom: 0;
-              margin-right: 0;
-              .inputLabelReq {
-                line-height: 24px;
-                margin-left: 7px;
-                font-size: 20px;
-                color: var(--color-333333);
-              }
-            }
-          }
-          .crx-requird-check {
-            float: right;
-            display: inline-flex;
-            margin-top: -2px;
-            label {
-              margin: -2px 0 33px;
-            }
-            .CRXCheckBox {
-              padding-top: 0;
-              align-items: flex-start;
-              padding-right: 13px;
-            }
-          }
-          .crx-gente-field {
-            width: 173px;
-            float: right;
-          }
-          .errorStateContent {
-            width: 224px;
-            float: right;
-            text-align: left;
-            font-size: 14px;
-            color: var(--color-aa1d1d);
-            margin: 7px 0 -2px;
-            line-height: 16px;
-            padding: 0;
-          }
-        }
-      }
-    }
-    .crxFooterEditFormBtn {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0 25px;
-      height: 75px;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      border-top: 1px solid var(--color-d1d2d4);
-      width: 100%;
-      background: var(--color-White);
-      button {
-        font-size: 14px;
-        border-radius: 0;
-        height: 30px;
-        text-transform: revert;
-        font-family: var(--base-font-family);
-        width: 80px;
-      }
-      button.Mui-disabled {
-        color: var(--color-979797);
-        background: var(--color-e5e5e5);
-        border: none;
-      }
-  
-      .primary {
-        background: var(--color-333333);
-        color: var(--color-d1d2d4);
-        margin-right: 32px;
-        &:hover {
-          background: var(--color-6e6e6e);
-          color: var(--color-f5f5f5);
-          border: 1px solid var(--color-transparent);
-        }
-        &:focus {
-          background: var(--color-231f20);
-          color: var(--color-f5f5f5);
-        }
-      }
-      .secondary {
-        border: 1px solid var(--color-878787);
-        background: var(--color-White);
-        color: var(--color-333333);
-        box-shadow: none;
-        margin: 0;
-        &:hover {
-          border: 1px solid var(--color-878787);
-          background: var(--color-White) !important;
-          color: var(--color-333333);
-        }
-        &:focus {
-          background: var(--color-White) !important;
-          color: var(--color-333333) !important;
-          border: 1px solid var(--color-878787);
-        }
-      }
-    }
-    .CRXDivider {
-      border: none;
-      margin: 0;
-      width: 100%;
-      height: 1px;
-      background: var(--color-d1d2d4);
-    }
-  
-    .CRXPopupCrossButton {
-      width: 46px;
-      top: 7px;
-      right: 7px;
-      button {
-        &:hover {
-          background: var(--color-transparent);
-        }
-        i {
-          &:hover {
-            color: var(--color-333333);
-          }
-          &:focus {
-            color: var(--color-333333);
-          }
-        }
-      }
-    }
-    .modalEditCrx {
-      padding-right: 11px;
-      padding-top: 2px;
-    }
-    
+    }    
   }
-  .CreateDataSourceUi {
+  .Alpr_CreateDataSource_Ui {
     margin-left: 62px;
-    .grid_spacer {
+    .Alpr_DataSource_Grid_Spacer {
       width: 92px;
     }
     .modalEditCrx {
@@ -395,10 +123,10 @@
       font-size: 14px;
       color: var(--color-333333);
     }
-    .crxEditFilter {
+    .Alpr_DataSource_CrxEditFilter {
       flex-direction: column;
     }
-    .CrxDataSourceDropDownEditForm {
+    .Alpr_CrxDataSource_DropDownEditForm {
       width: 100% !important;
     }
     .requiredLable {
@@ -407,19 +135,8 @@
     .inputLabelReq {
       left: 9px !important;
     }
-    .DeactivationDateUi {
-      flex-direction: row;
-      align-items: baseline;
-      padding: 0 5px 0 5px !important;
-      margin-bottom: 3px !important;
-      label {
-        margin-bottom: 6px;
-      }
-      .users-input {
-        width: 100% !important;
-      }
-    }
-    .editFilterUi {
+    
+    .Alpr_DataSource_EditFilterUi {
       padding: 0 5px 0 5px;
       flex-direction: row;
       .requiredLable {
@@ -443,65 +160,7 @@
         width: 100%;
       }
     }
-    .crxRadioBtnUi {
-      display: flex;
-      flex-direction: row;
-      padding-left: 3px;
-      .user-radio-group {
-        margin-top: 4px;
-        width: 100% !important;
-      
-      }
-      &.radioBtnUiSpacer {
-        .user-radio-group {
-        width: 434px !important;
-      }
-      }
-      label {
-        font-size: 14px;
-        margin-right: 0px !important;
-        width: 241px !important;
-      }
-    }
-    .crxFooterEditFormBtn {
-      padding: 0 28px 0 89px !important;
-      bottom: 55px;
-      position: fixed;
-      border: none;
-      place-content: space-between;
-      display: flex;
-  
-      .groupInfoTabButtons-Close {
-        min-width: 80px !important;
-      height: 30px;
-      border: 1px solid #878787;
-      background: #ffffff;
-      color: #333333;
-      box-shadow: none;
-      &:focus {
-        border: 1px solid #231f20 !important;
-        background: #231f20 !important;
-        color: #f5f5f5 !important;
-      }
-      &:hover {
-        border: 1px solid #878787;
-        background: #f5f5f5 !important;
-        color: #333333 !important;
-      }
-      }
-      &::before {
-        position: absolute;
-        content: "";
-        height: 100%;
-        width: 50%;
-        background: white;
-        top: 49px;
-        right: 0;
-      }
-      .__crxFooterBtnUser__ {
-        display: flex;
-      }
-    }
+    
     .errorStateContent {
       position: absolute;
     }
@@ -529,17 +188,6 @@
     .crxDropdownValidationError {
       i {
         font-size: 12px;
-      }
-    }
-    .crx-Generate-pass {
-      .inputLabelNoReq {
-        display: inline;
-      }
-      .gridFilterTextBox {
-        margin-bottom: 0px;
-      }
-      .copyButton {
-        padding-bottom: 19px !important;
       }
     }
     .crx-manually-generate-pass {
@@ -572,42 +220,7 @@
       bottom: 22px;
     }
   
-    .ConfirmCheckUi {
-      width: 430px !important;
-      label {
-        width: 300px !important;
-      }
-    }
-    .btnCancelAssign {
-      border: 1px solid #878787 !important;
-      color: #333333 !important;
-      font-size: 14px;
-      width: 80px;
-      padding: 6px 0;
-      font-family: var(--Arial-font-family);
-      text-align: center;
-      height: 30px;
-      text-decoration: none;
-      &:hover {
-        border: 1px solid #333333 !important;
-        color: #333333 !important;
-      }
-      &:active,
-      &:focus {
-        border: 1px solid #231f20 !important;
-        background: #231f20 !important;
-        color: #f5f5f5 !important;
-      }
-    }
-  
-    .crxCreateEditDate {
-      margin-top: 23px !important;
-      label {
-        width: 220px !important;
-        font-size: 14px;
-      }
-    }
-    .CrxEditForm {
+    .Alpr_DataSource_CrxEditForm {
       h6 {
         width: 220.66px !important;
       }
@@ -617,24 +230,6 @@
     }
     .inputLabelNoReq {
       margin-top: 7px;
-    }
-    .crxGeneratePassword {
-      flex-direction: row;
-      justify-content: space-between;
-      .primary {
-        margin-right: 29px !important;
-      }
-  
-      button {
-        min-width: 90px;
-      }
-      .crx-generate-btn {
-        width: 100% !important;
-      }
-      .gridFilterTextBox {
-        display: block !important;
-        width: 100%;
-      }
     }
   
     .First_Name_Field , .Last_Name_Field {
@@ -673,20 +268,20 @@
     }
   
     @media screen and (min-width: 2200px) {
-      .grid_spacer {
+      .Alpr_DataSource_Grid_Spacer {
         width: 193px;
       }
     }
   
     @media screen and (min-width: 1700px) and (max-width: 2200px) {
-      .grid_spacer {
+      .Alpr_DataSource_Grid_Spacer {
         width: 144px;
       }
    
     }
   
     @media screen and (max-width: 1786px) {
-      .CrxEditForm {
+      .Alpr_DataSource_CrxEditForm {
         .crxRadioBtn {
           flex-direction: column;
         }
@@ -697,7 +292,7 @@
           }
         }
       }
-      .CrxEditForm  {
+      .Alpr_DataSource_CrxEditForm  {
         padding-bottom: 40px;
       }
       .crxFooterEditFormBtn {
@@ -727,7 +322,7 @@
           }
         }
       }
-      .CrxEditForm  {
+      .Alpr_DataSource_CrxEditForm  {
         padding-bottom: 40px;
       }
       .crxFooterEditFormBtn {
@@ -745,7 +340,7 @@
           }
         }
       }
-      .CrxEditForm  {
+      .Alpr_DataSource_CrxEditForm  {
         padding-bottom: 60px;
       }
       .crxFooterEditFormBtn {
@@ -754,7 +349,7 @@
     }
   
     @media screen and (max-width: 1279px) {
-      .grid_spacer {
+      .Alpr_DataSource_Grid_Spacer {
         display: none;
       }
       .modalEditCrx {
@@ -805,12 +400,8 @@
     }
   }
   
-  .searchComponents {
-    padding-top: 96px;
-    transition: 1s padding ease-out;
-  }
-  .HotListGroupCustom {
-    .crxEditFilter {
+  .Alpr_DataSource_GroupCustom {
+    .Alpr_DataSource_CrxEditFilter {
       display: flex;
       justify-content: space-between;
       width: 100%;
@@ -822,7 +413,7 @@
       }
     }
   }
-  .editFilterUi {
+  .Alpr_DataSource_EditFilterUi {
     padding: 0 5px 20px 5px;
     flex-direction: row;
     .requiredLable {
@@ -846,47 +437,14 @@
       width: 100%;
     }
   }
-  
-  .CrxDataSourceEditForm {
-          width: 380px;
-          margin: 0 0 33px;
-          .selectBoxTextField {
-            .MuiInputBase-adornedEnd {
-              padding-left: 7px !important;
-              .MuiAutocomplete-tag {
-                border: 1px solid #bebebe;
-                height: 20px;
-                color: #333333;
-                border-radius: 1px;
-                background-color: #fff;
-                font-size: 14px;
-                align-items: flex-start;
-                margin:4px; 
-                .MuiChip-label {
-                  padding-left:8px;
-                  padding-right:0;
-                }
-                svg {
-                  width: 13px;
-                  height: 17px;
-                  margin-left: 5px;
-                  color: #d1d2d4;
-                  margin-right: 5px;
-                  font-size: 14px;
-                  stroke: #d1d2d4;
-                  stroke-width: 2px;
-                }
-              }
-              input {
-                outline: none;
-              }
-            }
-          }
-        }
 
-        
-  .DataSourceAutocomplete {
+  .Alpr_DataSource_Autocomplete {
     .fa-caret-down {
       padding-top: 3px;
     }
+  }
+
+  .Alpr_DataSource_DropDownSpacing
+  {
+    margin-top:34px,
   }

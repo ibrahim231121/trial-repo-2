@@ -34,9 +34,9 @@ import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import {  GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../GlobalDropdown'
+import { alprToasterMessages } from "../AlprGlobalConfiguration";
 
 const HotListDataSource = () => {
-  console.log('dropdown',SourceTypeDropDown)
   const initalPagination:number=25;
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(initalPagination);
   const [page, setPage] = React.useState<number>(0);
@@ -46,7 +46,7 @@ const HotListDataSource = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
   const dispatch = useDispatch();
-
+  
   const [rows, setRows] = React.useState<HotListDataSourceTemplate[]>([]);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -56,39 +56,21 @@ const HotListDataSource = () => {
     page: page,
     size: rowsPerPage,
   });
-  const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.DataSource);
-  // const SourceOptions =
-  //   [{
-  //     id: 1,
-  //     label: "Manual"
-  //   },
-  //   {
-  //     id: 2,
-  //     label: "CSV"
-  //   },
-  //   {
-  //     id: 3,
-  //     label: "XML"
-  //   }
-  //   ];
-  // const ConnectionTypeOptions =
-  //   [{
-  //     id: 'FTP',
-  //     label: "FTP"
-  //   },
-  //   {
-  //     id: 'Local',
-  //     label: "Local"
-  //   },
-  //   {
-  //     id: 'UNC',
-  //     label: "UNC"
-  //   }
-  //   ];
+  const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.dataSource);
   const [paging, setPaging] = React.useState<boolean>();
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
-  const [clearFlag, setClearFlag] = React.useState<number>(0);
+  const [clearDropDownFilterByIndex, setClearDropDownFilterByIndex] = React.useState<number>(0);
+  const [orderDir, setOrderDir] = React.useState<Order>("asc");
+  const [orderByField, setOrderByField] = React.useState<string>("Name");
+
+  const dataSourceListerMsgFormRef = useRef<typeof CRXToaster>(null);
+
+  const toasterErrorMsg=t('Something_went_wrong.Please_again_later');
+  const toasterDuration=7000;
+  const sourceTypeDropDownColIndx=3;
+  const connectionTypeDropDownColIndx=5;
+
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
       for (let i = 0; i < v.length; i++) {
@@ -113,19 +95,17 @@ const HotListDataSource = () => {
     dispatch(GetAlprDataSourceList(pageiGrid));
   }, [])
 
-
   useEffect(() => {
     let alprDataSourceCopy: HotListDataSourceTemplate[] = [];
     if (alprDataSource && alprDataSource.data !== undefined && alprDataSource.data !== null && alprDataSource.data.length > 0) {
       alprDataSourceCopy = alprDataSource.data.map((data: any) => {
         return {
-          sysSerial: data.sysSerial,
+          recId: data.recId,
           name: data.name,
           sourceName: data.sourceName,
           userId: data.userId,
           password: data.password,
           confirmPassword: data.confirmPassword,
-          // connectionType: ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label === undefined ? '' : ConnectionTypeOptions.find((x: any) => x.id === data.ConnectionType)?.label,
           connectionType: data.connectionType,
           schedulePeriod: data.schedulePeriod,
           locationPath: data.locationPath,
@@ -133,18 +113,23 @@ const HotListDataSource = () => {
           lastRun: data.lastRun,
           status: data.status,
           statusDescription: data.statusDescription,
-          // sourceTypeId: SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label === undefined ? 'No Source' : SourceOptions.find((x: any) => x.id === data.sourceTypeId)?.label
           sourceTypeName: data?.sourceType.sourceTypeName,
         }
       });
       setRows(alprDataSourceCopy)
-    } else {
+    } else if(alprDataSource===undefined)
+    {
+      alprToasterMessages({
+        message: toasterErrorMsg,
+        variant: 'error',
+        duration: toasterDuration
+      },dataSourceListerMsgFormRef);
       setRows([])
-    }
+    }else{setRows([])}
   }, [alprDataSource])
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: orderBy, dir: order } });
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort: { field: orderByField, dir: orderDir } });
     setPaging(true)
 
   }, [page, rowsPerPage]);
@@ -177,7 +162,7 @@ const HotListDataSource = () => {
   };
   const onSelectedClear = (colIdx: number) => {
     setIsSearchableOnChange(true)
-    setClearFlag(colIdx);
+    setClearDropDownFilterByIndex(colIdx);
     setSearchData((prevArr) => prevArr.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[colIdx].id.toString().toLocaleLowerCase()));
     let headCellReset = onSelectedIndividualClear(headCells, colIdx);
     setHeadCells(headCellReset);
@@ -193,14 +178,13 @@ const HotListDataSource = () => {
     setIsSearchableOnChange(true)
   };
   const multiSelectCheckbox = (rowParam: HotListDataSourceTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
-    let dropDownOption: any = []
-    let checkboxFlag: boolean = false;
-    if (colIdx === 3) {
+    let dropDownOption: any = [];
+    if (colIdx === sourceTypeDropDownColIndx) {
       SourceTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
     }
-    else if (colIdx === 5) {
+    else if (colIdx === connectionTypeDropDownColIndx) {
       ConnectionTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
@@ -225,7 +209,7 @@ const HotListDataSource = () => {
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
-      id: "sysSerial",
+      id: "recId",
       align: "right",
       dataComponent: () => null,
       sort: false,
@@ -341,19 +325,19 @@ const HotListDataSource = () => {
     }
   ]);
 
-  const CreateDataSourceForm = () => {
-    history.push(urlList.filter((item: any) => item.name === urlNames.DataSourceTab)[0].url);
+  const createDataSourceForm = () => {
+    history.push(urlList.filter((item: any) => item.name === urlNames.createDataSourceTab)[0].url);
     RemoveSidePanelClass()
   }
 
 
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("Name");
 
   const getFilteredDataSourceData = () => {
     let searchDataClear = searchData;
-    if (clearFlag === 3 || clearFlag === 5) {
-      searchDataClear = searchDataClear.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[clearFlag].id.toString().toLocaleLowerCase());
+    const setinitialPage=0;
+    
+    if (clearDropDownFilterByIndex === sourceTypeDropDownColIndx || clearDropDownFilterByIndex === connectionTypeDropDownColIndx) {
+      searchDataClear = searchDataClear.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[clearDropDownFilterByIndex].id.toString().toLocaleLowerCase());
       setSearchData(searchDataClear);
     }
     pageiGrid.gridFilter.filters = []
@@ -367,11 +351,11 @@ const HotListDataSource = () => {
       }
       pageiGrid.gridFilter.filters?.push(x)
     })
-    pageiGrid.page = 0
+    pageiGrid.page = setinitialPage
     pageiGrid.size = rowsPerPage
-    setClearFlag(0);
-    if (page !== 0) {
-      setPage(0)
+    setClearDropDownFilterByIndex(setinitialPage);
+    if (page !== setinitialPage) {
+      setPage(setinitialPage)
     }
     else {
       dispatch(GetAlprDataSourceList(pageiGrid));
@@ -397,8 +381,8 @@ const HotListDataSource = () => {
   };
   const sortingOrder = (sort: any) => {
     setPageiGrid({ ...pageiGrid, gridSort: { field: sort.orderBy, dir: sort.order } })
-    setOrder(sort.order)
-    setOrderBy(sort.orderBy)
+    setOrderDir(sort.order)
+    setOrderByField(sort.orderBy)
     setPaging(true)
   }
 
@@ -425,8 +409,8 @@ const HotListDataSource = () => {
   return (
     <ClickAwayListener onClickAway={handleBlur}>
 
-      <div className="switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}>
-        <CRXToaster />
+      <div className="Alpr_DataSource_SwitchLeftComponents Alpr_DataSource_Index" onKeyDown={handleKeyDown}>
+        <CRXToaster ref={dataSourceListerMsgFormRef}/>
         {rows && (
           <CRXDataTable
             id="DataSourceTemplateDataTable"
@@ -444,8 +428,8 @@ const HotListDataSource = () => {
                 <Restricted moduleId={0}>
                   <CRXButton
                     id={"createHotListDataSource"}
-                    className="primary DataSourceBtn"
-                    onClick={CreateDataSourceForm}
+                    className="primary Alpr_DataSource_Btn"
+                    onClick={createDataSourceForm}
                   >
                     {t("Create_Data_Source")}
                   </CRXButton>
@@ -460,15 +444,15 @@ const HotListDataSource = () => {
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
-            orderParam={order}
-            orderByParam={orderBy}
+            orderParam={orderDir}
+            orderByParam={orderByField}
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}
             showActionSearchHeaderCell={false}
-            className="crxTableHeight crxTableDataUi"
+            className="crxTableHeight"
             onClearAll={clearAll}
             getSelectedItems={(v: HotListDataSourceTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -499,6 +483,4 @@ const HotListDataSource = () => {
 
   );
 }
-
-
 export default HotListDataSource;

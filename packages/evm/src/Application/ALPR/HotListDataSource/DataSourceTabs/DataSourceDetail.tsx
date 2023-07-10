@@ -1,22 +1,15 @@
-import { CRXAlert } from "@cb/shared";
-import { CRXToaster } from "@cb/shared";
-import { CRXButton } from "@cb/shared";
-import { CRXMultiSelectBoxLight, TextField } from "@cb/shared";
-import { CRXConfirmDialog } from "@cb/shared";
+import { CRXMultiSelectBoxLight, TextField ,NumberField} from "@cb/shared";
 import { Grid } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { HotListDataSourceMappingTemplate, HotListDataSourceTemplate } from "../../../../utils/Api/models/HotListDataSourceModels";
+import {  HotListDataSourceTemplate } from "../../../../utils/Api/models/HotListDataSourceModels";
 import './DataSourceDetail.scss';
-import { useStyles } from "../DataSourceStyling/DataSource";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../../GlobalDropdown'
 
-
 const DataSourceInitialData: HotListDataSourceTemplate = {
-    syserial: 0,
+    recId: 0,
     sourceTypeId: 0,
     name: '',
     sourceName: "",
@@ -31,99 +24,63 @@ const DataSourceInitialData: HotListDataSourceTemplate = {
     lastRun: '',
     status: "",
     statusDesc: "",
-    sourceType: { sysSerial: 10002, sourceTypeName: 'CSV' }
-    // mappingFields: mappingInitialData
+    sourceType: { recId: 10002, sourceTypeName: 'CSV' },
 }
 const DataSourceDetail = (props: any) => {
     const { id } = useParams<{ id: string }>();//get data from url 
-    const classes: any = useStyles();
     const { t } = useTranslation<string>();
 
     //Initial state Payload 
     const [dataSourcePaylod, setDataSourcePaylod] = React.useState<HotListDataSourceTemplate>(DataSourceInitialData);
 
-    //Use effect to check validation in initial payload state everytime whenever any changes occurs in text boxes
     useEffect(() => {
-        if (id === ':id' && dataSourcePaylod?.name !== "" && dataSourcePaylod.password && dataSourcePaylod?.confirmPassword && dataSourcePaylod.password !== '' && dataSourcePaylod?.confirmPassword !== ''
-            && dataSourcePaylod?.confirmPassword.toUpperCase() === dataSourcePaylod?.password.toUpperCase()) {
-            props.saveButtonDisable(false);
-            props.dataSource(dataSourcePaylod);
+        if (Object.keys(props?.dataSourceTabValues).length > 0) {
+            setDataSourcePaylod({...props?.dataSourceTabValues.dataSourceData});
         }
-        else if (id !== ':id' && dataSourcePaylod?.name !== "" && dataSourcePaylod?.confirmPassword.toUpperCase() === dataSourcePaylod?.password.toUpperCase()) {
-            props.saveButtonDisable(false);
-            props.dataSource(dataSourcePaylod);
-        }
-        else {
-            props.saveButtonDisable(true)
-        }
-    }, [dataSourcePaylod]);
+    }, [props?.dataSourceTabValues])
 
-    useEffect(() => {
-        if (Object.keys(props?.dataSourceData).length > 0) {
-            setDataSourcePaylod(props?.dataSourceData);
+    const updateSourceDataInParent=(fieldName:string,updatedValues:any)=>
+    {
+        if (fieldName === "name") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, name: updatedValues });
         }
-    }, [props?.dataSourceData])
-    // on text box change function
-    const setFieldValue = (field: string, e: any) => {
-        if (field === "Name") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e)===true)
-            setDataSourcePaylod({ ...dataSourcePaylod, name: e });
-        }
-        else if (field === "SourceType") {
+        else if (fieldName === "sourceType") {
             let sourceTypeData = {
-                sysSerial: +e,
-                sourceTypeName: SourceTypeDropDown.filter((x: any) => x.id == e).length >0 ? SourceTypeDropDown.find((x: any) => x.id == e)?.label : ''
+                recId: +updatedValues,
+                sourceTypeName: SourceTypeDropDown.filter((x: any) => x.id == updatedValues).length >0 ? SourceTypeDropDown.find((x: any) => x.id == updatedValues)?.label : ''
             };
-            setDataSourcePaylod({ ...dataSourcePaylod, sourceType: sourceTypeData });
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, sourceType: sourceTypeData });
         }
-        else if (field === "SourceName") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e))
-            setDataSourcePaylod({ ...dataSourcePaylod, sourceName: e });
+        else if (fieldName === "sourceName") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, sourceName: updatedValues });
         }
-        else if (field === "UserId") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e))
-            setDataSourcePaylod({ ...dataSourcePaylod, userId: e });
+        else if (fieldName === "UserId") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, userId: updatedValues });
         }
-        else if (field === "Password") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e))
-            setDataSourcePaylod({ ...dataSourcePaylod, password: e });
+        else if (fieldName === "Password") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, password: updatedValues });
         }
-        else if (field === "ConfirmPassword") {
-            const lengthRegex=/^.{0,50}$/;
-            if(lengthRegex.test(e))
-            setDataSourcePaylod({ ...dataSourcePaylod, confirmPassword: e });
+        else if (fieldName === "ConfirmPassword") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, confirmPassword: updatedValues });
         }
-        else if (field === "ConnectionType") {
-            setDataSourcePaylod({ ...dataSourcePaylod, connectionType: e });
+        else if (fieldName === "ConnectionType") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, connectionType: updatedValues });
         }
-        else if (field === "SchedulePeriod") {
-            const lengthRegex=/^\d{0,10}$/;
-            if(lengthRegex.test(e) || e==='')
-            setDataSourcePaylod({ ...dataSourcePaylod, schedulePeriod: e });
+        else if (fieldName === "SchedulePeriod") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, schedulePeriod: updatedValues });
         }
-        else if (field === "LocationPath") {
-            const lengthRegex=/^.{0,100}$/;
-            if(lengthRegex.test(e))
-            setDataSourcePaylod({ ...dataSourcePaylod, locationPath: e });
+        else if (fieldName === "LocationPath") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, locationPath: updatedValues });
         }
-        else if (field === "Port") {
-            const lengthRegex=/^\d{0,10}$/;
-            if(lengthRegex.test(e) || e==='')
-            setDataSourcePaylod({ ...dataSourcePaylod, port: e });
+        else if (fieldName === "Port") {
+            props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, port: updatedValues });
         }
-
     }
-
     return (
-        <div className="CrxCreateDataSource CreateDataSourceUi">
-            <div >
-
-                <div className="modalEditCrx">
-                    <div className="CrxEditForm">
+        <div className="Alpr_DataSource_CrxCreate Alpr_CreateDataSource_Ui">
+            <div>
+                <div>
+                    <div className="Alpr_DataSource_CrxEditForm">
                         <Grid container>
                             <Grid item xs={11} sm={12} md={12} lg={5} >
                                 <div >
@@ -131,47 +88,52 @@ const DataSourceDetail = (props: any) => {
                                         id='DataSourceName'
                                         required={true}
                                         label={t("Name") + ':'}
-                                        value={dataSourcePaylod.name}
-                                        onChange={(e: any) => setFieldValue("Name", e.target.value)}
-                                        error={dataSourcePaylod.name === ''}
-                                        errorMsg={t("Name_field_required")}
+                                        value={props.dataSourceTabValues?.dataSourceData?.name}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('name',true)
+                                            updateSourceDataInParent('name',e.target.value)}}
+                                            
+                                    error={props.touched.name && (props.formValidationError?.dataSourceData?.name ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceData?.name}
                                     />
                                 </div>
-                                <div className="crxEditFilter editFilterUi">
+                                <div className="Alpr_DataSource_CrxEditFilter Alpr_DataSource_EditFilterUi">
                                     <CRXMultiSelectBoxLight
 
-                                        className="DataSourceAutocomplete CrxDataSourceDropDownEditForm"
+                                        className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
                                         label={t("Source_Type") + ':'}
-                                        // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                         multiple={false}
                                         CheckBox={true}
                                         options={SourceTypeDropDown}
                                         defaultValue={{ id: 10002, label: "CSV" }}
                                         required={false}
                                         isSearchable={true}
-                                        value={dataSourcePaylod?.sourceType?.sysSerial === 0 ? { id: 10002, label: 'CSV' } : 
-                                        { id: dataSourcePaylod?.sourceType?.sysSerial, label: dataSourcePaylod?.sourceType?.sourceTypeName }}
+                                        value={props.dataSourceTabValues?.dataSourceData?.sourceType?.recId === 0 ? { id: 10002, label: 'CSV' } : 
+                                        { id: props.dataSourceTabValues?.dataSourceData?.sourceType?.recId, label: props.dataSourceTabValues?.dataSourceData?.sourceType?.sourceTypeName }}
                                         id='DataSourceType'
                                         onChange={(
                                             e: React.SyntheticEvent,
                                             value: any
                                         ) => {
-                                            setFieldValue("SourceType", value === null ? 10002 : Number.parseInt(value?.id))
+                                             updateSourceDataInParent('sourceType',value === null ? 10002 : value?.id)
                                         }}
                                         onOpen={(e: any) => {
 
                                         }}
                                     />
                                 </div>
-                                <div className={classes.DataSourceDropDown}></div>
+                                <div className='Alpr_DataSource_DropDownSpacing'></div>
                                 <div >
                                     <TextField
                                         id='DataSourceTypeName'
                                         required={false}
                                         label={t("Source_Name") + ':'}
-                                        value={dataSourcePaylod.sourceName}
-                                        onChange={(e: any) => setFieldValue("SourceName", e.target.value)}
+                                        value={props.dataSourceTabValues?.dataSourceData?.sourceName}
+                                        onChange={(e: any) =>{
+                                        updateSourceDataInParent('sourceName',e.target.value)}}
 
+                                        error={(props.formValidationError?.dataSourceData?.sourceName ?? "").length > 0}
+                                        errorMsg={props.formValidationError?.dataSourceData?.sourceName}
                                     />
                                 </div>
                                 <div >
@@ -179,9 +141,12 @@ const DataSourceDetail = (props: any) => {
                                         id='DataSourceUserId'
                                         required={false}
                                         label={t("User_Id") + ':'}
-                                        value={dataSourcePaylod.userId}
-                                        onChange={(e: any) => setFieldValue("UserId", e.target.value)}
+                                        value={props.dataSourceTabValues?.dataSourceData.userId}
+                                        onChange={(e: any) => {
+                                        updateSourceDataInParent('UserId',e.target.value)}}
 
+                                    error={(props.formValidationError?.dataSourceData?.userId ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceData?.userId}
                                     />
                                 </div>
                                 <div >
@@ -189,10 +154,13 @@ const DataSourceDetail = (props: any) => {
                                         id='DataSourcePassword'
                                         required={true}
                                         label={t("Password") + ':'}
-                                        value={dataSourcePaylod.password}
-                                        onChange={(e: any) => setFieldValue("Password", e.target.value)}
-                                        error={id === ':id' && dataSourcePaylod.password === ''}
-                                        errorMsg={t("Password_is_required")}
+                                        value={props.dataSourceTabValues?.dataSourceData.password}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('password',true)
+                                            updateSourceDataInParent('Password',e.target.value)}}
+
+                                        error={props.touched.password && (props.formValidationError?.dataSourceData?.password ??"").length>0}
+                                        errorMsg={props.formValidationError?.dataSourceData?.password}
                                     />
                                 </div>
                                 <div >
@@ -200,55 +168,60 @@ const DataSourceDetail = (props: any) => {
                                         required={true}
                                         label={t("Confirm_Password") + ':'}
                                         id='DataSourceConfirmPassword'
-                                        value={dataSourcePaylod.confirmPassword}
-                                        onChange={(e: any) => setFieldValue("ConfirmPassword", e.target.value)}
-                                        error={dataSourcePaylod.password.length > 0 && dataSourcePaylod.password !== dataSourcePaylod.confirmPassword}
-                                        errorMsg={t("Password_didn't_match")}
+                                        value={props.dataSourceTabValues?.dataSourceData?.confirmPassword}
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('confirmPassword',true)
+                                            updateSourceDataInParent('ConfirmPassword',e.target.value)}}
+
+                                        error={props.touched.confirmPassword && (props.formValidationError?.dataSourceData?.confirmPassword??"").length>0}
+                                        errorMsg={props.formValidationError?.dataSourceData?.confirmPassword}
                                     />
                                 </div>
                             </Grid>
-                            <div className='grid_spacer'>
+                            <div className='Alpr_DataSource_Grid_Spacer'>
                             </div>
                             <Grid item xs={12} sm={12} md={12} lg={5} >
 
-                                <div >
-                                    <div className="crxEditFilter editFilterUi">
+                                <div>
+                                    <div className="Alpr_DataSource_CrxEditFilter Alpr_DataSource_EditFilterUi">
                                         <CRXMultiSelectBoxLight
                                             id='DataSourceConnectionType'
-                                            className="DataSourceAutocomplete CrxDataSourceDropDownEditForm"
+                                            className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
                                             label={t("Connection_Type") + ':'}
-                                            // onChange={(e: any) => setFieldValue("sourceName", e.target.value)}
                                             multiple={false}
                                             defaultValue={{ id: "FTP", label: "FTP" }}
                                             CheckBox={true}
                                             options={ConnectionTypeDropDown}
                                             required={false}
                                             isSearchable={true}
-                                            value={dataSourcePaylod?.connectionType == "-1" || dataSourcePaylod?.connectionType === '' ? { id: 'FTP', label: 'FTP' } :
-                                                { id: dataSourcePaylod.connectionType, label: ConnectionTypeDropDown.find((x: any) => x.id === dataSourcePaylod.connectionType)?.label }}
+                                            value={props.dataSourceTabValues?.dataSourceData?.connectionType == "-1" || props.dataSourceTabValues?.dataSourceData?.connectionType === '' ? { id: 'FTP', label: 'FTP' } :
+                                                { id: props.dataSourceTabValues?.dataSourceData.connectionType, label: ConnectionTypeDropDown.find((x: any) => x.id === props.dataSourceTabValues?.dataSourceData.connectionType)?.label }}
 
                                             onChange={(
                                                 e: React.SyntheticEvent,
                                                 value: any
                                             ) => {
-                                                setFieldValue("ConnectionType", value === null ? 'FTP' : value?.id)
-                                            }}
+                                                updateSourceDataInParent('ConnectionType',value===null?'FTP':value?.id)}}
                                             onOpen={(e: any) => {
 
                                             }}
                                         />
                                     </div>
-                                    <div className={classes.DataSourceDropDown}></div>
+                                    <div className='Alpr_DataSource_DropDownSpacing'></div>
                                 </div>
-                                <div >
+                                <div>
                                     <TextField
                                         id='DataSourceSchedulePeriod'
                                         required={false}
                                         label={t("Schedule_Period") + ':'}
                                         multiline={false}
-                                        value={dataSourcePaylod?.schedulePeriod}
-                                        onChange={(e: any) => setFieldValue("SchedulePeriod", e.target.value)}
+                                        value={props.dataSourceTabValues?.dataSourceData?.schedulePeriod}
+                                        onChange={(e: any) =>{
+                                        props.setFieldTouched('schedulePeriod',true)
+                                        updateSourceDataInParent('SchedulePeriod',e.target.value)}}
 
+                                    error={props.touched.schedulePeriod && (props.formValidationError?.dataSourceData?.schedulePeriod ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceData?.schedulePeriod}
                                     />
                                 </div>
                                 <div >
@@ -257,9 +230,12 @@ const DataSourceDetail = (props: any) => {
                                         required={false}
                                         label={t("Location_Path") + ':'}
                                         multiline={false}
-                                        value={dataSourcePaylod.locationPath}
-                                        onChange={(e: any) => setFieldValue("LocationPath", e.target.value)}
+                                        value={props.dataSourceTabValues?.dataSourceData.locationPath}
+                                        onChange={(e: any) => {
+                                        updateSourceDataInParent('LocationPath',e.target.value)}}
 
+                                    error={(props.formValidationError?.dataSourceData?.locationPath ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceData?.locationPath}
                                     />
                                 </div>
                                 <div >
@@ -268,14 +244,18 @@ const DataSourceDetail = (props: any) => {
                                         required={false}
                                         label={t("Port") + ':'}
                                         multiline={false}
-                                        value={dataSourcePaylod.port}
-                                        onChange={(e: any) => setFieldValue("Port", e.target.value)}
+                                        value={props.dataSourceTabValues?.dataSourceData.port}
+                                        onChange={(e: any) =>{ 
+                                        updateSourceDataInParent('Port',e.target.value)}}
 
+                                    error={(props.formValidationError?.dataSourceData?.port ?? "").length > 0}
+                                    errorMsg={props.formValidationError?.dataSourceData?.port}
                                     />
                                 </div>
-
+                                <div>
+                                </div>
                             </Grid>
-                        </Grid>
+                        </Grid>               
                     </div>
                 </div>
             </div>
