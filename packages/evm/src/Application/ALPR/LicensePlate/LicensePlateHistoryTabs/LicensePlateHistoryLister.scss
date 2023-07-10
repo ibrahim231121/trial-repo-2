@@ -1,0 +1,49 @@
+.alprLicensePlateHistoryDataTableParent {
+    // margin: 0px 81px;
+    position: relative;
+    font-family: var(--base-font-family);
+  
+  
+    .stickyPos {
+      z-index: 9999;
+      position: static !important;
+      padding-right: 0px !important;
+      width: 100% !important;
+    }
+  
+    .overlaySticky-content {
+      display: none;
+    }
+  }
+
+  .plateThumbnail{
+    width: 110px;
+    height: 61px;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    font-size: 31pt;
+    color: #d1d2d4;
+    position: relative;
+    left: 8px;
+}
+
+.licensePlateHistoryDataTable {
+  display: block !important;
+  padding-right: 0px !important;
+    .CRXDataTableCustom {
+      .searchable_header {
+        tr {
+          th {
+            padding: 13px 12px;
+            .number_field_textBox {
+              input {
+                width: 100%;
+                background: var(--color-d1d2d4);
+              }
+            }
+          }
+        }
+      }
+    }
+  }

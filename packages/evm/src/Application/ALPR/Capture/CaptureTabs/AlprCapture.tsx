@@ -37,6 +37,8 @@ import { GetAllHotListData } from "../../../../Redux/AlprHotListReducer";
 import { getToken } from "../../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import NumberSearch from "../../../../GlobalComponents/DataTableSearch/NumberSearch";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import AnchorDisplay from "../../../../utils/AnchorDisplay";
 
 const states = [
     {id: 1,label:"TX"},  
@@ -457,9 +459,9 @@ const AlprCapture = () => {
         },
         {
             label: `${t("Plate")}`,
-            id: "numberPlate",
+            id: "numberPlateWithId",
             align: "left",
-            dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
+            dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.LicensePlateHistory)[0].url),
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
@@ -741,6 +743,7 @@ const AlprCapture = () => {
 
                 return {
                     ...capturedPlate,
+                    numberPlateWithId: capturedPlate.numberPlate + "_" + capturedPlate.numberPlateId,
                     user: userName,
                     /* capturedAt: moment(capturedPlate.capturedAt).toLocaleString() */
                 }

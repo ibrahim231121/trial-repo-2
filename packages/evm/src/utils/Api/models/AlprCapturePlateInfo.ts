@@ -1,5 +1,7 @@
 export type AlprCapturePlateInfo = {
     capturedPlateId: number;
+    numberPlateId:number;
+    numberPlateWithId:string;
     numberPlate: string;
     description: string;
     hotlistName: number;

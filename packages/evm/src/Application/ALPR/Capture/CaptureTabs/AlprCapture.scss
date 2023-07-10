@@ -3,28 +3,15 @@
   position: relative;
   font-family: var(--base-font-family);
 
-  .dataTableColumnShoHide {
-    button {
-      font-size: 14px;
-    }
-  }
-
   .stickyPos {
-    z-index: 7;
-    position: sticky !important;
+    z-index: 9999;
+    position: static !important;
     padding-right: 0px !important;
     width: 100% !important;
   }
 
   .overlaySticky-content {
     display: none;
-  }
-}
-
-.captureInnerPage {
-  .dataTablePages {
-    position: inherit !important;
-    border-top: none !important;
   }
 }
 
