@@ -105,7 +105,9 @@ export const urlNames: any = {
     editDataSourceTab: 'editDataSourceTab',
     AlprCapturePanel: 'AlprCapturePanel',
     LicensePlateList: 'LicensePlateList',
-    LicensePlateDetail: 'LicensePlateDetail',
+    LicensePlateDetailEdit: 'LicensePlateDetailEdit',
+    LicensePlateDetailCreate: 'LicensePlateDetailCreate',
+    
     LicensePlateHistory: 'LicensePlateHistory'
 };
 

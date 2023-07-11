@@ -625,6 +625,7 @@
 .LicensePlate_EditFilterUi {
   padding: 0 5px 0 5px;
   flex-direction: row;
+  display: flex;
 
   .requiredLable {
     margin-bottom: 8px;

@@ -552,13 +552,14 @@ export const AlprDataSource = {
     runDataSource:(url: string) => requests.get<number>(BASE_URL_ALPR_Service, url, config),
 }
 
+const LICENSEPLATE_SERVICE_URL = 'LicensePlate'
 export const LicensePlateAgent = {
-    getLicensePlates: (url:string,extraHeader?: Headers[]) => requests.getAll<Paginated<LicensePlate[]>>(BASE_URL_ALPR_Service, `LicensePlate`+url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
-    getLicensePlateById: (id: number) => requests.get<LicensePlate>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, config),
-    addLicensePlate: (body: LicensePlate) => requests.post<number>(BASE_URL_ALPR_Service, `LicensePlate`, body, config),
-    updateLicensePlate: (id: number, body: LicensePlate) => requests.put<number>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, body,config),
-    deleteLicensePlateById: (id: number) => requests.delete<void>(BASE_URL_ALPR_Service, `LicensePlate/${id}`, config),
-    deleteLicensePlates: () => requests.delete<void>(BASE_URL_ALPR_Service, `LicensePlate`, config)
+    getLicensePlates: (url:string,extraHeader?: Headers[]) => requests.getAll<Paginated<LicensePlate[]>>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}`+url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
+    getLicensePlateById: (id: number) => requests.get<LicensePlate>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}/${id}`, config),
+    addLicensePlate: (body: LicensePlate) => requests.post<number>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}`, body, config),
+    updateLicensePlate: (id: number, body: LicensePlate) => requests.put<number>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}/${id}`, body,config),
+    deleteLicensePlateById: (id: number) => requests.delete<void>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}/${id}`, config),
+    deleteLicensePlates: () => requests.delete<void>(BASE_URL_ALPR_Service, `${LICENSEPLATE_SERVICE_URL}`, config)
 }
 export const AlprPlateHistoryAgent={
     getAlprPlateHistoryInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),

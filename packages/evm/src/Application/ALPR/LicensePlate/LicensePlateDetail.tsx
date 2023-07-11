@@ -1,7 +1,7 @@
 import { TextField } from "@cb/shared";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Link, useHistory, useParams } from 'react-router-dom';
-import "./LicensePlateDetail.scss"
+import "./LicensePlateDetail.scss";
 import { CRXInputDatePicker } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useRef } from "react";
@@ -12,16 +12,15 @@ import { urlList, urlNames } from "../../../utils/urlList";
 import { CRXToaster } from "@cb/shared";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
-import { AddLicensePlateData, ClearLicensePlateProperty, GetLicensePlateById, GetLicensePlateData, UpdateLicensePlateData } from "../../../Redux/AlprLicensePlateReducer";
+import { AddLicensePlateData, ClearLicensePlateProperty, GetLicensePlateById, UpdateLicensePlateData } from "../../../Redux/AlprLicensePlateReducer";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { CRXMultiSelectBoxLight } from "@cb/shared";
 import { states } from "../GlobalDropdown";
 import * as Yup from "yup";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import { format } from "date-and-time";
 
 const licensePlateInitialData: LicensePlateTemplate = {
     recId: 0,
@@ -73,63 +72,24 @@ const LicensePlateDetail = (props: any) => {
         if (dd.length < 2) dd = '0' + dd;
         return [yyyy, mm, dd].join('-') + 'T00:00:00';
     };
-
     const LicensePlateValidationSchema = Yup.object().shape({
-        licensePlate: Yup.string().required(t("LicensePlate_is_required")),
+        licensePlate: Yup.string().required(t("LicensePlate_is_required")).min(6, t('Minimum_Lenght_NumberPlate')),
         dateOfInterest: Yup.date().defined(t("DateOfInterest_is_required")),
 
     });
-
-    
-
-    useEffect(() => {
-        if (id != undefined) {
-            dispatch(GetLicensePlateById(id));
-        }
-
-    }, [])
-
-    useEffect(() => {
-        if (LicensplateData && LicensplateData?.recId) {
-            let objectCopy = LicensplateData;
-            objectCopy = {...objectCopy,dateOfInterest :moment(moment(LicensplateData.dateOfInterest).toDate()).format("YYYY-MM-DD hh:mm")}
-            setLicensePlatePayload(objectCopy);
-
-            dispatch(enterPathActionCreator({ val: `License Plate : ${LicensplateData.licensePlate}` }));
-        } else {
-            setLicensePlatePayload(licensePlateInitialData);
-            dispatch(enterPathActionCreator({ val: '' }));
-        }
-    }, [LicensplateData])
-
-    useEffect(() => {
-        licensePlatePayload.licensePlate !== '' && licensePlatePayload.dateOfInterest !== '' ? setSaveBtnDisable(false) : setSaveBtnDisable(true);
-
-    }, [licensePlatePayload]);
-
-    const handleClose = () => {
-        history.push(
-            urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url
-        );
-        setIsOpen(false)
-    };
-
     const closeDialog = () => {
         setIsOpen(true);
     };
-
     const errorMsgIconForDoI = (
         <i className="fas fa-exclamation-circle">
             <span className="crxErrorMsg"> {t("Date_of_Interest_field_required")}</span>
         </i>
     );
-
     const errorMsgIconForLP = (
         <i className="fas fa-exclamation-circle">
             <span className="crxErrorMsg"> {t("License_Plate_field_required")}</span>
         </i>
     );
-
     const LicensePlateFormMessages = (obj: any) => {
         licensePlateFormRef?.current?.showToaster({
             message: obj.message,
@@ -137,8 +97,7 @@ const LicensePlateDetail = (props: any) => {
             duration: obj.duration,
             clearButtton: true,
         });
-    }
-
+    };
     const onMessageShow = (isSuccess: boolean, message: string) => {
         LicensePlateFormMessages({
             message: message,
@@ -156,23 +115,15 @@ const LicensePlateDetail = (props: any) => {
             };
             dispatch(addNotificationMessages(notificationMessage));
         }
-    }
-
-    useEffect(() => {
-        if (LicensePlateToasterData.statusCode == "204" || LicensePlateToasterData.statusCode == "201") {
-            onMessageShow(true, t("License_Plate_Saved_Successfully"));
-            dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
-            history.push(
-                urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url
-            );
-        } else if (LicensePlateToasterData.response) {
-            onMessageShow(false, t("An issue occurred while saving, please try again."));
-            dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
-        }
-    }, [LicensePlateToasterData])
-
+    };
+    const handleClose = () => {
+        history.push(
+            urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url
+        );
+        setIsOpen(false)
+    };
     const onSubmit = (values: any) => {
-        if (id != ':id')//for updation
+        if (id)//for updation
         {
             let params = { id: id, body: values }
             dispatch(UpdateLicensePlateData(params))
@@ -185,11 +136,49 @@ const LicensePlateDetail = (props: any) => {
 
     }
 
+    useEffect(() => {
+        if (id != undefined) {
+            dispatch(GetLicensePlateById(id));
+        }
+
+    }, []);
+
+    useEffect(() => {
+        if (id && LicensplateData && LicensplateData?.recId) {
+            let objectCopy = LicensplateData;
+            objectCopy = { ...objectCopy, dateOfInterest: moment(moment(LicensplateData.dateOfInterest).toDate()).format("YYYY-MM-DD hh:mm") }
+            setLicensePlatePayload(objectCopy);
+
+            dispatch(enterPathActionCreator({ val: `License Plate : ${LicensplateData.licensePlate}` }));
+        } else {
+            setLicensePlatePayload(licensePlateInitialData);
+            dispatch(enterPathActionCreator({ val: '' }));
+        }
+    }, [LicensplateData]);
+
+    useEffect(() => {
+        licensePlatePayload.licensePlate !== '' && licensePlatePayload.dateOfInterest !== '' ? setSaveBtnDisable(false) : setSaveBtnDisable(true);
+
+    }, [licensePlatePayload]);
+
+    useEffect(() => {
+        if (LicensePlateToasterData.statusCode == "204" || LicensePlateToasterData.statusCode == "201") {
+            onMessageShow(true, t("License_Plate_Saved_Successfully"));
+            dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
+            history.push(
+                urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url
+            );
+        } else if (LicensePlateToasterData.response) {
+            onMessageShow(false, t("An issue occurred while saving, please try again."));
+            dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
+        }
+    }, [LicensePlateToasterData]);
+
     return (
         <div>
-            <div className="createLicensePlate CrxCreateUser CreatLicensePlateUi LicensePlateSearchComponents">
+            <div className="LicensePlate_Create LicensePlate_CrxCreate LicensePlate_CreatUI LicensePlate_SearchComponents">
                 <div >
-                    <div className='CrxIndicates'>
+                    <div className='LicensePlateCrxIndicates'>
                         <sup>*</sup> {t("Indicates_required_field")}
                     </div>
                     <Formik
@@ -201,7 +190,7 @@ const LicensePlateDetail = (props: any) => {
                     >
                         {({ setFieldValue, values, errors, isValid, dirty, touched, setFieldTouched }) => (
                             <Form>
-                                <div className="modalEditCrx">
+                                <div className="LicensePlate_ModalEditCrx">
                                     <div className="CrxEditForm">
 
                                         <div className="CrxEditForm">
@@ -287,7 +276,7 @@ const LicensePlateDetail = (props: any) => {
                                                         error={touched?.agencyId && (errors.agencyId ?? "").length > 0}
                                                         errorMsg={errors.agencyId}
                                                     />
-                                                    <div className="crxEditFilter editFilterUi">
+                                                    <div className="LicensePlate_CrxEditFilter LicensePlate_EditFilterUi">
                                                         <CRXMultiSelectBoxLight
                                                             className="CrxUserEditForm"
                                                             id="State"
@@ -297,7 +286,7 @@ const LicensePlateDetail = (props: any) => {
                                                             options={states}
                                                             required={false}
                                                             isSearchable={true}
-                                                            value={values.stateId == 0 ? null : { id: values.stateId, label: states.find((x) => x.id == values.stateId)?.label }}
+                                                            value={{ id: values.stateId, label: states.find((x) => x.id == values.stateId)?.label }}
                                                             onChange={(
                                                                 e: React.SyntheticEvent,
                                                                 value: any
@@ -445,7 +434,7 @@ const LicensePlateDetail = (props: any) => {
                                                     />
 
                                                     {
-                                                        id === ":id" ? "" :
+                                                        !id ? <div /> :
                                                             <TextField
                                                                 id="HotList"
                                                                 required={false}

@@ -1088,6 +1088,7 @@ export const resources = {
       "Violation_Info": "Violation Info",
       "License_Plate_Saved_Successfully": "License Plate Saved Successfully",
       "License_Plate_Deleted_Successfully": "License Plate Deleted Successfully",
+      "Minimum_Lenght_NumberPlate": "Number Plate should be greater or equal to 6",
 
       "License_Year":"License Year",
       "Edit_Data_Source":"Edit Data Source",
