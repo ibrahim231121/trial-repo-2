@@ -11,7 +11,7 @@ import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
-import { alprToasterMessages } from "../AlprGlobalConfiguration";
+import { alprToasterMessages } from "../AlprGlobal";
 import { CRXToaster } from "@cb/shared";
 
 type Props = {
@@ -32,26 +32,27 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.recId, t("Edit_Data_Source"));
   };
   
-  const datasourceServiceUrl='DataSourceMapping/ExecuteMapping';
-  const toasterErrorMsg=t('Something_went_wrong.Please_again_later');
-  const toasterSuccessMsg=t('Process_Initiated_Successfully.');
-  const toasterDuration=7000;
+  const DATASOURCE_SERVICE_URL='DataSourceMapping/ExecuteMapping';
+  const TOASTER_ERROR_MSG=t('Something_went_wrong.Please_again_later');
+  const TOASTER_SUCCESS_MSG=t('Process_Initiated_Successfully.');
+  const TOASTER_DURATION=7000;
   
   const runDataSource=()=>
   {
-    const runServiceUrl = datasourceServiceUrl + `/${row?.recId}`;
+    const runServiceUrl = DATASOURCE_SERVICE_URL + `/${row?.recId}`;
+    alprToasterMessages({
+      message: TOASTER_SUCCESS_MSG,
+      variant: 'success',
+      duration: TOASTER_DURATION
+    },dataSourceMsgFormRef);
     AlprDataSource.runDataSource(runServiceUrl).then(() => {
-        alprToasterMessages({
-          message: toasterSuccessMsg,
-          variant: 'success',
-          duration: toasterDuration
-        },dataSourceMsgFormRef);
+        
       })    
       .catch((e: any) => {
         alprToasterMessages({
-          message: toasterErrorMsg,
+          message: TOASTER_ERROR_MSG,
           variant: 'error',
-          duration: toasterDuration
+          duration: TOASTER_DURATION
         },dataSourceMsgFormRef);
       });
   }
@@ -77,7 +78,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
         >
           {selectedItems.length <= 1 ? (
             <MenuItem onClick={editDataSource}>
-              <Restricted moduleId={54}>
+              <Restricted moduleId={0}>
                 <div className="crx-meu-content crx-spac"  >
                   <div className="crx-menu-icon">
                     <i className="far fa-pencil"></i>
@@ -92,7 +93,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
             <div></div>
           )}
           <MenuItem onClick={runDataSource}>
-            <Restricted moduleId={11}>
+            <Restricted moduleId={0}>
               <div className="crx-meu-content" >
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Run_Data_Source")}</div>

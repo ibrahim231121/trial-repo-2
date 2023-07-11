@@ -34,7 +34,8 @@ import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import {  GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../GlobalDropdown'
-import { alprToasterMessages } from "../AlprGlobalConfiguration";
+import { alprToasterMessages } from "../AlprGlobal";
+import AnchorDisplay from "../../../utils/AnchorDisplay";
 
 const HotListDataSource = () => {
   const initalPagination:number=25;
@@ -66,10 +67,10 @@ const HotListDataSource = () => {
 
   const dataSourceListerMsgFormRef = useRef<typeof CRXToaster>(null);
 
-  const toasterErrorMsg=t('Something_went_wrong.Please_again_later');
-  const toasterDuration=7000;
-  const sourceTypeDropDownColIndx=3;
-  const connectionTypeDropDownColIndx=5;
+  const TOASTER_ERROR_MSG=t('Something_went_wrong.Please_again_later');
+  const TOASTER_DURATION=7000;
+  const SOURCETYPE_DROPDOWN_COLINDX=3;
+  const CONNECTIONTYPE_DROPDOWN_COLINDX=5;
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -101,6 +102,7 @@ const HotListDataSource = () => {
       alprDataSourceCopy = alprDataSource.data.map((data: any) => {
         return {
           recId: data.recId,
+          nameWithId: data.name + '_' +data.recId,
           name: data.name,
           sourceName: data.sourceName,
           userId: data.userId,
@@ -120,9 +122,9 @@ const HotListDataSource = () => {
     } else if(alprDataSource===undefined)
     {
       alprToasterMessages({
-        message: toasterErrorMsg,
+        message: TOASTER_ERROR_MSG,
         variant: 'error',
-        duration: toasterDuration
+        duration: TOASTER_DURATION
       },dataSourceListerMsgFormRef);
       setRows([])
     }else{setRows([])}
@@ -179,12 +181,12 @@ const HotListDataSource = () => {
   };
   const multiSelectCheckbox = (rowParam: HotListDataSourceTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: any) => {
     let dropDownOption: any = [];
-    if (colIdx === sourceTypeDropDownColIndx) {
+    if (colIdx === SOURCETYPE_DROPDOWN_COLINDX) {
       SourceTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
     }
-    else if (colIdx === connectionTypeDropDownColIndx) {
+    else if (colIdx === CONNECTIONTYPE_DROPDOWN_COLINDX) {
       ConnectionTypeDropDown.map((x: any) => {
         dropDownOption.push({ id: x.id, value: x.label });
       });
@@ -221,9 +223,9 @@ const HotListDataSource = () => {
     },
     {
       label: `${t("Name")}`,
-      id: "name",
+      id: "nameWithId",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
+      dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.editDataSourceTab)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -334,9 +336,9 @@ const HotListDataSource = () => {
 
   const getFilteredDataSourceData = () => {
     let searchDataClear = searchData;
-    const setinitialPage=0;
+    const SETINITIAL_PAGE=0;
     
-    if (clearDropDownFilterByIndex === sourceTypeDropDownColIndx || clearDropDownFilterByIndex === connectionTypeDropDownColIndx) {
+    if (clearDropDownFilterByIndex === SOURCETYPE_DROPDOWN_COLINDX || clearDropDownFilterByIndex === CONNECTIONTYPE_DROPDOWN_COLINDX) {
       searchDataClear = searchDataClear.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[clearDropDownFilterByIndex].id.toString().toLocaleLowerCase());
       setSearchData(searchDataClear);
     }
@@ -351,11 +353,11 @@ const HotListDataSource = () => {
       }
       pageiGrid.gridFilter.filters?.push(x)
     })
-    pageiGrid.page = setinitialPage
+    pageiGrid.page = SETINITIAL_PAGE
     pageiGrid.size = rowsPerPage
-    setClearDropDownFilterByIndex(setinitialPage);
-    if (page !== setinitialPage) {
-      setPage(setinitialPage)
+    setClearDropDownFilterByIndex(SETINITIAL_PAGE);
+    if (page !== SETINITIAL_PAGE) {
+      setPage(SETINITIAL_PAGE)
     }
     else {
       dispatch(GetAlprDataSourceList(pageiGrid));

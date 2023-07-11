@@ -22,7 +22,7 @@ import { CRXConfirmDialog } from "@cb/shared";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { alprToasterMessages } from "../AlprGlobalConfiguration";
+import { alprToasterMessages } from "../AlprGlobal";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 const dataSourceInitialPayload = {
@@ -82,12 +82,12 @@ const DataSourceFormsAndFields = () => {
   
   const dataSourceDataById: any = useSelector((state: RootState) => state.alprDataSourceReducer.dataSourceDataById);
   
-	const datasourceServiceUrl = "HotListDataSource";
-  const saveErrorMessage=t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.');
-  const getErrorMessage=t('We_re_sorry._The_form_was_unable_to_load._Please_retry_or_contact_your_Systems_Administrator.');
-  const successMessage=t('Data_Source_Saved_Successfully');
-  const toasterDuration=7000;
-  const validationMaxLength=50
+	const DATASOURCE_SERVICEURL = "HotListDataSource";
+  const SAVE_ERROR_MESSAGE=t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.');
+  const GET_ERROR_MESSAGE=t('We_re_sorry._The_form_was_unable_to_load._Please_retry_or_contact_your_Systems_Administrator.');
+  const SUCCESS_MESSAGE=t('Data_Source_Saved_Successfully');
+  const TOASTER_DURATION=7000;
+  const VALIDATION_MAXLENGTH=50
 
   useEffect(() => {
     if (id) {
@@ -113,9 +113,9 @@ const DataSourceFormsAndFields = () => {
     else if(id && dataSourceDataById===undefined)
     {
       alprToasterMessages({
-        message: getErrorMessage,
+        message: GET_ERROR_MESSAGE,
         variant: 'error',
-        duration: toasterDuration
+        duration: TOASTER_DURATION
       },dataSourceMsgFormRef);
 
     }
@@ -147,14 +147,14 @@ const DataSourceFormsAndFields = () => {
         schemaDefinition: JSON.stringify(tabsFinalizeData?.dataSourceMappingData),
         sourceType: tabsFinalizeData?.dataSourceData?.sourceType,
       }
-      const editUrl = datasourceServiceUrl + `/${id}`;
+      const editUrl = DATASOURCE_SERVICEURL + `/${id}`;
       dispatch(setLoaderValue({isLoading: true}));
       AlprDataSource.updateDataSource(editUrl, requestBody).then(() => {
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
-          message: successMessage,
+          message: SUCCESS_MESSAGE,
           variant: 'success',
-          duration: toasterDuration
+          duration: TOASTER_DURATION
         },dataSourceMsgFormRef);
         history.push(
           urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url
@@ -162,9 +162,9 @@ const DataSourceFormsAndFields = () => {
       }).catch((e: any) => {
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
-          message: saveErrorMessage,
+          message: SAVE_ERROR_MESSAGE,
           variant: 'error',
-          duration: toasterDuration
+          duration: TOASTER_DURATION
         },dataSourceMsgFormRef);
 
       });
@@ -185,7 +185,7 @@ const DataSourceFormsAndFields = () => {
         port: +tabsFinalizeData?.dataSourceData?.port,
         statusDesc: tabsFinalizeData?.dataSourceData?.statusDesc,
       }
-      const addUrl = datasourceServiceUrl;
+      const addUrl = DATASOURCE_SERVICEURL;
       dispatch(setLoaderValue({isLoading: true}));
       AlprDataSource.addDataSource(addUrl, requestBody).then(() => {
         dispatch(setLoaderValue({isLoading: false}));
@@ -195,9 +195,9 @@ const DataSourceFormsAndFields = () => {
       }).catch((e: any) => {
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
-          message: saveErrorMessage,
+          message: SAVE_ERROR_MESSAGE,
           variant: 'error',
-          duration: toasterDuration
+          duration: TOASTER_DURATION
         },dataSourceMsgFormRef);
 
       });
@@ -225,14 +225,14 @@ const DataSourceFormsAndFields = () => {
   const formikValidationSchema=Yup.object().shape({
     
     dataSourceData: Yup.object().shape({
-      name: Yup.string().required(t("Name_field_required")).max(validationMaxLength, t("Name_char_limit")),
+      name: Yup.string().required(t("Name_field_required")).max(VALIDATION_MAXLENGTH, t("Name_char_limit")),
       
-      sourceName: Yup.string().max(validationMaxLength, t("Source_Name_char_limit")),
-      userId: Yup.string().max(validationMaxLength, t("User_Id_char_limit")),
+      sourceName: Yup.string().max(VALIDATION_MAXLENGTH, t("Source_Name_char_limit")),
+      userId: Yup.string().max(VALIDATION_MAXLENGTH, t("User_Id_char_limit")),
       schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number field required').max(10, t("Schedeul_Period_char_limit")),
       locationPath: Yup.string().max(100, t("Location_Path_char_limit")),
       port: Yup.string().matches(/^[0-9]+$/,'number_field_required'),
-      password:Yup.string().max(validationMaxLength, t("Password_char_limit")).when([],
+      password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit")).when([],
         {
           is:()=>id===undefined,
           then :Yup.string().required(t("Password_is_required")),
@@ -255,29 +255,29 @@ const DataSourceFormsAndFields = () => {
           is:()=>id!==undefined,
           then :Yup.string().required(t("License_Plate_required")),
           otherwise:Yup.string().notRequired(),
-        }).max(validationMaxLength, t("License_Plate_char_limit")),
+        }).max(VALIDATION_MAXLENGTH, t("License_Plate_char_limit")),
 
         DateOfInterest: Yup.string().when([],
         {
           is:()=>id!==undefined,
           then :Yup.string().required(t("Date_of_Interest_field_required"))
-        }).max(validationMaxLength, t("Date_of_Interest_char_limit")),
+        }).max(VALIDATION_MAXLENGTH, t("Date_of_Interest_char_limit")),
       
-        LicenseType: Yup.string().max(validationMaxLength, t("License_Type_char_limit")),
-        AgencyId: Yup.string().max(validationMaxLength, t("Agency_char_limit")),
-        State: Yup.string().max(validationMaxLength, t("State_char_limit")),
-        FirstName: Yup.string().max(validationMaxLength, t("First_Name_char_limit")),
-        LastName: Yup.string().max(validationMaxLength, t("Last_Name_char_limit")),
-        Alias: Yup.string().max(validationMaxLength, t("Alias_char_limit")),
-        Year: Yup.string().max(validationMaxLength, t("Vehicle_Year_char_limit")),
-        Make: Yup.string().max(validationMaxLength, t("Vehicle_Make_char_limit")),
-        Model: Yup.string().max(validationMaxLength, t("Vehicle_Model_char_limit")),
-        Color: Yup.string().max(validationMaxLength, t("Vehicle_Color_char_limit")),
-        Style: Yup.string().max(validationMaxLength, t("Vehicle_Style_char_limit")),
-        Notes: Yup.string().max(validationMaxLength, t("Notes_char_limit")),
-        NCICNumber: Yup.string().max(validationMaxLength, t("NCIC_Number_char_limit")),
-        ImportSerial: Yup.string().max(validationMaxLength, t("Import_Serical_char_limit")),
-        ViolationInfo: Yup.string().max(validationMaxLength, t("Violation_Info_char_limit")),
+        LicenseType: Yup.string().max(VALIDATION_MAXLENGTH, t("License_Type_char_limit")),
+        AgencyId: Yup.string().max(VALIDATION_MAXLENGTH, t("Agency_char_limit")),
+        State: Yup.string().max(VALIDATION_MAXLENGTH, t("State_char_limit")),
+        FirstName: Yup.string().max(VALIDATION_MAXLENGTH, t("First_Name_char_limit")),
+        LastName: Yup.string().max(VALIDATION_MAXLENGTH, t("Last_Name_char_limit")),
+        Alias: Yup.string().max(VALIDATION_MAXLENGTH, t("Alias_char_limit")),
+        Year: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Year_char_limit")),
+        Make: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Make_char_limit")),
+        Model: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Model_char_limit")),
+        Color: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Color_char_limit")),
+        Style: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Style_char_limit")),
+        Notes: Yup.string().max(VALIDATION_MAXLENGTH, t("Notes_char_limit")),
+        NCICNumber: Yup.string().max(VALIDATION_MAXLENGTH, t("NCIC_Number_char_limit")),
+        ImportSerial: Yup.string().max(VALIDATION_MAXLENGTH, t("Import_Serical_char_limit")),
+        ViolationInfo: Yup.string().max(VALIDATION_MAXLENGTH, t("Violation_Info_char_limit")),
     }
     )
 
