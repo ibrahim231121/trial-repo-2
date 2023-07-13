@@ -15,4 +15,5 @@ export type AlprPlateHistoryInfo = {
     vehicleYear: number;
     userId: any;
     unit:string;
+    notes:string;
   }

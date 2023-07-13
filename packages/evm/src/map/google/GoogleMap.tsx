@@ -9,13 +9,15 @@ interface IMapConfig {
     gpsData: any,
     callBackOnMarkerClick: any,
     updateSeekMarker?: any
+    mapCenter?:any,
+    getInfoWindowContentOnMarkerClick?:(data:any) => string
 }
 interface IlatLong {
     lat: number[],
     long: number[]
 }
 
-const GoogleMap: React.FC<IMapConfig> = ({ apiKey, zoomLevel, mapTypeControl, gpsData, callBackOnMarkerClick, updateSeekMarker }) => {
+const GoogleMap: React.FC<IMapConfig> = ({ apiKey, zoomLevel, mapTypeControl, gpsData, callBackOnMarkerClick, updateSeekMarker, mapCenter, getInfoWindowContentOnMarkerClick }) => {
 
     const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
     useEffect(() => {
@@ -40,6 +42,8 @@ const GoogleMap: React.FC<IMapConfig> = ({ apiKey, zoomLevel, mapTypeControl, gp
                 gpsData={gpsData}
                 callBackOnMarkerClick={callBackOnMarkerClick}
                 updateSeekMarker={updateSeekMarker}
+                mapCenter={mapCenter}
+                getInfoWindowContentOnMarkerClick={getInfoWindowContentOnMarkerClick}
             />
         }
         </>

@@ -6,7 +6,9 @@ interface IMap {
     zoomLevel?: number,
     gpsData: any,
     callBackOnMarkerClick: any,
-    updateSeekMarker?: any
+    updateSeekMarker?: any,
+    mapCenter?:any,
+    getInfoWindowContentOnMarkerClick?:(data:any) => string
 }
 
 interface IMarker {
@@ -21,10 +23,13 @@ type GoogleLatLng = google.maps.LatLng;
 type GoogleMap = google.maps.Map;
 type GoogleMarker = google.maps.Marker;
 
-const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, gpsData, callBackOnMarkerClick, updateSeekMarker }) => {
+const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, gpsData, callBackOnMarkerClick, updateSeekMarker, mapCenter, getInfoWindowContentOnMarkerClick}) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const [map, setGMap] = useState<GoogleMap>();
     const [marker, setMarker] = useState<any>();
+
+    const isInitialSetupRef = useRef<boolean>(true);
+    const infoWindowref = useRef<google.maps.InfoWindow>(new google.maps.InfoWindow())
 
     const startMap = (): void => {
         if (map) {
@@ -94,6 +99,18 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
         }
     }, [updateSeekMarker])
 
+    useEffect(() => {
+        if(isInitialSetupRef.current){
+            //do not center on initial setup as it is set on map initialize.
+        }else{
+            if(mapCenter){
+                let pnt = getLatLon(mapCenter);
+                let mapCenterLatLng = new google.maps.LatLng(pnt.latitude, pnt.longitude)
+                map?.setCenter(mapCenterLatLng);
+            }            
+        }
+    }, [mapCenter]);
+
     const posError = () => {
         if (navigator.permissions) {
             navigator.permissions.query({ name: 'geolocation' }).then(res => {
@@ -145,9 +162,11 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
     }
 
     const addMarkerOnSeek = (objmarker: any): void => {
-            if(marker){
-                marker.setPosition(objmarker.position);
-                marker.setIcon(objmarker.icon);
+        setMarker((prevMarker:any) => {
+            if(prevMarker){
+                prevMarker.setPosition(objmarker.position);
+                prevMarker.setIcon(objmarker.icon);
+                return prevMarker;
             }
             else{
                 let m: any = new google.maps.Marker({
@@ -156,21 +175,34 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
                     icon: objmarker.icon,
                     zIndex: objmarker.zIndex
                 })
-                setMarker(m);
+                return m;
             }
+        });            
     }
 
     const EventListner = (markers:any): void => {
         if (map) {
             google.maps.event.addListener(markers, 'click', function (e) {
-                onMarkerClick(markers.data);
+                onMarkerClick(markers);
             })
         }
     }
 
-    const onMarkerClick = (data:any): void => {
+    const onMarkerClick = (marker:any): void => {
+        const data = marker.data;
         let logtime=data.logTime ? data.logTime : data.LOGTIME ? data.LOGTIME : null;
         callBackOnMarkerClick(logtime);
+
+        if(getInfoWindowContentOnMarkerClick){
+            let content = getInfoWindowContentOnMarkerClick(logtime);
+            
+            if(content){
+                infoWindowref.current.setContent(content);  
+                infoWindowref.current.open(map, marker); 
+            }
+            
+        }
+        
     }
 
     const initMap = (mapCenter:any): void => {
@@ -182,6 +214,7 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
                     gestureHandling: 'cooperative',mapTypeId: mapType,draggableCursor: 'pointer',
                 })
             );
+            isInitialSetupRef.current = false;
 
         }
     };
