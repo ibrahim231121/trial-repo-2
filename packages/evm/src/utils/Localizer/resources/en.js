@@ -1119,7 +1119,11 @@ export const resources = {
       "Create_License_Plate" : "Create License Plate",
       "LicensePlate_is_required" : "License Plate is required",
       "DateOfInterest_is_required" : "Date Of Interest is required",
-      
+      'Data_Source_Saved_Successfully':'Data Source Saved Successfully',
+      'We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.':"We're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator.",
+      "License_Plate_required":"License Plate required",
+      'Process_Initiated_Successfully.':'Process Initiated Successfully.',
+      'Something_went_wrong.Please_again_later':'Something went wrong.Please again later'
       //ALPR End
     }
   }

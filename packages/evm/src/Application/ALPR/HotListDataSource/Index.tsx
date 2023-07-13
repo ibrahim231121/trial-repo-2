@@ -49,6 +49,8 @@ const HotListDataSource = () => {
   const dispatch = useDispatch();
   
   const [rows, setRows] = React.useState<HotListDataSourceTemplate[]>([]);
+  const [orderDir, setOrderDir] = React.useState<Order>("asc");
+  const [orderByField, setOrderByField] = React.useState<string>("Name");
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -56,19 +58,18 @@ const HotListDataSource = () => {
     },
     page: page,
     size: rowsPerPage,
+    gridSort: { field: orderByField, dir: orderDir }
   });
   const alprDataSource: any = useSelector((state: RootState) => state.alprDataSourceReducer.dataSource);
   const [paging, setPaging] = React.useState<boolean>();
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const [isSearchableOnChange, setIsSearchableOnChange] = React.useState<boolean>(false)
   const [clearDropDownFilterByIndex, setClearDropDownFilterByIndex] = React.useState<number>(0);
-  const [orderDir, setOrderDir] = React.useState<Order>("asc");
-  const [orderByField, setOrderByField] = React.useState<string>("Name");
+  
 
   const dataSourceListerMsgFormRef = useRef<typeof CRXToaster>(null);
 
   const TOASTER_ERROR_MSG=t('Something_went_wrong.Please_again_later');
-  const TOASTER_DURATION=7000;
   const SOURCETYPE_DROPDOWN_COLINDX=3;
   const CONNECTIONTYPE_DROPDOWN_COLINDX=5;
 
@@ -101,21 +102,21 @@ const HotListDataSource = () => {
     if (alprDataSource && alprDataSource.data !== undefined && alprDataSource.data !== null && alprDataSource.data.length > 0) {
       alprDataSourceCopy = alprDataSource.data.map((data: any) => {
         return {
-          recId: data.recId,
-          nameWithId: data.name + '_' +data.recId,
-          name: data.name,
-          sourceName: data.sourceName,
-          userId: data.userId,
-          password: data.password,
-          confirmPassword: data.confirmPassword,
-          connectionType: data.connectionType,
-          schedulePeriod: data.schedulePeriod,
-          locationPath: data.locationPath,
-          port: data.port,
-          lastRun: data.lastRun,
-          status: data.status,
-          statusDescription: data.statusDescription,
-          sourceTypeName: data?.sourceType.sourceTypeName,
+          recId: data?.recId,
+          nameWithId: data?.name + '_' +data?.recId,
+          name: data?.name,
+          sourceName: data?.sourceName,
+          userId: data?.userId,
+          password: data?.password,
+          confirmPassword: data?.confirmPassword,
+          connectionType: data?.connectionType,
+          schedulePeriod: data?.schedulePeriod,
+          locationPath: data?.locationPath,
+          port: data?.port,
+          lastRun: data?.lastRun,
+          status: data?.status,
+          statusDescription: data?.statusDescription,
+          sourceTypeName: data?.sourceType?.sourceTypeName,
         }
       });
       setRows(alprDataSourceCopy)
@@ -124,7 +125,6 @@ const HotListDataSource = () => {
       alprToasterMessages({
         message: TOASTER_ERROR_MSG,
         variant: 'error',
-        duration: TOASTER_DURATION
       },dataSourceListerMsgFormRef);
       setRows([])
     }else{setRows([])}
@@ -336,7 +336,7 @@ const HotListDataSource = () => {
 
   const getFilteredDataSourceData = () => {
     let searchDataClear = searchData;
-    const SETINITIAL_PAGE=0;
+    const SET_INITIAL_PAGE=0;
     
     if (clearDropDownFilterByIndex === SOURCETYPE_DROPDOWN_COLINDX || clearDropDownFilterByIndex === CONNECTIONTYPE_DROPDOWN_COLINDX) {
       searchDataClear = searchDataClear.filter((e) => e.columnName.toLocaleLowerCase() !== headCells[clearDropDownFilterByIndex].id.toString().toLocaleLowerCase());
@@ -353,11 +353,11 @@ const HotListDataSource = () => {
       }
       pageiGrid.gridFilter.filters?.push(x)
     })
-    pageiGrid.page = SETINITIAL_PAGE
+    pageiGrid.page = SET_INITIAL_PAGE
     pageiGrid.size = rowsPerPage
-    setClearDropDownFilterByIndex(SETINITIAL_PAGE);
-    if (page !== SETINITIAL_PAGE) {
-      setPage(SETINITIAL_PAGE)
+    setClearDropDownFilterByIndex(SET_INITIAL_PAGE);
+    if (page !== SET_INITIAL_PAGE) {
+      setPage(SET_INITIAL_PAGE)
     }
     else {
       dispatch(GetAlprDataSourceList(pageiGrid));

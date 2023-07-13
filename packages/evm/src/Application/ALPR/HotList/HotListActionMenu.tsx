@@ -140,7 +140,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
             )}
             <div className="crxUplockContent">
               <p>
-                {t("You are about to delete ")} <b>{row?.Name}</b> {t("this entry")}
+                {t("You are about to delete ")} <b>{row?.Name}</b> {t("this_entry")}
               </p>
             </div>
           </>

@@ -155,6 +155,7 @@ const DataSourceDetail = (props: any) => {
                                         required={true}
                                         label={t("Password") + ':'}
                                         value={props.dataSourceTabValues?.dataSourceData.password}
+                                        type='password'
                                         onChange={(e: any) => {
                                             props.setFieldTouched('password',true)
                                             updateSourceDataInParent('Password',e.target.value)}}
@@ -169,6 +170,7 @@ const DataSourceDetail = (props: any) => {
                                         label={t("Confirm_Password") + ':'}
                                         id='DataSourceConfirmPassword'
                                         value={props.dataSourceTabValues?.dataSourceData?.confirmPassword}
+                                        type='password'
                                         onChange={(e: any) => {
                                             props.setFieldTouched('confirmPassword',true)
                                             updateSourceDataInParent('ConfirmPassword',e.target.value)}}
@@ -232,9 +234,10 @@ const DataSourceDetail = (props: any) => {
                                         multiline={false}
                                         value={props.dataSourceTabValues?.dataSourceData.locationPath}
                                         onChange={(e: any) => {
+                                            props.setFieldTouched('locationPath',true)
                                         updateSourceDataInParent('LocationPath',e.target.value)}}
 
-                                    error={(props.formValidationError?.dataSourceData?.locationPath ?? "").length > 0}
+                                    error={props.touched.locationPath && (props.formValidationError?.dataSourceData?.locationPath ?? "").length > 0}
                                     errorMsg={props.formValidationError?.dataSourceData?.locationPath}
                                     />
                                 </div>
@@ -246,9 +249,10 @@ const DataSourceDetail = (props: any) => {
                                         multiline={false}
                                         value={props.dataSourceTabValues?.dataSourceData.port}
                                         onChange={(e: any) =>{ 
+                                            props.setFieldTouched('port',true)
                                         updateSourceDataInParent('Port',e.target.value)}}
 
-                                    error={(props.formValidationError?.dataSourceData?.port ?? "").length > 0}
+                                    error={props.touched.port && (props.formValidationError?.dataSourceData?.port ?? "").length > 0}
                                     errorMsg={props.formValidationError?.dataSourceData?.port}
                                     />
                                 </div>

@@ -116,7 +116,7 @@ const HotListDetail = () => {
     if(hotListDatasourceData && hotListDatasourceData.data){
       let sources: any = [];
       hotListDatasourceData.data.map((x: any) => {
-        sources.push({ id: x.sysSerial, label: x.sourceName });
+        sources.push({ id: x.recId, label: x.sourceName   });
         });
       setSourceOptions(sources);
     }

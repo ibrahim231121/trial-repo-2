@@ -9,7 +9,6 @@ import Restricted from "../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
-import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
 import { alprToasterMessages } from "../AlprGlobal";
 import { CRXToaster } from "@cb/shared";
@@ -35,7 +34,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
   const DATASOURCE_SERVICE_URL='DataSourceMapping/ExecuteMapping';
   const TOASTER_ERROR_MSG=t('Something_went_wrong.Please_again_later');
   const TOASTER_SUCCESS_MSG=t('Process_Initiated_Successfully.');
-  const TOASTER_DURATION=7000;
   
   const runDataSource=()=>
   {
@@ -43,7 +41,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
     alprToasterMessages({
       message: TOASTER_SUCCESS_MSG,
       variant: 'success',
-      duration: TOASTER_DURATION
     },dataSourceMsgFormRef);
     AlprDataSource.runDataSource(runServiceUrl).then(() => {
         
@@ -52,7 +49,6 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
         alprToasterMessages({
           message: TOASTER_ERROR_MSG,
           variant: 'error',
-          duration: TOASTER_DURATION
         },dataSourceMsgFormRef);
       });
   }
