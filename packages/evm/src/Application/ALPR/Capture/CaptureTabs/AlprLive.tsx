@@ -18,6 +18,7 @@ import { AlprCapturePlateInfo } from "../../../../utils/Api/models/AlprCapturePl
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { useTranslation } from "react-i18next";
 import "./AlprLive.scss"
+import { AlprGlobalConstants, gridAlignment } from "../../AlprGlobal";
 
 
 
@@ -30,8 +31,8 @@ const AlprLive = () => {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("Name");
     const [selectedItems, setSelectedItems] = React.useState<AlprCapturePlateInfo[]>([]);
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
-    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
+    const [page, setPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE);
 
 
     const onSetHeadCells = (e: HeadCellProps[]) => {
@@ -77,7 +78,7 @@ const AlprLive = () => {
         {
             label: t("ID"),
             id: "id",
-            align: "right",
+            align: gridAlignment("number"),
             dataComponent: () => null,
             sort: false,
             searchFilter: false,
@@ -89,7 +90,7 @@ const AlprLive = () => {
         {
             label: `${t("Plate_Number")}`,
             id: "PlateNumber",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -102,7 +103,7 @@ const AlprLive = () => {
         {
             label: `${t("Captured_At")}`,
             id: "Captured",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -115,7 +116,7 @@ const AlprLive = () => {
         {
             label: `${t("Notification")}`,
             id: "Notification",
-            align: "center",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -129,7 +130,7 @@ const AlprLive = () => {
         {
             label: `${t("Notes")}`,
             id: "Notes",
-            align: "right",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,

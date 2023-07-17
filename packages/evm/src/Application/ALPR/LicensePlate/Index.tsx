@@ -39,6 +39,7 @@ import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
+import { AlprGlobalConstants, alprToasterMessages, gridAlignment, nullValidationHandling } from "../AlprGlobal";
 
 type DateTimeObject = {
   startDate: string;
@@ -55,8 +56,6 @@ type DateTimeProps = {
 const LicensePlate = () => {
   const STATE_COLID:number = 6;
   const HOTLIST_COLID:number = 2;
-  const DEFAULT_PAGESIZE: number = 25
-  const HOTLIST_DEFAULT_PAGESIZE:number = 1000;
   const [rows, setRows] = React.useState<LicensePlateTemplate[]>([]);
   const isSearchableOnChange = React.useRef<boolean>(false);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
@@ -65,8 +64,8 @@ const LicensePlate = () => {
   const [orderField, setOrderField] = React.useState<string>("licensePlate");
   const [selectedItems, setSelectedItems] = React.useState<LicensePlateTemplate[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<any>();
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(DEFAULT_PAGESIZE);
-  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
+  const [page, setPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE);
   const [selectedActionRow, setSelectedActionRow] = React.useState<LicensePlateTemplate[]>([]);
   const LicensePlateList: any = useSelector((state: RootState) => state.alprLicensePlateReducer.LicensePlateList);
   const history = useHistory();
@@ -284,7 +283,7 @@ const LicensePlate = () => {
     {
       label: t("ID"),
       id: "recId",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: () => null,
       sort: false,
       searchFilter: false,
@@ -296,7 +295,7 @@ const LicensePlate = () => {
     {
       label: t("Plate"),
       id: "licensePlate",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string, id: number) => {
         return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => editLicensePlate(id)} className={"dataTableText txtStyle"}>{e}</div>
       },
@@ -312,7 +311,7 @@ const LicensePlate = () => {
     {
       label: `${t("List")}`,
       id: "hotList",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -326,7 +325,7 @@ const LicensePlate = () => {
     {
       label: `${t("Date_of_Interest")}`,
       id: "dateOfInterest",
-      align: "center",
+      align: gridAlignment("DateTime"),
       dataComponent: dateDisplayFormat,
       sort: true,
       searchFilter: true,
@@ -340,7 +339,7 @@ const LicensePlate = () => {
     {
       label: `${t("Agency")}`,
       id: "agencyId",
-      align: "left",
+      align: gridAlignment("number"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -354,7 +353,7 @@ const LicensePlate = () => {
     {
       label: `${t("NCIC")}`,
       id: "ncicNumber",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -368,7 +367,7 @@ const LicensePlate = () => {
     {
       label: `${t("State")}`,
       id: "stateName",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -382,7 +381,7 @@ const LicensePlate = () => {
     {
       label: `${t("Make")}`,
       id: "vehicleMake",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -396,7 +395,7 @@ const LicensePlate = () => {
     {
       label: `${t("Model")}`,
       id: "vehicleModel",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -410,7 +409,7 @@ const LicensePlate = () => {
     {
       label: `${t("Year")}`,
       id: "vehicleYear",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -424,7 +423,7 @@ const LicensePlate = () => {
     {
       label: `${t("First_Name")}`,
       id: "firstName",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -438,7 +437,7 @@ const LicensePlate = () => {
     {
       label: `${t("Last_Name")}`,
       id: "lastName",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -452,7 +451,7 @@ const LicensePlate = () => {
     {
       label: `${t("Alias")}`,
       id: "alias",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -550,32 +549,12 @@ const LicensePlate = () => {
     
     setPaging(true)
   };
-  const LicensePlateFormMessages = (obj: any) => {
-    alertMessageRef?.current?.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration,
-      clearButtton: true,
-    });
-  };
-  const onMessageShow = (isSuccess: boolean, message: string) => {
-    LicensePlateFormMessages({
-      message: message,
-      variant: isSuccess ? 'success' : 'error',
-      duration: 5000
-    });
 
-    if (isSuccess) {
-      let notificationMessage: NotificationMessage = {
-        title: t("License_Plate"),
-        message: message,
-        type: "success",
-        date: moment(moment().toDate())
-          .local()
-          .format("YYYY / MM / DD HH:mm:ss"),
-      };
-      dispatch(addNotificationMessages(notificationMessage));
-    }
+  const onMessageShow = (isSuccess: boolean, message: string) => {
+    alprToasterMessages({
+      message: message,
+      variant: isSuccess ? AlprGlobalConstants.TOASTER_SUCCESS_VARIANT : AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+    },alertMessageRef);
   };
   const onDelete = (recId: number) => {
     dispatch(DeleteLicensePlateData(recId))
@@ -593,7 +572,7 @@ const LicensePlate = () => {
         filters: []
       },
       page: 0,
-      size: HOTLIST_DEFAULT_PAGESIZE,
+      size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE,
       gridSort: {
         field: "name",
         dir: "asc"
@@ -684,14 +663,7 @@ const LicensePlate = () => {
 
   useEffect(() => {
     if (dateTime.colIdx !== 0) {
-      if (
-        dateTime.dateTimeObj.startDate !== "" &&
-        dateTime.dateTimeObj.startDate !== undefined &&
-        dateTime.dateTimeObj.startDate != null &&
-        dateTime.dateTimeObj.endDate !== "" &&
-        dateTime.dateTimeObj.endDate !== undefined &&
-        dateTime.dateTimeObj.endDate != null
-      ) {
+      if (nullValidationHandling(dateTime.dateTimeObj.startDate) && nullValidationHandling(dateTime.dateTimeObj.endDate)      ) {
         let newItem = {
           columnName: headCells[dateTime.colIdx].id.toString(),
           colIdx: dateTime.colIdx,
@@ -705,12 +677,13 @@ const LicensePlate = () => {
         );
 
         setSearchData((prevArr) => [...prevArr, newItem]);
-      } else
+      } else{
         setSearchData((prevArr) =>
           prevArr.filter(
             (e) => e.columnName.toLowerCase() !== headCells[dateTime.colIdx].id.toString().toLowerCase()
           )
         );
+          }
     }
 
   }, [dateTime]); 
@@ -770,7 +743,7 @@ const LicensePlate = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={LicensePlateList?.totalCount == undefined ? 0 : LicensePlateList?.totalCount}
+            totalRecords={nullValidationHandling(LicensePlateList?.totalCount) ? 0 : LicensePlateList?.totalCount}
             setSortOrder={(sort: any) => sortingOrder(sort)}
 
             //Please dont miss this block.

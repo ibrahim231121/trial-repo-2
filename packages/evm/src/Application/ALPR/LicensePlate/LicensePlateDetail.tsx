@@ -21,6 +21,7 @@ import { states } from "../GlobalDropdown";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import { AlprGlobalConstants, alprToasterMessages, convertToDateTimePicker } from "../AlprGlobal";
 
 const licensePlateInitialData: LicensePlateTemplate = {
     recId: 0,
@@ -90,31 +91,12 @@ const LicensePlateDetail = (props: any) => {
             <span className="crxErrorMsg"> {t("License_Plate_field_required")}</span>
         </i>
     );
-    const LicensePlateFormMessages = (obj: any) => {
-        licensePlateFormRef?.current?.showToaster({
-            message: obj.message,
-            variant: obj.variant,
-            duration: obj.duration,
-            clearButtton: true,
-        });
-    };
+   
     const onMessageShow = (isSuccess: boolean, message: string) => {
-        LicensePlateFormMessages({
+        alprToasterMessages({
             message: message,
-            variant: isSuccess ? 'success' : 'error',
-            duration: 7000
-        });
-        if (isSuccess) {
-            let notificationMessage: NotificationMessage = {
-                title: t("License_Plate"),
-                message: message,
-                type: "success",
-                date: moment(moment().toDate())
-                    .local()
-                    .format("YYYY/MM/DD HH:mm:ss"),
-            };
-            dispatch(addNotificationMessages(notificationMessage));
-        }
+            variant: isSuccess ? AlprGlobalConstants.TOASTER_SUCCESS_VARIANT : AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+        },licensePlateFormRef);
     };
     const handleClose = () => {
         history.push(
@@ -146,7 +128,8 @@ const LicensePlateDetail = (props: any) => {
     useEffect(() => {
         if (id && LicensplateData && LicensplateData?.recId) {
             let objectCopy = LicensplateData;
-            objectCopy = { ...objectCopy, dateOfInterest: moment(moment(LicensplateData.dateOfInterest).toDate()).format("YYYY-MM-DD hh:mm") }
+            // objectCopy = { ...objectCopy, dateOfInterest: moment(moment(LicensplateData.dateOfInterest).toDate()).format("YYYY-MM-DD hh:mm") }
+            objectCopy = { ...objectCopy, dateOfInterest: convertToDateTimePicker(LicensplateData.dateOfInterest) }
             setLicensePlatePayload(objectCopy);
 
             dispatch(enterPathActionCreator({ val: `License Plate : ${LicensplateData.licensePlate}` }));
@@ -163,19 +146,19 @@ const LicensePlateDetail = (props: any) => {
 
     useEffect(() => {
         if (LicensePlateToasterData.statusCode == "204" || LicensePlateToasterData.statusCode == "201") {
-            onMessageShow(true, t("License_Plate_Saved_Successfully"));
             dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
             history.push(
                 urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url
             );
         } else if (LicensePlateToasterData.response) {
-            onMessageShow(false, t("An issue occurred while saving, please try again."));
+            onMessageShow(false, t("An_issue_occurred_while_saving,_please_try_again."));
             dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
         }
     }, [LicensePlateToasterData]);
 
     return (
         <div>
+             <CRXToaster ref={licensePlateFormRef} />
             <div className="LicensePlate_Create LicensePlate_CrxCreate LicensePlate_CreatUI LicensePlate_SearchComponents">
                 <div >
                     <div className='LicensePlateCrxIndicates'>

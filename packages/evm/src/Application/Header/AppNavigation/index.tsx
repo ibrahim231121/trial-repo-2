@@ -246,26 +246,26 @@ const CRXLefNavigation = () => {
       moduleId: 0,
       label: t("ALPR"),
       icon: "fas fa-car-on NaveIcon",
-      items: [{moduleIds: 5,
+      items: [{moduleIds: 0,
         label: t("Captures"),
         command: () => {
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url);
         },
       },{
-        moduleIds: 5,
+        moduleIds: 0,
         label: t("HotList"),
         command: () => {
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.HotList)[0].url);
         },
       },
-        {moduleIds: 5,
-        label: t("HotList Data Source"),
+        {moduleIds: 0,
+        label: t("HotList_Data_Source"),
         command: () => {;
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url);
         },
       },
-        {moduleIds: 5,
-        label: t("License Plates"),
+        {moduleIds: 0,
+        label: t("License_Plates"),
         command: () => {
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url);
         },

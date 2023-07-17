@@ -29,6 +29,7 @@ import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
+import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
 
 
 const HotListPayload:HotListTemplate= {
@@ -63,15 +64,6 @@ const HotListDetail = () => {
 
   const [sourceOptions, setSourceOptions] = React.useState([]);
 
-  const TenantOptions =
-    [{
-      id: 1,
-      label: "Tenant 1"
-    },
-    {
-      id: 2,
-      label: "Tenant 2"
-    }];
   const [, setIsStateUpdate] = React.useState<boolean>(false);
   const openAudioPlayer = React.useRef<boolean>(false);
   const isOpen = React.useRef<boolean>(false);
@@ -133,33 +125,14 @@ const HotListDetail = () => {
         logic: "and",
         filters: []
       },
-      page: 0,
-      size: 1000
+      page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+      size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE
     }
 
     dispatch(GetAlprDataSourceList(sourcesPageiGrid))
     
     isFirstTime.current = false;
   }, [])
-
-  const showToastMsg = (obj: any) => {
-    toasterRef.current.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration
-    });
-    if (obj.message !== undefined && obj.message !== "") {
-      let notificationMessage: NotificationMessage = {
-        title: t("Hot_List"),
-        message: obj.message,
-        type: "success",
-        date: moment(moment().toDate())
-          .local()
-          .format("YYYY / MM / DD HH:mm:ss"),
-      };
-      dispatch(addNotificationMessages(notificationMessage));
-    }
-  };
 
   const fileUpload = () => {
     if (hiddenFileInput?.current)
@@ -223,30 +196,23 @@ const HotListDetail = () => {
       }).catch((error:any)=>{
         dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
         if(error && error.response && error.response.status == 409){
-          showToastMsg?.({
+          alprToasterMessages?.({
             message: t("Hotlist_duplicate_not_allowed"),
-            variant: "error",
-            duration: 5000,
-            clearButtton: true
-          });
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },toasterRef);
         }
         else if(error && error.response && error.response.status == 404){
-          showToastMsg?.({
+          alprToasterMessages?.({
             message: t("Hotlist_not_found").replace("[id]", id),
-            variant: "error",
-            duration: 5000,
-            clearButtton: true
-          });
+            variant:AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },toasterRef);
         }
         else{
-          showToastMsg?.({
+          alprToasterMessages?.({
             message: t("Hotlist_updation_failed"),
-            variant: "error",
-            duration: 5000,
-            clearButtton: true
-          });
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },toasterRef);
         }
-        console.error(error);
       })
     }
     else//Insertion
@@ -273,19 +239,15 @@ const HotListDetail = () => {
         dispatch(setLoaderValue({isLoading: false, message: "", error: true }));
         
         if(error && error.response && error.response.status == 409){
-          showToastMsg?.({
+          alprToasterMessages?.({
             message: t("Hotlist_duplicate_not_allowed"),
-            variant: "error",
-            duration: 5000,
-            clearButtton: true
-          });
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },toasterRef);
         }else{
-          showToastMsg?.({
+          alprToasterMessages?.({
             message: t("Hotlist_creation_failed"),
-            variant: "error",
-            duration: 5000,
-            clearButtton: true
-          });
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },toasterRef);
         }
         
         

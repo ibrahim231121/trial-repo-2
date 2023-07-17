@@ -1014,108 +1014,125 @@ export const resources = {
       "Case_Sharing_Saved_Successfully": "Case Sharing Saved Successfully",
       "Case_Sharing_Update_Successfully": "Case Sharing Update Successfully",
 
-      //--------------------- ALPR ----------------------
+      //#region ALPR
+      //Alpr Capture
       "Plate": "Plate",
       "Hot_List": "Hot List",
-      "Description": "Description",
-      "Captured": "Captured",
-      "Unit": "Unit",
-      "User": "User",
       "Confidence": "Confidence",
-      "State": "State",
-      "Notes": "Notes",
       "Ticket_No": "Ticket No",
-      "Latitude": "Latitude",
-      "Longitude": "Longitude",
       "Life_Span": "Life Span",
       "Custom_Range": "Custom Range",
-
-
+    
+      //AlprLive
       "Plate_Number": "Plate Number",
       "Captured_At": "Captured At",
       "Notification": "Notification",
-      "Notes": "Notes",
-      "Name_field_required": "Name field required",
+      
+      //Alpr Capture Panel
+      "Capture":"Capture",
+      "Live":"Live",
 
-      "Source_Name": "Source Name",
-      "Rule_Expression": "Rule Expression",
-      "Alert_Priority": "Alert Priority",
-      "Color": "Color",
-      "Audio": "Audio",
+      //Hot list Action Menu
+      "Edit_Hot_List":"Edit Hot List",
+      "Name_field_required": "Name field required",
+      "Hotlist_deleted":"Hotlist(s) deleted successfully",
+      "Hotlist_delete_not_allowed": "Selected Hotlist(s) can not be deleted as \"[hotlistnames]\" have number plate associated with them.",
+      "Hotlist_delete_failed_invalid_parameter":"We 're sorry. Selected Hotlist(s) can not be deleted as parameters are invalid.",
+      "Hotlist_delete_failed":"We're sorry. Selected Hotlist(s) can not be deleted. Please retry or contact your Systems Administrator.",
+      "You_are_about_to_delete_":"You are about to delete ",
+      
+      //Hot list detail
+      "Hotlist_name_required": "Hotlist name is required.",
+      "Hotlist_name_char_limit" : "Hotlist Name should not exceed 50 characters limit",
+      "Hotlist_Rules_Expression_char_limit": "Rules expression should not exceed 1000 characters limit",
+      "Hotlist_Description_char_limit": "Description should not exceed 500 characters limit",
+      "Hotlist_Alert_Priority_Should_be_number":"AlertPriority should be any number.",
+      "Hotlist_Tenant_Should_be_number":"Tenant should be any number.",
+      "Hotlist_color_should_be_hash_code":"Color should be a hash code for color.",
+      "Hotlist_duplicate_not_allowed": "Hotlist with same name is not allowed.",
       "Source_Id": "Source Id",
       "Tenant": "Tenant",
+      "Rule_Expression": "Rule Expression",
+      "Alert_Priority": "Alert Priority",
       "Create_Hot_List": "Create Hot List",
-
-      "Data_Source":"Data Source",
-      "Create_Data_Source":"Create Data Source",
-      "Data_Source_Mappings":"Data Source Mappings",
-
-      "Password_is_required": "Password is required",
-      "Password_didn't_match": "Password didn't match",
-
-
-      "Data_Source": "Data Source",
-      "Data_Source_Mappings": "Data Source Mappings",
-
+      "Color": "Color",
+      "Audio": "Audio",
+      "You_are_about_to_delete":"You are about to delete",
+      "this_entry":"this entry",
+      "Hotlist_creation_failed": "We 're sorry. Hotlist can not be created. Please retry or contact your Systems Administrator.",
+      "Hotlist_not_found": "Hotlist with id: [id] does not exist.",
+      "Hotlist_updation_failed": "We 're sorry. Hotlist can not be updated. Please retry or contact your Systems Administrator.",
+      "Hotlist_Alert_Priority_greater_than_zero":"AlertPriority should be greater then or equal to 0.",
+      "Hotlist_Tenant_greater_than_zero":"Tenant should be greater then or equal to 0.",
+      
+      //Data Source Detail
       "Source_Type": "Source Type",
-      "Schedule_Period_(In_Hrs)": "Schedule Period (In Hrs)",
-      "Connection_Type": "Connection Type",
-      "Last_Run": "Last Run",
-      "Status_Description": "Status Description",
-      "Port": "Port",
-
+      "Source_Name": "Source Name",
       "User_Id": "User Id",
+      "Connection_Type": "Connection Type",
       "Schedule_Period": "Schedule Period",
       "Location_Path": "Location Path",
-      "Date_of_Interest_field_required": "Date of Interest field required",
-      "License_Plate_field_required": "License Plate field required",
-
+      //datasource mapping
       "License_Plate": "License Plate",
       "Date_of_Interest": "Date Of Interest",
       "License_Type": "License Type",
       "Agency_Id": "Agency Id",
       "State_Id": "State Id",
-      "State" : "State",
       "Alias": "Alias",
       "Vehicle_Year": "Vehicle Year",
       "Vehicle_Make": "Vehicle Make",
       "Vehicle_Model": "Vehicle Model",
       "Vehicle_Color": "Vehicle Color",
       "Vehicle_Style": "Vehicle Style",
-      "Notes": "Notes",
       "NCIC_Number": "NCIC Number",
       "Import_Serial_Id": "Import Serial Id",
       "Violation_Info": "Violation Info",
+      "Edit_Data_Source":"Edit Data Source",
+      "Run_Data_Source":"Run Data Source",
+      "Data_Source":"Data Source",
+      "Create_Data_Source":"Create Data Source",
+      "Data_Source_Mappings":"Data Source Mappings",
+      "Source_Name_char_limit":"Source Name should not exceed 50 characters limit",
+      "User_Id_char_limit":"User Id should not exceed 50 characters limit",
+      "number_field_required":"Number Should be number",
+      "Location_Path_char_limit":"Location Path should not exceed 50 characters limit",
+      "Password_char_limit":"Password should not exceed 50 characters limit",
+      "License_Plate_char_limit":"License Plate should not exceed 50 characters limit",
+      "Date_of_Interest_char_limit":"Date of interest should not exceed 50 characters limit",
+      "License_Type_char_limit":"License Type should not exceed 50 characters limit",
+      "Agency_char_limit":"Agency should not exceed 50 characters limit",
+      "State_char_limit":"State should not exceed 50 characters limit",
+      "First_Name_char_limit":"First Name should not exceed 50 characters limit",
+      "Last_Name_char_limit":"Last Name should not exceed 50 characters limit",
+      "Alias_char_limit":"Alias should not exceed 50 characters limit",
+
+
+     //LicensePlate History
+     "Plate_Thumbnail":"Plate Thumbnail",
+      "Password_didn't_match": "Password didn't match",
+      "Hotlist": "Hotlist",
+      "Make": "Make",
+      "Model": "Model",
+      "Year":"Year",
+      "Agency":"Agency",
+      "NCIC":"NCIC",
+
+      "List":"List",
+
+      "License_Plate_History":"License Plate History",
+      "License_Plate_History_Map":"License Plate History Map",
+     
+      "Schedule_Period_(In_Hrs)": "Schedule Period (In Hrs)",
+ 
+      "Last_Run": "Last Run",
+      "Status_Description": "Status Description",
+      "Date_of_Interest_field_required": "Date of Interest field required",
+      "License_Plate_field_required": "License Plate field required",
       "License_Plate_Saved_Successfully": "License Plate Saved Successfully",
       "License_Plate_Deleted_Successfully": "License Plate Deleted Successfully",
       "Minimum_Lenght_NumberPlate": "Number Plate should be greater or equal to 6",
-
       "License_Year":"License Year",
-      "Edit_Data_Source":"Edit Data Source",
-      "Run_Data_Source":"Run Data Source",
       "Edit_License_Plate":"Edit License Plate",
-      "You_are_about_to_delete":"You are about to delete",
-      "this_entry":"this entry",
-      "Hotlist_deleted":"Hotlist(s) deleted successfully",
-      "Hotlist_delete_failed":"We 're sorry. Selected Hotlist(s) can not be deleted. Please retry or contact your Systems Administrator.",
-      "Hotlist_delete_not_allowed": "Selected Hotlist(s) can not be deleted as \"[hotlistnames]\" have number plate associated with them.",
-      "Hotlist_creation_failed": "We 're sorry. Hotlist can not be created. Please retry or contact your Systems Administrator.",
-      "Hotlist_duplicate_not_allowed": "Hotlist with same name is not allowed.",
-      "Hotlist_not_found": "Hotlist with id: [id] does not exist.",
-      "Hotlist_updation_failed": "We 're sorry. Hotlist can not be updated. Please retry or contact your Systems Administrator.",
-      "Hotlist_name_required": "Hotlist name is required.",
-      "Hotlist_name_char_limit" : "Hotlist Name should not exceed 50 characters limit",
-      "Hotlist_Rules_Expression_char_limit": "Rules expression should not exceed 1000 characters limit",
-      "Hotlist_Description_char_limit": "Description should not exceed 500 characters limit",
-      "Hotlist_Alert_Priority_Should_be_number":"AlertPriority should be any number.",
-      "Hotlist_Alert_Priority_greater_than_zero":"AlertPriority should be greater then or equal to 0.",
-      "Hotlist_Tenant_Should_be_number":"Tenant should be any number.",
-      "Hotlist_Tenant_greater_than_zero":"Tenant should be greater then or equal to 0.",
-      "Hotlist_color_should_be_hash_code":"Color should be a hash code for color.",
-      "Hotlist_delete_failed_invalid_parameter":"We 're sorry. Selected Hotlist(s) can not be deleted as parameters are invalid.",
-      "Hotlist_deleted":"Hotlist deleted successfully",
-      "Create_Data_Source":"Create Data Source",
-      "Hotlist_deleted":"Hotlist deleted successfully",
       "Create_License_Plate" : "Create License Plate",
       "LicensePlate_is_required" : "License Plate is required",
       "DateOfInterest_is_required" : "Date Of Interest is required",
@@ -1123,8 +1140,14 @@ export const resources = {
       'We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.':"We're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator.",
       "License_Plate_required":"License Plate required",
       'Process_Initiated_Successfully.':'Process Initiated Successfully.',
-      'Something_went_wrong.Please_again_later':'Something went wrong.Please again later'
-      //ALPR End
+      'Something_went_wrong.Please_again_later':'Something went wrong.Please again later',
+
+      'An_issue_occurred_while_saving,_please_try_again':'An issue occurred while saving, please try again',
+      'License_Plates':'License Plates',
+      'HotList_Data_Source':'HotList Data Source',
+      'HotList':'HotList',
+      'Captures':'Captures',
+      //#endregion
     }
   }
 };

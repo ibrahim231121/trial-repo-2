@@ -34,13 +34,13 @@ import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import {  GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../GlobalDropdown'
-import { alprToasterMessages } from "../AlprGlobal";
+import { AlprGlobalConstants, alprToasterMessages, gridAlignment, nullValidationHandling } from "../AlprGlobal";
 import AnchorDisplay from "../../../utils/AnchorDisplay";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 const HotListDataSource = () => {
-  const initalPagination:number=25;
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(initalPagination);
-  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
+  const [page, setPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListDataSourceTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<HotListDataSourceTemplate[]>([]);
@@ -95,11 +95,13 @@ const HotListDataSource = () => {
 
   useEffect(() => {
     dispatch(GetAlprDataSourceList(pageiGrid));
+    dispatch(enterPathActionCreator({ val: `` }));
+
   }, [])
 
   useEffect(() => {
     let alprDataSourceCopy: HotListDataSourceTemplate[] = [];
-    if (alprDataSource && alprDataSource.data !== undefined && alprDataSource.data !== null && alprDataSource.data.length > 0) {
+    if (alprDataSource && nullValidationHandling(alprDataSource.data) && alprDataSource.data.length > 0) {
       alprDataSourceCopy = alprDataSource.data.map((data: any) => {
         return {
           recId: data?.recId,
@@ -124,7 +126,7 @@ const HotListDataSource = () => {
     {
       alprToasterMessages({
         message: TOASTER_ERROR_MSG,
-        variant: 'error',
+        variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
       },dataSourceListerMsgFormRef);
       setRows([])
     }else{setRows([])}
@@ -197,7 +199,7 @@ const HotListDataSource = () => {
           width={100}
           percentage={true}
           option={dropDownOption}
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          defaultValue={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value: any) => changeMultiselect(value, colIdx)}
           onSelectedClear={() => onSelectedClear(colIdx)}
           isCheckBox={true}
@@ -212,7 +214,7 @@ const HotListDataSource = () => {
     {
       label: t("ID"),
       id: "recId",
-      align: "right",
+      align: gridAlignment("number"),
       dataComponent: () => null,
       sort: false,
       searchFilter: false,
@@ -224,7 +226,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Name")}`,
       id: "nameWithId",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.editDataSourceTab)[0].url),
       sort: true,
       searchFilter: true,
@@ -237,7 +239,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Source_Name")}`,
       id: "sourceName",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -250,7 +252,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Source_Type")}`,
       id: "sourceTypeName",
-      align: "center",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -263,7 +265,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Schedule_Period_(In_Hrs)")}`,
       id: "schedulePeriod",
-      align: "right",
+      align: gridAlignment("number"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -276,7 +278,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Connection_Type")}`,
       id: "connectionType",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -289,7 +291,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Last_Run")}`,
       id: "lastRun",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -302,7 +304,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Status")}`,
       id: "status",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -315,7 +317,7 @@ const HotListDataSource = () => {
     {
       label: `${t("Status_Description")}`,
       id: "statusDesc",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -465,7 +467,7 @@ const HotListDataSource = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
-            totalRecords={alprDataSource?.totalCount === undefined || alprDataSource?.totalCount == null ? 0 : alprDataSource?.totalCount}
+            totalRecords={nullValidationHandling(alprDataSource?.totalCount) ? alprDataSource?.totalCount :0  }
             setSortOrder={(sort: any) => sortingOrder(sort)}
 
             //Please dont miss this block.

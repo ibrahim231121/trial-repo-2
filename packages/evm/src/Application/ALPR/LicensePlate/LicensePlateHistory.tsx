@@ -33,8 +33,8 @@ const LicensePlateHistory = () => {
     setValue(newValue);
   }
   const tabs = [
-    { label: t("License Plate History"), index: 0 },
-    { label: t("License Plate History Map"), index: 1 }
+    { label: t("License_Plate_History"), index: 0 },
+    { label: t("License_Plate_History_Map"), index: 1 }
   ];
   return (
     <div className="switchLeftComponents">

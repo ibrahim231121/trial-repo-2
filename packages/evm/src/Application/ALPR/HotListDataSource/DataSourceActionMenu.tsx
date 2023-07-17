@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
-import { alprToasterMessages } from "../AlprGlobal";
+import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
 import { CRXToaster } from "@cb/shared";
 
 type Props = {
@@ -40,7 +40,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
     const runServiceUrl = DATASOURCE_SERVICE_URL + `/${row?.recId}`;
     alprToasterMessages({
       message: TOASTER_SUCCESS_MSG,
-      variant: 'success',
+      variant: AlprGlobalConstants.TOASTER_SUCCESS_VARIANT,
     },dataSourceMsgFormRef);
     AlprDataSource.runDataSource(runServiceUrl).then(() => {
         
@@ -48,7 +48,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData }) =>
       .catch((e: any) => {
         alprToasterMessages({
           message: TOASTER_ERROR_MSG,
-          variant: 'error',
+          variant:AlprGlobalConstants.TOASTER_ERROR_VARIANT,
         },dataSourceMsgFormRef);
       });
   }

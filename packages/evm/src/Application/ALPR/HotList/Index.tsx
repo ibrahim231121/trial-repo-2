@@ -42,6 +42,7 @@ import AnchorDisplay from "../../../utils/AnchorDisplay";
 import { getToken } from "../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import NumberSearch from "../../../GlobalComponents/DataTableSearch/NumberSearch";
+import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../AlprGlobal";
 
 const HotList = () => {
   const classes = useStyles();
@@ -49,8 +50,8 @@ const HotList = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
+  const [page, setPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<HotListTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<HotListTemplate[]>([]);
@@ -60,7 +61,6 @@ const HotList = () => {
   const paging = React.useRef<boolean>(false);
   const isSearchable = React.useRef<boolean>(false);
   const isSearchableOnChange = React.useRef<boolean>(false);
-  const toasterRef = useRef<typeof CRXToaster>(null);
   const [rows, setRows] = React.useState<HotListTemplate[]>();
   const [reformattedRows, setReformattedRows] = React.useState<any>();
 
@@ -96,8 +96,8 @@ const HotList = () => {
         logic: "and",
         filters: []
       },
-      page: 0,
-      size: 1000
+      page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+      size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE
     }
 
     dispatch(GetAlprDataSourceList(sourcesPageiGrid))
@@ -266,7 +266,7 @@ const HotList = () => {
             width={100}
             percentage={true}
             option={initialRows.sources}
-            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            defaultValue={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value: any) => changeMultiselect(value, colIdx)}
             onSelectedClear={() => onSelectedClear(colIdx)}
             isCheckBox={true}
@@ -283,7 +283,7 @@ const HotList = () => {
     {
       label: t("ID"),
       id: "id",
-      align: "right",
+      align: gridAlignment("number"),
       dataComponent: () => null,
       sort: false,
       searchFilter: false,
@@ -295,7 +295,7 @@ const HotList = () => {
     {
       label: t("Name"),
       id: "nameWithId",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url),
       sort: true,
       searchFilter: true,
@@ -309,7 +309,7 @@ const HotList = () => {
     {
       label: t("Description"),
       id: "description",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -323,7 +323,7 @@ const HotList = () => {
     {
       label: t("Source_Name"),
       id: "sourceName",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -337,7 +337,7 @@ const HotList = () => {
     {
       label: t("Rule_Expression"),
       id: "rulesExpression",
-      align: "left",
+      align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
       sort: true,
       searchFilter: true,
@@ -351,21 +351,21 @@ const HotList = () => {
     {
       label: t("Alert_Priority"),
       id: "alertPriority",
-      align: "center",
+      align: gridAlignment("number"),
       dataComponent: (e: string) => textDisplay(e, "", "top"),
       sort: true,
       searchFilter: true,
       searchComponent: searchNumber,
       minWidth: "130",
       attributeName: "AlertPriority",
-      attributeType: "int",
+      attributeType: "number",
       attributeOperator: "eq",
       visible: true
     },
     {
       label: t("Color"),
       id: "color",
-      align: "center",
+      align: gridAlignment("icon"),
       dataComponent: (e: string) => colorDisplay(e),
       sort: true,
       searchFilter: true,
@@ -379,7 +379,7 @@ const HotList = () => {
     {
       label: t("Audio"),
       id: "audio",
-      align: "center",
+      align: gridAlignment("icon"),
       dataComponent: (e: string) => audioIconDisplay(e),
       sort: true,
       searchFilter: true,
@@ -392,24 +392,6 @@ const HotList = () => {
     },
   ]);
 
-  const showToastMsg = (obj: any) => {
-    toasterRef.current.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration
-    });
-    if (obj.message !== undefined && obj.message !== "") {
-      let notificationMessage: NotificationMessage = {
-        title: t("Hot_List"),
-        message: obj.message,
-        type: "success",
-        date: moment(moment().toDate())
-          .local()
-          .format("YYYY / MM / DD HH:mm:ss"),
-      };
-      dispatch(addNotificationMessages(notificationMessage));
-    }
-  };
 
   const CreateHotListForm = () => {
     history.push(urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url);
@@ -427,8 +409,8 @@ const HotList = () => {
       }
       pageiGrid.gridFilter.filters?.push(x)
     })
-    pageiGrid.page = 0
-    pageiGrid.size = rowsPerPage
+    pageiGrid.page = AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE;
+    pageiGrid.size = rowsPerPage;
 
     if (page !== 0) {
       setPage(0)
@@ -492,12 +474,11 @@ const HotList = () => {
   return (
     <ClickAwayListener onClickAway={handleBlur}>
       <div className="switchLeftComponents" onKeyDown={handleKeyDown}>
-        <CRXToaster ref={toasterRef}/>
         {rows && (
           <CRXDataTable
             id="HotListTemplateDataTable"
             actionComponent={
-              <HotListActionMenu row={selectedActionRow} selectedItems={selectedItems} gridData={rows} pageiGrid={pageiGrid} showToastMsg={showToastMsg} />
+              <HotListActionMenu row={selectedActionRow} selectedItems={selectedItems} gridData={rows} pageiGrid={pageiGrid} />
             }
             toolBarButton={
               <>

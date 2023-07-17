@@ -1,3 +1,4 @@
+import moment from "moment";
 
 interface toasterObject {
   message: string;
@@ -7,7 +8,7 @@ interface toasterObject {
 const TOASTER_DURATION = 7000;
 
 export const alprToasterMessages = (toasterObj: toasterObject, messageFormReference: any, toasterDuration: number = 0) => {
-  messageFormReference.current.showToaster({
+  messageFormReference?.current?.showToaster({
     message: toasterObj.message,
     variant: toasterObj.variant,
     duration: toasterDuration === 0 ? TOASTER_DURATION : toasterDuration,
@@ -26,32 +27,49 @@ export const nullValidationHandling = (validationValue: any): boolean => {
 
 export const AlprGlobalConstants =
 {
-  GRID_CONST: {
+    DEFAULT_GRID_INITIAL_PAGE:0,
     DROPDOWN_PAGE_SIZE: 1000,
     DEFAULT_GRID_PAGE_SIZE: 25,
-  },
 
-  TOASTER_CONST: {
-    DURATION: 7000,
-    ERROR_VARIANT: 'error',
-    SUCCESS_VARIANT: 'success',
-    Info_VARIANT: 'info',
-  },
-
-  DATETIME_FORMAT: 'YYYY / MM / DD HH:mm:ss',
+    TOASTER_DURATION: 7000,
+    TOASTER_ERROR_VARIANT: 'error',
+    TOASTER_SUCCESS_VARIANT: 'success',
+    TOASTER_INFO_VARIANT: 'info',
+    DATETIME_FORMAT: 'YYYY / MM / DD HH:mm:ss',
 }
 
 export const gridAlignment=(AlignmentType:string):string=>
 {
   switch (AlignmentType.toLowerCase()) {
-    case 'number':
+    case 'number' || 'double' :
       return 'left' 
     case 'text' || 'string':
       return 'left' 
-    case 'datetime' || 'date':
+    case 'list':
+      return 'left' 
+    case 'datetime' || 'date' || 'icon':
       return 'centre' 
     default:
       return 'left'
   }
 } 
 
+export const convertToDateTimePicker=(dateTime:any)=>
+{
+  let localDateTime='';
+  try
+  {
+    if (nullValidationHandling(dateTime) )
+    {
+      localDateTime = moment(dateTime)
+                            .local()
+                            .format("YYYY-MM-DD hh:mm");
+      return localDateTime;
+    }
+  }
+  catch(error)
+  {
+    console.error('error while parsing dateTime',error)  
+  }
+  return localDateTime;
+}

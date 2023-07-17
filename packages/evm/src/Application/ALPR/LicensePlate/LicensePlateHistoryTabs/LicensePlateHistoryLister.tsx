@@ -25,61 +25,8 @@ import emptyThumbnail from "../../../../Assets/Images/thumbb.png";
 import jwt_decode from "jwt-decode";
 import "./LicensePlateHistoryLister.scss"
 import { type } from 'os';
-
-
-const states = [
-    {id: 1,label:"TX"},  
-    {id: 2,label:"NY"},  
-    {id: 3,label:"CA"},  
-    {id: 4,label:"FL"},  
-    {id: 5,label:"AL"},  
-    {id: 6,label:"AK"},  
-    {id: 7,label:"AZ"},  
-    {id: 8,label:"AR"},  
-    {id: 9,label:"CO"},  
-    {id: 10,label:"CT"},  
-    {id: 12,label:"DE"},  
-    {id: 13,label:"GA"},  
-    {id: 14,label:"HI"},  
-    {id: 15,label:"ID"},  
-    {id: 16,label:"IL"},  
-    {id: 17,label:"IN"},  
-    {id: 18,label:"IA"},  
-    {id: 19,label:"KS"},  
-    {id: 20,label:"KY"},  
-    {id: 21,label:"LA"},  
-    {id: 22,label:"ME"},  
-    {id: 23,label:"MD"},  
-    {id: 24,label:"MA"},  
-    {id: 25,label:"MI"},  
-    {id: 26,label:"MN"},  
-    {id: 27,label:"MS"},  
-    {id: 28,label:"MO"},  
-    {id: 29,label:"MT"},  
-    {id: 30,label:"NE"},  
-    {id: 31,label:"NV"},  
-    {id: 32,label:"NH"},  
-    {id: 33,label:"NJ"},  
-    {id: 34,label:"NM"},  
-    {id: 35,label:"NC"},  
-    {id: 36,label:"ND"},  
-    {id: 37,label:"OH"},  
-    {id: 38,label:"OK"},  
-    {id: 39,label:"OR"},  
-    {id: 40,label:"PA"},  
-    {id: 41,label:"RI"},  
-    {id: 42,label:"SC"},  
-    {id: 43,label:"SD"},  
-    {id: 44,label:"TN"},  
-    {id: 45,label:"UT"},  
-    {id: 46,label:"VT"},  
-    {id: 47,label:"VA"},  
-    {id: 48,label:"WA"},  
-    {id: 49,label:"WV"},  
-    {id: 50,label:"WI"},  
-    {id: 51,label:"WY"}
-  
-  ]
+import { states } from '../../GlobalDropdown';
+import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from '../../AlprGlobal';
   
   type LicensePlateHistoryListerProp ={
     setLicensePlateHistoryData: (data:AlprPlateHistoryInfo[]) => void;
@@ -107,7 +54,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
       order: 'asc',
       orderBy: 'CapturedAt'
     });
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
     const [page, setPage] = React.useState<number>(0);
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [getAlprPlateHistoryPayload, setAlprPlateHistoryPayloadState] = React.useState<GetAlprPlateHistoryPayload>({
@@ -116,8 +63,8 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
               logic: "and",
               filters: []
           },
-          page: 0,
-          size: 25,
+          page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+          size: AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE,
           gridSort:{
               field: order.orderBy,
               dir: order.order
@@ -234,8 +181,8 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
           logic: "and",
           filters: []
         },
-        page: 0,
-        size: 1000
+        page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+        size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE
       }
       dispatch(GetAllHotListData(pageiGrid))
       dispatch(getUsersInfoAsync(pageiGrid))
@@ -341,14 +288,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
       }
 
       const onDateSelection = (dateTime:DateTimeObject, colIdx: number)=>{
-        if (
-          dateTime.startDate !== "" &&
-          dateTime.startDate !== undefined &&
-          dateTime.startDate != null &&
-          dateTime.endDate !== "" &&
-          dateTime.endDate !== undefined &&
-          dateTime.endDate != null
-      ) {
+        if (nullValidationHandling(dateTime.startDate) && nullValidationHandling(dateTime.endDate)) {
           let newItem = {
               columnName: headCells[colIdx].id.toString(),
               colIdx: colIdx,
@@ -464,7 +404,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
                 width = {100} 
                 option={hotlists} 
                 //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-                value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+                value={nullValidationHandling(headCells[colIdx].headerArray) ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
                 onChange={(value : any) => {   
                   isSearchableOnChange.current = true;
                   onSelection(value.map((hotlist: { id: any; value:any })=>{return {id: hotlist.id, value: hotlist.value}}), colIdx);
@@ -489,7 +429,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
               width = {100} 
               option={statesList} 
               //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-              value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+              value={nullValidationHandling(headCells[colIdx].headerArray) ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
               onChange={(value : any) => {   
                 isSearchableOnChange.current = true;
                 onSelection(value.map((state: { id: any; value:any })=>{return {id: state.id, value: state.value}}), colIdx);
@@ -543,7 +483,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: t("ID"),
             id: "id",
-            align: "right",
+            align: gridAlignment("string"),
             dataComponent: () => null,
             sort: false,
             searchFilter: false,
@@ -555,7 +495,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Plate_Thumbnail")}`,
             id: "id",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string, plateHistory:any) => thumbnailDisplay(e, plateHistory),
             minWidth: "121",
             visible: true,
@@ -563,7 +503,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Hotlist")}`,
             id: "hotlistName",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -577,7 +517,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Captured")}`,
             id: "capturedAt",
-            align: "left",
+            align: gridAlignment("DateTime"),
             dataComponent: dateDisplayFormat,
             sort: true,
             searchFilter: true,
@@ -591,7 +531,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
           label: `${t("Unit")}`,
           id: "unit",
-          align: "left",
+          align: gridAlignment("string"),
           dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
           sort: true,
           searchFilter: true,
@@ -606,7 +546,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
       {
           label: `${t("User")}`,
           id: "userId",
-          align: "left",
+          align: gridAlignment("number"),
           dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
           sort: false,
           searchFilter: true,
@@ -620,7 +560,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Confidence")}`,
             id: "confidence",
-            align: "left",
+            align:gridAlignment("number"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -634,7 +574,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("State")}`,
             id: "state",
-            align: "left",
+            align: gridAlignment("List"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -649,7 +589,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Latitude")}`,
             id: "latitude",
-            align: "left",
+            align: gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -664,7 +604,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Longitude")}`,
             id: "longitude",
-            align: "left",
+            align: gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -679,7 +619,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Ticket_No")}`,
             id: "ticketNumber",
-            align: "left",
+            align:  gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -693,7 +633,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Make")}`,
             id: "vehicleMake",
-            align: "left",
+            align:  gridAlignment("String"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -708,7 +648,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Model")}`,
             id: "vehicleModel",
-            align: "left",
+            align:gridAlignment("String"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -723,7 +663,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
         {
             label: `${t("Year")}`,
             id: "vehicleYear",
-            align: "left",
+            align: gridAlignment("Number"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,

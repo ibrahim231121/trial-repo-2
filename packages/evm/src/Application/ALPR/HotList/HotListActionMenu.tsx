@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Menu,
   MenuItem,
@@ -15,16 +15,17 @@ import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { useDispatch } from "react-redux";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
+import { CRXToaster } from "@cb/shared";
+import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
 
 type Props = {
   selectedItems?: any;
   row?: any;
   gridData: any;
   pageiGrid: PageiGrid;
-  showToastMsg(obj:any): any;
 };
 
-const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, pageiGrid, showToastMsg}) => {
+const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, pageiGrid}) => {
   const dispatch = useDispatch();
   const { t } = useTranslation<string>();
   const history = useHistory();
@@ -32,10 +33,11 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
   const [secondary, setSecondary] = React.useState<string>("");
   const [IsOpen, setIsOpen] = React.useState<boolean>(false);
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
-
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  
   const editHotList = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.HotListDetail)[0].url}`;
-    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit Hot List"));
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id, t("Edit_Hot_List"));
   };
 
   const deleteHotlist = () => {
@@ -50,12 +52,10 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
     HotListAgent.deleteHotListItemAsync("/HotList" + ((selectedItems.length > 1) ? "?hotlistIds=" + seletedIds : "/" + row?.id)).then(()=>{
       dispatch(setLoaderValue({isLoading: false}));
       setIsOpen(false);
-      showToastMsg?.({
+      alprToasterMessages?.({
         message: t("Hotlist_deleted"),
-        variant: "success",
-        duration: 7000,
-        clearButtton: true
-      });
+        variant: AlprGlobalConstants.TOASTER_SUCCESS_VARIANT,
+      },toasterRef);
       dispatch(GetAllHotListData(pageiGrid));
     }).catch((error:any)=>{
       dispatch(setLoaderValue({isLoading: false}));
@@ -87,27 +87,21 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
         }
         
 
-        showToastMsg?.({
+        alprToasterMessages?.({
           message: t("Hotlist_delete_not_allowed").replace("[hotlistnames]", names),
-          variant: "error",
-          duration: 7000,
-          clearButtton: true
-        });
+          variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+        },toasterRef);
       }else if(error && error.response && error.response.status == 403){
-        showToastMsg?.({
+        alprToasterMessages?.({
           message: t("Hotlist_delete_failed_invalid_parameter"),
-          variant: "error",
-          duration: 7000,
-          clearButtton: true
-        });
+          variant:  AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+        },toasterRef);
       }
       else{
-        showToastMsg?.({
+        alprToasterMessages?.({
           message: t("Hotlist_delete_failed"),
-          variant: "error",
-          duration: 7000,
-          clearButtton: true
-        });
+          variant:  AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+        },toasterRef);
       }
 
       
@@ -116,7 +110,9 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
   }
 
   return (
+    
     <React.Fragment>
+    <CRXToaster ref={toasterRef}/>
       <CRXConfirmDialog
         className="crx-unblock-modal"
         title="Delete an Entry"
@@ -140,7 +136,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
             )}
             <div className="crxUplockContent">
               <p>
-                {t("You are about to delete ")} <b>{row?.Name}</b> {t("this_entry")}
+                {t("You_are_about_to_delete_")} <b>{row?.Name}</b> {t("this_entry")}
               </p>
             </div>
           </>
@@ -173,7 +169,7 @@ const HotListActionMenu: React.FC<Props> = ({ selectedItems, row, gridData, page
                     <i className="far fa-pencil"></i>
                   </div>
                   <div className="crx-menu-list">
-                    {t("Edit Hot List")}
+                    {t("Edit_Hot_List")}
                   </div>
                 </div>
               </Restricted>

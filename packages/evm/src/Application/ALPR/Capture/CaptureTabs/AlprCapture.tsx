@@ -39,60 +39,10 @@ import jwt_decode from "jwt-decode";
 import NumberSearch from "../../../../GlobalComponents/DataTableSearch/NumberSearch";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import AnchorDisplay from "../../../../utils/AnchorDisplay";
+import { states } from "../../GlobalDropdown";
+import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../../AlprGlobal";
 
-const states = [
-    {id: 1,label:"TX"},  
-    {id: 2,label:"NY"},  
-    {id: 3,label:"CA"},  
-    {id: 4,label:"FL"},  
-    {id: 5,label:"AL"},  
-    {id: 6,label:"AK"},  
-    {id: 7,label:"AZ"},  
-    {id: 8,label:"AR"},  
-    {id: 9,label:"CO"},  
-    {id: 10,label:"CT"},  
-    {id: 12,label:"DE"},  
-    {id: 13,label:"GA"},  
-    {id: 14,label:"HI"},  
-    {id: 15,label:"ID"},  
-    {id: 16,label:"IL"},  
-    {id: 17,label:"IN"},  
-    {id: 18,label:"IA"},  
-    {id: 19,label:"KS"},  
-    {id: 20,label:"KY"},  
-    {id: 21,label:"LA"},  
-    {id: 22,label:"ME"},  
-    {id: 23,label:"MD"},  
-    {id: 24,label:"MA"},  
-    {id: 25,label:"MI"},  
-    {id: 26,label:"MN"},  
-    {id: 27,label:"MS"},  
-    {id: 28,label:"MO"},  
-    {id: 29,label:"MT"},  
-    {id: 30,label:"NE"},  
-    {id: 31,label:"NV"},  
-    {id: 32,label:"NH"},  
-    {id: 33,label:"NJ"},  
-    {id: 34,label:"NM"},  
-    {id: 35,label:"NC"},  
-    {id: 36,label:"ND"},  
-    {id: 37,label:"OH"},  
-    {id: 38,label:"OK"},  
-    {id: 39,label:"OR"},  
-    {id: 40,label:"PA"},  
-    {id: 41,label:"RI"},  
-    {id: 42,label:"SC"},  
-    {id: 43,label:"SD"},  
-    {id: 44,label:"TN"},  
-    {id: 45,label:"UT"},  
-    {id: 46,label:"VT"},  
-    {id: 47,label:"VA"},  
-    {id: 48,label:"WA"},  
-    {id: 49,label:"WV"},  
-    {id: 50,label:"WI"},  
-    {id: 51,label:"WY"}
-  
-  ]
+
 
 const AlprCapture = () => {
     const [capturedPlatesRows, setCapturedPlatesRowsState] = React.useState<AlprCapturePlateInfo[]>([]);
@@ -130,7 +80,7 @@ const AlprCapture = () => {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("NumberPlate");
     const [selectedItems, setSelectedItems] = React.useState<AlprCapturePlateInfo[]>([]);
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE);
     const [page, setPage] = React.useState<number>(0);
     const [getAlprCapturePayload, setAlprCapturePayloadState] = React.useState<GetAlprCapturePayload>({
         pageiGrid:{
@@ -138,8 +88,8 @@ const AlprCapture = () => {
                 logic: "and",
                 filters: []
             },
-            page: 0,
-            size: 25,
+            page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+            size: AlprGlobalConstants.DEFAULT_GRID_PAGE_SIZE,
             gridSort:{
                 field: orderBy,
                  dir:order
@@ -339,7 +289,7 @@ const AlprCapture = () => {
             width = {100} 
             option={users} 
             //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            value={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
             onChange={(value : any) => { 
                 isSearchableOnChange.current = true;               
                 onSelection(value.map((user: { id: any; })=>{return {id: user.id, value: user.id}}), colIdx);
@@ -366,7 +316,7 @@ const AlprCapture = () => {
             width = {100} 
             option={hotlists} 
             //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            value={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
             onChange={(value : any) => {     
                 if(!isSearchableOnChange.current){
                     isSearchableOnChange.current = true;          
@@ -396,7 +346,7 @@ const AlprCapture = () => {
             width = {100} 
             option={statesList} 
             //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
+            value={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
             onChange={(value : any) => {     
                 if(!isSearchableOnChange.current){
                     isSearchableOnChange.current = true;          
@@ -446,7 +396,7 @@ const AlprCapture = () => {
         {
             label: t("ID"),
             id: "capturedPlateId",
-            align: "right",
+            align: gridAlignment("number"),
             dataComponent: () => null,
             sort: false,
             searchFilter: false,
@@ -460,7 +410,7 @@ const AlprCapture = () => {
         {
             label: `${t("Plate")}`,
             id: "numberPlateWithId",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.LicensePlateHistory)[0].url),
             sort: true,
             searchFilter: true,
@@ -474,7 +424,7 @@ const AlprCapture = () => {
         {
             label: `${t("Description")}`,
             id: "description",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -488,7 +438,7 @@ const AlprCapture = () => {
         {
             label: `${t("Hot_List")}`,
             id: "hotlistName",
-            align: "center",
+            align: gridAlignment("list"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -503,7 +453,7 @@ const AlprCapture = () => {
         {
             label: `${t("Captured")}`,
             id: "capturedAt",
-            align: "left",
+            align: gridAlignment("date"),
             dataComponent: dateDisplayFormat,
             sort: true,
             searchFilter: true,
@@ -517,7 +467,7 @@ const AlprCapture = () => {
         {
             label: `${t("Unit")}`,
             id: "unitId",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -532,7 +482,7 @@ const AlprCapture = () => {
         {
             label: `${t("User")}`,
             id: "user",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: false,
             searchFilter: true,
@@ -546,7 +496,7 @@ const AlprCapture = () => {
         {
             label: `${t("Confidence")}`,
             id: "confidence",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -561,7 +511,7 @@ const AlprCapture = () => {
         {
             label: `${t("State")}`,
             id: "stateName",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -576,7 +526,7 @@ const AlprCapture = () => {
         {
             label: `${t("Notes")}`,
             id: "notes",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -591,7 +541,7 @@ const AlprCapture = () => {
         {
             label: `${t("Ticket_No")}`,
             id: "ticketNumber",
-            align: "left",
+            align: gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -606,7 +556,7 @@ const AlprCapture = () => {
         {
             label: `${t("Latitude")}`,
             id: "latitude",
-            align: "left",
+            align: gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -621,7 +571,7 @@ const AlprCapture = () => {
         {
             label: `${t("Longitude")}`,
             id: "longitude",
-            align: "left",
+            align:gridAlignment("double"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: true,
             searchFilter: true,
@@ -636,7 +586,7 @@ const AlprCapture = () => {
         {
             label: `${t("Life_Span")}`,
             id: "lifeSpan",
-            align: "left",
+            align: gridAlignment("string"),
             dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
             sort: false,
             searchFilter: false,
@@ -655,8 +605,8 @@ const AlprCapture = () => {
                 logic: "and",
                 filters: []
             },
-            page: 0,
-            size: 1000,
+            page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+            size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE,
         }
         dispatch(getUsersInfoAsync(pageiGrid))
     },[]);
@@ -667,8 +617,8 @@ const AlprCapture = () => {
                 logic: "and",
                 filters: []
             },
-            page: 0,
-            size: 1000,
+            page: AlprGlobalConstants.DEFAULT_GRID_INITIAL_PAGE,
+            size: AlprGlobalConstants.DROPDOWN_PAGE_SIZE,
             gridSort:{
                 field: "name",
                  dir: "asc"

@@ -22,8 +22,9 @@ import { CRXConfirmDialog } from "@cb/shared";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { alprToasterMessages } from "../AlprGlobal";
+import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 const dataSourceInitialPayload = {
   recId: 0,
@@ -93,6 +94,10 @@ const DataSourceFormsAndFields = () => {
     if (id) {
       dispatch(GetAlprDataSourceById(id))
     }
+    else
+    {
+      dispatch(enterPathActionCreator({ val: `` }));
+    }
   }, [])
 
   useEffect(() => {
@@ -109,15 +114,17 @@ const DataSourceFormsAndFields = () => {
       
       let formData={dataSourceData:{...dataSourceDataById, confirmPassword: ''},dataSourceMappingData:dataSouceMapping}
       setdataSourceInitialData(formData)
+      dispatch(enterPathActionCreator({ val: `Data Source : ${formData?.dataSourceData?.name}` }));
     } 
     else if(id && dataSourceDataById===undefined)
     {
       alprToasterMessages({
         message: GET_ERROR_MESSAGE,
-        variant: 'error',
+        variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
       },dataSourceMsgFormRef);
 
     }
+    
   }, [dataSourceDataById])
 
   const tabs = [
@@ -153,7 +160,7 @@ const DataSourceFormsAndFields = () => {
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
           message: t(`${SUCCESS_MESSAGE}`),
-          variant: 'success',
+          variant: AlprGlobalConstants.TOASTER_SUCCESS_VARIANT,
         },dataSourceMsgFormRef);
         history.push(
           urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url
@@ -163,7 +170,7 @@ const DataSourceFormsAndFields = () => {
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
           message: t(`${SAVE_ERROR_MESSAGE}`),
-          variant: 'error',
+          variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
         },dataSourceMsgFormRef);
 
       });
@@ -197,14 +204,14 @@ const DataSourceFormsAndFields = () => {
           dispatch(setLoaderValue({isLoading: false}));
           alprToasterMessages({
             message: e.response.data,
-            variant: 'error',
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
           },dataSourceMsgFormRef);
         }
         else{
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
           message: SAVE_ERROR_MESSAGE,
-          variant: 'error',
+          variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
         },dataSourceMsgFormRef);
       }
       });
@@ -236,7 +243,7 @@ const DataSourceFormsAndFields = () => {
       
       sourceName: Yup.string().max(VALIDATION_MAXLENGTH, t("Source_Name_char_limit")).nullable(),
       userId: Yup.string().max(VALIDATION_MAXLENGTH, t("User_Id_char_limit")).nullable(),
-      schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number field required').max(10, t("Schedeul_Period_char_limit")).nullable(),
+      schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number_field_required').max(10, t("Schedeul_Period_char_limit")).nullable(),
       locationPath: Yup.string().max(100, t("Location_Path_char_limit")).nullable(),
       port: Yup.string().matches(/^[0-9]+$/,'number_field_required').nullable(),
       password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit")).when([],

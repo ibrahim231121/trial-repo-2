@@ -627,7 +627,6 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Alpr' },
             { routeTo: '/Alpr/dataSourceList' ,type: 'link', label: 'Hot List Data Source' },
-            { routeTo: '/Alpr/dataSourceTab', type: 'text', label: 'Hot List Data Source' },
 
         ]
     },
@@ -637,7 +636,6 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Alpr' },
             { routeTo: '/Alpr/dataSourceList' ,type: 'link', label: 'Hot List Data Source' },
-            { routeTo: '/Alpr/dataSourceTab', type: 'text', label: 'Hot List Data Source' },
 
         ]
     },
