@@ -34,7 +34,7 @@ import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/
 import { HotListDataSourceTemplate } from "../../../utils/Api/models/HotListDataSourceModels";
 import {  GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../GlobalDropdown'
-import { AlprGlobalConstants, alprToasterMessages, gridAlignment, nullValidationHandling } from "../AlprGlobal";
+import { alprToasterMessages, nullValidationHandling,AlprGlobalConstants,gridAlignment } from "../AlprGlobal";
 import AnchorDisplay from "../../../utils/AnchorDisplay";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
@@ -199,7 +199,7 @@ const HotListDataSource = () => {
           width={100}
           percentage={true}
           option={dropDownOption}
-          defaultValue={nullValidationHandling(headCells[colIdx].headerObject) ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          value={ nullValidationHandling(headCells[colIdx].headerArray)? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []}
           onChange={(value: any) => changeMultiselect(value, colIdx)}
           onSelectedClear={() => onSelectedClear(colIdx)}
           isCheckBox={true}
