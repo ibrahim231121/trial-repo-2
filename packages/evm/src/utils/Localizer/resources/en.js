@@ -1147,6 +1147,8 @@ export const resources = {
       'HotList_Data_Source':'HotList Data Source',
       'HotList':'HotList',
       'Captures':'Captures',
+      'An_issue_occurred_while_saving,_please_try_again.':'An issue occurred while saving, please try again.',
+      'Name_Already_Exists.':'Name Already Exists.',
       //#endregion
     }
   }

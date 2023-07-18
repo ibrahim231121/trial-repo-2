@@ -167,12 +167,20 @@ const DataSourceFormsAndFields = () => {
         );
       }).catch((e: any) => {
         console.log(e)
+        if(e.response.status=='409')
+        {
+          dispatch(setLoaderValue({isLoading: false}));
+          alprToasterMessages({
+            message: t(`Name_Already_Exists.`),
+            variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
+          },dataSourceMsgFormRef);
+        }else{
         dispatch(setLoaderValue({isLoading: false}));
         alprToasterMessages({
           message: t(`${SAVE_ERROR_MESSAGE}`),
           variant: AlprGlobalConstants.TOASTER_ERROR_VARIANT,
         },dataSourceMsgFormRef);
-
+        }
       });
     } 
     else {

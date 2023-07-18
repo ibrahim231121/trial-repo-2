@@ -272,7 +272,7 @@ const HotListDataSource = () => {
       searchComponent: searchText,
       minWidth: "220",
       attributeName: "schedulePeriod",
-      attributeType: "number",
+      attributeType: "String",
       attributeOperator: "contains"
     },
     {
@@ -285,7 +285,7 @@ const HotListDataSource = () => {
       searchComponent: (rowParam: HotListDataSourceTemplate[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "180",
       attributeName: "connectionType",
-      attributeType: "String",
+      attributeType: "List",
       attributeOperator: "contains"
     },
     {
