@@ -530,7 +530,6 @@ const LicensePlate = () => {
       dispatch(GetLicensePlateData(pageiGrid));
     }
     setIsSearchable(false)
-    isSearchableOnChange.current = true;
   };
   const handleBlur = () => {
     if (isSearchable) {
@@ -561,11 +560,6 @@ const LicensePlate = () => {
   };
 
   useEffect(() => {
-    dispatch(GetLicensePlateData(pageiGrid));
-    dispatch(enterPathActionCreator({ val: '' }));
-  }, []);
-
-  useEffect(() => {
     let pageiGrid: PageiGrid = {
       gridFilter: {
         logic: "and",
@@ -580,6 +574,18 @@ const LicensePlate = () => {
     }
     dispatch(GetAllHotListData(pageiGrid))
   }, []);
+  
+  useEffect(() => {
+    dispatch(GetLicensePlateData(pageiGrid));
+    dispatch(enterPathActionCreator({ val: '' }));
+  }, []);
+
+
+
+  
+  useEffect(() => {
+    setHotListData();
+  }, [hotListInfos?.data]);
 
   useEffect(() => {
     if ((LicensePlateToasterData?.statusCode == "200")) {
@@ -608,9 +614,6 @@ const LicensePlate = () => {
       getFilteredLicensePlateData()
   }, [searchData]);  
 
-  useEffect(() => {
-    setHotListData();
-  }, [hotListInfos?.data]);
 
   useEffect(() => {
     if (LicensePlateList?.data) {
