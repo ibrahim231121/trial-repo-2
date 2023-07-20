@@ -251,7 +251,7 @@ const DataSourceFormsAndFields = () => {
       
       sourceName: Yup.string().max(VALIDATION_MAXLENGTH, t("Source_Name_char_limit")).nullable(),
       userId: Yup.string().max(VALIDATION_MAXLENGTH, t("User_Id_char_limit")).nullable(),
-      schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number_field_required').max(10, t("Schedeul_Period_char_limit")).nullable(),
+      schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number_field_required').max(10, t("Schedule_Period_char_limit")).nullable(),
       locationPath: Yup.string().max(100, t("Location_Path_char_limit")).nullable(),
       port: Yup.string().matches(/^[0-9]+$/,'number_field_required').nullable(),
       password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit")).when([],
@@ -298,7 +298,7 @@ const DataSourceFormsAndFields = () => {
         VehicleStyle: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Style_char_limit")),
         Notes: Yup.string().max(VALIDATION_MAXLENGTH, t("Notes_char_limit")),
         NCICNumber: Yup.string().max(VALIDATION_MAXLENGTH, t("NCIC_Number_char_limit")),
-        ImportSerial: Yup.string().max(VALIDATION_MAXLENGTH, t("Import_Serical_char_limit")),
+        ImportSerial: Yup.string().max(VALIDATION_MAXLENGTH, t("Import_Serial_char_limit")),
         ViolationInfo: Yup.string().max(VALIDATION_MAXLENGTH, t("Violation_Info_char_limit")),
     }
     )

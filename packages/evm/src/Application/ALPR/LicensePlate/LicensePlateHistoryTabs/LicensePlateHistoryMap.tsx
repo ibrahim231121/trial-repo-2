@@ -123,15 +123,15 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
     let content:string = "";
 
     if(historyItem){
-      content = "<b>Number Plate:</b> " + historyItem.numberPlate +
-                "<br/><b>Captured At:</b> " + dateDisplayFormat(historyItem.capturedAt) +
-                "<br/><b>State:</b> " + historyItem.state +                         
-                "<br/><b>Latitude:</b> " + historyItem.latitude +
-                "<br/><b>Longitude:</b> " + historyItem.longitude +
-                "<br/><b>Confidence:</b> " + historyItem.confidence +
-                "<br/><b>Ticket Number:</b> " + historyItem.ticketNumber +
-                "<br/><b>Unit:</b> " + historyItem.unit +
-                "<br/><b>Notes:</b> " + historyItem.notes;
+      content = `<b>${t('Number_Plate')}:</b> ` + historyItem.numberPlate +
+                `<br/><b>${t('Captured_At')}:</b> ` + dateDisplayFormat(historyItem.capturedAt) +
+                `<br/><b>${t('State')}:</b> ` + historyItem.state +                         
+                `<br/><b>${t('Latitude')}:</b> ` + historyItem.latitude +
+                `<br/><b>${t('Longitude')}:</b> ` + historyItem.longitude +
+                `<br/><b>${t('Confidence')}:</b> ` + historyItem.confidence +
+                `<br/><b>${t('Ticket_Number')}:</b> ` + historyItem.ticketNumber +
+                `<br/><b>${t('Unit')}:</b> ` + historyItem.unit +
+                `<br/><b>${t('Notes')}:</b> ` + historyItem.notes;
     }
 
     return content;
