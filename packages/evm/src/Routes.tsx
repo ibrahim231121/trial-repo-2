@@ -61,6 +61,7 @@ import CaptureFormPanel from "./Application/ALPR/Capture/CapturePanel";
 import {LicensePlate} from "./Application/ALPR/LicensePlate/Index";
 import LicensePlateDetail from "./Application/ALPR/LicensePlate/LicensePlateDetail";
 import LicensePlateHistory from "./Application/ALPR/LicensePlate/LicensePlateHistory";
+import CapturePlateLister from "./Application/ALPR/Capture/CapturePlateLister";
 
 
 const cookies = new Cookies();
@@ -186,7 +187,7 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url} exact={true} component={HotListDataSource} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editDataSourceTab)[0].url} exact={true} component={DataSourceTab} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.createDataSourceTab)[0].url} exact={true} component={DataSourceTab} />
-                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url} exact={true} component={CaptureFormPanel} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url} exact={true} component={CapturePlateLister} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url} exact={true} component={LicensePlate} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailEdit)[0].url} exact={true} component={LicensePlateDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailCreate)[0].url} exact={true} component={LicensePlateDetail} />

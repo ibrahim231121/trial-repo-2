@@ -20,7 +20,7 @@ import { AlprPlateHistoryInfo } from '../../../../utils/Api/models/AlprPlateHist
 import { dateOptionsTypes } from '../../../../utils/constant';
 import { DateTimeObject } from '../../../Cases/CaseTypes';
 import { GetAlprPlateHistoryPayload } from '../../ALPRTypes';
-import numberplate from "../../../../Assets/Images/numberplate.jpg";
+import defaultNumberPlateImage from "../../../../Assets/Images/numberPlate.jpg";
 import emptyThumbnail from "../../../../Assets/Images/thumbb.png";
 import jwt_decode from "jwt-decode";
 import "./LicensePlateHistoryLister.scss"
@@ -474,7 +474,7 @@ const LicensePlateHistoryLister = ({setLicensePlateHistoryData}:LicensePlateHist
       const thumbnailDisplay = (e:string, plateHistory:any)=>{
         
         return (<div className="plateThumbnail">
-          <img src={numberplate}></img>
+          <img src={defaultNumberPlateImage}></img>
           {/* <img src={emptyThumbnail}></img> */}
         </div>);
       }

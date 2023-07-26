@@ -679,7 +679,7 @@ export const urlList: any = [
         url: '/Alpr/LicensePlateHistory/:id',
         details: [
             { type: 'text', label: 'Alpr' },
-            { routeTo: '/Alpr/LicensePlate' ,type: 'link', label: 'License Plate' }
+            { routeTo: '/Alpr/Capture' ,type: 'link', label: 'Automatic License Plate Capture (ALPR)' }
         ]
     },
 ];

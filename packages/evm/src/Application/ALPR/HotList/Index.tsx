@@ -43,6 +43,7 @@ import { getToken } from "../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import NumberSearch from "../../../GlobalComponents/DataTableSearch/NumberSearch";
 import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../AlprGlobal";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 const HotList = () => {
   const classes = useStyles();
@@ -101,6 +102,7 @@ const HotList = () => {
     }
 
     dispatch(GetAlprDataSourceList(sourcesPageiGrid))
+    dispatch(enterPathActionCreator({ val: `` }));
   }, [])
 
   useEffect(() => {
