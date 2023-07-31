@@ -52,6 +52,9 @@ const DataSourceMapping = (props: any) => {
             case "LicenseType":
                 props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, LicenseType: updateData });
                 break;
+            case "LicenseYear":
+                props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, LicenseYear: updateData });
+                break;
 
             case "AgencyId":
                 props.setFieldValue('dataSourceMappingData',{ ...mappingPayload, Agency: updateData });
@@ -158,6 +161,18 @@ const DataSourceMapping = (props: any) => {
                             }}
                             error={props.touched.LicenseType &&  (props.formValidationError?.dataSourceMappingData?.LicenseType ?? "").length > 0}
                             errorMsg={props.formValidationError?.dataSourceMappingData?.LicenseType}
+                            />
+                            <TextField
+                                id='MappingLicenseYear'
+                                required={false}
+                                label={t("License_Year") + ':'}
+                                value={mappingPayload?.LicenseYear}
+                                onChange={(e: any) => {
+                                props.setFieldTouched('LicenseYear',true)
+                                updateStateInParentComponent("LicenseYear",e.target.value)
+                            }}
+                            error={props.touched.LicenseYear &&  (props.formValidationError?.dataSourceMappingData?.LicenseYear ?? "").length > 0}
+                            errorMsg={props.formValidationError?.dataSourceMappingData?.LicenseYear}
                             />
                             <TextField
                                 id='MappingAgency'

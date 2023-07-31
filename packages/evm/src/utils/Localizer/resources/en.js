@@ -1098,12 +1098,23 @@ export const resources = {
       "First_Name_char_limit":"First Name should not exceed 50 characters limit",
       "Last_Name_char_limit":"Last Name should not exceed 50 characters limit",
       "Alias_char_limit":"Alias should not exceed 50 characters limit",
+      'Port_is_required_while_selecting_FTP_connection':'Port is required while selecting FTP connection',
+      'User_Id_is_required_while_selecting_FTP_connection':'User Id is required while selecting FTP connection',
+      'Password_is_required_while_selecting_FTP_connection':'Password is required while selecting FTP connection',
+      'Confirm_Password_is_required_while_selecting_FTP_connection':'Confirm Password is required while selecting FTP connection',
+      'FTP_Path':'FTP Path',
+      'FTP_Path_is_required_while_selecting_FTP_connection':'FTP Path is required while selecting FTP connection',
+      "FTP_Path_char_limit":"FTP Path should not exceed 50 characters limit",
+      "Port_char_limit":"Port should not exceed 10 characters limit",
+      "Location_Path_is_required_while_selecting_other_than_FTP_connection":"Location Path is required while selecting other than FTP connection",
+      
 
       //Data source Panel
       "Name_char_limit" : "Name should not exceed 50 characters limit",
       "Source_Name_char_limit":"Source Name should not exceed 50 characters limit",
       "User_Id_char_limit":"User Id should not exceed 50 characters limit",
-      "number_field_required":"Number Should be number",
+      "Schedule_Period_should_be_number":"Schedule Period Should be number",
+      "Port_field_should_be_number":"Port should be number",
       "Schedule_Period_char_limit":"Schedule Period should not exceed 10 characters limit",
       "Location_Path_char_limit":"Location Path should not exceed 50 characters limit",
       "Password_char_limit":"Password should not exceed 50 characters limit",
@@ -1156,7 +1167,6 @@ export const resources = {
       "License_Plate_required":"License Plate required",
       'Process_Initiated_Successfully.':'Process Initiated Successfully.',
       'Something_went_wrong.Please_again_later':'Something went wrong.Please again later',
-
       'An_issue_occurred_while_saving,_please_try_again':'An issue occurred while saving, please try again',
       'License_Plates':'License Plates',
       'HotList_Data_Source':'HotList Data Source',

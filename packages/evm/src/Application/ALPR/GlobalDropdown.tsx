@@ -15,10 +15,7 @@ export const ConnectionTypeDropDown =
 
 
 export const SourceTypeDropDown =
-    [{
-        id: 10001,
-        label: "XML"
-    },
+    [
     {
         id: 10002,
         label: "CSV"

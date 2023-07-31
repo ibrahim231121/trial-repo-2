@@ -30,9 +30,10 @@ export type HotListDataSourceTemplate = {
   connectionType: string;
   schedulePeriod: string;
   locationPath: string;
-  port: string;
+  port: number;
   lastRun: string;
   status: string;
   statusDesc: string;
+  ftpPath:string;
   sourceType:{recId:number,sourceTypeName:string | undefined};
 }

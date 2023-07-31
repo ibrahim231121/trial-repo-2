@@ -22,7 +22,7 @@ import { CRXConfirmDialog } from "@cb/shared";
 import { AlprDataSource } from "../../../utils/Api/ApiAgent";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
+import { AlprGlobalConstants, alprToasterMessages, nullValidationHandling } from "../AlprGlobal";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
@@ -35,10 +35,11 @@ const dataSourceInitialPayload = {
   userId: '',
   password: '',
   confirmPassword: '',
-  connectionType: '',
+  connectionType: 'FTP',
   schedulePeriod: 0,
   locationPath: '',
-  port: 0,
+  ftpPath: '',
+  port: 21,
   lastRun: '',
   status: '',
   statusDesc: '',
@@ -112,7 +113,14 @@ const DataSourceFormsAndFields = () => {
         dataSouceMapping=dataSourceMappingInitialPayload;
       }
       
-      let formData={dataSourceData:{...dataSourceDataById, confirmPassword: ''},dataSourceMappingData:dataSouceMapping}
+      let formData={
+        dataSourceData:{...dataSourceDataById,
+                        locationPath:dataSourceDataById.connectionType==='FTP' ?'': dataSourceDataById.locationPath, 
+                        ftpPath:dataSourceDataById.connectionType==='FTP' ? dataSourceDataById.locationPath:'', 
+                        confirmPassword: '',
+                        port:dataSourceDataById.port==0?21:dataSourceDataById.port,
+                      },
+        dataSourceMappingData:dataSouceMapping}
       setdataSourceInitialData(formData)
       dispatch(enterPathActionCreator({ val: `Data Source : ${formData?.dataSourceData?.name}` }));
     } 
@@ -145,7 +153,7 @@ const DataSourceFormsAndFields = () => {
         confirmPassword: tabsFinalizeData?.dataSourceData?.password,
         connectionType: tabsFinalizeData?.dataSourceData?.connectionType===''?'FTP':tabsFinalizeData?.dataSourceData?.connectionType,
         schedulePeriod: tabsFinalizeData?.dataSourceData?.schedulePeriod,
-        locationPath: tabsFinalizeData?.dataSourceData?.locationPath,
+        locationPath: tabsFinalizeData?.dataSourceData?.connectionType==='FTP'?tabsFinalizeData?.dataSourceData?.ftpPath:tabsFinalizeData?.dataSourceData?.locationPath,
         port: tabsFinalizeData?.dataSourceData?.port,
         lastRun: tabsFinalizeData?.dataSourceData?.lastRun,
         status: tabsFinalizeData?.dataSourceData?.status,
@@ -166,7 +174,6 @@ const DataSourceFormsAndFields = () => {
           urlList.filter((item: any) => item.name === urlNames.dataSourceList)[0].url
         );
       }).catch((e: any) => {
-        console.log(e)
         if(e.response.status=='409')
         {
           dispatch(setLoaderValue({isLoading: false}));
@@ -248,27 +255,44 @@ const DataSourceFormsAndFields = () => {
     
     dataSourceData: Yup.object().shape({
       name: Yup.string().required(t("Name_field_required")).max(VALIDATION_MAXLENGTH, t("Name_char_limit")),
-      
+      connectionType : Yup.string().notRequired(),
       sourceName: Yup.string().max(VALIDATION_MAXLENGTH, t("Source_Name_char_limit")).nullable(),
-      userId: Yup.string().max(VALIDATION_MAXLENGTH, t("User_Id_char_limit")).nullable(),
-      schedulePeriod: Yup.string().matches(/^[0-9]+$/,'number_field_required').max(10, t("Schedule_Period_char_limit")).nullable(),
-      locationPath: Yup.string().max(100, t("Location_Path_char_limit")).nullable(),
-      port: Yup.string().matches(/^[0-9]+$/,'number_field_required').nullable(),
-      password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit")).when([],
-        {
-          is:()=>id===undefined,
-          then :Yup.string().required(t("Password_is_required")),
-          otherwise:Yup.string()
-      }),
-      confirmPassword: Yup.string().when([],
-            {
-              is:()=>id===undefined,
-              then :Yup.string().required(t("Confirm_Password_is_required")),
-              otherwise:Yup.string().notRequired()
-            })
-      .test('passwords-match', t('Passwords_must_match'), function(value){
+      schedulePeriod: Yup.string().matches(/^[0-9]+$/,t('Schedule_Period_should_be_number')).max(10, t("Schedule_Period_char_limit")).nullable(),
+      
+      locationPath: Yup.string().max(100, t("Location_Path_char_limit"))
+      .test({name:'locationPathRequired',message: t('Location_Path_is_required_while_selecting_other_than_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType !== 'FTP' && ( !nullValidationHandling(value) ) )
+      }})
+      .nullable(),
+
+
+      ftpPath: Yup.string().max(100, t("FTP_Path_char_limit"))
+      .test({name:'FtpPathRequired',message: t('FTP_Path_is_required_while_selecting_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType === 'FTP' && !nullValidationHandling(value)  )
+      }})
+      .nullable(),
+
+      userId: Yup.string().max(VALIDATION_MAXLENGTH, t("User_Id_char_limit"))
+      .test({name:'userRequired',message: t('User_Id_is_required_while_selecting_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
+      }}).nullable(),
+      port: Yup.string().matches(/^[0-9]+$/,t('Port_field_should_be_number')).max(10,t('Port_char_limit'))
+      .test({name:'portRequired',message: t('Port_is_required_while_selecting_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
+      }})
+      .nullable(),
+      
+      password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit"))
+      .test({name:'passwordRequired',message: t('Password_is_required_while_selecting_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
+      }}),
+      confirmPassword: Yup.string()
+      .test({name:'confirmPasswordRequired',message: t('Confirm_Password_is_required_while_selecting_FTP_connection'),test: function(value){
+        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
+      }})
+      .test({name:'passwords-match',message: t('Passwords_must_match'),test: function(value){
       return this.parent.password === value
-    })
+    }})
     }),
 
     dataSourceMappingData: Yup.object().shape({
@@ -316,7 +340,7 @@ const DataSourceFormsAndFields = () => {
                 console.log("SUBMIT : " + values);
               }}
             >
-              {({ setFieldValue, values, errors, touched,setFieldTouched,isValid,dirty}) => (
+              {({ setFieldValue, values, errors, touched,setFieldTouched,isValid,dirty,resetForm}) => (
                 (
                 <>
                 <Form>
@@ -329,6 +353,7 @@ const DataSourceFormsAndFields = () => {
                           setFieldTouched={setFieldTouched}
                           setFieldValue={setFieldValue}
                           formValidationError={errors}
+                          resetForm={resetForm}
                           /> 
                       </div>
                     </CrxTabPanel>
