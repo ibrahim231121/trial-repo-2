@@ -448,7 +448,7 @@ const LicensePlateDetail = (props: any) => {
 
 
                                     </div>
-                                    <div className='crxFooterEditFormBtn'>
+                                    <div className='Alpr_LicensePlate_crxFooterEditFormBtn'>
                                         <div className='__crxFooterBtnUser__'>
                                             <CRXButton className='primary'
                                                 disabled={!isValid || !dirty}

@@ -9,7 +9,7 @@ import {
   PageiGrid,
   GridFilter,
   onResizeRow,
-  Order, onSetSingleHeadCellVisibility
+  Order, onSetSingleHeadCellVisibility, onClearAll
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 import React, { useEffect, useRef } from "react";
@@ -85,6 +85,7 @@ const LicensePlate = () => {
   });
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
   const [paging, setPaging] = React.useState<boolean>();
+
   const alertMessageRef = useRef<typeof CRXToaster>(null);
   const LicensePlateToasterData: any = useSelector((state: RootState) => state.alprLicensePlateReducer.LicensePlateToasterData);
   const hotListInfos: any = useSelector((state: RootState) => state.hotListReducer.HotList);
@@ -262,11 +263,11 @@ const LicensePlate = () => {
           //defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(value: any) => {
-            if (!isSearchableOnChange.current) {
+           
               isSearchableOnChange.current = true;
-              onSelection(value.map((hotlist: { id: any; value: any }) => { return { id: hotlist.id, value: hotlist.value } }), colIdx);
+              onSelection(value, colIdx);
               headCells[colIdx].headerArray = value;
-            }
+            
           }}
           onSelectedClear={(value: any) => {
             onSelectedClear(colIdx);
@@ -603,6 +604,11 @@ const LicensePlate = () => {
       onMessageShow(false, LicensePlateToasterData.message);
       dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
     }
+    else if(LicensePlateToasterData?.statusCode == "405")
+    {
+      onMessageShow(false, LicensePlateToasterData.message);
+      dispatch(ClearLicensePlateProperty('LicensePlateToasterData'));
+    }
   }, [LicensePlateToasterData]);
 
   useEffect(() => {
@@ -690,7 +696,22 @@ const LicensePlate = () => {
     }
 
   }, [dateTime]); 
+  const clearAll = () => {
+    setPageiGrid(
+      {
+        ...pageiGrid,
+        gridFilter:{
+          ...pageiGrid.gridFilter,
+          filters:[]
+        }
+      }
+    )
 
+    setSearchData([]);
+    let headCellReset = onClearAll(headCells);
+    setHeadCells(headCellReset);
+  };
+  
   return (
     <ClickAwayListener onClickAway={handleBlur}>
       <div className="switchLeftComponents " onKeyDown={handleKeyDown}>
@@ -738,6 +759,7 @@ const LicensePlate = () => {
             showActionSearchHeaderCell={false}
             className="crxTableHeight crxTableDataUi"
             getSelectedItems={(v: LicensePlateTemplate[]) => setSelectedItems(v)}
+            onClearAll={clearAll}
             onResizeRow={resizeRowCaptureTemp}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
@@ -746,7 +768,7 @@ const LicensePlate = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={nullValidationHandling(LicensePlateList?.totalCount) ? 0 : LicensePlateList?.totalCount}
+            totalRecords={nullValidationHandling(LicensePlateList?.totalCount) ? LicensePlateList?.totalCount:0 }
             setSortOrder={(sort: any) => sortingOrder(sort)}
 
             //Please dont miss this block.

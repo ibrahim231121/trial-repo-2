@@ -3,8 +3,8 @@
 }
 
 .LicensePlate_SearchComponents {
-  padding: 0 4px 0px 65px;
-  padding-top: 96px;
+  padding: 0 4px 50px 65px;
+  padding-top: 101px;
   transition: 0.5s padding ease-out;
 }
 
@@ -205,13 +205,20 @@
     }
   }
 
-  .crxFooterEditFormBtn {
+  .Alpr_LicensePlate_crxFooterEditFormBtn{
     padding: 0 28px 0 89px !important;
     bottom: 0px;
     position: fixed;
     border: none;
     place-content: space-between;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 75px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+
 
     .groupInfoTabButtons-Close {
       min-width: 80px !important;
@@ -246,6 +253,10 @@
 
     .__crxFooterBtnUser__ {
       display: flex;
+    }
+
+    .primary{
+      margin-right: 32px;
     }
   }
 
@@ -427,6 +438,18 @@
   }
 
   .crxFooterEditFormBtn {
+    &::after {
+      content: "";
+      background: #d1d2d4 !important;
+      width: 93.89%;
+      position: absolute;
+      top: 0;
+      height: 1px;
+      /* padding: 0 49px; */
+      left: 89px;
+    }
+  }
+  .Alpr_LicensePlate_crxFooterEditFormBtn {
     &::after {
       content: "";
       background: #d1d2d4 !important;

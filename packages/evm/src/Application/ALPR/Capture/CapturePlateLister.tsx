@@ -861,7 +861,7 @@ const CapturePlateLister = () => {
                         rowsPerPage={rowsPerPage}
                         setPage={(page: any) => setPage(page)}
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-                        totalRecords={capturedPlates.totalCount}
+                        totalRecords={nullValidationHandling(capturedPlates.totalCount)? capturedPlates.totalCount :0}
                         setSortOrder={(sort: any) => {
                             setOrder(sort.order)
                             setOrderBy(sort.orderBy)
