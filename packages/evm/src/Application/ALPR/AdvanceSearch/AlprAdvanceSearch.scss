@@ -1,0 +1,552 @@
+.container {
+  width: 100%;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.advanceContainer {
+  display: flex;
+}
+
+.main {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.advanceSearchTextField {
+  width: 45%;
+}
+
+.Alpr_advanceSearchContent {
+  padding-top: 17px;
+}
+
+.Alpr_advanceSearchContent .icon>button {
+  background: var(--color-transparent);
+  border: 0px;
+}
+
+.Alpr_predictiveSearch_wraper {
+  margin-bottom: 10px;
+
+  .Alpr_predictiveSearch {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+
+    .MuiGrid-container {
+      width: 65%;
+    }
+
+    &.Alpr_CRXPredictiveDisable {
+      .combo-box-Search {
+        .MuiAutocomplete-endAdornment {
+          display: flex;
+          height: 100%;
+          right: 15px;
+
+          button {
+            visibility: visible;
+            background: transparent;
+
+            &:hover,
+            &:focus {
+              .MuiTouchRipple-root {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.makeStyles-content-9 {
+  &.makeStyles-contentShift-10 {
+    .searchComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 96px;
+      transition: 0.5s padding ease-out;
+    }
+
+    .switchLeftComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 96px;
+      transition: 0.5s padding ease-out;
+    }
+  }
+}
+
+.makeStyles-content-9 {
+  .searchComponents {
+    padding-top: 96px;
+    transition: 1s padding ease-out;
+  }
+
+  .switchLeftComponents {
+    padding-top: 96px;
+    transition: 1s padding ease-out;
+  }
+}
+.Alpr_searchComponents {
+  padding: 0 4px 0px 65px;
+  padding-top: 96px;
+}
+.jss9 {
+  .switchLeftComponents {
+    padding-top: 96px;
+    transition: 1s padding ease-out;
+  }
+
+  &.jss10 {
+    .searchComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 96px;
+    }
+
+    .switchLeftComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 96px;
+      transition: 1s padding ease-out;
+    }
+  }
+}
+
+.Alpr_advanceSearchChildren {
+  .topColumn {
+    padding-right: 16px;
+  }
+
+  .searchLabel {
+    font-size: 14px;
+    color: var(--color-333333);
+    padding: 0px 0 0 0px;
+    margin: 0px;
+    padding-bottom: 11px;
+    display: block;
+    font-family: var(--Arial-font-family);
+  }
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: var(--Font-style-bold);
+  color: var(--color-333333);
+}
+
+.toasterParent {
+  width: 40%;
+}
+
+.CRXModalAssignUser {
+  z-index: 9999 !important;
+}
+
+.userGroupNameConfirm {
+  z-index: 9999 !important;
+}
+
+.CRXActiveBreadcrumb {
+  &.makeStyles-bradCrumscontent-23 {
+    transition: 1s padding ease-out;
+
+    &.makeStyles-bradCrumscontentShift-24 {
+      transition: 0.5s padding ease-out;
+    }
+  }
+
+  &.jss23 {
+    transition: 1s padding ease-out;
+
+    &.jss24 {
+      transition: 0.5s padding ease-out;
+    }
+  }
+}
+
+.Alpr_stickyBorder_Add {
+  .crxClearfilter {
+    &::before {
+      position: absolute;
+      top: 9px;
+      left: -1px;
+      right: auto;
+      width: 100%;
+      height: 1px;
+      background: #d1d2d4;
+      content: "";
+    }
+  }
+}
+
+.crxClearfilter {
+  border-top: 1px solid transparent;
+}
+
+.showSearchBox {
+  position: fixed;
+  top: -240px;
+  background: #fff;
+  width: 93.8%;
+  z-index: 9999;
+  padding: 50px 0;
+  box-shadow: rgb(0 0 0 / 20%) 0px 5px 10px 0;
+}
+
+.showArrow-search {
+  position: fixed;
+  left: 51%;
+  top: 60px;
+  z-index: 9999;
+
+  button {
+    background: transparent;
+    border: 0px;
+
+    &:hover {
+      background: transparent;
+      border: 0px
+    }
+
+    i {
+      font-size: 33px;
+      color: #333;
+
+    }
+  }
+}
+
+.Alpr_lister_search_panel {
+  &.Alpr_panel_hide {
+    display: none;
+  }
+
+  &.Alpr_panel_show {
+    display: block;
+
+  }
+
+  &.Alpr_panelDesign {
+    position: fixed;
+    top: 102px;
+    background: #fff;
+    z-index: 9999;
+    box-shadow: rgb(0 0 0 / 2%) 0px 8px 15px 0px;
+    border: 1px solid #dedede;
+    left: 15%;
+    right: auto;
+    width: 70%;
+    margin: 0 auto;
+
+    // max-height: 613px;
+    // overflow-y: auto;
+    .hide {
+      display: none;
+    }
+
+    .show {
+      display: block;
+    }
+  }
+
+  &.Alpr_panelDesignUi {
+    .Alpr_modal-title_cs {
+      display: flex;
+      justify-content: space-between;
+      padding: 19px 25px 40px;
+    }
+
+
+    .Alpr_AdvanceSearch_closeButton-modal {
+      background-color: transparent;
+      color: var(--color-d1d2d4);
+      border: none;
+      font-size: 16px;
+    }
+
+
+
+    .Alpr_advanceSearch_title_div {
+      font-size: 20px;
+      color: var(--color-333333);
+      width: 100%;
+
+      .hr-line {
+        width: calc(100% + 9px);
+        position: relative;
+        top: 15px;
+        box-shadow: rgb(0 0 0 / 44%) 0px 3px 10px 0px;
+
+      }
+    }
+
+    .scrollMainPage {
+      max-height: 362px;
+      overflow: auto;
+      padding: 0 25px;
+
+      .Alpr_predictiveSearch_wraper {
+        .Alpr_predictiveSearch {
+          .MuiGrid-container {
+            width: 100%;
+          }
+        }
+      }
+
+      .Alpr_advanceSearchContet {
+        .Alpr_advanceSearchContet {
+          width: 1044px;
+        }
+      }
+    }
+
+    .scrollMainPage_1 {
+      max-height: 424px;
+    }
+
+    .scrollMainPage_2 {
+      max-height: 484px;
+    }
+
+    .Alpr_advanceSearchContet {
+      padding-bottom: 25px;
+    }
+  }
+}
+
+.search-modal-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+}
+
+.panelDesignPopup {
+
+  .Alpr_Advance_close-icon-modal {
+    margin-top: -7px;
+    margin-right: -18px;
+
+    i {
+      color: var(--color-d1d2d4);
+    }
+
+    &:hover {
+      i {
+        color: var(--color-333333);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .searchLabel,
+  .dateTimeLabel {
+    padding-bottom: 13px;
+  }
+
+  .dateRangeContainer {
+    padding: 0 2px 0 2px;
+  }
+
+  .preSearcBtnContent {
+    padding-top: 10px;
+  }
+
+  .PreSearchButton {
+    margin-top: 26px;
+  }
+
+  .advanceSearchContet {
+    padding-bottom: 9px !important;
+  }
+
+  .CRXAdvanceSearchBox {
+    margin-bottom: 11px;
+  }
+
+  .advanceSerachContainer {
+    width: 787px;
+  }
+
+  .PreSearchButton_Open+.CRXAdvanceSearchBox {
+    .dateTimeLabel {
+      text-align: left;
+      padding-left: 22px;
+    }
+
+    .dateRangeContainer {
+      margin-right: 19px;
+      margin-left: -50px;
+    }
+
+    .dateRangeContainer {
+      margin-bottom: 37px;
+    }
+  }
+
+  .adVSelectBox {
+    max-width: 100% !important;
+    margin-left: 8px !important;
+  }
+
+  .advanceInputBoxContent {
+    padding-left: 25px;
+  }
+
+  .adVInputBox {
+    margin-right: 19px;
+    width: calc(91% + 2px);
+  }
+
+  .advancedSearchBottom {
+    margin-left: 8px !important;
+  }
+
+  .resetAdvancedSearchBtn {
+    right: 36px !important;
+  }
+
+}
+
+.removeScrollHtml {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}
+
+.Alpr_main_master_page_panel {
+  .Alpr_searchText {
+    text-align: left;
+    color: #333333;
+    font-size: 14px;
+    line-height: 16px;
+    margin-top: -32px;
+    margin-left: 8px;
+    margin-bottom: 19px;
+  }
+}
+
+
+.Alpr_panelDesignPopup {
+
+  .Alpr_Advance_close-icon-modal {
+    margin-top: -7px;
+    margin-right: -18px;
+
+    i {
+      color: var(--color-d1d2d4);
+    }
+
+    &:hover {
+      i {
+        color: var(--color-333333);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .searchLabel,
+  .dateTimeLabel {
+    padding-bottom: 13px;
+  }
+
+  .dateRangeContainer {
+    padding: 0 2px 0 2px;
+  }
+
+  .preSearcBtnContent {
+    padding-top: 10px;
+  }
+
+  .PreSearchButton {
+    margin-top: 26px;
+  }
+
+  .advanceSearchContet {
+    padding-bottom: 9px !important;
+  }
+
+  .CRXAdvanceSearchBox {
+    margin-bottom: 11px;
+  }
+
+  .advanceSerachContainer {
+    width: 787px;
+  }
+
+  .PreSearchButton_Open+.CRXAdvanceSearchBox {
+    .dateTimeLabel {
+      text-align: left;
+      padding-left: 22px;
+    }
+
+    .dateRangeContainer {
+      margin-right: 19px;
+      margin-left: -50px;
+    }
+
+    .dateRangeContainer {
+      margin-bottom: 37px;
+    }
+  }
+
+  .Alpr_searchText {
+    text-align: left;
+    color: #333333;
+    font-size: 14px;
+    line-height: 16px;
+    padding-left: 7px;
+    margin-bottom: 18px;
+  }
+
+  .Alpr_searchText_hide {
+    opacity: 0px;
+    visibility: hidden;
+  }
+
+  .adVSelectBox {
+    max-width: 100% !important;
+    margin-left: 8px !important;
+  }
+
+  .advanceInputBoxContent {
+    padding-left: 25px;
+  }
+
+  .adVInputBox {
+    margin-right: 19px;
+    width: calc(91% + 2px);
+  }
+
+  .advancedSearchBottom {
+    margin-left: 8px !important;
+  }
+
+  .resetAdvancedSearchBtn {
+    right: 36px !important;
+  }
+
+}
+
+.crx-message-alert {
+  .Alpr_Alert_Msg {
+    padding-top: 6px;
+    padding-bottom: 6px;
+
+    .MuiAlert-icon {
+      top: 0px;
+    }
+
+    .MuiAlert-action {
+      margin-top: 0px;
+    }
+  }
+}

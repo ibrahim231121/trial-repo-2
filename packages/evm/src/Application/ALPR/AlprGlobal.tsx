@@ -73,3 +73,21 @@ export const convertToDateTimePicker=(dateTime:any)=>
   }
   return localDateTime;
 }
+
+export const AlprGridDateDisplayFormat = (dateTime: string) => {
+
+  let localDateTime = '';
+  try {
+    if (nullValidationHandling(dateTime)) {
+      localDateTime = moment(dateTime)
+        .local()
+        .format("YYYY / MM / DD HH:mm:ss");
+      return localDateTime
+    }
+  }
+  catch (error) {
+    console.error('error while parsing dateTime', error)
+  }
+
+};
+

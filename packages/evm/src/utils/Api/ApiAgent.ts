@@ -564,4 +564,8 @@ export const LicensePlateAgent = {
 export const AlprPlateHistoryAgent={
     getAlprPlateHistoryInfosAsync: (url: string, extraHeader?: Headers[]) => requests.getAll<Paginated<any>>(BASE_URL_ALPR_Service, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
 }
-
+export const AlprAdvanceSearchAgent={
+    getNumberPlateBySearch: (url: string, body: any, extraHeader?: Headers[]) => {
+        return requests.post<any>(BASE_URL_ALPR_Service, url, body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
+    }
+}

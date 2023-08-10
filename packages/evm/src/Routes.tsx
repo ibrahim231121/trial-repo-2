@@ -62,6 +62,9 @@ import {LicensePlate} from "./Application/ALPR/LicensePlate/Index";
 import LicensePlateDetail from "./Application/ALPR/LicensePlate/LicensePlateDetail";
 import LicensePlateHistory from "./Application/ALPR/LicensePlate/LicensePlateHistory";
 import CapturePlateLister from "./Application/ALPR/Capture/CapturePlateLister";
+import AlprAdvanceSearch from "./Application/ALPR/AdvanceSearch/AlprAdvanceSearch";
+import ManageALPR from "./Application/ALPR/AdvanceSearch/Index";
+import AdvanceSearchLister from "./Application/ALPR/AdvanceSearch/AdvanceSearchDataTable/Index";
 
 
 const cookies = new Cookies();
@@ -192,6 +195,9 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailEdit)[0].url} exact={true} component={LicensePlateDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateDetailCreate)[0].url} exact={true} component={LicensePlateDetail} />
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.LicensePlateHistory)[0].url} exact={true} component={LicensePlateHistory} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprAdvanceSearch)[0].url} exact={true} component={ManageALPR} /> 
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprAdvanceSearchResult)[0].url} exact={true} component={ManageALPR} /> 
+                <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.AlprSearchLister)[0].url} exact={true} component={AdvanceSearchLister} />
                 {/* ALPR End*/}
 
                 <Route path="/notfound" component={ErrorPage} />

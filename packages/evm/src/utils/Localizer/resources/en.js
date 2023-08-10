@@ -1141,7 +1141,7 @@ export const resources = {
       "NCIC":"NCIC",
       "Number_Plate":"Number Plate",
       "Ticket_Number":"Ticket Number",
-
+     
       "List":"List",
 
       "License_Plate_History":"License Plate History",
@@ -1155,7 +1155,7 @@ export const resources = {
       "License_Plate_field_required": "License Plate field required",
       "License_Plate_Saved_Successfully": "License Plate Saved Successfully",
       "License_Plate_Deleted_Successfully": "License Plate Deleted Successfully",
-      "Minimum_Lenght_NumberPlate": "Number Plate should be greater or equal to 6",
+      "Minimum_Length_NumberPlate": "Number Plate should be greater or equal to 2",
       "License_Year":"License Year",
       "Edit_License_Plate":"Edit License Plate",
       "Create_License_Plate" : "Create License Plate",
@@ -1174,6 +1174,10 @@ export const resources = {
       'Captures':'Captures',
       'An_issue_occurred_while_saving,_please_try_again.':'An issue occurred while saving, please try again.',
       'Name_Already_Exists.':'Name Already Exists.',
+      //Advance search
+      "Search_Number_Plate":"Search Number Plate",
+      "Search_by_Number_Plate":"Search by Number Plate",
+      "Capture_Plate_Thumbnail":"Capture Plate Thumbnail",
       //#endregion
     }
   }

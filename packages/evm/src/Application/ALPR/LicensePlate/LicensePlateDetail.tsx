@@ -74,7 +74,7 @@ const LicensePlateDetail = (props: any) => {
         return [yyyy, mm, dd].join('-') + 'T00:00:00';
     };
     const LicensePlateValidationSchema = Yup.object().shape({
-        licensePlate: Yup.string().required(t("LicensePlate_is_required")).min(6, t('Minimum_Lenght_NumberPlate')),
+        licensePlate: Yup.string().required(t("LicensePlate_is_required")).min(2, t('Minimum_Length_NumberPlate')),
         dateOfInterest: Yup.date().defined(t("DateOfInterest_is_required")),
 
     });

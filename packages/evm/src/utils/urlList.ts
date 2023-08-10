@@ -108,7 +108,10 @@ export const urlNames: any = {
     LicensePlateDetailEdit: 'LicensePlateDetailEdit',
     LicensePlateDetailCreate: 'LicensePlateDetailCreate',
     
-    LicensePlateHistory: 'LicensePlateHistory'
+    LicensePlateHistory: 'LicensePlateHistory',
+    AlprAdvanceSearch: 'AlprAdvanceSearch',
+    AlprSearchLister: 'AlprSearchLister',
+    AlprAdvanceSearchResult: 'AlprAdvanceSearchResult',
 };
 
 export const urlList: any = [
@@ -600,7 +603,7 @@ export const urlList: any = [
         name: urlNames.HotList,
         url: "/Alpr/HotList",
         details: [
-            { type: 'text', label: 'Alpr' },
+            { type: 'text', label: 'ALPR' },
             { routeTo: "/Alpr/HotList", type: "text", label: "Manage Hot List", },
         ],
     }, {
@@ -682,4 +685,28 @@ export const urlList: any = [
             { routeTo: '/Alpr/Capture' ,type: 'link', label: 'Automatic License Plate Capture (ALPR)' }
         ]
     },
+    {
+        name: urlNames.AlprAdvanceSearch,
+        url: '/Alpr/AdvanceSearch',
+        details: [
+            { type: 'text', label: 'Alpr' },
+            { routeTo: '/Alpr/AlprAdvanceSearch' ,type: 'text', label: 'Capture Plate Search' }
+        ]
+    },
+    {
+        name: urlNames.AlprSearchLister,
+        url: "/Alpr/AlprSearchLister",
+        details: [
+            { type: "text", label: "Alpr", },
+            { routeTo: "/Alpr/AlprSearchLister", type: "link", label: "Advance Search" }
+        ],
+    },
+    {
+        name: urlNames.AlprAdvanceSearchResult,
+        url: "/Alpr/AlprAdvanceSearchResult",
+        details: [
+            {  type: "text", label: "Alpr" },
+            { routeTo:"/Alpr/AdvanceSearch",type: "link", label: "Capture Plate Search", },
+        ],
+    }
 ];

@@ -246,7 +246,16 @@ const CRXLefNavigation = () => {
       moduleId: 0,
       label: t("ALPR"),
       icon: "fas fa-car-on NaveIcon",
-      items: [{moduleIds: 0,
+      items: [
+      {
+        moduleIds: 0,
+        label: t("Advanced_Search"),
+        command: () => {
+          navigateToPage(urlList.filter((item: any) => item.name === urlNames.AlprAdvanceSearch)[0].url);
+        },
+      },  
+      {
+        moduleIds: 0,
         label: t("Captures"),
         command: () => {
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.AlprCapturePanel)[0].url);
@@ -270,6 +279,7 @@ const CRXLefNavigation = () => {
           navigateToPage(urlList.filter((item: any) => item.name === urlNames.LicensePlateList)[0].url);
         },
       },
+      
         
     ],
     },

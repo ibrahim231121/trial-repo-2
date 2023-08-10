@@ -1,0 +1,253 @@
+.Alpr_advanceSerach_Container {
+    width: 581px;
+    background: var(--color-f2f2f2);
+    padding: 23px 27px;
+    margin: 4px auto 0;
+    .Mui-focused {
+      outline: 3px solid var(--color-888787);
+      transition: all 0.25s ease-in-out;
+      border: none !important;
+    }
+    .Mui-focused {
+      transition: all 0.25s ease-in-out;
+    }
+  
+    .Alpr_AdvanceSearch_adVSelectBox {
+      width: 100%;
+      height: 30px;
+      border-radius: 0px;
+      padding: 0;
+      color: var(--color-74767c);
+      font-size: 14px;
+      text-indent: 12px;
+      box-sizing: border-box;
+      border: 1px solid var(--color-d1d2d4);
+      font-family:var(--base-font-family);
+      background-color: var(--color-White);
+      text-align: left;
+      &:hover {
+        border: 1px solid var(--color-888787);
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        .MuiSelect-icon {
+          right: 0;
+        }
+      }
+  
+      .MuiSelect-icon {
+        color: var(--color-333333);
+        padding-right: 10px;
+        right: 0;
+      }
+  
+    }
+  
+    .Alpr_AdvanceSearch_adVInputBox {
+      width: 88%;
+      margin: 0 16px 0 0;
+      color: var(--color-333333);
+      height: 30px;
+      outline: none;
+      border-radius: 0px;
+      border: 1px solid var(--color-d1d2d4);
+      padding: 0;
+      font-size: 14px;
+      text-indent: 12px;
+      box-sizing: border-box;
+      border: 1px solid var(--color-d1d2d4) ;
+      &:hover {
+        border: 1px solid var(--color-888787);
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        border: 3px solid var(--color-888787);
+        transition: all 0.25s ease-in-out;
+      }
+    }
+  
+    .Alpr_AdvanceSearch_advRow {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+      .Alpr_AdvanceSearch_removeBtn {
+        padding: 0;
+        line-height: 0;
+        background: var(--color-transparent);
+        font-size: 14px;
+        border: 0px;
+        color: var(--color-333333);
+        border-radius: 100px;
+        vertical-align: middle;
+        position: relative;
+        
+        .MuiSvgIcon-root {
+          fill: var(--color-White);
+          position: relative;
+          top: -5px;
+          font-size: 1em;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+        .MuiTooltip-popper {
+          margin-top: 2px;
+        }
+      }
+    }
+  
+    .Alpr_AddRemove-Search-Criteria-btn {
+      background: var(--color-White);
+      border: 1px solid var(--color-878787);
+      border-radius: 0px;
+      height: 30px;
+      padding: 0 0 0 13px;
+      width: 171px;
+      margin-left: 0;
+      display: flex;
+      place-items: center;
+  
+      i {
+        font-size: 14px;
+        width: 11px;
+        color: var(--color-333333);
+        font-weight: var(--Font-style-normal);
+      }
+  
+      span.btn-text {
+        padding-left: 14px;
+        padding-top: 0;
+        font-size: 14px;
+        color: var(--color-333333);
+      }
+  
+      &:focus {
+        outline: 0px; 
+      }
+    }
+    .AddRemove-Search-Disabled {
+      background-color: var(--color-e5e5e5);
+      border: var(--color-e5e5e5);
+      i , span {
+        color: var(--color-979797) !important;
+      }
+     
+    }
+  
+    .Alpr_AdvanceSearch_advanceInputBoxContent {
+      display: flex;
+    }
+    .dateRangeContainer {
+      margin-right: 15px;
+      margin-bottom: 61px;
+      .wrapper {
+        margin-left: 0px;
+      }
+    }
+    .dateTimeLabel {
+      padding: 0px;
+      padding-top: 6px;
+    }
+  }
+  
+  .Alpr_advanceSearchContet {
+    padding-top: 0px;
+    text-align: center;
+  
+    .Alpr_PreSearchButton {
+      font-size: 14px;
+      background: var(--color-transparent);
+      min-width: 100px;
+      border: 0px;
+      margin-top: 32px;
+      color: var(--color-d74b00) !important;
+  
+      i {
+        font-size: 16px;
+        margin-right: 5px;
+        position: relative;
+        top: -2px;
+      }
+      .rotate90 {
+        transform: rotate(-90deg);
+        top: 0px;
+      }
+      &:hover {
+        background: var(--color-transparent);
+        color: var(--color-333333);
+        border: 0px;
+      }
+      &:focus {
+        background: var(--color-transparent);
+        color: var(--color-333333);
+        border: 0px;
+      }
+    }
+  
+    .Alpr_advanceSearchButton {
+      min-width: 143px;
+      padding: 0;
+      height: 30px;
+      margin-top: 48px;
+    }
+  
+    .Alpr_advancedSearchBottom {
+      display: flex;
+      width: 100%;
+      position: relative;
+  
+      .Alpr_resetAdvancedSearchBtn {
+        justify-content: flex-end;
+        position: absolute;
+        right: 24px;
+        background: var(--color-transparent);
+        border: 0px;
+        height: 30px;
+        &:hover {
+          cursor: pointer;
+        }
+        span {
+          color: var(--color-c34400);
+          font: var(--Arial-font-family) normal normal normal 14px/16px;
+        }
+      }
+      .Alpr_AddRemove-Search-Criteria-btn {
+        .MuiSvgIcon-fontSizeSmall {
+          color: var(--color-333333);
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .Alpr_advanceSerach_Container {
+    &.Alpr_CRXAdvanceSearchBox {
+      padding: 21px 21px 23px 19px;
+      .dateTimeLabel {
+        text-align: right;
+      padding-right: 10px;
+      }
+      .Alpr_AdvanceSearch_adVSelectBox {
+        max-width: 239px;
+      margin-left: -10px;
+      margin-top: 0;
+      }
+      .Alpr_advancedSearchBottom {
+        margin-left: 7px;
+      }
+      .select {
+        select {
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+  
+  .Alpr_AdvanceSearch_searchText {
+    text-align: left;
+    color: #333333;
+    font-size: 14px;
+    line-height: 16px;
+    padding-left: 7px;
+    margin-bottom: 18px;
+  }
+  

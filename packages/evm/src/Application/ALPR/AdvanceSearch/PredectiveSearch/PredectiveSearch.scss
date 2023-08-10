@@ -1,0 +1,161 @@
+.wrapper {
+    max-width: 100%;
+    margin: 0px 0 0 16px;
+  }
+  .Alpr_predictiveSearch {
+  
+    .dateTimeLabel {
+      padding-left: 16px;
+    }
+    .dateRangeContainer {
+      .wrapper {
+        margin: 0px 0 0 16px !important;
+  
+        .select {
+          select {
+            height: 30px;
+            text-transform: capitalize;
+          }
+        }
+      }
+    
+    }
+  }
+  
+  .wrapper .search-input {
+    background: var(--color-White);
+    width: 100%;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .search-input input {
+    height: 38px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 0px;
+    padding: 0;
+    font-size: 14px;
+    text-indent: 12px;
+    box-sizing: border-box;
+    border: var(--color-797979) solid 1px;
+  }
+  
+  .search-input.active input {
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .search-input .autocom-box {
+    padding: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--color-cccccc);
+  }
+  
+  .search-input.active .autocom-box {
+    padding: 10px 8px;
+    opacity: 1;
+  }
+  
+  .autocom-box li {
+    box-sizing: border-box;
+    list-style: none;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+  }
+  
+  .search-input .icon {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    line-height: 55px;
+    font-size: 20px;
+    color: var(--color-644bff);
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .wrapper{
+      .select {
+        box-shadow: none;
+        border-radius: 0px;
+        margin-top: 0;
+        select{
+          height: 30px;
+          font-size: 14px;
+          padding-right: 45px;
+        }
+        .icon {
+          right: -2px;
+          top: 2px;
+        }
+        .iconContent {
+          .iconStyle {
+            top: 1px;
+          }
+        }
+    }
+  }
+  
+  .Alpr_PreSearchButton {
+    text-align: center;
+  }
+  
+  .Alpr_preSearcBtnContent {
+    text-align: center;
+    padding-top: 33px;
+    .Alpr_PreSearchButton {
+      min-width: 76px;
+      height: 30px;
+      padding: 0;
+      &:hover {
+        background: var(--color-231f20);
+        color: var(--color-f5f5f5);
+      }
+    }
+  }
+  
+  .Alpr_combo-box-Search {
+    position: relative;
+    .customIcon {
+      position: absolute;
+      left: 11px;
+      top: 7px;
+      color: var(--color-76787e);
+    }
+    .MuiAutocomplete-endAdornment {
+      display: none;
+    }
+    #combo-box-demo {
+      padding-right: 45px !important;
+      padding-left: 40px !important;
+      text-overflow: clip !important;
+      color: var(--color-333333);
+    }
+    .getac-simple-select{
+      .selectBoxTextField {
+        input {
+          outline: 1px solid var(--color-transparent);
+          &:focus {
+            outline: 3px solid var(--color-888787) !important;
+          } 
+          &::placeholder {
+            color: var(--color-74767c);
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  

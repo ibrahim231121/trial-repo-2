@@ -41,6 +41,7 @@ import AlprDataSourceSlice from './AlprDataSourceReducer';
 import LicensePlateSlice from './AlprLicensePlateReducer';
 import alprCapturePlateSlice from './AlprCapturePlateReducer';
 import alprPlateHistorySlice from './AlprPlateHistoryReducer';
+import AlprAdvanceSearchSlice from './AlprAdvanceSearchReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -84,6 +85,7 @@ export const reducer = combineReducers({
   alprDataSourceReducer: AlprDataSourceSlice.reducer,
   alprLicensePlateReducer: LicensePlateSlice.reducer,
   alprCapturePlateReducer: alprCapturePlateSlice.reducer,
-  alprPlateHistoryReducer: alprPlateHistorySlice.reducer
+  alprPlateHistoryReducer: alprPlateHistorySlice.reducer,
+  alprAdvanceSearchReducer: AlprAdvanceSearchSlice.reducer,
 })
 export type RootState = ReturnType<typeof reducer>
