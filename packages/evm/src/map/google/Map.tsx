@@ -8,7 +8,9 @@ interface IMap {
     callBackOnMarkerClick: any,
     updateSeekMarker?: any,
     mapCenter?:any,
-    getInfoWindowContentOnMarkerClick?:(data:any) => string
+    directions?:any,
+    getInfoWindowContentOnMarkerClick?:(data:any) => string,
+    onMapLoadingSuccess?:()=>void
 }
 
 interface IMarker {
@@ -23,7 +25,7 @@ type GoogleLatLng = google.maps.LatLng;
 type GoogleMap = google.maps.Map;
 type GoogleMarker = google.maps.Marker;
 
-const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, gpsData, callBackOnMarkerClick, updateSeekMarker, mapCenter, getInfoWindowContentOnMarkerClick}) => {
+const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, gpsData, callBackOnMarkerClick, updateSeekMarker, mapCenter, directions, getInfoWindowContentOnMarkerClick, onMapLoadingSuccess}) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const [map, setGMap] = useState<GoogleMap>();
     const [marker, setMarker] = useState<any>();
@@ -82,6 +84,27 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
             longitude: gpsInfo.lon ? gpsInfo.lon : gpsInfo.LON ? gpsInfo.LON : null
         }
     }
+
+    useEffect(()=>{
+        if(directions && map){
+            let originPnt = getLatLon(directions.origin);
+            let originGPnt =mapCenter = new google.maps.LatLng(originPnt.latitude, originPnt.longitude)
+            let destinationPnt = getLatLon(directions.destination);
+            let destinationGPnt =mapCenter = new google.maps.LatLng(destinationPnt.latitude, destinationPnt.longitude)
+
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers:true});
+            directionsRenderer.setMap(map);
+            
+            directionsService.route({
+                origin: originGPnt,
+                destination: destinationGPnt,
+                travelMode: google.maps.TravelMode.DRIVING,
+            }, (response:google.maps.DirectionsResult, status:google.maps.DirectionsStatus)=>{
+                directionsRenderer.setDirections(response);
+            });
+    }
+    },[directions]);
 
     useEffect(() => {
         let mapCenter;
@@ -184,7 +207,13 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
         if (map) {
             google.maps.event.addListener(markers, 'click', function (e) {
                 onMarkerClick(markers);
-            })
+            });
+
+            google.maps.event.addListenerOnce(map, "tilesloaded", function(e){
+                if(onMapLoadingSuccess){
+                    onMapLoadingSuccess()
+                }                
+            });
         }
     }
 

@@ -4,6 +4,7 @@ export type AlprPlateHistoryInfo = {
     plateThumbnail: string;
     hotlistName: string;
     capturedAt: string;
+    capturedAtStr:string;
     confidence: number;
     state: string;
     latitude: number;

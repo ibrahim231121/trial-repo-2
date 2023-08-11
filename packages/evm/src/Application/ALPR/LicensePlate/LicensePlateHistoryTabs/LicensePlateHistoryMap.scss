@@ -1,7 +1,4 @@
-._play_timeLine_pipeRed {
-    position: relative !important;
-    top: -23px;
-}
+
 
 .alpr_historyMap_slidder_buttons{
     height: 17px;
@@ -49,9 +46,17 @@
 .alpr_historyMap_seekbar_container{
     padding:20px 10px 0px;
     display:flex;
-    border:1px solid #878787;
 
-    .makeStyles-thumb-488{
+    .MuiSlider-thumb{
         visibility: visible !important;
+    }
+
+    .MuiSlider-markLabel {
+        font-size: 14px !important;
+    }
+
+    ._play_timeLine_pipeRed {
+        position: relative !important;
+        top: -42px;
     }
 }

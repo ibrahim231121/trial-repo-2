@@ -7,6 +7,8 @@ import "./LicensePlateHistoryMap.scss"
 import { CRXMultiSelectBoxLight } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
 import dateDisplayFormat from '../../../../GlobalFunctions/DateFormat';
+import { useDispatch } from 'react-redux';
+import { setLoaderValue } from '../../../../Redux/loaderSlice';
 
 
 type LicensePlateHistoryMapProp = {
@@ -15,8 +17,8 @@ type LicensePlateHistoryMapProp = {
 
 const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any[]>([]);
-  const [controlBar, setControlBar] = React.useState(2);
-  const [timelineduration, settimelineduration] = React.useState(7);
+  const [controlBar, setControlBar] = React.useState<any>(0);
+  const [timelineduration, settimelineduration] = React.useState(12);
   const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = React.useState<boolean>(false);
   const [visibleThumbnail, setVisibleThumbnail] = React.useState<number[]>([]);
   const [markerFwRw, setMarkerFwRw] = React.useState<boolean>(false);
@@ -28,7 +30,14 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
     "LAT": 0,
     "LON": 0
   });
+  const [marks, setMarks] = React.useState<any[]>([{
+    value: 0, 
+    label: ""
+  }]);
+  const [directions, setDirections] = React.useState<any>();
+
   const {t} = useTranslation<string>();
+  const dispatch = useDispatch();
 
   const PLAYING_BASE_SPEED = 2000;
   const SPEED_1X = "1x";
@@ -36,11 +45,13 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
   const SPEED_4X = "4x";
 
   const playingIntervalRef = React.useRef(0);
+  const currentItemPlayingRef = React.useRef(0);
+  const lastDateRef = React.useRef<any>();
   const playingIntervalSpeedRef = React.useRef(PLAYING_BASE_SPEED);
 
   const timelinedetail: any[] = []
 
-  useEffect(()=>{
+  useEffect(()=>{    
     if(playing){
       setStopped(false)
 
@@ -77,6 +88,8 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
     if(stopped){
       setPlaying(false);
       setMapCenter(gpsData[0])
+      currentItemPlayingRef.current = 0
+      setInitialMarksInSeekbar();
       setControlBar(0);
     }
   },[stopped])
@@ -87,34 +100,186 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
         return {
           "LAT": histItem.latitude,
           "LON": histItem.longitude,
-          "LOGTIME": histItem.capturedAt
+          "LOGTIME": histItem.capturedAtStr
         }
       })
-  
+      setInitialMarksInSeekbar()
+      
       setGpsData(gpsDataTemp)
+      
+      dispatch(setLoaderValue({isLoading: true}))
     }
 
   },[])
-  
+
+  const onMapLoadingSuccess = ()=>{
+    dispatch(setLoaderValue({isLoading: false}))
+  }
+
+  const setInitialMarksInSeekbar = ()=>{
+    let minCapturedDate = historyData.reduce((item1:AlprPlateHistoryInfo, item2:AlprPlateHistoryInfo) => {
+      return (Date.parse(item1.capturedAt)) < (Date.parse(item2.capturedAt)) ? item1 : item2;
+    }).capturedAt;
+
+    let mindate = new Date(minCapturedDate);
+
+    let initialMonth = mindate.toLocaleString('default', { month: 'long' });
+    let initialDate = mindate.getDate();
+
+    mindate.setHours(mindate.getHours() + 24);
+    lastDateRef.current = mindate
+
+    let lastMonth = mindate.toLocaleString('default', { month: 'long' });
+    let lastDate = mindate.getDate();  
+
+    let marksList =[{
+      value: 0, 
+      label: initialDate + " " + initialMonth
+    }];
+
+    for(let i=1; i<12; i++){
+      marksList.push({
+        value: i,
+        label: (i * 2).toString() + ":" + "00"
+      })
+    }
+
+    marksList.push({
+      value: 12 , 
+      label: lastDate + " " + lastMonth
+    })
+
+    setMarks(marksList);
+  }
+
+  const setMarksAndControlBarForDestination = (dest:any) => {
+    const destDateStr = dateDisplayFormat(dest.LOGTIME)
+
+          let destDate = new Date(destDateStr);
+
+          let hours = destDate.getHours();
+          let date = destDate.getDate();
+          let month = destDate.getMonth();
+
+          let lastMonth = lastDateRef.current.getMonth();
+          let lastDate = lastDateRef.current.getDate(); 
+
+          let controlbarValue = [];
+
+          if(lastMonth == month && lastDate > date){
+            
+          }else{
+            let marksList:any[] =[];
+
+            if(lastDate == date){
+              
+              marksList.splice(0, 0, {
+                value: 12, 
+                label: hours % 2 == 0 ? hours.toString() + ":" + "00" : (hours + 1).toString() + ":" + "00"
+              });
+
+              let hoursTemp = hours;
+
+              for(let i = 11 ; i > 0 ; i--){
+                hoursTemp = hoursTemp - 2;
+
+                if(hoursTemp <= 0){
+                  marksList.splice(0, 0, {
+                    value: i, 
+                    label: date + " " + destDate.toLocaleString('default', { month: 'long' })
+                  });
+
+                  hoursTemp = 24;
+                }else{
+                  marksList.splice(0, 0, {
+                    value: i, 
+                    label: hoursTemp % 2 == 0 ? hoursTemp.toString() + ":" + "00" : (hoursTemp + 1).toString() + ":" + "00"
+                  });
+                }
+              }
+              controlbarValue.push(12)
+              controlbarValue.push(11)
+            }else{
+              marksList.push({
+                value: 0, 
+                label: date + " " + month
+              });
+        
+              for(let i=1; i<12; i++){
+                marksList.push({
+                  value: i,
+                  label: (i * 2).toString() + ":" + "00"
+                })
+              }
+
+              lastDateRef.current.setHours(lastDateRef.current.getHours() + 24);
+
+              let lastMonth = lastDateRef.current.toLocaleString('default', { month: 'long' });
+              lastDate = lastDateRef.current.getDate();
+              
+              
+              marksList.push({
+                value: 12, 
+                label: lastDate + " " + lastMonth
+              })
+            }
+
+            setMarks(marksList);
+          }
+
+          if(controlbarValue.length == 2){
+
+          }else{
+            if(hours == 0){
+              controlbarValue.push((hours));
+              controlbarValue.push((hours + 1));
+            }else if(hours % 2 == 0){
+              controlbarValue.push((((hours/2) - 1)));
+              controlbarValue.push(((hours/2)));
+            }else{
+              controlbarValue.push((((hours + 1)/2)));
+              controlbarValue.push((((hours + 1)/2) - 1));
+            }
+          }
+
+          setControlBar(controlbarValue)
+  }
+
+  const showDirections = (origin: any, dest: any) => {
+    let direction ={
+      origin: origin,
+      destination: dest
+    } 
+    
+    setDirections(direction);
+  }
+
   const startPlaying = ()=>{
     playingIntervalRef.current = window.setInterval(() => {
-      setControlBar((prevControlBar)=> {
-        if(prevControlBar < historyData.length){
-          let visibleData = gpsData.slice(0, prevControlBar + 1)            
-          
+      
+      if(currentItemPlayingRef.current < historyData.length){
+        let visibleData = gpsData.slice(0, currentItemPlayingRef.current + 1)            
+        
 
-          if(visibleData.length > 0){
-            setUpdateSeekMarker(visibleData)
-            setMapCenter(visibleData[visibleData.length - 1])
+        if(visibleData.length > 0){
+          const dest = visibleData[visibleData.length - 1]
+          setUpdateSeekMarker(visibleData)
+          setMapCenter(dest)
+
+          setMarksAndControlBarForDestination(dest);
+
+          if(visibleData.length > 1)
+          {
+            showDirections(visibleData[0], dest);
           }
           
-          return prevControlBar + 1;
-        }else{
-          setStopped(true)
-          window.clearInterval(playingIntervalRef.current);
-          return prevControlBar
-        }          
-      })
+        }
+        currentItemPlayingRef.current += 1
+      }else{
+        setStopped(true)
+        window.clearInterval(playingIntervalRef.current);        
+      }
+
     }, playingIntervalSpeedRef.current);
   }
 
@@ -138,7 +303,7 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
   }
 
   const handleControlBarChange = (event: any, newValue: any) => {
-    setControlBar(newValue);
+    /* setControlBar(newValue);
 
     if(newValue <= gpsData.length){
       let visibleData = gpsData.slice(0, newValue)      
@@ -147,7 +312,7 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
         setUpdateSeekMarker(visibleData)
         setMapCenter(visibleData[visibleData.length - 1])
       }
-    }
+    } */
   };
 
   const displayThumbnail = (event: any, x: any, displayAll: boolean, withdescription?: string) => {  }
@@ -163,7 +328,9 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
           callBackOnMarkerClick={(e:any) =>{  }}
           updateSeekMarker={updateSeekMarker}
           mapCenter={mapCenter}
+          directions={directions}
           getInfoWindowContentOnMarkerClick={getInfoWindowContentOnMarkerClick}
+          onMapLoadingSuccess = {onMapLoadingSuccess}
         />
       </div>
       
@@ -183,7 +350,7 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
               setStopped(true)
               
                 }}/>
-              <div className='alpr_historyMap_speed_dropdown'>
+              {/* <div className='alpr_historyMap_speed_dropdown'>
                 <CRXMultiSelectBoxLight
                   className=""
                   label={""}
@@ -210,10 +377,10 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
 
                   }}
                 />
-              </div>          
+              </div>           */}
           </div>
         </div>
-        <div style={{"flexGrow":"20", "flexShrink":"20"}}>
+        <div style={{"flexGrow":"20", "flexShrink":"20","paddingTop": "12px", "paddingRight": "12px"}}>
           <VideoPlayerSeekbar
               controlBar={controlBar}
               handleControlBarChange={handleControlBarChange}
@@ -223,6 +390,7 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
               displayThumbnail={displayThumbnail}
               setVisibleThumbnail={setVisibleThumbnail}
               markerFwRw={markerFwRw} 
+              marks={marks}
             />
         </div>
         
