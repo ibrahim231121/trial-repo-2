@@ -17,6 +17,7 @@ interface OptionsProps {
   id: string;
 }
 interface Props {
+  clearResponseForSearch:()=>void;
   getOptions: (options: any) => void;
   hideOptions: () => void;
   dateOptionType: string;
@@ -36,6 +37,7 @@ type DateTimeObject = {
 };
 
 const AdvancedSearch: React.FC<Props> = ({
+  clearResponseForSearch,
   getOptions,
   hideOptions,
   dateOptionType,
@@ -245,6 +247,7 @@ const AdvancedSearch: React.FC<Props> = ({
   };
 
   const AdvancedSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearResponseForSearch()
     for (let textBoxIndex = 0; textBoxIndex < selectsLength; textBoxIndex++) {
       const value = advanceSelect[textBoxIndex].inputValue;
       const selectValue = advanceSelect[textBoxIndex].value;

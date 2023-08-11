@@ -33,6 +33,13 @@ export const getAlprSearchInfoAsync: any = createAsyncThunk(
       });
 });
 
+export const ClearAdvanceSearchProperty: any = createAsyncThunk(
+    'ClearAdvanceSearchProperty',
+    async () => {
+        return null;
+    }
+);
+
 export const getNumberPlateSearchNameAsync: any = createAsyncThunk(
     'getNumberPlateSearchName',
     async ({QUERRY, dateTime, searchType}: any) => {
@@ -60,6 +67,7 @@ export const getNumberPlateSearchNameAsync: any = createAsyncThunk(
     }
 });
 
+
 export const AlprAdvanceSearchSlice = createSlice({
     name: 'AlprSearch',
     initialState: { alprSearchInfo: [], alprSearchName: []  },
@@ -69,6 +77,9 @@ export const AlprAdvanceSearchSlice = createSlice({
             state.alprSearchInfo = payload;
         }).addCase(getNumberPlateSearchNameAsync.fulfilled, (state: any, { payload }) => {
             state.alprSearchName = payload;
+        })
+        builder.addCase(ClearAdvanceSearchProperty.fulfilled, (state: any, { payload }) => {
+            state.alprSearchInfo = {};
         })
     }
 });

@@ -690,7 +690,7 @@ export const urlList: any = [
         url: '/Alpr/AdvanceSearch',
         details: [
             { type: 'text', label: 'Alpr' },
-            { routeTo: '/Alpr/AlprAdvanceSearch' ,type: 'text', label: 'Capture Plate Search' }
+            { routeTo: '/Alpr/AdvanceSearch' ,type: 'text', label: 'Capture Plate Search' }
         ]
     },
     {

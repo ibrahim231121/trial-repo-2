@@ -19,7 +19,7 @@ import "./PredectiveSearch/PredectiveSearch.scss"
 import "./AlprAdvanceSearch.scss"
 import AdvanceSearchLister from "./AdvanceSearchDataTable/Index";
 import { GenerateLockFilterQuery, SearchType } from "../../Assets/utils/constants";
-import { getAlprSearchInfoAsync, getNumberPlateSearchNameAsync } from "../../../Redux/AlprAdvanceSearchReducer";
+import { ClearAdvanceSearchProperty, getAlprSearchInfoAsync, getNumberPlateSearchNameAsync } from "../../../Redux/AlprAdvanceSearchReducer";
 import { useHistory } from "react-router-dom";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { IconButton } from "@material-ui/core";
@@ -175,8 +175,8 @@ const AlprAdvanceSearch = (props: any) => {
          
         }
         
-       }, [searchData]);
-
+        
+    }, [searchData]);
     useEffect(() => {
         // NOTE: To Enable Search Button, on the basis of Query String.
         if (dateTimeDropDown.value === 'anytime' && querryString.length > 0)
@@ -331,6 +331,7 @@ const AlprAdvanceSearch = (props: any) => {
         }
         else {
             setSearchData([]);
+            setSearchPanelModal("Alpr_panel_show Alpr_main_master_page_panel");
         }
     }, [responseForSearch]);
 
@@ -356,7 +357,11 @@ const AlprAdvanceSearch = (props: any) => {
         setDateTime(dateTimeDropDown);
         setDateOptionType(dateOptionType);
     }
+    const clearResponseForSearch=()=>
+    {
+        dispatch(ClearAdvanceSearchProperty())
 
+    }
     const removeQueryStringObjectFromQuery = (queryToModify: any) => {
         let modifiedQuery = JSON.parse(JSON.stringify(queryToModify)); // Copy object without reference.
         let must = modifiedQuery.bool.must;
@@ -378,7 +383,7 @@ const AlprAdvanceSearch = (props: any) => {
             setAdvanceSearch(false);
         }
         if (!props.isopen) {
-            // history.push(urlList.filter((item: any) => item.name === urlNames.AlprAdvanceSearchResult)[0].url);
+            history.push(urlList.filter((item: any) => item.name === urlNames.AlprAdvanceSearchResult)[0].url);
             dispatch(enterPathActionCreator({ val: t('Search_Results') }));
         }
     }
@@ -403,6 +408,7 @@ const AlprAdvanceSearch = (props: any) => {
         setShowAdvance(false);
     }
     const Search = () => {
+        clearResponseForSearch()
         setSearchResultText({ type: "Search Term:", name: querryString })
         if (querryString && querryString.length > 0 && querryString.includes("#")) {
             if (querryString.startsWith("#")) {
@@ -522,6 +528,7 @@ const AlprAdvanceSearch = (props: any) => {
                                 </CRXButton>
                                 {showAdvance && (
                                     <AdvanceOption
+                                    clearResponseForSearch={clearResponseForSearch}
                                         searchPanelIdentifer={searchPanelIdentifer}
                                         getOptions={(e) => getAllOptions(e)}
                                         hideOptions={() => setShowAdvance(false)}
