@@ -7,6 +7,7 @@ import {  HotListDataSourceTemplate } from "../../../../utils/Api/models/HotList
 import './DataSourceDetail.scss';
 import { useParams } from "react-router-dom";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../../GlobalDropdown'
+import { CRXSelectBox } from "@cb/shared";
 
 const DataSourceInitialData: HotListDataSourceTemplate = {
     recId: 0,
@@ -49,7 +50,7 @@ const DataSourceDetail = (props: any) => {
             case 'sourceType':
                 let sourceTypeData = {
                     recId: +updatedValues,
-                    sourceTypeName: SourceTypeDropDown.filter((x: any) => x.id == updatedValues).length >0 ? SourceTypeDropDown.find((x: any) => x.id == updatedValues)?.label : ''
+                    sourceTypeName: SourceTypeDropDown.filter((x: any) => x.id == updatedValues).length >0 ? SourceTypeDropDown.find((x: any) => x.id == updatedValues)?.displayText : ''
                 };
                 props.setFieldValue('dataSourceData',{ ...dataSourcePaylod, sourceType: sourceTypeData });
                 break;
@@ -122,29 +123,22 @@ const DataSourceDetail = (props: any) => {
                                     errorMsg={props.formValidationError?.dataSourceData?.name}
                                     />
                                 </div>
-                                <div className="Alpr_DataSource_CrxEditFilter Alpr_DataSource_EditFilterUi">
-                                    <CRXMultiSelectBoxLight
-
-                                        className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
-                                        label={t("Source_Type") + ':'}
-                                        multiple={false}
-                                        CheckBox={true}
+                                <div className="gridFilterTextBox">
+                                    <h6 className="MuiTypography-root label MuiTypography-subtitle1">
+                                    <span className="inputLabelNoReq">{t("Source_Type") + ':'}</span>
+                                    </h6>
+                                    {/* </CRXColumn> */}
+                                    <CRXSelectBox
                                         options={SourceTypeDropDown}
-                                        defaultValue={{ id: 10002, label: "CSV" }}
-                                        required={false}
-                                        isSearchable={true}
-                                        value={props.dataSourceTabValues?.dataSourceData?.sourceType?.recId === 0 ? { id: 10002, label: 'CSV' } : 
-                                        { id: props.dataSourceTabValues?.dataSourceData?.sourceType?.recId, label: props.dataSourceTabValues?.dataSourceData?.sourceType?.sourceTypeName }}
-                                        id='DataSourceType'
+                                        defaultOption={false}
+                                        id="simpleSelectBox"
+                                        className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
                                         onChange={(
-                                            e: React.SyntheticEvent,
-                                            value: any
+                                        e: any,
                                         ) => {
-                                             updateSourceDataInParent('sourceType',value === null ? 10002 : value?.id)
+                                            updateSourceDataInParent('sourceType',e.target.value === null ? 10002 : e.target.value)
                                         }}
-                                        onOpen={(e: any) => {
-
-                                        }}
+                                        value={props.dataSourceTabValues?.dataSourceData?.sourceType?.recId }
                                     />
                                 </div>
                                 <div className='Alpr_DataSource_DropDownSpacing'></div>
@@ -177,30 +171,25 @@ const DataSourceDetail = (props: any) => {
                                     />
                                 </div>
                                 <div>
-                                    <div className="Alpr_DataSource_CrxEditFilter Alpr_DataSource_EditFilterUi">
-                                        <CRXMultiSelectBoxLight
-                                            id='DataSourceConnectionType'
-                                            className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
-                                            label={t("Connection_Type") + ':'}
-                                            multiple={false}
-                                            defaultValue={{ id: "FTP", label: "FTP" }}
-                                            CheckBox={true}
-                                            options={ConnectionTypeDropDown}
-                                            required={false}
-                                            isSearchable={true}
-                                            value={props.dataSourceTabValues?.dataSourceData?.connectionType == "-1" || props.dataSourceTabValues?.dataSourceData?.connectionType === '' ? { id: 'FTP', label: 'FTP' } :
-                                                { id: props.dataSourceTabValues?.dataSourceData.connectionType, label: ConnectionTypeDropDown.find((x: any) => x.id === props.dataSourceTabValues?.dataSourceData.connectionType)?.label }}
-
-                                            onChange={(
-                                                e: React.SyntheticEvent,
-                                                value: any
-                                            ) => {
-                                                updateSourceDataInParent('ConnectionType',value===null?'FTP':value?.id)}}
-                                            onOpen={(e: any) => {
-
-                                            }}
-                                        />
-                                    </div>
+                                <div className="gridFilterTextBox">
+                                    <h6 className="MuiTypography-root label MuiTypography-subtitle1">
+                                    <span className="inputLabelNoReq">{t("Connection_Type") + ':'}</span>
+                                    </h6>
+                                    {/* </CRXColumn> */}
+                                    <CRXSelectBox
+                                        options={ConnectionTypeDropDown}
+                                        defaultOption={false}
+                                        id="simpleSelectBox"
+                                        className="Alpr_DataSource_Autocomplete Alpr_CrxDataSource_DropDownEditForm"
+                                        onChange={(
+                                        e: any,
+                                        value: any
+                                        ) => {
+                                            updateSourceDataInParent('ConnectionType',e.target.value===null?'FTP':e.target.value)}
+                                        }
+                                        value={ props.dataSourceTabValues?.dataSourceData.connectionType}
+                                    />
+                                </div>
                                     <div className='Alpr_DataSource_DropDownSpacing'></div>
                                 </div>
                                 {props.dataSourceTabValues?.dataSourceData.connectionType!=='FTP'?

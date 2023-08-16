@@ -278,6 +278,9 @@ const LicensePlateDetail = (props: any) => {
                                                                 setFieldValue("stateId", value == null ? 0 : Number.parseInt(value?.id))
                                                             }
                                                             }
+                                                            onOpen={(e: any) => {
+
+                                                            }}
                                                             error={touched?.agencyId && (errors.agencyId ?? "").length > 0}
                                                             errorMsg={errors.agencyId}
                                                         />

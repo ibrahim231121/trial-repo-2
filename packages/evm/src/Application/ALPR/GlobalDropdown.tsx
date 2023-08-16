@@ -1,15 +1,15 @@
 export const ConnectionTypeDropDown =
     [{
-        id: 'FTP',
-        label: "FTP"
+        value: 'FTP',
+        displayText: "FTP"
     },
     {
-        id: "Local",
-        label: "Local"
+        value: "Local",
+        displayText: "Local"
     },
     {
-        id: "UNC",
-        label: "UNC"
+        value: "UNC",
+        displayText: "UNC"
     }
     ];
 
@@ -17,12 +17,12 @@ export const ConnectionTypeDropDown =
 export const SourceTypeDropDown =
     [
     {
-        id: 10002,
-        label: "CSV"
+        value: 10002,
+        displayText: "CSV"
     },
     {
-        id: 10003,
-        label: "Manual"
+        value: 10003,
+        displayText: "Manual"
     }
     ];
 

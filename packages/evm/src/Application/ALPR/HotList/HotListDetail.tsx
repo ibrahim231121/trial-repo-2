@@ -432,8 +432,10 @@ const HotListDetail = () => {
                       <Grid item xs={12} sm={12} md={12} lg={5} >
 
                         <div className="createHotlistColorContainer">
-                          <label className="createHotlistColorLabel">Color:</label>
-                          <div className="createHotlistColorInput">
+                        <h6 className="MuiTypography-root label MuiTypography-subtitle1">
+                                    <span className="inputLabelNoReq">{t("Color") + ':'}</span>
+                                    </h6>
+                          <div className="createHotlistColorInput ">
                             <Field
                               id="color"
                               key="color"

@@ -202,7 +202,7 @@ const DataSourceFormsAndFields = () => {
         confirmPassword: tabsFinalizeData?.dataSourceData?.password,
         connectionType: tabsFinalizeData?.dataSourceData?.connectionType===''?'FTP':tabsFinalizeData?.dataSourceData?.connectionType,
         schedulePeriod: tabsFinalizeData?.dataSourceData?.schedulePeriod,
-        locationPath: tabsFinalizeData?.dataSourceData?.locationPath,
+        locationPath: tabsFinalizeData?.dataSourceData?.connectionType==='FTP' ? tabsFinalizeData?.dataSourceData?.ftpPath : tabsFinalizeData?.dataSourceData?.locationPath,
         port: +tabsFinalizeData?.dataSourceData?.port,
         statusDesc: tabsFinalizeData?.dataSourceData?.statusDesc,
       }
