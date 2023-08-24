@@ -10,6 +10,8 @@ import { Token } from "../../utils/Api/models/AuthenticationModels";
 import { urlList, urlNames } from "../../utils/urlList";
 import { useDispatch } from "react-redux";
 import { setAccessAndRefreshToken } from "../../Redux/AccessAndRefreshTokenReducer";
+import { getCategoryAsync } from "../../Redux/categoryReducer";
+import { getStationsInfoAllAsync } from "../../Redux/StationReducer";
 
 
 const TokenPage=(props:any)=> {
@@ -43,6 +45,8 @@ const TokenPage=(props:any)=> {
                 setModuleIds(moduleIdsAssigned);
             }
             history.push(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
+            dispatch(getCategoryAsync());
+            dispatch(getStationsInfoAllAsync());
           })
         );
         

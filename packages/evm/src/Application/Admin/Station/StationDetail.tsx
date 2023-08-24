@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
-import { getRetentionStateAsync, getStationsAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
+import { getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
 import {
   CRXTabs,
   CrxTabPanel,
@@ -95,8 +95,9 @@ const StationDetail: React.FC = () => {
   const [latLong, setLatLong] = React.useState<IlatLong>();
   const [disableSaveButton, setDisableSaveButton] = React.useState<boolean>(true);
   const [isOpen, setIsOpen] = React.useState(false);
-
+  const [isButtonDisable, setIsButtionDisable] = React.useState(false);
   React.useEffect(() => {
+    setIsButtionDisable(false);
     dispatch(getRetentionStateAsync());
     dispatch(getUploadStateAsync());
     getDeviceTypeRecord();
@@ -118,43 +119,51 @@ const StationDetail: React.FC = () => {
       setUploadAutoCompleteOptions(remapArrayToAutoCompleteOptionType(uploadResponse))
   }, [uploadResponse]);
 
+  const getStation = () => {
+    const url = `/Stations/${id}`;
+    UnitsAndDevicesAgent.getStation(url)
+      .then((response: Station) => {
+        return response
+      })
+      .then((station) => {
+        const _station: StationFormType = {
+          Name: station.name,
+          StreetAddress: station.address.street,
+          Phone: station.address.phone,
+          Passcode: station.passcode,
+          Location: {
+            latitude: station.geoLocation.latitude,
+            longitude: station.geoLocation.longitude,
+          },
+          PolicyId: station.policies[0].id,
+          RetentionPolicy: {
+            id: String(station.policies[0].retentionPolicyId.cmtFieldValue),
+            label : ""
+          },
+          UploadPolicy: {
+            id: String(station.policies[0].uploadPolicyId),
+            label : ""
+          },
+          BlackboxRetentionPolicy: {
+            id: String(station.policies[0].blackboxRetentionPolicyId),
+            label: ""
+          },
+          SSId: station.ssid ?? "",
+          Password: station.password ?? "",
+          ConfigurationTemplate: station.policies[0].configurationTemplates
+        };
+        setStationPayload(_station);
+        dispatch(enterPathActionCreator({ val: t("Station") + ": " + _station.Name }));
+        setIsButtionDisable(false);
+      });
+  }
+
   React.useEffect(() => {
     if (!isAddCase) {
-      const url = `/Stations/${id}`;
-      UnitsAndDevicesAgent.getStation(url)
-        .then((response: Station) => {
-          return response
-        })
-        .then((station) => {
-          const _station: StationFormType = {
-            Name: station.name,
-            StreetAddress: station.address.street,
-            Phone: station.address.phone,
-            Passcode: station.passcode,
-            Location: {
-              latitude: station.geoLocation.latitude,
-              longitude: station.geoLocation.longitude,
-            },
-            PolicyId: station.policies[0].id,
-            RetentionPolicy: {
-              id: String(station.policies[0].retentionPolicyId.cmtFieldValue),
-            },
-            UploadPolicy: {
-              id: String(station.policies[0].uploadPolicyId),
-            },
-            BlackboxRetentionPolicy: {
-              id: String(station.policies[0].blackboxRetentionPolicyId),
-            },
-            SSId: station.ssid ?? "",
-            Password: station.password ?? "",
-            ConfigurationTemplate: station.policies[0].configurationTemplates
-          };
-          setStationPayload(_station);
-          dispatch(enterPathActionCreator({ val: t("Station") + ": " + _station.Name }));
-        });
+      getStation();
     }
   }, [isAddCase]);
-
+  
   React.useEffect(() => {
     /**
     * * Set Unit Template Select Box Values.
@@ -178,14 +187,17 @@ const StationDetail: React.FC = () => {
       if (retentionAutoCompleteOptions.length > 0) {
         let retentionAutoComplete = retentionAutoCompleteOptions.filter((x: any) => x.id == stationPayload.RetentionPolicy?.id)[0];
         setRetentionAutoCompleteValue(retentionAutoComplete);
+        setRetentionPolicyValue(retentionAutoComplete);
       }
       if (blackBoxAutoCompleteOptions.length > 0) {
         let blackBoxAutoComplete = blackBoxAutoCompleteOptions.filter((x: any) => x.id == stationPayload.BlackboxRetentionPolicy?.id)[0];
         setBlackBoxAutoCompleteValue(blackBoxAutoComplete);
+        setBlackBoxRetentionValue(blackBoxAutoComplete);
       }
       if (uploadAutoCompleteOptions.length > 0) {
         let uploadAutoComplete = uploadAutoCompleteOptions.filter(x => x.id == stationPayload.UploadPolicy?.id)[0];
         setUploadAutoCompleteValue(uploadAutoComplete);
+        setUploadPolicyValue(uploadAutoComplete);
       }
     }
   }
@@ -281,15 +293,16 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
-    let _configurationTemplate =  values.ConfigurationTemplate.map((x: any) => {
-      let configurationTemplate : any = {
+    setIsButtionDisable(true);
+    let _configurationTemplate = values.ConfigurationTemplate.map((x: any) => {
+      let configurationTemplate: any = {
         id: x.id,
         fields: x.fields,
         history: x.history,
         name: x.name,
         operationType: x.operationType,
         stationId: x.stationId,
-        typeOfDevice:x.typeOfDevice
+        typeOfDevice: x.typeOfDevice
       }
       return configurationTemplate
     })
@@ -310,13 +323,13 @@ const StationDetail: React.FC = () => {
           id: values.PolicyId,
           retentionPolicyId: {
             cmtFieldValue: Number(values.RetentionPolicy?.id),
-            cmtFieldName : '',
-            id : '',
-            record : []
+            cmtFieldName: '',
+            id: '',
+            record: []
           },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
-          configurationTemplates:  _configurationTemplate ?? []
+          configurationTemplates: _configurationTemplate ?? []
         }
       ],
       passcode: values.Passcode ?? "",
@@ -334,28 +347,30 @@ const StationDetail: React.FC = () => {
     if (isAddCase) {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
         showToastMsg()
+        setError(false);
         dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
         const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url}`;
         history.push(path.substring(0, path.lastIndexOf("/")) + "/" + response);
-        
-        //setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
           errorHandler(e.response.data);
           setError(true);
           console.error(e);
+          setIsButtionDisable(false);
         });
     } else {
       body.id = Number(id);
       UnitsAndDevicesAgent.updateStation(`/Stations/${id}`, body).then((response: any) => {
+        setError(false);
         showToastMsg()
         dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
-        //setTimeout(() => navigateToStations(), 3000);
+        getStation();
       })
         .catch((e: any) => {
           errorHandler(e.response.data);
           setError(true);
           console.error(e);
+          setIsButtionDisable(false);
         });
     }
     actions.setSubmitting(false);
@@ -456,10 +471,6 @@ const StationDetail: React.FC = () => {
     ) : null
   }
 
-  const returnOptions = (optionArray: AutoCompleteOptionType[]) => {
-    return optionArray.length > 0 ? optionArray : [];
-  }
-
   const setfieldTouchedValue = (value: any) => {
     return value ? 1 : 0
   }
@@ -480,7 +491,7 @@ const StationDetail: React.FC = () => {
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
             <Form>
-              <div className="ManageStation  switchLeftComponents ManageStationUi">
+              <div className="ManageStation ManageStationUi">
                 {/* {success && (
                   <CRXAlert
                     message={t("Success_You_have_saved_the_Station")}
@@ -714,7 +725,7 @@ const StationDetail: React.FC = () => {
                               name="blackBoxPolicyMultiSelect"
                               multiple={false}
                               error={blackBoxRetentionTouched == 1}
-                              errorMsg={"Blackbox_Retention_Policy_is_required"}
+                              errorMsg={t("Blackbox_Retention_Policy_is_required")}
                               value={blackBoxAutoCompleteValue}
                               options={blackBoxAutoCompleteOptions.length > 0 ? blackBoxAutoCompleteOptions : []}
                               onChange={(
@@ -729,7 +740,11 @@ const StationDetail: React.FC = () => {
                                   reason
                                 )
                                 setBlackBoxRetentionTouched(setfieldTouchedValue(value === null))
-                                setBlackBoxRetentionValue(setFieldsValue(value));
+                                setBlackBoxRetentionValue(value);
+                                setFieldValue("BlackboxRetentionPolicy", {
+                                  id : value?.id,
+                                  label : ""
+                                })
                               }
                               }
                               onBlur ={() =>
@@ -761,7 +776,7 @@ const StationDetail: React.FC = () => {
                               className="getStationField"
                               multiple={false}
                               error={retentionPolicyTouched === 1}
-                              errorMsg={"Retention_Policy_is_required"}
+                              errorMsg={t("Retention_Policy_is_required")}
                               value={retentionAutoCompleteValue}
                               options={retentionAutoCompleteOptions.length > 0 ? retentionAutoCompleteOptions : []}
                               onChange={(
@@ -777,7 +792,11 @@ const StationDetail: React.FC = () => {
                                   reason
                                 )
                                 setRetentionPolicyTouched(setfieldTouchedValue(value === null))
-                                setRetentionPolicyValue(setFieldsValue(value));
+                                setRetentionPolicyValue(value);
+                                setFieldValue("RetentionPolicy", {
+                                  id : value?.id,
+                                  label : ""
+                                })
                               }
                               }
 
@@ -810,7 +829,7 @@ const StationDetail: React.FC = () => {
                               id="uploadPolicyMultiSelect"
                               className="getStationField"
                               error={uploadAutoCompleteOptions.length > 0 && uploadPolicyTouched === 1}
-                              errorMsg={"Upload_Policy_is_required"}
+                              errorMsg={t("Upload_Policy_is_required")}
                               multiple={false}
                               value={uploadAutoCompleteValue}
                               options={uploadAutoCompleteOptions.length > 0 ? uploadAutoCompleteOptions : []}
@@ -827,7 +846,11 @@ const StationDetail: React.FC = () => {
                                   reason
                                 )
                                 setUploadPolicyTouched(setfieldTouchedValue(value === null))
-                                setUploadPolicyValue(setFieldsValue(value));
+                                setUploadPolicyValue(value);
+                                setFieldValue("UploadPolicy", {
+                                  id : value?.id,
+                                  label : ""
+                                })
                               }
                               }
                               onBlur = {() =>
@@ -866,7 +889,7 @@ const StationDetail: React.FC = () => {
                   <div>
                     <CRXButton
                       type="submit"
-                      disabled={!(isValid && dirty)}
+                      disabled={((!(isValid && dirty)) || isButtonDisable)}
                       variant="contained"
                       className="groupInfoTabButtons"
                     >
@@ -928,7 +951,7 @@ const StationDetail: React.FC = () => {
                 <>
                   <GoogleMap
                     apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                    zoomLevel={15}
+                    zoomLevel={isAddCase ? 0 : 15}
                     mapTypeControl={true}
                     // initialMarker={{ lat: 24.86, long: 67.0 }}
                     initialMarker={

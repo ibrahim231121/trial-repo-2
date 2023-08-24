@@ -27,7 +27,6 @@ import { getAllAlprCapturePlatesInfo } from "../../../../Redux/AlprCapturePlateR
 import moment from "moment";
 import { basicDateDefaultValue, dateOptionsTypes } from "../../../../utils/constant";
 import { GetAlprCapturePayload } from "../../ALPRTypes";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { CRXColumn } from "@cb/shared";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
@@ -41,6 +40,7 @@ import { urlList, urlNames } from "../../../../utils/urlList";
 import AnchorDisplay from "../../../../utils/AnchorDisplay";
 import { states } from "../../GlobalDropdown";
 import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../../AlprGlobal";
+import { dateDisplayFormat } from "../../../../GlobalFunctions/DateFormat";
 
 
 
@@ -902,7 +902,7 @@ const AlprCapture = () => {
             {capturedPlatesRows && (
                 <CRXDataTable
                     id="CaptureDataTable"
-                    actionComponent={() => { }}
+                    actionComponent={() => { }} 
                     getRowOnActionClick={() => { }}
                     showToolbar={true}
                     dataRows={capturedPlatesRows}

@@ -90,6 +90,12 @@
   }
 }
 
+.sidePanelEnabled {
+  #volumePercentage {
+    width: calc(100% - 481px);
+  }
+}
+
 .ShowVolumePercentage {
   opacity: 1;
 }

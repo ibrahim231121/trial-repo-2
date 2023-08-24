@@ -6,7 +6,66 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import CRXTooltip from "../CRXTooltip/CRXTooltip"
 import './crx_MultiSelectBoxLight.scss'
 
-const useSelectBoxStyle = makeStyles((theme: any) =>
+
+
+interface renderCheck {
+  inputValue? : string,
+  label?: string,
+  id?: number,
+}
+
+const filter = createFilterOptions<renderCheck>();
+
+interface multiSelectProps {
+  multiple?: boolean,
+  options: renderCheck[],
+  onChange: (e: any, v: any) => void,
+  onOpen: (e: any) => void,
+  id: string,
+  defaultValue?: any[],
+  className?: string,
+  value: any[],
+  autoComplete?: boolean,
+  placeHolder?: string,
+  onBlur?: (e: any) => void,
+  error?: boolean,
+  required?: boolean,
+  errorMsg?: string,
+  label?: string,
+  disabled?: boolean;
+  freeSolo? : boolean
+  isSuggestion? :boolean
+  onInputChange: (e: any) => void,
+  disableCloseOnSelect? : boolean,
+  zIndex? : number
+}
+
+const CRXMultiSelectBoxLight = ({
+  id,
+  multiple,
+  options,
+  onChange,
+  onOpen,
+  defaultValue,
+  className,
+  value,
+  label,
+  autoComplete = false,
+  onBlur,
+  placeHolder,
+  error,
+  required,
+  errorMsg,
+  disabled,
+  freeSolo=false,
+  isSuggestion=false,
+  onInputChange,
+  disableCloseOnSelect,
+  zIndex
+
+}: multiSelectProps) => {
+
+  const useSelectBoxStyle = makeStyles((theme: any) =>
   createStyles({
     root: {
       backgroundColor: "#fff",
@@ -70,7 +129,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       }
     },
     popper: {
-      zIndex : 13001
+      zIndex : zIndex != undefined ? zIndex : 13001
     },
     option: {
       height: '33px',
@@ -123,10 +182,10 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       height: "20px",
       lineHeight: "20px",
       position: "relative",
-      marginRight: "16px",
+      marginRight: "3px",
       marginLeft: "2px",
       marginTop: "0",
-      marginBottom: "6px",
+      marginBottom: "4px",
       top: "0",
       '&:hover': {
         backgroundColor: '#F3F4F5',
@@ -158,87 +217,43 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       color: "#333",
       backgroundColor: "#fff",
       fontSize : "14px",
+    },
+    endAdornment : {
+      top : "0px"
     }
   }),
 );
-
-interface renderCheck {
-  inputValue? : string,
-  label?: string,
-  id?: number,
-}
-
-const filter = createFilterOptions<renderCheck>();
-
-interface multiSelectProps {
-  multiple?: boolean,
-  options: renderCheck[],
-  onChange: (e: any, v: any) => void,
-  onOpen: (e: any) => void,
-  id: string,
-  defaultValue?: any[],
-  className?: string,
-  value: any[],
-  autoComplete?: boolean,
-  placeHolder?: string,
-  onBlur?: (e: any) => void,
-  error?: boolean,
-  required?: boolean,
-  errorMsg?: string,
-  label?: string,
-  disabled?: boolean;
-  freeSolo? : boolean
-  isSuggestion? :boolean
-  onInputChange: (e: any) => void,
-}
-
-const CRXMultiSelectBoxLight = ({
-  id,
-  multiple,
-  options,
-  onChange,
-  onOpen,
-  defaultValue,
-  className,
-  value,
-  label,
-  autoComplete = false,
-  onBlur,
-  placeHolder,
-  error,
-  required,
-  errorMsg,
-  disabled,
-  freeSolo=false,
-  isSuggestion=true,
-  onInputChange,
-
-}: multiSelectProps) => {
-
-  const classes = useSelectBoxStyle();
+  const classes : any = useSelectBoxStyle();
   const [styelHeight, setAutoHeight] = React.useState<string>('31px');
   const [isClear, setIsClearIcon] = React.useState<any>(true);
   const [controled, setControled] = React.useState<any>(<i className="fas fa-caret-down"></i>);
-
-  const closeIcon: any = <CRXTooltip title="clear" placement="bottom-right" iconName="fas fa-times" className={classes.closeIcon} />
+  const [closeIconState, setCloseIcon] = React.useState<any>()
+  const closeIcon: any = <CRXTooltip title="clear" placement="bottom-right" iconName="fas fa-times" className={classes.closeIcon + " " + "selectBoxCloseIcon"} />
 
   const errorMessage = (error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errorMsg}</span> </div>)
   const errClx = error && error ? " inputError" : " ";
   const lightBox = React.useRef(null)
-  React.useEffect(() => {
 
-    value && value.length > 1 ? setAutoHeight("auto") : setAutoHeight("31px");
+  const ResetSelectBoxIcon = (val : any) => {
 
     if (multiple == false && value != undefined) {
-      
-      if (Object.keys(value).length > 0) {
+      if (Object.keys(value).length > 0 && val.label != undefined) {
         setControled('')
+        setCloseIcon(closeIcon)
         setIsClearIcon(false);
       }
-    } else {
-      setControled(<i className="fas fa-caret-down"></i>)
-      setIsClearIcon(true);
-    }
+      else {
+        setCloseIcon('')
+        setControled(<i className="fas fa-caret-down"></i>)
+        setIsClearIcon(true);
+      }
+    } 
+  }
+  React.useEffect(() => {
+    value && value.length > 1 ? setAutoHeight("auto") : setAutoHeight("31px");
+    
+    ResetSelectBoxIcon(value)
+
   }, [value, styelHeight])
 
 
@@ -269,8 +284,10 @@ const CRXMultiSelectBoxLight = ({
   }
 
   const [getSaveValue, setSaveValue] = React.useState<any>();
+  const [editable,setEditable] = React.useState("");
   React.useEffect(() => {
     setSaveValue(value)
+    setEditable('CRXAISearchFiltere');
   },[value])
   return (
 
@@ -291,7 +308,7 @@ const CRXMultiSelectBoxLight = ({
         autoComplete={autoComplete}
         filterSelectedOptions={false}
         disableClearable={isClear}
-        disableCloseOnSelect={true}
+        disableCloseOnSelect={disableCloseOnSelect}
         freeSolo={freeSolo}
         // open={true}
         noOptionsText="No option available"
@@ -303,7 +320,7 @@ const CRXMultiSelectBoxLight = ({
         clearText=""
         openText=""
         style={{ height: styelHeight }}
-        className={"crx_MultiSelectBoxLight " + className + " " + errClx + " " + classes.root}
+        className={"crx_MultiSelectBoxLight " + className + " " + errClx + " " + classes.root + " " + `${editable}`}
         classes={classes}
         multiple={multiple}
         id={id}
@@ -311,23 +328,31 @@ const CRXMultiSelectBoxLight = ({
         disabled = {disabled}
         inputValue = {getSaveValue}
         onChange={(e: any, val:any) => {
+          if(getSaveValue == 1){
+            setEditable('CRXAISearchFiltere');
+           }
+           else {
+            setEditable('');
+           }
           return onChange(e,val)
         }}
         onOpen={(e: any) => {
-          return onOpen(e)
+          if(onOpen != undefined) {
+            return onOpen(e)
+          } 
         }}
         options={options}
         getOptionLabel={option => option.label || option.inputValue}
         getOptionSelected={(option: any, value: any) => option.label == value.label}
         popupIcon={controled}
-        closeIcon={closeIcon}
+        closeIcon={closeIconState}
         renderOption={(option: any, { selected }) => (
           optionLabel(option, selected)
         )}
         onInputChange={typeof onInputChange === "function" ? onInputChange : () => {}}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
-          if(isSuggestion) {
+          if(isSuggestion === true) {
           // Suggest the creation of a new value
             if (params.inputValue !== '') {
               filtered.push({

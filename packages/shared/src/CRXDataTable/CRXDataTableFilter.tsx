@@ -18,10 +18,18 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
     onClearAll()
   }
   
+  
   useEffect(()=>{
       setAnchorEl(filterClose);
   },[filterClose])
   
+  useEffect(() => {
+     //let documentBody = document?.body;
+    if(anchorEl != null) {
+          //documentBody.style.overflow = "unset";
+     }
+     },[anchorEl])
+     
   return (
     <div className="dataTableColumnShoHide dataTableShowHideFilter">
         { columnVisibilityBar === true ? (

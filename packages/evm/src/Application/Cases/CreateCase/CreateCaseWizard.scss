@@ -1,8 +1,5 @@
 .createCaseStepperContent {
-    padding: 0 4px 0px 65px !important;
-    padding-top: 90px !important;
-    transition: 0.5s padding ease-out !important;
-    align-items: flex-start !important;
+    
     .createCaseStepperTitle {
         display: flex;
         justify-content: center;
@@ -30,6 +27,22 @@
     }
     .createCaseAssetBucketDataTable {
       max-height: calc(100% - 200px);
+    }
+    .createCaseSelectedAssetsContainer {
+      height: 400px;
+      .selectedAssetsHeading {
+        font-weight: 600;
+      }
+      .selectedAssetsMatrix {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-start;
+        height: calc(100% - 20px);
+        width: 100%;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
     }
     .dataTablePages {
       left: 0px;
@@ -147,100 +160,6 @@
           }
         }
       }  
-    }
-  }
-  .createCaseWizardSearchEvidence {
-    .searchByHeading {
-      font-weight: 600;
-    }
-    .createCaseWizardSearchByContainer {
-      display: flex;
-      flex-direction: row;
-      padding-bottom: 25px;
-      
-      .searchByRadioBtn {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        padding-right: 20px;
-        label .MuiFormControlLabel-label {
-          font-weight: 600;
-        }
-      }
-      .searchByAutoComplete {
-        width: 100%;
-        min-width: 250px;
-      }
-      h6 {
-        width: 100px !important;
-      }
-      .searchByUserAndDateContainer {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        .searchByUserContainer {
-          display: flex;
-          flex-direction: row;
-          .selectInner_content {
-            width: calc(100% - 100px);
-          }
-        }
-        .searchByDateContainer {
-          padding-top: 15px;
-          display: flex;
-          .datePickerContainer {
-            display: flex;
-            flex-direction: row;
-            align-items: baseline;
-            margin-bottom: 3px !important;
-            &:first-child {
-              margin-right: 25px;
-            }
-            label {
-              width: 80px;
-            }
-            .users-input {
-              width: 100% !important;
-            }
-            .CBX-inputDatePicker {
-              border: 1px solid var(--color-d1d2d4);
-              padding: 0 11px;
-              width: auto;
-              min-width: 80px;
-            }
-          }
-        }
-      }
-      .searchButtonContainer {
-        display: flex;
-        margin-left: 30px;
-      }
-    }
-    .createCaseWizardMatchingResultContainer {
-      width: 100%;
-      min-height: 200px;
-      .matchingResultHeading {
-        display: block;
-        font-weight: 600;
-        height: 30px;
-        width: 100%;
-        border-bottom: 1px solid var(--color-Black);
-        padding-left: 20px;
-      }
-      .matchingResultContent {
-        width: 100%;
-        min-height: 100px;
-      }
-    }
-    .createCaseWizardRelatedAssetsContainer {
-        width: 100%;
-      .relatedAssetsAccordion {
-        width: 100%;
-        .MuiAccordionSummary-content p {
-          padding-left: 20px;
-          font-size: 14px;
-        }
-      }
     }
   }
 }

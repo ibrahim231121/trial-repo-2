@@ -9,8 +9,8 @@ createStyles({
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
   },
   appBarShift: {
@@ -50,8 +50,8 @@ createStyles({
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
     backgroundColor: "transparent !important", // Please do not remove it.
     maxWidth : "100% !important", // Please do not remove it.
@@ -66,17 +66,18 @@ createStyles({
   },
   bradCrumscontent: {
     flexGrow: 1,
+    transform: "unset",
     padding: "0px 40px 0px 24px",
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+    transition: theme.transitions.create('padding', {
+      easing: theme.transitions.easing.easeOut,
+      duration: 1500,
     }),
     marginTop: "-4px !important"
   },
   bradCrumscontentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create('padding', {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: 1000,
     }),
     marginLeft: 0,
     paddingLeft: "88px",

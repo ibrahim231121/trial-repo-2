@@ -1,0 +1,172 @@
+
+  .mast-head-menu {
+    height: 658px;
+    overflow-y: auto;
+    padding-bottom: 43px;
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+    li{
+      .menu-items {
+        padding: 20px 0 18px 0;
+        // width: 63px;
+        // max-width: 63px;
+        .menu-icon {
+          .NaveIcon{
+            display: block;
+            font-size: 28px;
+            color: var(--color-d1d2d4);
+            text-align: center;
+            
+          }
+        }
+        .menu-label{
+          color: var(--color-d1d2d4);
+          text-align: center;
+          display: block;
+          font-size: 12px;
+          padding-top: 3px;
+          font-weight: var(--Font-style-normal);
+          letter-spacing: 0.3px;
+          font-family: var(--base-font-family);
+          -webkit-font-smoothing: antialiased;
+          line-height: 13px;
+          width: 90%;
+          margin: 0 auto;
+        }
+      }
+      &:hover, &:focus {
+        .menu-items {
+          .menu-icon{
+            .NaveIcon{
+              color: var(--color-White);
+            }
+          }
+          .menu-label{
+            color: var(--color-White);
+          }
+        }
+      }
+      &.Mui-selected{
+        background: var(--color-151515);
+        border-left: 4px solid var(--color-d74b00);
+        .menu-items {
+          .menu-icon{
+            .NaveIcon{
+              color: var(--color-White);
+            }
+          }
+          .menu-label{
+            color: var(--color-White);
+          }
+        }
+      }
+      &#menuItem-0 {
+        top : 0px;
+        background: var(--color-282828);
+        z-index: 9;
+      }
+      
+    }
+    .menu-nested-items{
+      text-align: center;
+      margin: 0px;
+      padding: 20px 0 20px 0;
+      white-space: break-spaces;
+      display: block;
+      border-left: 4px var(--color-transparent) solid;
+      
+      &.addPaddingBottom {
+        padding: 20px 0 58px 0;
+      }
+      .menu-icon {
+        position: relative;
+        .NaveIcon{
+          display: block;
+          font-size: 28px;
+          color: var(--color-d1d2d4);
+          text-align: center;
+        }
+        .rightArrowIcon{
+          color: var(--color-d1d2d4);
+          position: absolute;
+          right: 2px;
+          top: 50%;
+        }
+      }
+      .menu-label{
+        color: var(--color-d1d2d4);
+        text-align: center;
+        display: block;
+        font-size: 12px;
+        padding-top: 3px;
+        font-weight: var(--Font-style-normal);
+        letter-spacing: 0.3px;
+        font-family: var(--base-font-family);
+        -webkit-font-smoothing: antialiased;
+      }
+      &:hover {
+          background: var(--color-404041);
+          border-left: 4px var(--color-d1d2d4) solid;
+          cursor: pointer;
+      }
+      &:focus {
+          background: var(--color-404041);
+          border-left: 4px var(--color-d1d2d4) solid;
+      }
+      &.selectedItem {
+        background: var(--color-151515);
+        border-left: 4px solid var(--color-d74b00);
+      }
+    }
+  }
+
+  .seeMoreMenuItem {
+    width: 63px;
+    background: var(--color-282828);
+    position: absolute;
+    bottom: 0px;
+    padding-bottom: 3px;
+    cursor: pointer;
+    button {
+      background-color: transparent;
+      border: 0px;
+      width: 100%;
+        .iconSeeMore {
+        font-size: 28px;
+        color: var(--color-d1d2d4);
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .subMenuItems {
+    border-radius: 0px;
+    box-shadow: var(--Box-shadow);
+    background: var(--color-404041);
+    min-width: 180px;
+    // left: 58px !important;
+    z-index: 9999;
+    .MuiPaper-root {
+      li {
+        border: 0px;
+        font-size: 12px;
+        color: var(--color-d1d2d4);
+        text-align: left;
+        padding: 0 15px;
+        white-space: nowrap;
+        height: 33px;
+        line-height: 33px;
+        font-weight: var(--Font-style-normal);
+        letter-spacing: 0.3px;
+        font-family: var(--base-font-family);
+        -webkit-font-smoothing: antialiased;
+        &:hover {
+          background: var(--color-151515);
+          color: var(--color-White);
+        }
+      }
+    }
+  }

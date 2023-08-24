@@ -24,10 +24,9 @@ const FieldDropDownListType: React.FC<FieldDropDownListType> = ({ formikProps, o
         e.preventDefault();
         const selectedValue = value == null ? "" : value.label;
         form.setFieldValue(field.name, selectedValue, true);
+        form.setFieldTouched(field.name, true, false);
         setFieldsFunction({ name: field.name, value: selectedValue });
     }
-
-
 
     return (
         <CRXMultiSelectBoxLight
@@ -39,10 +38,8 @@ const FieldDropDownListType: React.FC<FieldDropDownListType> = ({ formikProps, o
             onChange={(e: any, value: any) => handleChange(e, value)}
             CheckBox={false}
             checkSign={false}
-            required={true}
         />
     );
 }
-
 
 export default FieldDropDownListType;

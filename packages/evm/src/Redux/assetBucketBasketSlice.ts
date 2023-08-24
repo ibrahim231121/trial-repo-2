@@ -2,11 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 interface assetBucketBasket {
-    isOpen: boolean
+    isOpen: boolean,
+    isMulti: boolean,
+    sharePopup: boolean
 }
 
 const initialState: assetBucketBasket = {
-  isOpen: false
+  isOpen: false,
+  isMulti: false,
+  sharePopup: false
 }
 
 const assetBucketBasketSlice = createSlice({
@@ -16,10 +20,18 @@ const assetBucketBasketSlice = createSlice({
     setAssetBucketBasket: (state: any, action: PayloadAction<any>) => {
       const {payload} = action;
       state.isOpen = payload.isOpen;
+    },
+    setMultiTimelineHover: (state: any, action: PayloadAction<any>) => {
+      const {payload} = action;
+      state.isMulti = payload.isMulti;
+    },
+    setSharePopupStatus: (state: any, action: PayloadAction<any>) => {
+      const {payload} = action;
+      state.sharePopup = payload.sharePopup;
     }
   }
 });
 
 export default assetBucketBasketSlice;
-export const { setAssetBucketBasket: setAssetBucketBasket} = assetBucketBasketSlice.actions;
+export const { setAssetBucketBasket: setAssetBucketBasket ,setMultiTimelineHover : setMultiTimelineHover, setSharePopupStatus: setSharePopupStatus} = assetBucketBasketSlice.actions;
 

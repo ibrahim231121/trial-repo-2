@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { getQueuedAssetInfoAsync } from "../../Redux/UnitReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
-import dateDisplayFormat from "../../GlobalFunctions/DateFormat";
+import {dateDisplayFormat} from "../../GlobalFunctions/DateFormat";
 import { DateTimeComponent } from '../../GlobalComponents/DateTime';
 import { dateOptionsTypes } from '../../utils/constant';
 import textDisplayStatus from "../../GlobalComponents/Display/textDisplayStatus";
@@ -52,8 +52,8 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
   const [reformattedRows, setReformattedRows] = React.useState<QueuedAssets[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<QueuedAssets>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [order] = React.useState<Order>("asc");
-  const [orderBy] = React.useState<string>("name");
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("updated");
   const [open, setOpen] = React.useState<boolean>(false);
   const [rows, setRows] = React.useState<QueuedAssets[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<QueuedAssets[]>([]);
@@ -67,7 +67,11 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
       filters: []
     },
     page: page,
-    size: rowsPerPage
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+  }
   })
 
   const dispatch = useDispatch();
@@ -85,14 +89,17 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
   );
   React.useEffect(() => {
     EvidenceAgent.getQueuedAssets(unitId).then((response: QueuedAssets[]) => setqueuedAssets(response));
-
     setData();
   }, []);
 
   const setData = () => {
     let asset: QueuedAssets[] = [];
-
-    if (queuedAssets && queuedAssets.length > 0) {
+    if (queuedAssets && queuedAssets.length > 0) {  
+      asset  = sortdata(queuedAssets, orderBy)
+      if(order == "desc")
+      {
+        asset = asset.reverse();
+      } 
       asset = queuedAssets.map((dt: any, i: number) => {
         return {
           filename: dt.fileName,
@@ -110,7 +117,7 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
           updated: dt.updated
 
         }
-      })
+      }) 
     }
     setRows(asset)
     setQueuedAssetsCount(asset.filter(x => x.fileState == "Uploading").length)
@@ -143,15 +150,38 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
     setHeadCells(headCellsArray);
   };
 
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({ ...pageiGrid, gridSort: { field: sort.orderBy, dir: sort.order } })
+    if (queuedAssets && queuedAssets.length > 0) {
+     setOrder(sort.order)
+     setOrderBy(sort.orderBy)
+     setData()
+    }
+}
+const sortdata = (values: any[], orderType: any) =>{ 
+  return values.sort((a, b) => {
+      if (a[orderType] < b[orderType]) {
+          return -1;
+      }
 
+      if (a[orderType] > b[orderType]) {
+          return 1;
+      }
+
+      return 0
+  });
+}
   const projectStatusProgress = (e: any, statusData: any) => {
-
     var filesizeMB = (Number(statusData.totalsize / 1000000));//For Now it shows the fileSize in MB //1073741824
     var remainingSize = ((filesizeMB * statusData.status) / 100);
     var showError = false;
     if (statusData.fileState == "Cancelled" || statusData.fileState == "Abandoned") {
       e = "Error";
       showError = true;
+    }
+    if(statusData.totalsize == 0 || statusData.fileState == "Queued")
+    {
+      e = "NA"
     }
     return (
       <div className="status_grid_loader">
@@ -162,7 +192,7 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
           error={showError}
           width={236}
           maxDataSize={true}
-          loadingCompleted={remainingSize.toFixed(2) + "MB of " + filesizeMB.toFixed(2) + "MB"}
+          loadingCompleted={remainingSize.toFixed(2) + " MB of " + filesizeMB.toFixed(2) + " MB"}
         />
       </div>
 
@@ -403,10 +433,11 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
       align: "right",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: searchText,
-      minWidth: `${tabsIdx && tabsIdx / 3 - 270}`,
+      minWidth: `${tabsIdx && tabsIdx / 3 - 110}`,
       visible: true,
+      attributeName: "fileName",
     },
     {
       label: `${t("Upload_Status")}`,
@@ -414,11 +445,13 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
       align: "left",
       dataComponent: (e: any, statusData: any) => projectStatusProgress(e, statusData),
       sort: false,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: searchText,
       detailedDataComponentId: "statusData",
-      minWidth: `${tabsIdx && tabsIdx / 3 - 210}`,
+      // minWidth: `${tabsIdx && tabsIdx / 3 - 210}`,
       visible: true,
+      minWidth: "300",
+      maxWidth: "300",
     },
     {
       label: `${t("Status")}`,
@@ -426,25 +459,25 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
       align: "left",
       dataComponent: (e: string) => textDisplayStatus(e, "data_table_fixedWidth_wrapText"),
       sort: true,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: (rowData: QueuedAssets[], columns: HeadCellProps[], colIdx: number, initialRows: QueuedAssets[]) =>
         multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "175",
-      maxWidth: "175",
-      attributeName: "Status",
+      minWidth: "205",
+      maxWidth: "205",
+      attributeName: "status",
       attributeType: "List",
       attributeOperator: "contains"
     },
     {
       label: `${t("Queued")}`,
       id: "queued",
-      align: "center",
+      align: "left",
       dataComponent: dateDisplayFormat,
       sort: true,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: searchDate,
-      minWidth: "174",
-      maxWidth: "174",
+      minWidth: "250",
+      maxWidth: "250",
       attributeName: "Queued",
       attributeType: "DateTime",
       attributeOperator: "between"
@@ -452,13 +485,13 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
     {
       label: `${t("Started")}`,
       id: "started",
-      align: "center",
+      align: "left",
       dataComponent: dateDisplayFormat,
       sort: true,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: searchDate,
-      minWidth: "174",
-      maxWidth: "174",
+      minWidth: "245",
+      maxWidth: "245",
       attributeName: "Started",
       attributeType: "DateTime",
       attributeOperator: "between"
@@ -466,13 +499,13 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
     {
       label: `${t("Updated")}`,
       id: "updated",
-      align: "center",
+      align: "left",
       dataComponent: dateDisplayFormat,
       sort: true,
-      searchFilter: true,
+      searchFilter: false,
       searchComponent: searchDate,
-      minWidth: "174",
-      maxWidth: "174",
+      minWidth: "240",
+      maxWidth: "240",
       attributeName: "Updated",
       attributeType: "DateTime",
       attributeOperator: "between"
@@ -486,6 +519,7 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
 
   return (
     <div className="unit_detail_tab_events unit_Device_tabUI">
+      <div className="indicates-label">Table auto refreshes every 10 seconds</div>
       {rows && (
         <CRXDataTable
           id="unit_device_queued_tab_table"
@@ -511,6 +545,7 @@ const QueuedAsstsDataTable: React.FC<infoProps> = ({ unitId, setQueuedAssetsCoun
           dragVisibility={false}
           showCheckBoxes={false}
           showActionCol={false}
+          setSortOrder={(sort: any) => sortingOrder(sort)}
           showActionSearchHeaderCell={false}
           showCountText={false}
           showCustomizeIcon={false}

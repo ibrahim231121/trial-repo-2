@@ -1,0 +1,43 @@
+.caseAssetContainer {
+    display: flex;
+    gap: 15px;
+    place-items: center;
+    width: 400px;
+    &.-isThumbnailOnly {
+      width: auto;
+    }
+    // .caseAssetThumbnail {
+    //   margin: 0 20px;
+    // }
+    .caseAssetInformationContainer {
+      text-align: left;
+      font-size: 14px;
+      .caseAssetName {
+        color: var(--color-333333);
+        font-family: var(--App-font-family);
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      .caseAssetType {
+        color: var(--color-333333);
+        font-family: var(--App-font-family);
+        font-size: 14px;
+      }
+    }
+
+    .bucketActionMenu {
+      .rc-menu-button {
+        background: transparent;
+        border: 0px;
+        font-size: 23px;
+        width: 40px;
+        padding: 5px 0px;
+        color: var(--color-333333);
+
+        &.rc-menu-button--open {
+          background: #333333;
+          color: #d1d2d4;
+        }
+      }
+    }  
+  }

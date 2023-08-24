@@ -5,6 +5,7 @@ import { SortableContainer } from "react-sortable-hoc";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import SortableItem from "./CRXDataTableSortableItem";
 import { HeadCellProps } from "./CRXDataTableTypes";
+import { useTranslation } from "react-i18next";
 
 type SortableListProps = {
   orderColumn: number[];
@@ -22,6 +23,7 @@ const SortableList = SortableContainer(
     onReOrderChange,
     dragHideState,
   }: SortableListProps) => {
+    const { t } = useTranslation<string>();
     const handleCheckChange = (event: any, index: number) => {
       onReOrderChange(event.target.checked, index);
     };
@@ -61,7 +63,7 @@ const SortableList = SortableContainer(
                           //icon={<span className={chkStyle.icon} />}
                           className={chkStyle.root + " shoHideCheckbox"}
                           //color="default" />}
-                          label={headCells[colIdx].label}
+                          label={t(headCells[colIdx].label)}
                           labelPlacement="end"
                         />
                       }

@@ -26,7 +26,6 @@ import { getAllAlprCapturePlatesInfo } from "../../../Redux/AlprCapturePlateRedu
 import moment from "moment";
 import { basicDateDefaultValue, dateOptionsTypes } from "../../../utils/constant";
 import { GetAlprCapturePayload } from "../ALPRTypes";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { CRXColumn } from "@cb/shared";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { ClickAwayListener } from "@material-ui/core";
@@ -38,6 +37,7 @@ import { states } from "../GlobalDropdown";
 import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../AlprGlobal";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import defaultNumberPlateImage from "../../../Assets/Images/numberPlate.jpg";
+import { dateDisplayFormat } from "../../../GlobalFunctions/DateFormat";
 
 
 
@@ -835,7 +835,7 @@ const CapturePlateLister = () => {
                         searchHeader={true}
                         columnVisibilityBar={true}
                         allowDragableToList={true}
-                        className="crxTableHeight"
+                        className="crxTableHeight TableWithOutCheck"
                         onClearAll={clearAll}
                         getSelectedItems={(v: AlprCapturePlateInfo[]) => setSelectedItems(v)}
                         onResizeRow={resizeRowCaptureTemp}
@@ -854,8 +854,8 @@ const CapturePlateLister = () => {
                         //Please dont miss this block.
                         offsetY={119}
                         stickyToolbar={130}
-                        searchHeaderPosition={224}
-                        dragableHeaderPosition={188}
+                        searchHeaderPosition={221}
+                        dragableHeaderPosition={185}
                         //End here
                         page={page}
                         rowsPerPage={rowsPerPage}

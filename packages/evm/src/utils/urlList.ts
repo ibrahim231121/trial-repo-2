@@ -42,9 +42,10 @@ import { BASE_URL_COMMAND_SERVICE } from './Api/url';
 export const urlNames: any = {
     assets: "assets",
     assetSearchResult: "assetSearchResult",
-    cases: "cases",
-    createCase: "createCase",
-    editCase: "editCase",
+    cases:"cases",
+    createCase:"createCase",
+    editCase:"editCase",
+    editCaseWithSharing:"editCaseWithSharing",
     adminUserGroups: "adminUserGroups",
     adminUserGroup: "adminUserGroup",
     adminUserGroupId: "adminUserGroupId",
@@ -58,6 +59,7 @@ export const urlNames: any = {
     adminUnitConfigurationTemplate: "adminUnitConfigurationTemplate",
     // unitDeviceTemplateCreateBCO3: "unitDeviceTemplateCreateBCO3",
     unitDeviceTemplateCreateBCO4: "unitDeviceTemplateCreateBCO4",
+    unitDeviceTemplateEditBCO4: "unitDeviceTemplateEditBCO4",
     unitDeviceTemplateViewLog: "unitDeviceTemplateViewLog",
     // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
     testVideoPlayer: "videoplayer",
@@ -94,10 +96,15 @@ export const urlNames: any = {
     createFormField: 'createFormField',
     editFormField: 'editFormField',
     createRetentionPolicies: 'createRetentionPolicies',
-    editRetentionPolicy: 'editRetentionPolicy',
-    updateVersion: 'updateVersion',
-    filterUpdateVersion: 'filterUpdateVersion',
-    filterUpdateVersionEdit: 'filterUpdateVersionEdit',
+    editRetentionPolicy : 'editRetentionPolicy',
+    updateVersion : 'updateVersion',
+
+    trackingAndSharing: "trackingAndSharing",
+    createTracking:"createTracking",
+    editTracking:"editTracking",
+    filterUpdateVersion : 'filterUpdateVersion',
+    filterUpdateVersionEdit : 'filterUpdateVersionEdit',
+    
     HotList: 'HotList',
     HotListDetail: 'HotListDetail',
     dataSourceList: 'dataSourceList',
@@ -106,12 +113,11 @@ export const urlNames: any = {
     AlprCapturePanel: 'AlprCapturePanel',
     LicensePlateList: 'LicensePlateList',
     LicensePlateDetailEdit: 'LicensePlateDetailEdit',
-    LicensePlateDetailCreate: 'LicensePlateDetailCreate',
-    
+    LicensePlateDetailCreate: 'LicensePlateDetailCreate',   
     LicensePlateHistory: 'LicensePlateHistory',
     AlprAdvanceSearch: 'AlprAdvanceSearch',
     AlprSearchLister: 'AlprSearchLister',
-    AlprAdvanceSearchResult: 'AlprAdvanceSearchResult',
+    AlprAdvanceSearchResult: 'AlprAdvanceSearchResult'
 };
 
 export const urlList: any = [
@@ -119,34 +125,62 @@ export const urlList: any = [
         name: urlNames.assets,
         url: "/assets",
         details: [
-            { type: "text", label: "Assets", }
+            { routeTo: "/assets", type: "text", label: "Assets", }
         ],
     },
+    {
+        name: urlNames.assetSearchResult,
+        url: '/assets/assetSearchResult',
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+            { routeTo: '/assets/assetSearchResult', type: 'text', label: 'Search Results' },
+
+        ]
+    },
+    {
+        name: urlNames.assetsDetail,
+        url: '/assets/assetSearchResult/assetdetail',
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+            { routeTo: "/assets/assetSearchResult", type: "link", label: "Search Results", },
+            //{ routeTo: '/assets/assetSearchResult/assetdetail', type: 'text', label: 'Asset Detail' },
+        ]
+    },
+    
     {
         name: urlNames.cases,
         url: "/cases",
         details: [
             { type: "text", label: "Manage Cases", },
         ],
-    },
+    }, 
     {
         name: urlNames.createCase,
         url: "/cases/createCase",
         details: [
-
+            
             { routeTo: "/cases", type: "link", label: "Manage Cases", },
             { type: "text", label: "Create Case", }
         ],
-    },
+    },   
     {
-
+     
         name: urlNames.editCase,
         url: "/cases/caseDetail/:id",
         details: [
             { routeTo: "/cases", type: "link", label: "Manage Cases", },
             { type: 'text', label: 'Case Detail' },
         ],
-    },
+    }, 
+    {
+     
+        name: urlNames.editCaseWithSharing,
+        url: "/cases/caseDetail/:id/:sharingId",
+        details: [
+            { routeTo: "/cases", type: "link", label: "Manage Cases", },
+            { type: 'text', label: 'Case Detail' },
+        ],
+    }, 
     {
         name: urlNames.tenantSettings,
         url: "/tenantSettings",
@@ -169,23 +203,7 @@ export const urlList: any = [
             { routeTo: "/assets/sharedMedia", type: "text", label: "Shared Media", }
         ],
     },
-    {
-        name: urlNames.assetsDetail,
-        url: '/assetdetail',
-        details: [
-            { routeTo: "/assets", type: "link", label: "Assets", },
-            { routeTo: '/assetSearchResult', type: 'text', label: 'Search Results' },
-        ]
-    },
-    {
-        name: urlNames.assetSearchResult,
-        url: '/assetSearchResult',
-        details: [
-            { routeTo: "/assets", type: "link", label: "Assets", },
-            { routeTo: '/assetSearchResult', type: 'text', label: 'Search Results' },
-
-        ]
-    },
+    
     // {
     //     name: urlNames.assetsDetail,
     //     url: "/assets/:id",
@@ -291,6 +309,30 @@ export const urlList: any = [
     //     ]
     // },
     {
+        name: urlNames.trackingAndSharing,
+        url: "/trackingAndSharing",
+        details: [
+            { type: "text", label: "Manage Tracking and Sharing", }
+        ],
+    },
+    {
+        name: urlNames.createTracking,
+        url: "/trackingAndSharing/createTracking",
+        details: [
+            
+            { routeTo: "/trackingAndSharing", type: "link", label: "Manage Tracking and Sharing", },
+            { type: "text", label: "Add Request", }
+        ],
+    }, 
+    {
+        name: urlNames.editTracking,
+        url: "/trackingAndSharing/trackingAndSharingDetail/:id",
+        details: [
+            { routeTo: "/trackingAndSharing", type: "link", label: "Manage Tracking and Sharing", },
+            { type: 'text', label: 'Tracking and Sharing Detail' },
+        ],
+    }, 
+    {
         name: urlNames.unitsAndDevices,
         url: "/unitsanddevices",
         details: [
@@ -350,7 +392,15 @@ export const urlList: any = [
             //{ type: "text", label: "Create Template : BC04", }
         ],
     },
-
+    {
+        name: urlNames.unitDeviceTemplateEditBCO4, //inuse
+        url: "/admin/unitanddevices/edittemplate/template",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Templates", },
+            //{ type: "text", label: "Create Template : BC04", }
+        ],
+    },
     {
         name: urlNames.unitDeviceTemplateViewLog, //inuse
         url: "/admin/unitanddevices/template/viewlog",
@@ -460,8 +510,8 @@ export const urlList: any = [
     //         { routeTo: '/admin/createFormField', type: 'text', label: 'Create Form Field' }
     //     ],
     // },
-
-    {
+   
+   {
         name: urlNames.defaultUnitTemplate,
         url: "/admin/defaultUnitTemplate",
         details: [
@@ -511,7 +561,7 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categories/', type: 'link', label: 'Categories' },
             { routeTo: '/admin/categories/createCategory', type: 'text', label: 'Create Category' }
-
+           
         ]
     },
     {
@@ -520,10 +570,10 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categories', type: 'link', label: 'Categories' },
-
+            
         ]
     },
-
+    
     {
         name: urlNames.categoryForms,
         url: "/admin/categoryForms",
@@ -555,9 +605,9 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
         ]
-    },
+    }, 
 
-
+    
     {
         name: urlNames.categoryFormsCreate,
         url: '/admin/categoryForms/categoryForm',
@@ -699,7 +749,7 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Alpr", },
             { routeTo: "/Alpr/AlprSearchLister", type: "link", label: "Advance Search" }
-        ],
+        ]
     },
     {
         name: urlNames.AlprAdvanceSearchResult,
@@ -707,6 +757,6 @@ export const urlList: any = [
         details: [
             {  type: "text", label: "Alpr" },
             { routeTo:"/Alpr/AdvanceSearch",type: "link", label: "Capture Plate Search", },
-        ],
-    }
+        ]
+    },
 ];

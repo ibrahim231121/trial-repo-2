@@ -13,7 +13,6 @@ import { useHistory } from "react-router-dom";
 type Props = {
   selectedItems?: any;
   row?: any;
-  onClickOpenModel: (modelOpen: boolean, id: number, title: string) => void;
 };
 
 const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
@@ -28,7 +27,6 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) =
   
   return (
     <div className="table_Inner_Action">
-
       <Menu
         key="right"
         align="center"
@@ -41,11 +39,11 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) =
         className="menuCss "
         menuButton={
           <MenuButton>
-            <i className="far fa-ellipsis-v"></i>
+            <i className="fa-solid fa-pen fa-xs"></i>
           </MenuButton>
         }
       >
-        {selectedItems.length <= 1 ? (
+        {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1)  ? (
           <MenuItem onClick={editCategolries}>
             <Restricted moduleId={54}>
               <div className="crx-meu-content   crx-spac"  >

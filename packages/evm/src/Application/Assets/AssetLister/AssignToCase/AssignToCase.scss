@@ -1,35 +1,39 @@
 .assignToCaseContent {
     margin-top: 20px;
-    margin-bottom: 69px;
     padding-right: 3px;
-    .caseId-container {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        h6 {
-            width: 80px;
+    
+    .caseInformationContainer {
+        padding: 0px 5% 20px 5%;
+        &.-additionalAssetsPadding {
+            padding: 0px 13% 20px 13%;
         }
-        .caseIdAutoComplete {
-            width: 300px;
+        .caseId-container {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            h6 {
+                width: 80px;
+            }
+            .caseIdAutoComplete {
+                width: 300px;
+            }
+            .caseIdLabel {
+                margin-right: 20px;
+            }
         }
-        .caseIdLabel {
-            margin-right: 20px;
-        }
-    }
-    .caseInformation-container {
-        padding: 25px;
         .caseInformationHeading {
             width: 100%;
-            text-align: center;
             display: block;
             font-weight: 600;
             font-size: 15px;
+            margin-top: 20px;
         }
         .caseInformationRow {
             display: flex;
             justify-content: space-between;
             width: 100%;
             margin-top: 20px;
+            padding: 0px 4%;
         }
         .caseInformationContent {
             display: flex;
@@ -37,11 +41,24 @@
                 padding-right: 10px;
             }
         }
-        .caseInformation-caseDescription {
-            width: 155px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
+        .caseDescriptionContent {
+            display: block;
+            margin-top: 20px;
+            width: 100%;
+            padding: 0px 4%;
+            .caseInformation-caseDescription:not(:empty) {
+                display: block;
+                margin-top: 10px;
+                width: 100%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: normal;
+                line-height: 1.5em;
+                height: 4.5em;
+                border-radius: 5px;
+                background-color: var(--color-e5e5e5);
+                padding-left: 5px;
+            }
         }
     }
     .assignToCaseModalFooter {
@@ -75,5 +92,189 @@
     }
     .MuiDialog-paper {
         max-width: none;
+    }
+}
+.CRXModalAssetsAlreadyExists {
+    .MuiDialog-paper {
+        border-radius: 5px;
+    }
+    .MuiDialog-paperScrollPaper {
+        min-height: 180px !important;
+        min-width: 500px !important;
+        padding-top: 0px !important;
+    }
+    .MuiDialog-paperWidthLg {
+        height: 180px;
+        width: 500px;
+    }
+    .CRXContent {
+        height: 100%;
+        padding: 0px;
+    }
+    
+}
+.CRXModalAssignToCase {
+    &:has(.assignToCaseContainer) {
+    .modelTitle {
+        text-align: center;
+      }
+      .MuiDialog-paperWidthLg {
+        height: 400px;
+        width: 800px;
+      }
+      .CRXContent {
+        padding-bottom: 20px;
+      }
+    }
+    &:has(.confirmAdditionalAssetsContainer) {
+        .modelTitle {
+            text-align: center;
+        }
+        .MuiDialog-paperWidthLg {
+            height: 800px;
+            width: 1000px;
+        }
+        .CRXContent {
+            padding-bottom: 20px;
+            height: calc(100% - 74px);
+        }
+        .MuiDialog-paper {
+            max-width: none;
+        }
+    }
+    &:has(.assetsAlreadyExistsContent) {
+        .modelTitle {
+            display: none;
+        }
+        .MuiDialog-paper {
+            border-radius: 5px;
+        }
+        .MuiDialog-paperScrollPaper {
+            min-height: 180px !important;
+            min-width: 500px !important;
+            padding-top: 0px !important;
+        }
+        .MuiDialog-paperWidthLg {
+            height: 180px;
+            width: 500px;
+        }
+        .CRXContent {
+            height: 100%;
+            padding: 0px;
+        }
+        .assetsAlreadyExistsContent {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            .assetsAlreadyExistsIcon {
+                height: 100%;
+                width: 50px;
+                background-color: red;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .fa-exclamation-circle:before {
+                    font-size: 24px;
+                    color: #ffffff;
+                }
+            }
+            .assetsAlreadyExistsText {
+                margin-top: 35px;
+                margin-left: 10px;
+            }
+            .assetsAlreadyExistsModalFooter {
+                position: absolute;
+                bottom: 0;
+                display: flex;
+                padding: 0px;
+                height: 60px;
+                align-items: center;
+                width: calc(100% - 50px);
+                border-top: 1px solid var(--color-d1d2d4);
+                left: 50px;
+                padding-left: 25px;
+                background-color: var(--color-White);
+                justify-content: center;
+                .assetsAlreadyExistsOkButton {
+                    width: 100px;
+                }
+            }
+            
+        }
+    }
+}
+
+.confirmAdditionalAssetsContent {
+    width: 100%;
+    height: 100%;
+    padding: 10px 0px;
+    .additionalAssetsHeading {
+        width: 100%;
+        display: block;
+        font-weight: normal;
+        font-size: 17px;
+    }
+    .additionalAssetsSubHeading {
+        margin-top: 15px;
+        width: 100%;
+        display: block;
+    }
+    .additionalAssetContainer {
+        display: flex;
+        margin-top: 10px;
+        width: 100%;
+        flex-wrap: wrap;
+        column-gap: 10px;
+        row-gap: 10px;
+        .additionalAssetSubContainer {
+            display: flex;
+            width: 300px;
+            .additionalAssetCheckbox {
+                width: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .additionalAssetDetail {
+                display: flex;
+                width: 280px;
+                .additionalAssetThumbnail {
+                    padding: 0 10px;
+                }
+            }
+        }    
+    }
+    .additionalAssetWarningContainer {
+        width: 100%;
+        margin-top: 10px;
+        .additionalAssetWarningMessage {
+            padding: 7px 12px;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 50px;
+            width: 60%;
+            .MuiAlert-icon {
+                position: inherit;
+            }
+            .MuiAlert-action {
+                padding-left: 10px;
+            }
+        }
+    }
+    .additionalAssetModalFooter {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        padding: 0px;
+        height: 74px;
+        align-items: center;
+        width: 100%;
+        border-top: 1px solid var(--color-d1d2d4);
+        left: 0;
+        padding-left: 25px;
+        background-color: var(--color-White);
+        .additionalAssetAddButton {
+            margin-right: 10px;
+        }
     }
 }

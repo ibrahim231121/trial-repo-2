@@ -11,7 +11,7 @@ import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
 import { useDispatch } from 'react-redux';
 import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
 import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
-import { addAssetLog } from '../../Redux/AssetLogReducer';
+import { CRXAlert } from '@cb/shared';
 declare const window: any;
 
 type VideoPlayerSnapshotProps = {
@@ -28,11 +28,11 @@ type VideoPlayerSnapshotProps = {
     toasterMsgRef: any;
     timelinedetail: any;
     addingSnapshot: any;
-    assetLog: AssetLogType
+    saveLogs: any
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,addingSnapshot,assetLog} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,addingSnapshot,saveLogs} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -49,17 +49,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         record: [],
     };
 
-    const [bookmarkobj, setbookmarkobj] = React.useState<any>({
-        assetId: editBookmarkForm ? bookmarkAssetId : AssetData.dataId,
-        bookmarkTime: "",
-        createdOn: "",
-        modifiedOn: null,
-        description: "",
-        id: 0,
-        madeBy: "",
-        position: 0,
-        version: ""
-    });
+    const [ currentAssetId, setcurrentAssetId ] = React.useState<any>(editBookmarkForm ? bookmarkAssetId : AssetData.dataId);
 
     useEffect(() => {
         window.onRecvBookmarkData = new CustomEvent("onUploadSnapshotStatusUpdate");
@@ -86,7 +76,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             tempData.forEach((x:any)=> 
                         {if(x.dataId == BKObj.assetId){
                             x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== BKObj.id);
-                            x.bookmarks = [...x.bookmarks, bookmarkobj];
+                            x.bookmarks = [...x.bookmarks, BKObj];
                         }})
             dispatch(addTimelineDetailActionCreator([...tempData]));
             setOpenModal(false);
@@ -173,7 +163,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             setopenBookmarkForm(false);
             EvidenceAgent.addBookmark(bookmarkaddurl, body).then((response: any) => {
                 let responseObj = { 
-                    assetId:bookmarkobj.assetId,
+                    assetId:currentAssetId,
                     bookmarkTime: body.bookmarkTime,
                     createdOn: "",
                     modifiedOn: null,
@@ -185,9 +175,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 };
                 setBookmarkInTimelineDetail("Add", responseObj);
                 toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "success", duration: 5000, clearButtton: true});
-                assetLog.assetId = Number(timelinedetail[0].dataId);
-                assetLog.notes = "Bookmark Taken";
-                dispatch(addAssetLog(assetLog));
+                saveLogs(Number(timelinedetail[0].dataId), "Bookmark Taken");
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Bookmark Not Saved", variant: "error", duration: 5000, clearButtton: true});
@@ -294,9 +282,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 setOpenModal(false);
                 setopenBookmarkForm(false);
                 addingSnapshot.current = false;
-                assetLog.assetId = Number(timelinedetail[0].dataId);
-                assetLog.notes = "Snapshot Taken";
-                dispatch(addAssetLog(assetLog));
+                saveLogs(Number(timelinedetail[0].dataId), "Snapshot Taken");
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Snapshot Saved Error", variant: "error", duration: 5000, clearButtton: true});
@@ -327,7 +313,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             setopenBookmarkForm(false);
             EvidenceAgent.updateBookmark(url, body).then(() => {
                 let responseObj = { 
-                    assetId:bookmarkobj.assetId,
+                    assetId:currentAssetId,
                     bookmarkTime: body.bookmarkTime,
                     createdOn: bookmark.createdOn,
                     modifiedOn: bookmark.modifiedOn,
@@ -338,7 +324,8 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     version: body.version 
                 };
                 setBookmarkInTimelineDetail("Update", responseObj);
-                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});        
+                saveLogs(body.assetId, "Bookmark Update");
+                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "success", duration: 5000, clearButtton: true});        
             })
             .catch((err: any) => {
                 toasterMsgRef.current.showToaster({message: "Bookmark Update Error", variant: "error", duration: 5000, clearButtton: true});
@@ -359,11 +346,11 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             setopenBookmarkForm(false);
             EvidenceAgent.deleteBookmark(url).then(() => {
                 let responseObj = {
-                    assetId: bookmarkobj.assetId,
+                    assetId: currentAssetId,
                     id: bookmark.id
                 };
                 setBookmarkInTimelineDetail("Delete", responseObj);
-                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "success", duration: 5000, clearButtton: true});
             })
             .catch((err: any) => {
                 toasterMsgRef.current.showToaster({message: "Bookmark Delete Error", variant: "error", duration: 5000, clearButtton: true});
@@ -443,6 +430,20 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             >
                 <div>
                     <div className="modalEditCrx">
+                        {editBookmarkForm && <CRXAlert
+                          className={"crx-alert-notification file-upload"}
+                          message={"sucess.msg"}
+                          type="info"
+                          open={editBookmarkForm}
+                          alertType="inline"
+                          persist={true}
+                          showCloseButton={false}
+                          children={
+                            <div>
+                                Bookmark already exists at this times       
+                            </div>
+                          }
+                        />}
                         <div className='CrxEditForm'>
                             <TextField
                                 error={!!descriptionErr}
@@ -472,9 +473,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                             <CRXButton className='secondary' onClick={handleClose}>
                                 Cancel
                             </CRXButton>
-                            {editBookmarkForm && <CRXButton className='secondary' onClick={onDeleteClick} style={{ left: "250px"}}>
+                            {/* {editBookmarkForm && <CRXButton className='secondary' onClick={onDeleteClick} style={{ left: "250px"}}>
                                 Delete
-                            </CRXButton>}
+                            </CRXButton>} */}
                         </div>
                     </div>
                 </div>

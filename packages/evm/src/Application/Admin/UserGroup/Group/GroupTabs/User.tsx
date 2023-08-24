@@ -134,7 +134,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     }, [selectedItems]);
 
     React.useEffect(() => { 
-        if(users.data && users.data.length > 0)
+        //if(users.data && users.data.length > 0)
             setData()
     }, [users.data, userGroups]);
 
@@ -316,7 +316,6 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     useEffect(() => {
-        //dataArrayBuilder();
         console.log("searchData", searchData)
         if(searchData.length > 0)
             setIsSearchable(true)
@@ -427,6 +426,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                         // toolBarButton={
                         //     <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
                         // }
+                        title="Users"
                         getRowOnActionClick={() => { }}
                         showToolbar={true}
                         dataRows={rows}

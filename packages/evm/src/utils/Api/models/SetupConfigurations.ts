@@ -29,6 +29,7 @@ export namespace SetupConfigurationsModel {
         type: string;
         dependentField: number;
         defaultFieldValue: string;
+        isRequired: boolean;
         display: Display;
         history: History;
     }

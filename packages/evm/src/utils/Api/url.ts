@@ -38,7 +38,9 @@ export const AUTHENTICATION_EMAIL_SERVICE = `${BASE_URL_AUTHENTICATION_SERVICE}/
 
 export const GROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups?Page=1&Size=500`
 
-export const ADGROUP_GET_URL = `${BASE_URL_USER_SERVICE}/GroupADGroupMapping`
+export const USERGROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups/GetAllUserGroup`
+
+export const ADGROUP_GET_URL = `${BASE_URL_USER_SERVICE}/ADGroups/GetAllGroupKeyValues`
 
 export const GROUP_GET_BY_ID_URL = `${BASE_URL_USER_SERVICE}/groups`
 
@@ -77,7 +79,7 @@ export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
 //Please dont append controller with File service url
 export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
-export const FILE_SERVICE_URL_V2 = FILE_SERVICE_URL.replace("v1","v2") ; 
+export const FILE_SERVICE_URL_V2 = FILE_SERVICE_URL.replace("v1","v2"); 
 
 export const AI_COORDINATOR_SERVICE_URL = `${REACT_APP_AICOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;

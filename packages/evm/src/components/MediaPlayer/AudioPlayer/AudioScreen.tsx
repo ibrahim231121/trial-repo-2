@@ -225,7 +225,7 @@ const AudioScreen = ({
 
   return (
     <div
-      id="video-player-screens"
+      id="audio-player-screens"
       className={`${videoLayoutResetHeight} ${"_videPlayer_height_AU"} ${ ""
       }`}
     >

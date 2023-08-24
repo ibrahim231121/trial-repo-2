@@ -144,6 +144,7 @@
                 right: 12px;
               }
             }
+           
           }
         }
         .adVSelectBox {
@@ -180,6 +181,14 @@
 
             &::placeholder {
               color: var(--color-979797) !important;
+            }
+          }
+          .MuiPopover-root {
+            .MuiPaper-root {
+              left: 0 !important;
+              top: 32px !important;
+              margin: 0;
+              width: 100%;
             }
           }
         }
@@ -225,9 +234,9 @@
           }
           .crxArrowDownSelect.MuiSelect-iconOpen {
             padding-left: 0 !important;
-            padding-right: 5px !important;
+            padding-right: 0 !important;
             height: 28px;
-            margin: 2px 0;
+            margin: 1px 0;
           }
           .MuiSelect-select {
             color: var(--color-74767c);
@@ -336,7 +345,7 @@
 .userDataTableParent {
   margin: 0px 81px;
   position: relative;
-  
+  padding-bottom: 25px;
   font-family: var(--base-font-family);
   
 .dataTableColumnShoHide {
@@ -363,7 +372,7 @@
       tr{
         th{
           top : 0px !important;
-          left : 0px !important
+          left : 0px !important;
         }
       }
     }
@@ -377,5 +386,27 @@
   }
   &::after {
     display: none;
+  }
+}
+.drawerOff {
+  .groupPermissionInnerPage {
+    .usersGroupDataTable {
+      .CRXDataTableCustom {
+        .drag_header,.searchable_header {
+          tr {
+            th.dataTableActionColumn {
+              left: 0px !important;
+            }
+          }
+        }
+        .table_body_{
+          tr{
+            td.dataTableActionColumn {
+              left: 0px !important;
+            }
+          }
+        }
+      }
+    }
   }
 }

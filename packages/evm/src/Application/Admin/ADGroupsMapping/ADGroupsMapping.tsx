@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   CRXRows,
   CRXColumn,
@@ -28,14 +28,14 @@ const ADGroupsMapping: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [touched, setTouched] = React.useState<any[]>([]);
   const [isClose, setIsClose] = React.useState(false);
   let defaultGroup: AddGroup = {
     id: 0,
-    rowId: 0,
+    rowId: -1,
     adGroupRecId: 0,
     serverType: 0,
     isChanged: false,
-    isDeleted: false,
     groupRecIds: [],
   };
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -48,6 +48,7 @@ const ADGroupsMapping: React.FC = () => {
   let [formValues, setFormValues] = useState<AddGroup[]>([]);
   const [userGroupOptions, setUserGroupOptions] = React.useState<any[]>([]);
   const [aDGroupOptions, setADGroupOptions] = React.useState<any[]>([]);
+  const tabContainer = useRef<any>()
 
   const onUserGroupsUpdate = (e: any, i: number) => {
     let newArr = [...payload];
@@ -57,29 +58,27 @@ const ADGroupsMapping: React.FC = () => {
   };
   const onADGroupsUpdate = (e: any, i: number) => {
     let newArr = [...payload];
+    if(e != null){
+    
     newArr[i].adGroupRecId = e.value;
     newArr[i].adGroupObj = e;
+    }
+    else {
+      newArr[i].adGroupRecId = 0;
+      newArr[i].adGroupObj = {label : '', value : ''};
+    }
     setPayload(newArr);
   };
 
   useEffect(() => {
-    dispatch(setLoaderValue({ isLoading: true, message: "" }));
     SetupConfigurationAgent.getTenantSetting("/TenantSettings/KeyValues/6")
       .then((authServerType: any) => {
         setAuthServer(parseInt(authServerType.AuthServer));
-        dispatch(
-          setLoaderValue({ isLoading: false, message: "", error: true })
-        );
       })
-      .catch(() => {
-        dispatch(
-          setLoaderValue({ isLoading: false, message: "", error: true })
-        );
-      });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
-    // dispatch(setLoaderValue({ isLoading: true, message: "" }))
     UsersAndIdentitiesServiceAgent.getUsersGroups()
       .then((userGroups: UserGroups[]) => {
         setUserGroupOptions(
@@ -90,15 +89,11 @@ const ADGroupsMapping: React.FC = () => {
             };
           })
         );
-        //dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
       })
-      .catch(() => {
-        //dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
-      });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
-    // dispatch(setLoaderValue({ isLoading: true, message: "" }))
     if (authServer > 0) {
       UsersAndIdentitiesServiceAgent.getADGroups(
         "/ADGroups/GetAllGroupKeyValues/" + authServer
@@ -112,39 +107,35 @@ const ADGroupsMapping: React.FC = () => {
               };
             })
           );
-          // dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
         })
-        .catch(() => {
-          // dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
-        });
+        .catch(() => {});
     }
   }, [authServer]);
 
   React.useEffect(() => {
-    dispatch(setLoaderValue({ isLoading: true, message: "" }));
-    UsersAndIdentitiesServiceAgent.getADGroupsMapping().then(
-      (ADGroupsMapping: AddGroup[]) => {
-        if (
-          ADGroupsMapping &&
-          ADGroupsMapping != null &&
-          ADGroupsMapping.length > 0
-        ) {
-          ADGroupsMapping.forEach((x) => console.log("ABCDDDDDDDDDD" + x));
-          setFormValues(ADGroupsMapping);
-        } else {
-          let temp = defaultGroup;
-          temp.rowId = payload?.length + 1;
-          setPayload((prevState) => [...prevState, temp]);
-        }
-        dispatch(
-          setLoaderValue({ isLoading: false, message: "", error: true })
-        );
-      }
-    );
-  }, []);
+    if (authServer > 0) {
+      dispatch(setLoaderValue({ isLoading: true, message: "" }));
+      UsersAndIdentitiesServiceAgent.getADGroupsMapping(
+        "/GroupADGroupMapping/" + authServer
+      )
+        .then((ADGroupsMapping: AddGroup[]) => {
+          if (ADGroupsMapping.length == 0) {
+            dispatch(
+              setLoaderValue({ isLoading: false, message: "", error: true })
+            );
+          } else if (ADGroupsMapping && ADGroupsMapping != null) {
+            setFormValues(ADGroupsMapping);
+          }
+        })
+        .catch(() => {
+          dispatch(
+            setLoaderValue({ isLoading: false, message: "", error: true })
+          );
+        });
+    }
+  }, [authServer]);
 
   useEffect(() => {
-    console.log(formValues);
     if (
       formValues.length > 0 &&
       userGroupOptions?.length > 0 &&
@@ -165,32 +156,38 @@ const ADGroupsMapping: React.FC = () => {
         x.groupObj = thisUser;
       });
       setPayload(temp);
+      dispatch(setLoaderValue({ isLoading: false, message: "", error: true }));
     }
   }, [formValues, userGroupOptions, aDGroupOptions]);
 
   const upsertRecords = (body: AddGroup[]) => {
-    let temp: any = body.map((x) => {
-      console.log("AUTH SERVER" + authServer);
-      return {
-        ...x,
-        id: x.id.toString(),
-        serverType: authServer,
-        adGroupRecId: parseInt(x.adGroupRecId + ""),
-        userGroup: x.groupRecIds,
-      };
-    });
-
-    UsersAndIdentitiesServiceAgent.upsertADRecords(
-      "/GroupADGroupMapping/Upsert",
-      temp
-    )
-      .then((res: any) => {
-        setSuccess(true);
-        setTimeout(() => window.location.reload(), 1000);
-      })
-      .catch((err: any) => {
-        console.error(err);
+    dispatch(setLoaderValue({ isLoading: true, message: "" }));
+    if (
+      body.map((a) => a.adGroupObj?.value != null || a.groupRecIds.length > 0)
+    ) {
+      let temp: any = body.map((x) => {
+        return {
+          ...x,
+          id: x.id.toString(),
+          serverType: authServer,
+          adGroupRecId: parseInt(x.adGroupRecId + ""),
+          userGroup: x.groupRecIds,
+        };
       });
+
+      UsersAndIdentitiesServiceAgent.upsertADRecords(
+        "/GroupADGroupMapping/Upsert",
+        temp
+      )
+        .then((res: any) => {
+          setSuccess(true);
+          setTimeout(() => window.location.reload(), 1000);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+    }
+    dispatch(setLoaderValue({ isLoading: false, message: "", error: true }));
   };
   const onAddGroup = () => {
     let temp = defaultGroup;
@@ -198,11 +195,21 @@ const ADGroupsMapping: React.FC = () => {
     setPayload((prevState) => [...prevState, temp]);
   };
   const onRemoveGroup = (RID: number, RecID: number) => {
-    let temp = row;
-    row.Id = RecID;
+    if(RecID > 0){
+      row.Id = RecID;
     row.rowId = RID;
     setRow(row);
     setIsOpen(true);
+    }
+    else {
+      setPayload((current) =>
+        current.filter((entry) => entry.rowId != RID)
+      );
+    }
+    // row.Id = RecID;
+    // row.rowId = RID;
+    // setRow(row);
+    // setIsOpen(true);
     // let sadsad = [...payload];
     // sadsad.splice(i, 1);
     // setPayload(sadsad);
@@ -210,9 +217,11 @@ const ADGroupsMapping: React.FC = () => {
   const handleDelete = () => {
     if (row.Id > 0) {
       UsersAndIdentitiesServiceAgent.deleteADGroupsMapping(
-        "/GroupADGroupMapping/" + row.Id
+        "/GroupADGroupMapping/" + row.Id + "/" + authServer
       )
-        .then((res: any) => {})
+        .then((res: any) => {
+          setTimeout(() => window.location.reload(), 1000);
+        })
         .catch();
     } else {
       setPayload((current) =>
@@ -230,7 +239,7 @@ const ADGroupsMapping: React.FC = () => {
   };
 
   return (
-    <div>
+    <>
       <div className="crx-ADGroupMapping-tab">
         {success && (
           <CRXAlert
@@ -239,13 +248,13 @@ const ADGroupsMapping: React.FC = () => {
             open={true}
           />
         )}
-        <div className="ADGroupMappingContent">
-          <CRXRows container="container" spacing={0}>
+        <div className="ADGroupMappingContent" ref={tabContainer}>
+          <CRXRows container="container" spacing={0} className="ad-group-use-header">
             <CRXColumn
               className="ADGroupMappingColumn"
               container="container"
               item="item"
-              xs={4}
+              xs={6}
               spacing={0}
             >
               {t("User Groups")}
@@ -254,24 +263,22 @@ const ADGroupsMapping: React.FC = () => {
               className="ADGroupMappingColumn"
               container="container"
               item="item"
-              xs={5}
+              xs={6}
               spacing={0}
             >
               {t("Active Directory Groups")}
             </CRXColumn>
           </CRXRows>
           <div className="crxPermissionPageScroll">
-            <div>
+            
               <div className="crx-ADGroupMapping-col">
-                {payload &&
+                {payload.length > 0 &&
+                  payload[0]?.rowId != 0 &&
                   payload.map((group, i) => {
-                    console.log(group.adGroupObj);
-                    console.log(group.id);
-                    console.log(group.rowId);
                     return (
                       <CRXRows container="container" spacing={0}>
                         <CRXColumn
-                          className="permissionCol"
+                          className="ad_groups_row"
                           container="container"
                           item="item"
                           xs={6}
@@ -281,43 +288,90 @@ const ADGroupsMapping: React.FC = () => {
                             className="UserGroupsAutocomplete"
                             multiple={true}
                             CheckBox={true}
+                            error={
+                              touched.find(
+                                (x) =>
+                                  x.key == "UserGroupsAutocomplete" &&
+                                  x.index == i
+                              )?.touched == true &&
+                              group.groupRecIds?.length == 0
+                            }
+                            errorMsg={"User group is required"}
                             required={true}
+                            j
                             options={userGroupOptions}
                             placeHolder={"Select EVM Group(s)"}
                             value={group.groupObj ? group.groupObj : []}
                             isSearchable={true}
+                            onOpen={() => {
+                              setTouched([
+                                ...touched,
+                                {
+                                  key: "UserGroupsAutocomplete",
+                                  index: i,
+                                  touched: true,
+                                },
+                              ]);
+                            }}
                             onChange={(e: any, value: any) =>
                               onUserGroupsUpdate(value, i)
                             }
                           />
                         </CRXColumn>
                         <CRXColumn
-                          className="permissionCol"
+                          className="ad_groups_row"
                           container="container"
                           item="item"
-                          xs={3}
+                          xs={6}
                           spacing={0}
                         >
-                          <CRXMultiSelectBoxLight
-                            className="ADGroupsAutocomplete"
-                            CheckBox={true}
-                            multiple={false}
-                            required={true}
-                            options={aDGroupOptions}
-                            placeHolder={"Select AD Group"}
-                            value={group.adGroupObj}
-                            isSearchable={true}
-                            onChange={(e: any, value: any) => {
-                              onADGroupsUpdate(value, i);
-                            }}
-                          />
-                        </CRXColumn>
-
                         <CRXColumn
+                          className="ad_groups_row"
+                          container="container"
+                          item="item"
+                          xs={10}
+                          spacing={0}
+                        >
+                        <CRXMultiSelectBoxLight
+                          className="ADGroupsAutocomplete"
+                          error={
+                            touched.find(
+                              (x) =>
+                                x.key == "ADGroupsAutocomplete" &&
+                                x.index == i
+                            )?.touched == true &&
+                            group.adGroupObj?.value == null || group.adGroupObj?.value == '' 
+                          }
+                          errorMsg={"AD group is required"}
+                          onOpen={() => {
+                            setTouched([
+                              ...touched,
+                              {
+                                key: "ADGroupsAutocomplete",
+                                index: i,
+                                touched: true,
+                              },
+                            ]);
+                          }}
+                          CheckBox={false}
+                          multiple={false}
+                          required={true}
+                          options={aDGroupOptions}
+                          placeHolder={"Select AD Group"}
+                          value={group.adGroupObj? group.adGroupObj.value == ''? [] : group.adGroupObj : [] }
+                          isSearchable={true}
+                          onChange={(e: any, value: any) => {
+                            onADGroupsUpdate(value, i);
+                          }}
+                        />
+                      </CRXColumn>
+                          
+
+                      <CRXColumn
                           className="crx-permission-btn"
                           container="container"
                           item="item"
-                          xs={3}
+                          xs={2}
                           spacing={0}
                         >
                           {
@@ -337,48 +391,41 @@ const ADGroupsMapping: React.FC = () => {
                             </button>
                           }
                         </CRXColumn>
+                      </CRXColumn>
                       </CRXRows>
                     );
                   })}
               </div>
-            </div>
+            
           </div>
         </div>
-        <div className="crxPermissionBtnUSers crxPermissionBtnUSers_addBtn ">
+        <CRXRows container="container" spacing={0}>
+          <CRXColumn
+          className="ad_groups_row_add_new"
+          container="container"
+          item="item"
+          xs={6}
+          spacing={0}
+          >
+        <div className="crxPermissionBtnUSers crxPermissionBtnUSers_addBtn">
+          
           <CRXButton
             //disabled={isdisable}
             className="PreSearchButton"
             onClick={onAddGroup}
             color="primary"
             variant="contained"
+            //disabled= {payload.find(x => x.adGroupRecId < 0) && payload.find(x => x.groupRecIds.length <= 0)}
+            disabled = {payload? payload[payload.length-1]?.adGroupRecId === 0 || payload[payload.length-1]?.groupRecIds?.length === 0:false}
           >
             {" "}
             {t("Add_user_groups")}
           </CRXButton>
+          
         </div>
-
-        <div className="crxPermissionBtnUSers crxPermissionBtnUSers_saveBtn">
-          <div className="save-cancel-button-box">
-            <CRXButton
-              variant="contained"
-              className="groupInfoTabButtons"
-              onClick={() => {
-                upsertRecords(payload);
-              }}
-              //disabled={0}
-            >
-              {t("Save")}
-            </CRXButton>
-            <CRXButton
-              className="groupInfoTabButtons secondary"
-              color="secondary"
-              variant="outlined"
-              onClick={() => setIsClose(true)}
-            >
-              {t("Cancel")}
-            </CRXButton>
-          </div>
-        </div>
+        </CRXColumn>
+          </CRXRows>
+        
 
         <CRXConfirmDialog
           setIsOpen={() => setIsClose(false)}
@@ -422,7 +469,30 @@ const ADGroupsMapping: React.FC = () => {
           </div>
         </CRXConfirmDialog>
       </div>
-    </div>
+      <div className="crxPermissionBtnUSers crxPermissionBtnUSers_saveBtn">
+          <div className="save-cancel-button-box">
+            <CRXButton
+              variant="contained"
+              className="ad-g-save"
+              onClick={() => {
+                upsertRecords(payload);
+              }}
+              disabled = {payload? payload[payload.length-1]?.adGroupRecId === 0 || payload[payload.length-1]?.groupRecIds?.length === 0:false}
+            >
+              {t("Save")}
+            </CRXButton>
+            <CRXButton
+              className="ad-g-cancel secondary"
+              color="secondary"
+              variant="outlined"
+              onClick={() => setIsClose(true)}
+            >
+              {t("Cancel")}
+            </CRXButton>
+          </div>
+        </div>
+      </>
+    
   );
 };
 export default ADGroupsMapping;

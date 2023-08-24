@@ -14,8 +14,19 @@ interface Props {
   onChange: (e: any) => void;
   className?: string;
   selectedRow?: boolean;
-  inputRef? : any
+  inputRef? : any;
+  id? : any
 }
+
+// Unique ID generator function
+const generateUniqueId = (() => {
+  let counter = 0;
+  return () => {
+    counter++;
+    return `checkbox_${counter}`;
+  };
+})();
+
 
 const useStyles = makeStyles({
   root: {
@@ -56,6 +67,7 @@ const CRXCheckBox: React.FC<Props> = ({
   const disable = disabled && "disabled";
   const error = isError && "error";
   const checkStyle = lightMode ? "checkBoxLightTheme" : "checkBoxDarkTheme";
+  const checkboxId = generateUniqueId();
   
   useEffect(() => {
     if(selectedRow === true && checkBoxSelected == "crxSelectedDark" && checked === true) {
@@ -71,6 +83,7 @@ const CRXCheckBox: React.FC<Props> = ({
   return (
     <>
       <Checkbox
+        id={checkboxId}
         inputRef={inputRef}
         className={classes.root + " CRXCheckBox " + className + " " + disable + " " + checkStyle}
         checked={checked}

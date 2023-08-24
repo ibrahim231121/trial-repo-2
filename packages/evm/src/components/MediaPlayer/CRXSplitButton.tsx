@@ -16,8 +16,8 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
 
   const handleClick = () => {
     if(selectedIndex == 0){saveOffsets()}
-    if(selectedIndex == 2){UndoRedo(-1)}
-    else if(selectedIndex == 3){UndoRedo(1)}
+    else if(selectedIndex == 1){UndoRedo(-1)}
+    else if(selectedIndex == 2){UndoRedo(1)}
     else if(selectedIndex == 3){UndoRedo(0)}
     else if(selectedIndex == 4){RevertToOriginal()}
   }

@@ -154,6 +154,11 @@ const CRXNumberField = ({
     
   // }
 
+  const removeSigns = () => {
+    var input: any = inputRefs.current;
+    input.value = parseInt(input.value.toString().replace('+', '').replace('-', ''))
+  }
+
   return (
     <>
       <span id={parentId} className="number_field_textBox">
@@ -184,7 +189,7 @@ const CRXNumberField = ({
             className={
               "CBX-Number-input " + disableds + " " + errors + " " + className + " "
             }
-            
+            onKeyUp={removeSigns}
             {...others}
           />
         

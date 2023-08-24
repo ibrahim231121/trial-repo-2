@@ -36,7 +36,8 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
     dragableHeaderPosition,
     topSpaceDrag,
     viewName,
-    expanViews
+    expanViews,
+    selfSorting
 }) => {
     return (
         <>
@@ -65,6 +66,7 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
              setBodyCellWidth={setBodyCellWidth}
              viewName={viewName}
              expanViews={expanViews}
+             selfSorting={selfSorting}
            />
          
         </DragableHead>

@@ -51,7 +51,9 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
 
   return (
     <TableHead style={{"top" : searchHeaderPosition + "px"}} className="searchable_header">
-      <TableRow>
+      <TableRow
+      data-qa="filters-row"
+      >
         {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell
             className={

@@ -13,6 +13,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 import Paper from "@material-ui/core/Paper";
 import { CRXTooltip } from "@cb/shared";
+import { changePrimaryVideoSoftReload } from "../../Redux/VideoPlayerSettingsReducer";
 
 interface VideosSelectionProp {
   timelinedetail: any[];
@@ -22,7 +23,7 @@ interface VideosSelectionProp {
   indexNumber: any;
   setupdateVideoSelection: any;
   anchorRef: any;
-  setscreenChangeVideoId : any;
+  setscreenChangeVideoId: any;
 }
 
 type CheckValue = {
@@ -46,6 +47,16 @@ const VideosSelection = ({
   const confirmEvent = async () => {
     if (checkedVideo !== "") {
       var tempArray = JSON.parse(JSON.stringify(timelinedetail));
+      var tempItem = tempArray.find((x: any) => x.id == checkedVideo);
+      if (indexNumber == 1) {
+        dispatch(changePrimaryVideoSoftReload({
+          primaryVideoSoftReload: {
+            assetId: tempItem?.dataId,
+            assetName: tempItem?.assetName,
+            needReload: true
+          }
+        }))
+      }
       var tempItemToRemove = tempArray.find(
         (x: any) => x.indexNumberToDisplay == indexNumber
       );
@@ -53,7 +64,6 @@ const VideosSelection = ({
         tempItemToRemove.enableDisplay = false;
         tempItemToRemove.indexNumberToDisplay = 0;
       }
-      var tempItem = tempArray.find((x: any) => x.id == checkedVideo);
       if (tempItem !== undefined) {
         setscreenChangeVideoId(tempItem.id);
         tempItem.enableDisplay = true;
@@ -85,9 +95,9 @@ const VideosSelection = ({
   const radioIconGrey = "iconGrey icon icon-radio-unchecked";
   const checkedIconGrey = "iconGrey icon-radio-checked";
   const MultiBackTooltip = () => {
-      setAnchorEl(null);
-      
-    }
+    setAnchorEl(null);
+
+  }
   return (
     <>
       {anchorEl && anchorRef.current && anchorEl ? (
@@ -124,8 +134,8 @@ const VideosSelection = ({
                         <>
                           <div
                             className={`CRXMultiViewDetail ${checkedVideo === video.id
-                                ? "CRXMultiViewDetailActive"
-                                : ""
+                              ? "CRXMultiViewDetailActive"
+                              : ""
                               }`}
                             onClick={(e: any) => videoCheckRadio()}
                             key={index}

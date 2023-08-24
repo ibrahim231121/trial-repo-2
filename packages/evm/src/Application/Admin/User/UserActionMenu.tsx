@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 
@@ -49,7 +49,8 @@ const UserActionMenu: React.FC<Props> = ({
     },
     page: 0,
     size: 25
-})
+  })
+
   const unlockUser = () => {
     setTitle(t("Unlock_user_account"));
     setPrimary(t("Yes_unlock_user_account"));  
@@ -64,6 +65,18 @@ const UserActionMenu: React.FC<Props> = ({
     setIsOpen(true);
     setModalType("deactivate");
   };
+
+  // useEffect(() => {
+  //   let loginId = row?.loginId;
+  //   if (loginId && loginId?.length > 0) {
+  //     row.loginId = row?.loginId.replace(row?.id, "");
+  //     if (row?.loginId?.slice(-1) == "_") {
+  //       row.loginId = row?.loginId?.slice(0, -1);
+  //     }
+  //   }
+    
+  // }, [row?.loginId]);
+
   const dispatchNewCommand = (isSuccess: boolean, errorMsg: string) => {
     switch (modalType) {
       case "unlock": {
@@ -86,7 +99,7 @@ const UserActionMenu: React.FC<Props> = ({
       case "deactivate": {
         if (isSuccess) {
           showToastMsg({
-            message: t("You_have_deactivated_the_user_account"),
+            message: `${t("You_have_deactivated_the_user_account")}`,
             variant: "success",
             duration: 7000,
           });
@@ -205,7 +218,7 @@ const manageDeactivateClass =  row?.status.toLocaleLowerCase() != "deactivated" 
               {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}
               </p>
               <p>
-                {row?.firstName} {row?.lastName}: <b>{row?.loginId}</b>
+                {row?.fName} {row?.lName}: <b>{row?.loginId.substring(0, row?.loginId.lastIndexOf("_"))}</b>
               </p>
               <p>
                 {t("Please_confirm_if_you_would_like_to")} {modalType} {t("this_user_account.")}
@@ -230,16 +243,21 @@ const manageDeactivateClass =  row?.status.toLocaleLowerCase() != "deactivated" 
           </MenuButton>
         }
       >
-        <MenuItem onClick={openCreateUserForm}>
-          <Restricted moduleId={10}>
-            <div className="crx-meu-content groupingMenu crx-spac">
-              <div className="crx-menu-icon">
-                <i className="fas fa-pen"></i>
-              </div>
-              <div className="crx-menu-list">{t("Edit_user")}</div>
-            </div>
-          </Restricted>
-        </MenuItem>
+        {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1)  ? (
+            <MenuItem onClick={openCreateUserForm}>
+              <Restricted moduleId={10}>
+                <div className="crx-meu-content groupingMenu crx-spac">
+                  <div className="crx-menu-icon">
+                    <i className="fas fa-pen"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Edit_user")}</div>
+                </div>
+              </Restricted>
+            </MenuItem>
+          ) : (
+            <div></div>
+          )
+        }  
         {row?.status.toLocaleLowerCase() == "accountlocked" && !row?.isADUser ? (
           <MenuItem>
             <Restricted moduleId={12}>

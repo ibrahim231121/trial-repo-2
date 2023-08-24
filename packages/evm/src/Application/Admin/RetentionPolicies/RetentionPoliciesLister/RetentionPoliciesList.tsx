@@ -229,7 +229,7 @@ const RetentionPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "332",
+      minWidth: "360",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -242,7 +242,7 @@ const RetentionPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "400",
+      minWidth: "451",
       attributeName: "RetentionTimeOrSpace",
       attributeType: "String",
       attributeOperator: "contains"
@@ -404,9 +404,14 @@ const RetentionPoliciesList: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
+
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxRetentionPoliciesTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="CrxRetentionPoliciesTable ExpandViewOverlay" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -462,9 +467,10 @@ const RetentionPoliciesList: React.FC = () => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={129}
-            searchHeaderPosition={221}
-            dragableHeaderPosition={186}
+            stickyToolbar={130}
+            searchHeaderPosition={223}
+            dragableHeaderPosition={188}
+            overlay={true}
           //End here
           showExpandViewOption={true}
           />

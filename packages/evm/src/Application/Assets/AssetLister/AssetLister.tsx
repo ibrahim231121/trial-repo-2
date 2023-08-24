@@ -21,21 +21,20 @@ import {
   approachingDateDefaultValue,
   dateOptions
 } from '../../../utils/constant';
-import usePostFetch from '../../../utils/Api/usePostFetch';
-import { getToken, IDecoded } from "../../../Login/API/auth";
+import { IDecoded } from "../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
-import { getCategoryAsync } from '../../../Redux/categoryReducer';
-import { getStationsInfoAllAsync } from '../../../Redux/StationReducer';
 import Cookies from 'universal-cookie';
 import { SearchModel } from '../../../utils/Api/models/SearchModel';
-import { useParams } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
 import { CRXTooltip } from '@cb/shared';
 import { IconButton } from '@material-ui/core';
 import "../../../Assets/css/animate.min.css";
+import { useHistory } from "react-router";
+import randomNumberGenerator from '../utils/numberGenerator';
 
 const SearchComponent = (props: any) => {
   const { t } = useTranslation<string>();
+  const history = useHistory();
   const dispatch = useDispatch();
   const cookies = new Cookies();
   let decoded: IDecoded = jwt_decode(cookies.get("access_token"));
@@ -105,7 +104,8 @@ const SearchComponent = (props: any) => {
               'asset.unit',
               'asset.owners',
               'formData.key',
-              'formData.value'
+              'formData.value',
+              'evidenceRelations.valueDisplayName'
             ],
             operator : 'and'
           },
@@ -126,7 +126,7 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: 'My Assets',
-      query: () => queries.GetAssetsByUserName(decoded),
+      query: () => queries.GetAssetsByUserName(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded),
       renderData: function () {
         setQuerryString(evidenceSearchType.MyAsstes);
         setDateTimeAsset(dateTimeDropDown);
@@ -145,9 +145,7 @@ const SearchComponent = (props: any) => {
       renderData: function () {
         setDateOptionType(dateOptionsTypes.basicoptions);
         setQuerryString(evidenceSearchType.NotCategorized);
-        let categorydateValue = dateOptions.basicoptions.find(x => x.value === (dateTimeDropDown.displayText != "anytime" ? basicDateDefaultValue : dateTimeDropDown.displayText));
-        if(categorydateValue != null)
-        fetchData(queries.GetAssetsUnCategorized(categorydateValue.startDate(), categorydateValue.endDate(), decoded), SearchType.ShortcutSearch,evidenceSearchType.NotCategorized);
+        fetchData(this.query(), SearchType.ShortcutSearch,evidenceSearchType.NotCategorized);
         setPredictiveText(evidenceSearchType.NotCategorized);
         setSearchResultText({type : "Search Term:", name : evidenceSearchType.NotCategorized})
         setDateTimeAsset(dateTimeDropDown);
@@ -178,12 +176,6 @@ const SearchComponent = (props: any) => {
                 endDate: approachingdateValue.endDate(),
                 value: approachingdateValue.value,
                 displayText: approachingdateValue.displayText
-              }
-              let dateValueObj: DateTimeObject = {
-                startDate: defaultDateValue.startDate(),
-                endDate: defaultDateValue.endDate(),
-                value: defaultDateValue.value,
-                displayText: defaultDateValue.displayText
               }
               setDateTimeDropDown(approachingDefaultDateValue);
               setDateTimeAsset(approachingDefaultDateValue);
@@ -232,8 +224,6 @@ const SearchComponent = (props: any) => {
       setShowShortCutSearch(true);
       setAdvanceSearch(true);
     }
-    dispatch(getCategoryAsync());
-    dispatch(getStationsInfoAllAsync());
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
     }
@@ -242,7 +232,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if(responseForSearchName[0] != undefined){
-     if( props.isopen) {
+    if( props.isopen) {
       setPredictiveText( responseForSearchName[1].replaceAll('*', ''))
       setDateTimeDropDown(responseForSearchName[0])
     }
@@ -255,9 +245,26 @@ const SearchComponent = (props: any) => {
           displayText: basicDateDefaultValue
         });
       }
-      setQuerryString(responseForSearchName[1].replaceAll('*', ''))
+      if (window.location.href.includes('assets/assetSearchResult')) {
+        setQuerryString(responseForSearchName[1].replaceAll('*', ''))
+      }
+      else {
+        setQuerryString('');
+        setDateOptionType(dateOptionsTypes.basicoptions);
+        setSearchResult(false);
+        HidePanel();
+      }
     }
   },[searchData])
+
+  const HidePanel = () => {
+    if (searchData?.length === 0) {
+      setShowShortCutSearch(true);
+      if (searchPanelModal.includes("panel_hide")) {
+        setSearchPanelModal("");
+      }
+    }
+  }
 
   React.useEffect(() => {
     if(isEmptySearch && responseForSearch.length === 0){
@@ -267,6 +274,7 @@ const SearchComponent = (props: any) => {
         type: "info",
         alertType: "inline"
       })
+      HidePanel();
     }
     else if(responseForSearch.length !== 0){
       setSearchResult(false)
@@ -312,7 +320,15 @@ const SearchComponent = (props: any) => {
           if (o.key == 'username') {
             const val = {
               bool: {
-                should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
+                should: [{ 
+                  multi_match: {
+                      query: `${o.inputValue}*`,
+                      fields: [
+                        'asset.owners'
+                      ],
+                      operator : 'and'
+                    },
+                 }],
               },
             };
             AdvancedSearchQuerry.bool.must.push(val);
@@ -377,7 +393,8 @@ const SearchComponent = (props: any) => {
     if (responseForSearch.length > 0) {
       const footer : any = document.querySelector(".footerDiv")
       setSearchData(responseForSearch);
-      setRandomKey(Math.random())
+      const randomNumGenerated = randomNumberGenerator();
+      setRandomKey(randomNumGenerated)
       footer && (footer.style.bottom = "18px")
     }
     else {
@@ -417,6 +434,7 @@ const SearchComponent = (props: any) => {
   }, [dateTimeDropDown]);
 
   const Search = () => {
+    
     setSearchResultText({type : "Search Term:", name :querryString})
     if (querryString && querryString.length > 0 && querryString.includes("#")) {
       if (querryString.startsWith("#")) {
@@ -426,9 +444,7 @@ const SearchComponent = (props: any) => {
           shortCut.renderData();
         } else {
           setSearchData([]);
-
         }
-        
       }
     } else {
       NormalSearch();
@@ -487,6 +503,7 @@ const SearchComponent = (props: any) => {
       setAdvanceSearch(false);
     }
     if(!props.isopen){
+      history.push(urlList.filter((item:any) => item.name === urlNames.assetSearchResult)[0].url);
       dispatch(enterPathActionCreator({ val: t('Search_Results') }));
     }
   }
@@ -538,6 +555,7 @@ const SearchComponent = (props: any) => {
         setStickyBorder(false);
       }
     })
+    dispatch(enterPathActionCreator({ val: "" }));
   },[])
 
   const stickyBorderClass = stickyBorder ? "stickyBorder_Add" : "stickyBorder_Remove"; 
@@ -546,7 +564,7 @@ const SearchComponent = (props: any) => {
   const titleSearchBox : any = useRef();
   const [searchPanelModal, setSearchPanelModal] = useState<string>("panel_show");
   const [searchPanelIdentifer,setSearchPanelIdentifer] = useState<boolean>(false);
-  const [isOverLay, setIsOverlay] = useState<boolean>(false)
+  const [isOverLay, setIsOverlay] = useState<boolean>(false);
   const [advanceSearchText, setSdvanceSearchText] = useState<any[]>([])
 
   useEffect(() => {
@@ -554,6 +572,22 @@ const SearchComponent = (props: any) => {
   },[showAdvanceSearch])
 
   const showSearchBar = () => {
+    /**
+     * * NOTE: Since query string gets emptied each time the seach button is clicked, 
+     * * in case of show seach asset modal opened, we need to set data in query string again,
+     * * for that will fetch the 'assetSearchQuerry' key data from local storage because it contains the last query string.  
+    */ 
+  
+    const assetSearchQuery: string | null = localStorage.getItem('assetSearchQuerry');
+    if (assetSearchQuery) {
+      const parsedAssetSearchQuery = JSON.parse(assetSearchQuery);
+      const mustClause = parsedAssetSearchQuery.bool.must;
+      const multi_match = mustClause.find((x: any) => x.hasOwnProperty('multi_match'));
+      if ((mustClause) && (multi_match) && (Object.keys(multi_match).length > 0)) {
+        const query = multi_match.multi_match.query;
+        setQuerryString(query);
+      }
+    }
     setSearchPanelModal("panel_show panelDesign panelDesignUi panelDesignPopup ") 
     setSearchPanelIdentifer(true);
     setIsOverlay(true)
@@ -586,7 +620,8 @@ const SearchComponent = (props: any) => {
 
 const showAdvanceSearchBox = () => {
   setShowAdvance(!showAdvance)
-  titleSearchBox.current.style.borderBottom = "1px solid #dedede"
+  if(titleSearchBox.current != null)
+    titleSearchBox.current.style.borderBottom = "1px solid #dedede"
   setTimeout(() => {
     const advanceSearchBox:any = document.querySelector("#advanceSearchBox")
     advanceSearchBox.scrollTop = 170;
@@ -599,12 +634,21 @@ const PreSearchButtonClass = showAdvance ? "PreSearchButton_Open" : "PreSearchBu
 const fieldsNumberClass = fieldsNumber == 1 ? "scrollMainPage_1" : fieldsNumber == 2 ? "scrollMainPage_2" : "" ;
   return (
     <div className='advanceSearchChildren'>
-      <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "56px" : "124px"}}>
+      {searchResult &&  <CRXAlert
+                    className="Asset_Alert_Msg"
+                    message= {errorMessage.message}
+                    type={errorMessage.type}
+                    alertType={errorMessage.alertType}
+                    open={searchResult}
+                    setShowSucess={() => null}
+                  />
+        }
+      <div className='manageAssetListerView' style={{paddingTop : showShortCutSearch == false ? "0px" : "30px"}}>
        
       {isOverLay == true ? <div className='search-modal-overlay'></div> : ""} 
         <div ref={searchBar} className={`asset_lister_search_panel ${searchPanelModal}`}>
          
-        {showShortCutSearch == false ?  <div className='modal-title_cs'>
+        {showShortCutSearch == false ?  <div className="modal-title_cs">
           <div className='title_div'>Search Assets
           <div className='hr-line' ref={titleSearchBox}></div>
           </div>
@@ -703,17 +747,9 @@ const fieldsNumberClass = fieldsNumber == 1 ? "scrollMainPage_1" : fieldsNumber 
           
         
         </div>
-        {searchResult &&  <CRXAlert
-                    className=""
-                    message= {errorMessage.message}
-                    type={errorMessage.type}
-                    alertType={errorMessage.alertType}
-                    open={searchResult}
-                    setShowSucess={() => null}
-                  />
-        }
+        
         {(searchData.length > 0) && (
-          <div className={`dataTabAssets dataTabAssets_table ${stickyBorderClass}`}>
+          <div className={`dataTabAssets dataTabAssets_table ${stickyBorderClass}`} data-qa="asset-table">
             <MasterMain
               key={randomKey}
               rowsData={searchData}

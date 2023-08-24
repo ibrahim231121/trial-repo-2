@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { CRXButton, CRXDataTable, CRXToaster, CRXSelectBox } from "@cb/shared";
-import { HeadCellProps, PageiGrid, SearchObject, ValueString, onClearAll, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { HeadCellProps, PageiGrid, SearchObject, ValueString, onClearAll, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { RootState } from "../../../Redux/rootReducer";
-import { DeviceType, UpdateVersion } from "../../../utils/Api/models/UnitModels";
+import { DeviceStatus, DeviceType, UpdateVersion, UpdateVersionDevice } from "../../../utils/Api/models/UnitModels";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
@@ -14,6 +14,11 @@ import UpdateVersionsActionMenu from "./UpdateVersionActionMenu";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { useHistory } from "react-router-dom";
 import { urlList, urlNames } from "../../../utils/urlList";
+import './UpdateVersion.scss'
+import { dateDisplayFormat } from "../../../GlobalFunctions/DateFormat";
+import { CRXColumn } from "@cb/shared";
+import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
+import { dateOptionsTypes } from "../../../utils/constant";
 
 
 type UpdateVersionsObj = {
@@ -22,6 +27,18 @@ type UpdateVersionsObj = {
   createdOn: string;
   modifiedOn: string;
 }
+
+type DateTimeProps = {
+  dateTimeObj: DateTimeObject;
+  colIdx: number;
+};
+
+type DateTimeObject = {
+  startDate: string;
+  endDate: string;
+  value: string;
+  displayText: string;
+};
 
 const ORDER_BY = "asc" as Order;
 const ORDER_BY_PARAM = "recordingStarted";
@@ -41,6 +58,9 @@ const UpdateVersions: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [openModel, setOpenModel] = React.useState<boolean>(false);
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("History.CreatedOn");
   const [selectedDeviceType, setSelectedDeviceType] = React.useState<DeviceType | undefined>({ id: 0, name: "" });
   const [openAddNewFileModal, setOpenAddNewFileModal] = React.useState<boolean>(false);
 
@@ -50,8 +70,21 @@ const UpdateVersions: React.FC = () => {
       filters: []
     },
     page: page,
-    size: rowsPerPage
-  })
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+    }
+  });
+  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+    dateTimeObj: {
+      startDate: "",
+      endDate: "",
+      value: "",
+      displayText: "",
+    },
+    colIdx: 0,
+  });
   const dispatch = useDispatch();
   const isFirstRenderRef = useRef<boolean>(true);
   const [reformattedRows, setReformattedRows] = React.useState<UpdateVersionsObj[]>([]);
@@ -63,8 +96,9 @@ const UpdateVersions: React.FC = () => {
 
 
   useEffect(() => {
-    if (paging)
-      setUpdateVersions()
+    if (paging){
+      dispatch(getAllUpdateVersionsPagedAsync(pageiGrid));
+    }
     setPaging(false)
   }, [pageiGrid])
 
@@ -83,6 +117,36 @@ const UpdateVersions: React.FC = () => {
     dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
+  useEffect(() => {
+    if (dateTime.colIdx !== 0) {
+      if (
+        dateTime.dateTimeObj.startDate !== "" &&
+        dateTime.dateTimeObj.startDate !== undefined &&
+        dateTime.dateTimeObj.startDate != null &&
+        dateTime.dateTimeObj.endDate !== "" &&
+        dateTime.dateTimeObj.endDate !== undefined &&
+        dateTime.dateTimeObj.endDate != null
+      ) {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate],
+        };
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, newItem]);
+      } else
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+    }
+  }, [dateTime]);
+
   const retentionFormMessages = (obj: any) => {
     retentionMsgFormRef?.current?.showToaster({
       message: obj.message,
@@ -91,10 +155,10 @@ const UpdateVersions: React.FC = () => {
       clearButtton: true,
     });
   }
-  const onChange = (valuesObject: ValueString[], colIdx: number) => {
-    headCells[colIdx].headerArray = valuesObject;
-    onSelection(valuesObject, colIdx);
-  }
+  // const onChange = (valuesObject: ValueString[], colIdx: number) => {
+  //   headCells[colIdx].headerArray = valuesObject;
+  //   onSelection(valuesObject, colIdx);
+  // }
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -121,10 +185,89 @@ const UpdateVersions: React.FC = () => {
     headCell: HeadCellProps[],
     colIdx: number
   ) => {
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
+    };
+
     return (
-      <TextSearch headCells={headCell} colIdx={colIdx} onChange={(valueObject) => onChange(valueObject, colIdx)} />
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
   };
+
+  const searchDate = (
+    rowsParam: UpdateVersionsObj[],
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
+    let reset: boolean = false;
+
+    let dateTimeObject: DateTimeProps = {
+      dateTimeObj: {
+        startDate: "",
+        endDate: "",
+        value: "",
+        displayText: "",
+      },
+      colIdx: 0,
+    };
+
+    if (
+      headCells[colIdx].headerObject !== null ||
+      headCells[colIdx].headerObject === undefined
+    )
+      reset = false;
+    else reset = true;
+
+    if (
+      headCells[colIdx].headerObject === undefined ||
+      headCells[colIdx].headerObject === null
+    ) {
+      dateTimeObject = {
+        dateTimeObj: {
+          startDate: reformattedRows && reformattedRows.length>0 ? reformattedRows[0].createdOn : "",
+          endDate: reformattedRows && reformattedRows.length>0 ? reformattedRows[reformattedRows.length - 1].createdOn : "",
+          value: "custom",
+          displayText: t("custom_range"),
+        },
+        colIdx: 0,
+      };
+    } else {
+      dateTimeObject = {
+        dateTimeObj: {
+          ...headCells[colIdx].headerObject
+        },
+        colIdx: 0,
+      };
+    }
+
+    function onSelection(dateTime: DateTimeObject) {
+      dateTimeObject = {
+        dateTimeObj: {
+          ...dateTime
+        },
+        colIdx: colIdx,
+      };
+      setDateTime(dateTimeObject);
+      headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
+    }
+
+    return (
+      <CRXColumn item xs={11}>
+        <DateTimeComponent
+          showCompact={false}
+          reset={reset}
+          dateTimeDetail={dateTimeObject.dateTimeObj}
+          getDateTimeDropDown={(dateTime: DateTimeObject) => {
+            onSelection(dateTime);
+          }}
+          dateOptionType={dateOptionsTypes.basicoptions}
+        />
+      </CRXColumn>
+    );
+
+  };
+
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -137,9 +280,19 @@ const UpdateVersions: React.FC = () => {
       searchComponent: () => null,
       keyCol: true,
       visible: false,
-      minWidth: "80",
-      width: "",
-      maxWidth: "100",
+      minWidth: "80"
+    },
+    {
+      label: t("Is Canceled Status"),
+      id: "isCanceledStatus",
+      align: "right",
+      dataComponent: (e: boolean) => textDisplay(e.toString(), "IsCanceledStatus_GrayOut "),
+      sort: false,
+      searchFilter: false,
+      searchComponent: () => null,
+      keyCol: true,
+      visible: false,
+      minWidth: "80"
     },
     {
       label: `${t("Device Type")}`,
@@ -149,8 +302,10 @@ const UpdateVersions: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "150",
+      attributeName: "DeviceType",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Version Number")}`,
@@ -160,8 +315,10 @@ const UpdateVersions: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "193",
+      attributeName: "Version",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Name")}`,
@@ -171,30 +328,36 @@ const UpdateVersions: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "300",
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Total Devices")}`,
       id: "totalDevices",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: string) => textDisplay(e, "TotalDevices_GrayOut "),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "200",
+      attributeName: "TotalDevices",
+      attributeType: "Int",
+      attributeOperator: "eq"
     },
     {
       label: `${t("Success")}`,
       id: "totalSuccess",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: string) => textDisplay(e, "TotalSuccess_GrayOut "),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "150",
+      attributeName: "TotalSuccess",
+      attributeType: "Int",
+      attributeOperator: "eq"
     },
     {
       label: `${t("Fail")}`,
@@ -204,8 +367,10 @@ const UpdateVersions: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "120",
+      attributeName: "TotalFail",
+      attributeType: "Int",
+      attributeOperator: "eq"
     },
     {
       label: `${t("Pending")}`,
@@ -215,32 +380,53 @@ const UpdateVersions: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "120",
+      attributeName: "TotalPending",
+      attributeType: "Int",
+      attributeOperator: "eq"
     },
     {
       label: `${t("Date Created")}`,
       id: "createdOn",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: dateDisplayFormat,
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      searchComponent: searchDate,
+      minWidth: "200",
+      attributeName: "History.CreatedOn",
+      attributeType: "DateTime",
+      attributeOperator: "between"
     },
     {
       label: `${t("Last Updated")}`,
       id: "updateOn",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
-      sort: true,
-      searchFilter: true,
+      dataComponent: (e: string) => (e && e.length > 0) ? dateDisplayFormat : textDisplay(e, " "),
+      sort: false,
+      searchFilter: false,
       searchComponent: searchText,
-      width: "926",
-      maxWidth: "800"
+      minWidth: "200",
+      attributeName: "History.UpdateOn",
+      attributeType: "DateTime",
+      attributeOperator: "between"
     }
   ]);
+
+  const grayOutRow = () => {
+    let rowCount = document.querySelectorAll(".TotalDevices_GrayOut  label")?.length;
+    for(let i=0; i< rowCount; i++){
+      let isExist = document.querySelectorAll(".TotalDevices_GrayOut  label")[i]?.textContent == document.querySelectorAll(".TotalSuccess_GrayOut  label")[i]?.textContent ? true : false
+      if(isExist){
+        document.querySelectorAll(".TotalSuccess_GrayOut  label")[i].parentElement?.parentElement?.parentElement?.setAttribute("style", `background:grey`)
+      }
+      let isCanceledStatusBoolString = document.querySelectorAll(".IsCanceledStatus_GrayOut  label")[i]?.textContent;
+      if(isCanceledStatusBoolString && isCanceledStatusBoolString == "true"){
+        document.querySelectorAll(".IsCanceledStatus_GrayOut  label")[i].parentElement?.parentElement?.parentElement?.setAttribute("style", `background:grey`)
+      }
+    }
+  }
+  
 
   const setUpdateVersions = () => {
     let UpdateVersionRows: UpdateVersionsObj[] = [];
@@ -256,32 +442,25 @@ const UpdateVersions: React.FC = () => {
           totalPending: updateVersion.totalPending,
           totalSuccess: updateVersion.totalSuccess,
           modifiedOn: updateVersion.history.modifiedOn,
-          createdOn: updateVersion.history.createdOn
+          createdOn: updateVersion.history.createdOn,
+          isCanceledStatus: updateVersion.updateVersionDevices.some((x:UpdateVersionDevice)=> x.deviceStatus == DeviceStatus[DeviceStatus.Canceled])
         }
       })
     }
     setRows(UpdateVersionRows);
-    setReformattedRows(UpdateVersionRows)
+    setReformattedRows(UpdateVersionRows);
   }
-
-  const dataArrayBuilder = () => {
-    let dataRows: UpdateVersionsObj[] = reformattedRows;
-    searchData.forEach((el: SearchObject) => {
-      dataRows = onTextCompare(dataRows, headCells, el);
-    });
-    setRows(dataRows);
-  };
 
   React.useEffect(() => {
     setUpdateVersions();
+    setTimeout(() => {grayOutRow()},300)
   }, [filterUpdateVersions?.data]);
 
-  React.useEffect(() => {
-    dispatch(getAllUpdateVersionsPagedAsync(pageiGrid));
-  }, [])
-
   useEffect(() => {
-    dataArrayBuilder();
+    if (searchData.length > 0)
+    {
+      setIsSearchable(true)
+    }
   }, [searchData]);
 
   const getSelectedItemsUpdate = () => {
@@ -330,26 +509,70 @@ const UpdateVersions: React.FC = () => {
   }
 
   const handleKeyDown = (event: any) => {
-    // if (event.key === 'Enter') {
-    //   getFilteredCategoryData()
-    // }
+    if (event.key === 'Enter') {
+      getFilteredUpdateVersionData();
+      event.preventDefault();
+    }
   }
 
   const handleBlur = () => {
-    // if(isSearchable) {     
-    //   getFilteredCategoryData()
-    // }
+    if (isSearchable){
+      getFilteredUpdateVersionData();
+    }
+  }
+
+  const getFilteredUpdateVersionData = () => {
+
+    pageiGrid.gridFilter.filters = []
+
+    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
+      let x: GridFilter = {
+        operator: headCells[item.colIdx].attributeOperator,
+        field: headCells[item.colIdx].attributeName,
+        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+        fieldType: headCells[item.colIdx].attributeType,
+      }
+      pageiGrid.gridFilter.filters?.push(x)
+    })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
+
+    if (page !== 0)
+      setPage(0)
+    else {
+      dispatch(getAllUpdateVersionsPagedAsync(pageiGrid));
+    }
+    setIsSearchable(false)
+  }
+
+  useEffect(() => {
+    //dataArrayBuilder();
+    if (searchData.length > 0)
+    {
+      setIsSearchable(true)
+    }
+  }, [searchData]);
+
+  const ActionMenuReload = () => {
+    dispatch(getAllUpdateVersionsPagedAsync(pageiGrid));
+  }
+
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({ ...pageiGrid, gridSort: { field: sort.orderBy, dir: sort.order } })
+    setOrder(sort.order)
+    setOrderBy(sort.orderBy)
+    setPaging(true)
   }
 
   const onClickSchedule = () => {
-    history.push(urlList.filter((item:any) => item.name === urlNames.filterUpdateVersion)[0].url);
+    history.push(urlList.filter((item: any) => item.name === urlNames.filterUpdateVersion)[0].url);
   }
 
 
   return (
     <>
       <ClickAwayListener onClickAway={handleBlur}>
-        <div className="switchLeftComponents manageCRXUpdateVersion" onKeyDown={handleKeyDown}>
+        <div className="manageCRXUpdateVersion" onKeyDown={handleKeyDown}>
           <CRXToaster ref={retentionMsgFormRef} />
           {
             rows && (
@@ -363,17 +586,18 @@ const UpdateVersions: React.FC = () => {
                   getSuccess={getSuccessUpdate}
                   onClickOpenModel={onClickOpenModel}
                   onMessageShow={onMessageShow}
+                  ActionMenuReload={ActionMenuReload}
                 />}
                 toolBarButton={
                   <>
-                  <Restricted moduleId={9}>
-                    <CRXButton
-                      id={"createVersion"}
-                      className="primary manageVersionBtn" 
-                      onClick={() => {onClickSchedule()}}
-                    >
+                    <Restricted moduleId={9}>
+                      <CRXButton
+                        id={"createVersion"}
+                        className="primary manageVersionBtn"
+                        onClick={() => { onClickSchedule() }}
+                      >
                         {t("Schedule Version Update")}
-                    </CRXButton>
+                      </CRXButton>
                     </Restricted>
                     {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
                   </>
@@ -406,12 +630,14 @@ const UpdateVersions: React.FC = () => {
                 setPage={(pages: any) => setPage(pages)}
                 setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
                 totalRecords={filterUpdateVersions?.totalCount}
+                setSortOrder={(sort: any) => sortingOrder(sort)}
                 //Please dont miss this block.
-                offsetY={62}
-                headerPositionInit={210}
-                topSpaceDrag={98}
-                
-              //End here
+                offsetY={119}
+                stickyToolbar={117}
+                searchHeaderPosition={229}
+                dragableHeaderPosition={194}
+                //End here
+                overlay={true}
               />
 
             )
@@ -423,5 +649,6 @@ const UpdateVersions: React.FC = () => {
     </>
   );
 };
+
 
 export default UpdateVersions;

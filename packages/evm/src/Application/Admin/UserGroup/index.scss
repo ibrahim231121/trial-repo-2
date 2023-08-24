@@ -7,5 +7,30 @@
 }
 
 .userGroup_lister_editIcon {
-  font-size: 18px !important;
+  font-size: 23px !important;
+}
+
+.ExpandViewOverlay{
+  .dataTableExpandView{
+    .overlaySticky-content{
+      padding: 3px 0px;
+    }
+    .CRXDataTableCustom  {
+      width: 100% !important;
+      .drag_header{
+        top: 126px !important;
+      }
+      .searchable_header{
+        top: 160px !important;
+      }
+    }
+  }
+}
+.managePermissionTable {
+  .dataTableExpandView {
+    .stickyPos  {
+      padding-right: 0 !important;
+      width: 100% !important;
+    }
+  }
 }

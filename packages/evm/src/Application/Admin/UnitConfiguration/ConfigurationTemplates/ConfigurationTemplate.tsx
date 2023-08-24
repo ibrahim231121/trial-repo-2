@@ -80,7 +80,7 @@ const configTemplate = (name: string, device: any) => {
         key={device.recId}
         to={{
           pathname: urlList.filter(
-            (item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4
+            (item: any) => item.name === urlNames.unitDeviceTemplateEditBCO4
           )[0].url,
           state: {
             id: device.recId,
@@ -97,7 +97,7 @@ const configTemplate = (name: string, device: any) => {
         <Link
           to={{
             pathname: urlList.filter(
-              (item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4
+              (item: any) => item.name === urlNames.unitDeviceTemplateEditBCO4
             )[0].url,
             state: {
               id: device.recId,
@@ -511,7 +511,7 @@ const ConfigurationTemplates: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "435",
+      minWidth: "450",
       detailedDataComponentId: "device",
       attributeName: "Name",
       attributeType: "String",
@@ -531,7 +531,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectStationCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "400",
+      minWidth: "450",
       detailedDataComponentId: "id",
       attributeName: "StationName",
       attributeType: "List",
@@ -551,7 +551,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectTypeCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "400",
+      minWidth: "425",
       attributeName: "DeviceType",
       attributeType: "List",
       attributeOperator: "contains",
@@ -679,7 +679,7 @@ const ConfigurationTemplates: React.FC = () => {
   return (
     <ClickAwayListener onClickAway={handleBlur}>
       <div
-        className="CrxConfigTemplate switchLeftComponents"
+        className="CrxConfigTemplate ExpandViewOverlay"
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
       >
@@ -755,7 +755,7 @@ const ConfigurationTemplates: React.FC = () => {
             showActionSearchHeaderCell={false}
             showCustomizeIcon={false}
             initialRows={reformattedRows}
-            className="crxTableHeight crxTableDataUi configTemplate"
+            className="crxTableHeight crxTableDataUi configTemplate TableWithOutCheck"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -773,6 +773,7 @@ const ConfigurationTemplates: React.FC = () => {
             stickyToolbar={116}
             searchHeaderPosition={227}
             dragableHeaderPosition={192}
+            overlay={true}
             //End here
             showExpandViewOption={true}
           />

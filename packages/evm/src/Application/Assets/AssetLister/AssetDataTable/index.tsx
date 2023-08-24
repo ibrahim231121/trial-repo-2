@@ -1,4 +1,4 @@
-import { CRXDataTable,CBXMultiSelectForDatatable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
+import { CRXDataTable,CBXMultiSelectForDatatable, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation,CRXButton } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next"; 
@@ -10,11 +10,11 @@ import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisp
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { assetDurationFormat, assetSizeFormat } from "../../../../GlobalFunctions/AssetSizeFormat";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
+import {dateDisplayFormat} from "../../../../GlobalFunctions/DateFormat";
 import {
   AssetState,
   AssetStatus,
-  HeadCellProps, onClearAll, onDateCompare, onMultipleCompare,
+  HeadCellProps, onClearAll, onDateCompare, onMultipleCompare,  onTextMultiCompare,
   onMultiToMultiCompare, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, SearchObject, ValueString
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
@@ -26,19 +26,21 @@ import { AssetDetailRouteStateType, DateTimeObject, DateTimeProps, MasterMainPro
 import { AssetThumbnail } from "./AssetThumbnail";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import "./index.scss";
-import { EvidenceChildSharingModel } from "../../../../utils/Api/models/EvidenceModels";
 import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { checkIndefiniteDate } from "./Utility";
 import { getToken } from "./../../../../Login/API/auth";
-import { TokenType } from "./../../../../types";
 import jwt_decode from "jwt-decode";
+import { useHistory } from "react-router-dom";
+import { CasesAgent } from "../../../../utils/Api/ApiAgent";
+import { setLoaderValue } from "../../../../Redux/loaderSlice";
+import { CRXModalDialog } from '@cb/shared';
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let {assetType, assetName} = evidence.masterAsset;
   let fileType = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.type;
   let accessCode = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.accessCode;
-  return <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} accessCode={accessCode} fontSize="61pt" />;
+  return <AssetThumbnail assetName={assetName} assetType={assetType} fileType={fileType} accessCode={accessCode} fontSize="61pt" evidence={evidence} isAssetLister={true}/>
 };
 
 const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
@@ -61,7 +63,7 @@ const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
 
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
   let masterAsset = evidence.masterAsset;
-  let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
+  
   let dataLink = 
   <>
     <Link
@@ -80,10 +82,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
       <CRXTruncation placement="top" content={assetName} />
       </div>
     </Link>
-    {assets  && evidence.masterAsset.lock &&
-    <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
-    }
-    <DetailedAssetPopup asset={assets} row={evidence} />
+    <DetailedAssetPopup asset={evidence.asset} row={evidence} relatedAssets={evidence.relatedAssets} />
   </>
   return dataLink;
     
@@ -109,7 +108,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     else
       date = moment(evidence.expireOn).toDate();
     
-    if (checkIndefiniteDate(date)) { //NOTE: Case in which the expiry date for asset is infinite.       
+    if (checkIndefiniteDate(date, evidence.evidenceRelations?.length > 0)) { //NOTE: Case in which the expiry date for asset is infinite.       
       return (
         <div className="dataTableText">
           <div className="CRXLockTextIcon">
@@ -123,9 +122,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
     return (
       <div className="dataTableText ">
-        {AssetRetentionFormat(date)}
+        {AssetRetentionFormat(date, evidence.evidenceRelations?.length > 0)}
         {
-          evidence.holdUntil != null && !checkIndefiniteDate(moment(evidence.holdUntil).toDate()) ? <i className="fas fa-arrow-up"></i> : ""
+          evidence.holdUntil != null && !checkIndefiniteDate(moment(evidence.holdUntil).toDate(), evidence.evidenceRelations?.length > 0) ? <div className="arrow_up_icon_position"><i className="fas fa-arrow-up"></i></div> : ""
         }
       </div>
     );
@@ -159,7 +158,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       categorizedBy : row.categorizedBy,
       devices: row.devices,
       station: row.station,
-      recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,
+      recordedBy: row?.masterAsset?.owners === null ? [] : row?.masterAsset?.owners?.map(x => x.split('@')[0]),
       recordingStarted: row.masterAsset.recordingStarted,
       status: checkStatus(),
       evidence: row,
@@ -167,7 +166,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
       expireOn: row.expireOn,
       duration: row.masterAsset.duration,
       size: row.masterAsset.size,
-      retentionSpanText: retentionSpanText("", row).props.children
+      retentionSpanText: retentionSpanText("", row).props.children,
+      caseTitle: row.evidenceRelations?.map(x => x.valueDisplayName)
     };
     reformattedRows.push(evidence);
   });
@@ -188,6 +188,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
      return ""
   }
 
+  let history = useHistory();
   const dispatch = useDispatch();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -197,11 +198,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
-  const [selectedMaster, setSelectedMaster] = React.useState<number[]>();
   const [groupedSelectedAsset, setGroupedSelectedAsset] = React.useState<SearchModel.Evidence[]>([]);
   const [userId, setUserId] = React.useState<string>(userIdPreset());
+  const [open, setOpen] = React.useState(false);
+  const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
+  const caseModelCaseTitleRef = useRef<any | null>(null);
 
-  const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -230,14 +232,20 @@ const MasterMain: React.FC<MasterMainProps> = ({
       });
       setRows(tempRows);
     }
+    
+    
   }, [groupedSelectedAsset]);
   useEffect(() => {
     let tempSelectedAssets: any = [];
+    if(groupedSelectedAssetsActions.length > 0)
+    {
     groupedSelectedAssetsActions.forEach((el: any) => {
       let x: any = rows.find((x: any) => x.assetId == el.masterId);
       tempSelectedAssets.push(x);
     });
     setGroupedSelectedAsset(tempSelectedAssets);
+    }
+    
    
   }, [groupedSelectedAssetsActions])
   useEffect(() => {
@@ -288,6 +296,64 @@ const MasterMain: React.FC<MasterMainProps> = ({
       <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
   };
+
+  const getTheDistinctEvidenceRelations = (evidenceRelations: SearchModel.EvidenceRelations[] )=>{
+    const distinctEvidenceRelations : SearchModel.EvidenceRelations[] = [];
+
+    evidenceRelations.forEach(e=>{
+     if(distinctEvidenceRelations.find(x=>x.valueRecId === e.valueRecId) == null)
+       {distinctEvidenceRelations.push(e)};
+   });
+
+   return distinctEvidenceRelations;
+ }
+ const caseTitleTemplate =(a: string, evidence: SearchModel.Evidence)  => {
+   let evidenceRelations = evidence.evidenceRelations;
+   if(evidenceRelations!= null){
+     const distinctEvidenceRelations = getTheDistinctEvidenceRelations(evidenceRelations);
+     let dataLink = distinctEvidenceRelations.map(e=>{
+       return (
+         <div className="caseTitleContainer">
+         <Link
+           className="linkColor"
+           onClick={() => CheckCaseExpired(e)}
+           to={
+             '#'
+           }
+         >
+          {e.valueDisplayName}
+         </Link>
+       </div>
+       )
+     })
+     return dataLink;
+   }
+ };
+
+  const CheckCaseExpired = async (e:any) => {
+    const  {valueRecId,valueDisplayName} = e;
+    caseModelCaseTitleRef.current = valueDisplayName;
+      dispatch(setLoaderValue({isLoading: true}));
+      await CasesAgent.getCase(`/Case/CaseAccessValidation/${valueRecId}`)
+      .then((isValid: any) => {
+        if(isValid) {
+          setOpen(true);
+        } else {
+          let urlPathName = urlList.filter((item: any) => item.name === urlNames.editCase)[0].url;
+          history.push(
+            urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + valueRecId
+          );
+        }
+        dispatch(setLoaderValue({isLoading: false}));
+      })
+      .catch((err: any) => {     
+        dispatch(setLoaderValue({isLoading: false}));      
+        showToastMsg({ message: t(`Something_went_wrong`), variant: 'error', duration: 7000 });
+        console.error(err)
+      });
+    }
+
+
 
   const searchDate = (
     _: SearchModel.Evidence[],
@@ -388,7 +454,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
         headCells[colIdx].id.toString() === "recordedBy"
       ) {
         let moreOptions: any = [];
-
         reformattedRows.forEach((row: any, _: any) => {
           let x = headCells[colIdx].id;
           row[x]?.forEach((element: any) => {
@@ -401,7 +466,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       }
 
       return (
-        <div className="assetDataTableMultiSelect">
+        <div className="assetDataTableMultiSelect" data-qa={"col-multiSelect-" + colIdx}>
           {["categories", "unit", "station","recordedBy"].includes(headCells[colIdx].id.toString())  ?
             <CBXMultiSelectForDatatable
               width={100}
@@ -420,7 +485,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
               value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
               onChange={(value : any) => changeMultiselect(value, colIdx)}
               onSelectedClear = {() => clearAll()}
-              isCheckBox={false}
+              isCheckBox={true}
               multiple={true}
               isduplicate={true}
               selectAllLabel="All"
@@ -457,7 +522,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
         //   isCheckBox={true}
         //   isduplicate={true}
         // />
-        <div className="assetDataTableMultiSelect">
+        <div className="assetDataTableMultiSelect" data-qa={"col-multiSelect-" + colIdx}>
         <CBXMultiCheckBoxDataFilter 
           width = {100} 
           percentage={true}
@@ -509,6 +574,18 @@ const MasterMain: React.FC<MasterMainProps> = ({
       minWidth: "281",
       detailedDataComponentId: "evidence",
       isPopover: true,
+    },
+    {
+      label: `${t("Case_ID")}`,
+      id: "caseTitle",
+      align: "left",
+      dataComponent: (e: any, d: any)=> caseTitleTemplate(e, d),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "281",
+      detailedDataComponentId: "evidence",
+     isPopover: true,
     },
     {
       label: `${t("Category")}`,
@@ -596,7 +673,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       visible: false,
     },
     {
-      label: t("User_Name"),
+      label: t("User"),
       id: "recordedBy",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, "linkColor"),
@@ -716,6 +793,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
       if (el.columnName === "recordingStarted") {
         dataRows = onDateCompare(dataRows, headCells, el);
       }
+      if (el.columnName === "caseTitle") 
+        dataRows = onTextMultiCompare(dataRows, headCells, el);
     });
     
     setRows(dataRows);
@@ -773,7 +852,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
               showToastMsg={(obj: any) => showToastMsg(obj)}
               portal={true}
               actionMenuPlacement={ActionMenuPlacement.AssetLister}
-              className="asset_lister_rc_menu"
+              actionViewScroll={"initial"}
             />
           }
           getRowOnActionClick={(val: SearchModel.Evidence) => setSelectedActionRow(val)}
@@ -817,9 +896,35 @@ const MasterMain: React.FC<MasterMainProps> = ({
           advanceSearchText={advanceSearchText}
 		      presetPerUser={userId}
           selfSorting={true}
+          
         />
 
       )}
+
+      <CRXModalDialog
+        className='CrxCaseModel'
+        style={{ minWidth: '680px' }}
+        maxWidth='xl'
+        modelOpen={open}
+        onClose={() => setOpen(false)}
+        closeWithConfirm={closeWithConfirm}>
+              <div className="assetsCasePermission">
+                  <div className="assetsCasePermissionExistsIcon">
+                      <i className="fas fa-exclamation-circle" />
+                  </div>
+                  <div className="assetsCasePermissionText">{ t("You_don't_have_access_to_this_case") + ' ' +caseModelCaseTitleRef.current }</div>
+                  <div className="assetsCasePermissionModalFooter">
+                      <CRXButton
+                          className="assetsCasePermissionOkButton secondary"
+                          color="secondary"
+                          variant="outlined"
+                          onClick = {() => setOpen(false)}
+                      >
+                          {t("OK")}
+                      </CRXButton>
+                  </div>
+              </div>
+      </CRXModalDialog>
     </>
   );
 };

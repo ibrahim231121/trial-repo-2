@@ -17,7 +17,6 @@ export { default as CRXDropDown } from "./controls/CRXDropDown/DropDown";
 export { default as CRXDateTimePicker } from "./controls/CRXDateTimePicker/CRXDateTimePicker";
 export { default as CRXDateRangePicker } from "./controls/CRXDateRangePicker/CRXDateRangePicker";
 export { Order, HeadCellProps } from "./CRXDataTable/CRXDataTableTypes";
-export { default as CRXNestedMenu } from "./CRXNestedMenu/Menu";
 export { default as CRXMenu } from "./CRXDropdown/Menu";
 export { default as CRXItem } from "./CRXDropdown/Items";
 export { default as CRXBreadcrumb } from "./Breadcrumb/CRXBreadcrumb";
@@ -65,3 +64,4 @@ export { default as CBXMultiCheckBoxDataFilter } from "./controls/CBXMultiDataFi
 export { default as NumberField } from "./controls/CRXInputNumberField/CRXNumberField"
 export { default as CRXTruncation } from "./controls/CRXTextPopover/CRXTruncation"
 export { default as CRXRichTextBox } from "./CRXRichTextBox/CRXRichTextBox"
+export { default as CBXMastHeadMenu } from "./CBXMastHeadMenu/Index"

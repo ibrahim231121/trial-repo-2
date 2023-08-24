@@ -10,7 +10,10 @@ const VideoPlayerSettingMenu = (props: any) => {
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
-  const [isAudioGraphEnabled, setIsAudioGraphEnabled] = useState<boolean>(false)
+  const [isAudioGraphEnabled, setIsAudioGraphEnabled] = useState<boolean>(false);
+  const [isOverLayAllSelected, setIsOverLayAllSelected] = useState<boolean>(false);
+  const OverlayItems = ['Timestamp', 'Sensors', 'GPS (location + speed)', 'Speed'];
+  const OverlayItemsMultiViewEnable = ['Timestamp', 'Sensors'];
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
@@ -45,7 +48,6 @@ const VideoPlayerSettingMenu = (props: any) => {
     }
     setOverlayEnabled(event.target.checked);
     setSettingMenuEnabled(null)
- 
   }
  
 
@@ -64,19 +66,19 @@ const VideoPlayerSettingMenu = (props: any) => {
     }
   }
 
-useEffect(() => {
-  if(Boolean(settingMenuEnabled) || Boolean(overlayMenuEnabled)) {
-    document.querySelector(".faCogIcon")?.classList.add("faCogIconScale");
-  } else {
-    document.querySelector(".faCogIcon")?.classList.remove("faCogIconScale");
-  }
-})
+  useEffect(() => {
+    if(Boolean(settingMenuEnabled) || Boolean(overlayMenuEnabled)) {
+      document.querySelector(".faCogIcon")?.classList.add("faCogIconScale");
+    } else {
+      document.querySelector(".faCogIcon")?.classList.remove("faCogIconScale");
+    }
+  })
 
-  let CheckedSensors = overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors");
-  let CheckedAll = overlayCheckedItems.some((x: any) => x == "All");
-  let CheckedTimestamp = overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp");
-  let CheckedGPS = overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")
-  let CheckedSpeed = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")
+  let CheckedSensors = overlayCheckedItems.some((x: any) => x == "Sensors");
+  let CheckedAll = isOverLayAllSelected;
+  let CheckedTimestamp = overlayCheckedItems.some((x: any) => x == "Timestamp");
+  let CheckedGPS = isMultiViewEnable ?  false : overlayCheckedItems.some((x: any) => x == "GPS (location + speed)")
+  let CheckedSpeed = isMultiViewEnable ?  false : overlayCheckedItems.some((x: any) => x == "Speed")
 
   useEffect(()=>{
     let url = window.location.href;
@@ -90,7 +92,7 @@ useEffect(() => {
         }
     }
       if(settingMenuEnabled === null) {  
-        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
+        document.documentElement.style.overflow = guestView == true ? "clip":"hidden";
         document.body.scrollTop = 0; 
         document.documentElement.scrollTop = 0;
       } else if (isAudioGraphEnabled && multiTimelineEnabled  ) {
@@ -100,17 +102,36 @@ useEffect(() => {
       } else if( isAudioGraphEnabled && !multiTimelineEnabled) {
         document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
       } else {
-        document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
+        document.documentElement.style.overflow = guestView == true ? "clip":"hidden";
         document.body.scrollTop = 0; 
         document.documentElement.scrollTop = 0;
       }
   },[settingMenuEnabled,isAudioGraphEnabled,multiTimelineEnabled])
 
   const settingEnabled_status = !singleVideoLoad && isMultiViewEnable ? "settingEnabled_on" : "settingEnabled_off";
-const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
+  const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
+  const onCheckedAll = (value: any) => {
+    if(value){
+      setIsOverLayAllSelected(value)
+      setOverlayCheckedItems(!isMultiViewEnable ? OverlayItems : OverlayItemsMultiViewEnable)
+    }
+    else{
+      setIsOverLayAllSelected(value)
+      setOverlayCheckedItems([])
+    }
+  }
+
+  useEffect(()=>{
+    if(!isMultiViewEnable ? overlayCheckedItems.length == OverlayItems.length : overlayCheckedItems.length == OverlayItemsMultiViewEnable.length){
+      setIsOverLayAllSelected(true)
+    }
+    else{
+      setIsOverLayAllSelected(false)
+    }
+  },[overlayCheckedItems])
+  
   return (
     <>
- 
     <MaterialMenu
         className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}  ${settingEnabled_status} ${notesEnabledClass}`}
         anchorEl={settingMenuEnabled}
@@ -162,7 +183,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
           </div>
           {/* <i className="fas fa-chevron-right iconsRight"></i> */}
         </MaterialMenuItem>}
-        <MaterialMenuItem className="settingOverlay">
+        {!isGuestView && <MaterialMenuItem className="settingOverlay">
           <span className="icon icon-stack3 iconsLeft"></span>
           <span className="toggleBack"></span>
           <div className="SwitcherControl"  >
@@ -171,9 +192,9 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
               <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={overlayEnabled} size="small" onChange={(event: any) => OverlayChangeEvent(event)} name="Overlay" />
             </label>
           </div>
-          <i className="fas fa-chevron-right iconsRight"></i>
-        </MaterialMenuItem>
-        {(!singleVideoLoad && isMultiViewEnable && ViewScreen) &&
+          <i className="fas fa-chevron-right iconsRight" ></i>
+        </MaterialMenuItem>}
+        {(!isGuestView && !singleVideoLoad && isMultiViewEnable && ViewScreen) &&
           <>
             <MaterialMenuItem className="settingOverlay">
               <i className="far fa-stream iconsLeft"></i>
@@ -191,7 +212,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
 
 
       <MaterialMenu
-        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad  ? "MultiBackMenu" : ""} ${fullScreenControl} ` }
+        className={`ViewScreenMenu SettingBackMenu settingBack_${notesEnabledClass} ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad  ? "MultiBackMenu" : ""} ${fullScreenControl} ` }
         anchorEl={overlayMenuEnabled}
         keepMounted
         open={Boolean(overlayMenuEnabled)}
@@ -204,55 +225,55 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
         </MaterialMenuItem>
         <MaterialMenuItem className={`${CheckedAll ? "CheckedAllTrue" : ""}`}>
           <CRXCheckBox
-            checked={overlayCheckedItems.some((x: any) => x == "All")}
-            onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems(["All"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "All")) }}
+            checked={isOverLayAllSelected}
+            onChange={(e: any) => { onCheckedAll(e.target.checked) }}
             name="selectAll"
-            selectedRow={overlayCheckedItems.some((x: any) => x == "All")}
+            selectedRow={isOverLayAllSelected}
             className="bucketListCheckedAll "
           />
           <span className="selectAllText">All Metadata Overlays</span>
         </MaterialMenuItem>
         <MaterialMenuItem className={`${CheckedTimestamp || CheckedAll ? "CheckedTimestampTrue" : ""}`}>
           <CRXCheckBox
-            checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp")}
+            checked={overlayCheckedItems.some((x: any) => x == "Timestamp")}
             onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Timestamp"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "Timestamp")) }}
             name="Timestamp"
-            selectedRow={overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp")}
+            selectedRow={overlayCheckedItems.some((x: any) => x == "Timestamp")}
             className="bucketListCheckedAll"
           />
           <span className="Timestamp">Time Stamp</span>
         </MaterialMenuItem>
         <MaterialMenuItem className={`${CheckedSensors || CheckedAll ? "CheckedSensorsTrue" : ""}`}>
           <CRXCheckBox
-            checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors")}
+            checked={overlayCheckedItems.some((x: any) => x == "Sensors")}
             onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Sensors"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "Sensors")) }}
-            selectedRow={overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors")}
+            selectedRow={overlayCheckedItems.some((x: any) => x == "Sensors")}
             name="Sensors"
             className="bucketListCheckedAll"
           />
           <span className="Sensors">Sensors</span>
         </MaterialMenuItem>
-        <MaterialMenuItem className={`${CheckedGPS || CheckedAll ? "CheckedGPSTrue" : ""}`}>
+        {!isMultiViewEnable && <MaterialMenuItem className={`${CheckedGPS || CheckedAll ? "CheckedGPSTrue" : ""}`}>
           <CRXCheckBox
-            checked={overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")}
-            selectedRow={overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")}
+            checked={overlayCheckedItems.some((x: any) => x == "GPS (location + speed)")}
+            selectedRow={overlayCheckedItems.some((x: any) => x == "GPS (location + speed)")}
             onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "GPS (location + speed)"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "GPS (location + speed)")) }}
             name="GPS (location + speed)"
             className="bucketListCheckedAll"
           />
 
           <span className="GPS (location + speed)">GPS Coordinates</span>
-        </MaterialMenuItem>
-        <MaterialMenuItem className={`${CheckedSpeed || CheckedAll ? "CheckedSpeedTrue" : ""}`}>
+        </MaterialMenuItem>}
+        {!isMultiViewEnable && <MaterialMenuItem className={`${CheckedSpeed || CheckedAll ? "CheckedSpeedTrue" : ""}`}>
           <CRXCheckBox
-            checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")}
-            selectedRow={overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")}
+            checked={overlayCheckedItems.some((x: any) => x == "Speed")}
+            selectedRow={overlayCheckedItems.some((x: any) => x == "Speed")}
             onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Speed"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "Speed")) }}
             name="Speed"
             className="bucketListCheckedAll"
           />
           <span className="GPS (location + speed)">Speed</span>
-        </MaterialMenuItem>
+        </MaterialMenuItem>}
         
       </MaterialMenu>
     </>

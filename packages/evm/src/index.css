@@ -22,7 +22,7 @@ body {
 }
 
 .jss9 .searchComponents {
-  padding-top: 118px;
+  padding-top: 96px;
   transition: 1s padding ease-out;
 }
 
@@ -145,7 +145,7 @@ body {
   text-align: center;
   position: relative;
   left: -23px;
-  top: -16px;
+  top: 0px;
 }
 
 .divCount {
@@ -202,8 +202,7 @@ body {
   text-indent: 0;
 }
 .crx-main-container {
-  min-height:calc(100vh - 30px) !important;
-  width: 100%;
+  padding-bottom: 0px !important;
 }
 
 .divOuter .onDraggingThumb {
@@ -425,6 +424,9 @@ input:-webkit-autofill {
   left: 62px;
   top: 60px;
   z-index: 99;
+  transition-property: left;
+  transition-duration: 900ms;
+  transition-timing-function: ease-in-out;
 }
 
 .overlayPanel_bottom {

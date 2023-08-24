@@ -1,9 +1,6 @@
 .crx-ADGroupMapping-tab {
-    padding-top: 150px;
-    .ADGroupMappingContent {
-      margin: 0 86px;
-      border-bottom: 1px solid black;
-    }
+    padding-top: 17px;
+    height: calc(100vh - 183px);
     .crxPermissionPageScroll {
       padding: 0;
       width: 100%;
@@ -17,17 +14,15 @@
     }
     .crxPermissionBtnUSers {
       padding: 0 0 0 0;
-      margin: 0 86px;
+      margin: 0 0px;
     }
     .crxPermissionBtnUSers_addBtn {
       margin-bottom: 20px;
+      width: 384px;
+      
     }
-   .crxPermissionBtnUSers_saveBtn  {
-      button {
-          &:first-child {
-            margin-right: 30px;
-          }    
-      }
+    .ad_groups_row_add_new{
+      justify-content: center;
     }
     .ADGroupMappingColumn {
       background: var(--color-333333);
@@ -35,7 +30,8 @@
       text-align: center;
       place-items: center;
       justify-content: center;
-      height: 50px;
+      height: 40px;
+      text-transform: uppercase;
       font-size: 14px;
       font-family: var(--base-font-family);
       &:nth-child(2) {
@@ -44,16 +40,11 @@
       }
     }
   
-    .ADGroupMappingContent {
-      .MuiGrid-container {
-        place-content: center;
-      }
-    }
     .PreSearchButton {
       background-color: var(--color-333333);
       color: var(--color-d1d2d4) !important;
       font-size: 14px;
-      margin-top: 27px;
+      margin-top: 15px;
       height: 30px;
       box-shadow: none !important;
       &:hover {
@@ -66,10 +57,29 @@
       }
     }
     .crx-ADGroupMapping-col {
-      margin: 0 86px;
-      padding: 10px 0 27px;
+      margin: 0 0px;
+      padding: 10px 0 0px;
+      // height: calc(100vh - 250px);
+        .permissionCol {
+          .ADGroupsAutocomplete {
+            .MuiAutocomplete-endAdornment {
+              .MuiAutocomplete-clearIndicatorDirty {
+                display: none;
+              }
+           
+            }
+            &.CRXAISearchFiltere {
+              .MuiAutocomplete-endAdornment {
+                .MuiAutocomplete-clearIndicatorDirty {
+                  display: flex;
+                }
+              }
+           
+            }
+          }
+        }
         .MuiGrid-container {
-          margin: 10px 0;
+          margin: 3px 0;
         }
       .crx-ADGroupMapping-item {
         padding: 17px 0;
@@ -85,7 +95,7 @@
         &:nth-of-type(odd) {
           background: var(--color-White);
         }
-        .permissionCol {
+        .ad_groups_row {
           padding: 0 33px;
           &:nth-child(2) {
             padding: 0 35px;
@@ -295,6 +305,45 @@
           height: 30px;
           top: auto;
         }
+      }
+    }
+    .ADGroupMappingContent {
+      margin: 0 0px;
+      border-bottom: 1px solid black;
+      padding-bottom: 27px;
+      max-height: calc(100vh - 260px);
+      overflow-y: auto;
+      .ad-group-use-header{
+        position: sticky;
+        top: 0;
+        z-index: 999;
+      }
+      .crxPermissionPageScroll{
+        .crx-ADGroupMapping-col{
+          .ad_groups_row {
+            justify-content: center;
+            .crx-permission-btn {
+              align-items: baseline;
+              margin-top: 9px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .crxPermissionBtnUSers_saveBtn  {
+    border-top: 1px solid var(--color-d1d2d4);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: fixed;
+    bottom: 5px;
+    width: 93.9%;
+    background: #fff;
+    .save-cancel-button-box {
+      .ad-g-save {
+        margin-right: 30px;
+        height: 30px;
       }
     }
   }

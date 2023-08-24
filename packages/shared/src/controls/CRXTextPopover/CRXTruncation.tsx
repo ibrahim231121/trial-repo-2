@@ -7,7 +7,12 @@ import Popper, {PopperPlacementType }  from '@material-ui/core/Popper';
 type PopoverProps = {
     content : any,
     placement? :PopperPlacementType | undefined,
-    arrow? : boolean
+    arrow? : boolean,
+    middleTruncation ? : boolean,
+    count ? : string,
+    className? : string,
+    props ? : any,
+    addclass ? : string
 }
 
 const TextButton = styled(Button)`
@@ -42,16 +47,10 @@ const Content = styled('div')`
         padding: 16px;
 `
 const usePopoverStyled = makeStyles({
-    root : {
-        
-    },
-    popover : {
-        
-        
-    },
+    
     paper: {
-        minWidth : "280px",
-        maxWidth : "400px",
+        minWidth : "auto",
+        maxWidth : (props : any) =>  (`${ props !=undefined ? props.maxWidth + "px" : "200px"}`) ,
         maxHeight : "350px",
         padding: "0px",
         backgroundColor : "#333333",
@@ -122,11 +121,12 @@ const usePopoverStyled = makeStyles({
         },
     }
 })
-const CRXTruncation = ({content, placement, arrow = true} : PopoverProps) => {
+const CRXTruncation = ({content, placement, arrow = true, middleTruncation = false, count, className, addclass, ...props} : PopoverProps) => {
+  // console.log("props", props)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const buttonRef = useRef(null);
     const [arrowRef, setArrowRef] = useState<any>();
-    const popoverStyled = usePopoverStyled()
+    const popoverStyled = usePopoverStyled(props)
     const handleClick = (event : any) => {
         setAnchorEl(event.currentTarget);
     };
@@ -136,10 +136,37 @@ const CRXTruncation = ({content, placement, arrow = true} : PopoverProps) => {
     };
 
     const open = Boolean(anchorEl);
-    
+    const RenderTruncationPopup = () => {
+        if(content && middleTruncation == true && count && count.length > 23) {
+            
+            return <TextButton 
+                    className={'truncation_button ' + className }
+                    ref={buttonRef} 
+                    onClick={handleClick} 
+                    onMouseEnter={handleClick} 
+                    onMouseLeave={handleClose}
+                  >
+                  {content}
+                </TextButton>
+        }else if (content && middleTruncation == false && content.length > 75 ) {
+          return (
+              <TextButton 
+                  className={'truncation_button '}
+                  ref={buttonRef} 
+                  onClick={handleClick} 
+                  onMouseEnter={handleClick} 
+                  onMouseLeave={handleClose}
+                >
+                  {content}
+                </TextButton>
+          )
+        }else {
+          return <Label className='truncation_button'>{content}</Label>
+        }
+    }
     return (
           <>
-            {content && content.length > 75 ?
+            {/* {content && middleTruncation == false && content.length > 75 ?
                 <TextButton 
                 className='truncation_button' 
                 ref={buttonRef} 
@@ -149,9 +176,9 @@ const CRXTruncation = ({content, placement, arrow = true} : PopoverProps) => {
                 >
                 {content}
                 </TextButton>
-           : <Label className='truncation_button'>{content}</Label> }
+           : <Label className='truncation_button'>{content}</Label> } */}
             
-            
+            {RenderTruncationPopup()}
            <Popper
             open={open}
             anchorEl={buttonRef.current}
@@ -178,7 +205,7 @@ const CRXTruncation = ({content, placement, arrow = true} : PopoverProps) => {
                 element: arrowRef,
               },
             }}
-          ><Content className='content-truncation'>{content}</Content>
+          ><Content className={'content-truncation ' + (addclass == undefined ? '' :addclass) }>{count != undefined ? count : content}</Content>
           {arrow ? <span className={popoverStyled.arrow} ref={setArrowRef} /> : null}
           </Popper>
           </>

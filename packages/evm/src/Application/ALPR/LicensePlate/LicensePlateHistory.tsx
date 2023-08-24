@@ -37,9 +37,7 @@ const LicensePlateHistory = () => {
     { label: t("License_Plate_History_Map"), index: 1 }
   ];
   return (
-    <div className="switchLeftComponents">
-
-      {/* <CRXToaster ref={groupMsgRef} /> */}
+    <div >
 
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={130} />
       <CrxTabPanel value={value} index={0}>

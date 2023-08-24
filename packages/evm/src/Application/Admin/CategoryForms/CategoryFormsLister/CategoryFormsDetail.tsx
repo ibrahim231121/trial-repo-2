@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { DataPermissionModel } from "../../UserGroup/Group";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import FieldLister from "./FieldLister";
-import { getAllFormFields, getAllFormFieldsFilter } from "../../../../Redux/FormFields";
+import { getAllFormFields} from "../../../../Redux/FormFields";
 import { FormFieldsTemplate } from "../TypeConstant/types";
 import FieldRowLister from "./FieldRowLister";
 import { useHistory, useParams } from "react-router-dom";
@@ -116,6 +116,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
 
     const categoryFromsValidationSchema = Yup.object().shape({
         name: Yup.string().required("Name is required").min(3, "Name must be greater than 3 characters").max(128, "Name must be less than 128 characters"),
+        description: Yup.string().max(1024, t("Maximum_1024_length_allowed_in_description_field")),
         fields: Yup.array().min(1).required("at least one item needs to be here"),
     });
 
@@ -213,7 +214,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
       };
 
     return (
-        <div className="create_category_view switchLeftComponents">
+        <div className="create_category_view">
             <CRXToaster ref={toasterRef} className="categoryFormToaster" />
             <Formik
                 enableReinitialize={true}

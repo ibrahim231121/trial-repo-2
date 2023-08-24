@@ -43,6 +43,7 @@ const CRXFixedPanel = ({className, open, onClick,  children, anchor, variant = "
         variant={variant}
         anchor={anchor}
         open={open}
+        transitionDuration={{ enter: 800, exit: 800 }}
       >
      
         { children }

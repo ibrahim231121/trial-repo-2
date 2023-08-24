@@ -22,7 +22,8 @@ interface Timeline {
     indexNumberToDisplay: number,
     camera: string,
     timeOffset: number,
-    assetbuffering: any
+    assetbuffering: any,
+    previousSegmentsDurationInMilliSeconds: number
 }
 
 const initialState = {

@@ -10,7 +10,7 @@ import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/mo
 import { getAssetSearchInfoAsync } from "../../../../../Redux/AssetSearchReducer";
 import { EditConfirmFormProps, FormValues } from '../Model/EditConfirmFormModel';
 import { SearchType } from '../../../utils/constants';
-import { CategoryRemovalType } from '../Model/FormContainerModel';
+import { CategoryRemovalType } from '../Model/CategoryFormContainerModel';
 import { FormOperationType } from '../Model/CategoryFormModel';
 import _ from 'lodash';
 import moment from 'moment';
@@ -20,13 +20,13 @@ import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupC
 import { AssetBucket, ObjectToUpdateAssetBucketCategoryField } from '../../ActionMenu/types';
 import { updateAssetBucketCategoryField } from '../../../../../Redux/AssetActionReducer';
 import { RootState } from '../../../../../Redux/rootReducer';
-import { CalculateCategoryRetentionDetail, GetResponseToUpdateAssetBucketCategory } from '../Utility/UtilityFunctions';
+import { CalculateCategoryRetentionDetail, CategoryLog, GetResponseToUpdateAssetBucketCategory } from '../Utility/UtilityFunctions';
+import { addMetaDataInfoAsync } from '../../../../../Redux/MetaDataInfoDetailReducer';
+
 
 const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [success, setSuccess] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
   const evidenceId = props.evidence?.id;
   const initialValues: FormValues = {
@@ -34,7 +34,6 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   };
   const [Message, setMessage] = React.useState('');
   const [WarningMessage, setWarningMessage] = React.useState<string>('');
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const setupCategories = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
   const assetBucketData: AssetBucket[] = useSelector((state: RootState) => state.assetBucket.assetBucketData);
   React.useEffect(() => {
@@ -63,7 +62,8 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         return {
           assignedOn: v.assignedOn,
           formData: v.formData,
-          id: v.id
+          id: v.id,
+          name: v.name,
         };
       });
       if (props.removalType === CategoryRemovalType.DecreaseAssetRetentionByApplyingCategory) {
@@ -73,12 +73,13 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
           const categories = selectedItem.evidence.categories;
           const _evidenceId = selectedItem.evidence.id;
           for (const category of categories) {
-            let categoryId = categoryOptions.find((o: any) => o.name === category).id;
+            let categoryId = setupCategories.find((o: any) => o.name === category)?.id;
+            let categoryName = setupCategories.find((o: any) => o.name === category)?.name;
             unAssignedCategories.push({
               id: categoryId,
               formData: [],
               assignedOn: new Date(),
-              name: ""
+              name: categoryName
             } as Category);
           }
           body.push({
@@ -97,14 +98,16 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
             return {
               assignedOn: v.assignedOn,
               formData: v.formData,
-              id: v.id
+              id: v.id,
+              name: v.name,
             };
           });
           const multiSelectCategoriesUpdate = CategoryFormFields.filter((e: any) => e.type === FormOperationType.MultiSelectUpdate).map((v: any) => {
             return {
               assignedOn: v.assignedOn,
               formData: v.formData,
-              id: v.id
+              id: v.id,
+              name: v.name,
             };
           });
           body.push({
@@ -123,14 +126,16 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         return {
           assignedOn: v.assignedOn,
           formData: v.formData,
-          id: v.id
+          id: v.id,
+          name: v.name,
         };
       });
       const updateCategories = CategoryFormFields.filter((e: any) => e.type === FormOperationType.Update).map((v: any) => {
         return {
           assignedOn: v.assignedOn,
           formData: v.formData,
-          id: v.id
+          id: v.id,
+          name: v.name,
         };
       });
       body.push({
@@ -144,27 +149,37 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
     EvidenceAgentApiCall(body, message);
   }
 
+  const isAssetDetailPage: boolean = useSelector((state: RootState) => state.metadatainfoDetailReducer.isAssetDetailPage);
+
   const EvidenceAgentApiCall = (body: Array<EvdenceCategoryAssignment>, message: string) => {
     const headers: Array<any> = props.isCategorizedBy ? [{ key: 'isCategorizedBy', value: true }] : [];
     //NOTE : Creating response to update asset bucket.
     const assetCategories = GetResponseToUpdateAssetBucketCategory(body, setupCategories);
     dispatch(setLoaderValue({ isLoading: true }));
     EvidenceAgent.changeCategories(body, headers, message).then(() => {
-      setSuccess(true);
-      setTimeout(() => {
-        closeModal();
-        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
-      }, 3000);
+      closeModal();
+      dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
+      CategoryLog(dispatch, body, message, "");
       //NOTE : To update asset bucket data.
+      if(isAssetDetailPage){
+        dispatch(addMetaDataInfoAsync(body[0]?.evidenceId));
+      }
       dispatch(updateAssetBucketCategoryField({
         requestBody: assetCategories,
         assetBucketData: assetBucketData
       } as ObjectToUpdateAssetBucketCategoryField));
       dispatch(setLoaderValue({ isLoading: false }));
+      props.toasterMessages({
+        message: t("You_have_saved_the_asset_categorization"),
+        variant: 'success'
+      });
     })
       .catch((ex: any) => {
         dispatch(setLoaderValue({ isLoading: false, error: true }));
-        setError(true);
+        props.toasterMessages({
+          message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+          variant: 'error'
+        });
       });
   }
 
@@ -176,7 +191,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   }
 
   const GetRetentionPoliciesObject = () => {
-    const selectedCategoriesObject = categoryOptions.filter((o: any) => props.selectedCategoryValues.some((i) => i.label === o.name));
+    const selectedCategoriesObject = setupCategories.filter((o: any) => props.selectedCategoryValues.some((i) => i.label === o.name));
     const categoryRetentionDetail = CalculateCategoryRetentionDetail(selectedCategoriesObject);
     let retentionDetails = categoryRetentionDetail.retentionDetails;
     const retentionList = categoryRetentionDetail.retentionList
@@ -214,28 +229,14 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       })
       .catch(() => {
         dispatch(setLoaderValue({ isLoading: false, error: true }));
-        setError(true);
+        props.toasterMessages({
+          message: t("Please_retry_or_contact_your_Systems_Administrator"),
+          variant: 'error'
+        });
       });
   }
   return (
     <>
-      {success && (
-        <CRXAlert
-          className='cateoryAlert-Success'
-          message={t("You_have_saved_the_asset_categorization")}
-          alertType='toast'
-          open={true}
-        />
-      )}
-      {error && (
-        <CRXAlert
-          className='cateoryAlert-Error errorMessageCategory'
-          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
-          type='error'
-          alertType='inline'
-          open={true}
-        />
-      )}
       <div className='indicatestext indicateLessPadding'>
         <b>*</b> {t("Indicates_required_field")}
       </div>

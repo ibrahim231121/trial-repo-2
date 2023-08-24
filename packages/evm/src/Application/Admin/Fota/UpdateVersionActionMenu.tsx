@@ -21,15 +21,16 @@ type Props = {
   getSuccess: () => void;
   onClickOpenModel: (modelOpen: boolean, id: number, title: string) => void;
   onMessageShow: (isSuccess: boolean, message: string) => void;
+  ActionMenuReload: any;
 };
 
-const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
+const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow, ActionMenuReload }) => {
   const { t } = useTranslation<string>();
   const [nondefault, setnondefault] = useState(false);
   const [rowData, setRowData] = useState<any>();
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   const editJob = () => {
     if (row) {
       const path = `${urlList.filter((item: any) => item.name === urlNames.filterUpdateVersionEdit)[0].url}`;
@@ -53,7 +54,25 @@ const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowD
       setRowData(null);
     }
   }
-
+  const retry = () => {
+    let Ids: any[] = [];
+    if (row) {
+      Ids = [row?.id];
+    }
+    else if (selectedItems && selectedItems.length > 0) {
+      Ids = Array.from(selectedItems.map((x: any) => x.id));  
+    }
+    if(Ids.length > 0){
+      UnitsAndDevicesAgent.retryAllUpdateVersions(JSON.stringify(Ids)).then((response: any) => {
+        ActionMenuReload();
+        setnondefault(false);
+      })
+      .catch((ex) => {
+        onMessageShow(false, "Error occured while scheduling retry.")
+        setnondefault(false);
+      })
+    }
+  }
   const OndeleteConfirm = () => {
     if (rowData && rowData.length > 0) {
       let Ids = rowData.map((x: any) => x.id).join(",");
@@ -77,11 +96,12 @@ const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowD
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
         position="auto"
-        offsetX={25}
-        offsetY={12}
+        portal={true}
+        offsetX={-30}
+        offsetY={0}
         className="menuCss"
         menuButton={
           <MenuButton>
@@ -91,7 +111,7 @@ const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowD
         <MenuItem >
           <div className="crx-meu-content  crx-spac" onClick={editJob} >
             <div className="crx-menu-icon">
-              <i className="far fa-trash-alt"></i>
+            <i className="fas fa-pencil"></i>
             </div>
             <div className="crx-menu-list">
               {t("Edit_Job")}
@@ -109,7 +129,7 @@ const UpdateVersionsActionMenu: React.FC<Props> = ({ selectedItems, row, getRowD
           </div>
         </MenuItem>
         <MenuItem disabled={row?.totalFail > 0 ? false : true} >
-          <div className="crx-meu-content  crx-spac" onClick={() => { }} >
+          <div className="crx-meu-content  crx-spac" onClick={retry} >
             <div className="crx-menu-icon">
               <i className="far fa-repeat"></i>
             </div>

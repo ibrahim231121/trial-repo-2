@@ -1,0 +1,90 @@
+
+.main-caseClose {
+    &.crx-model {
+        .MuiDialog-scrollPaper {
+            .MuiDialog-paperScrollPaper {
+                min-width: 860px   !important;
+                min-height: 436px  !important;
+                border-radius: 10px;
+                .modelTitle {
+                    .MuiTypography-h6 {
+                        margin-bottom: 4px !important;
+                    }
+                    display: flex;
+                    justify-content: center;
+                    border-bottom: 1px solid var(--color-d1d2d4);
+                    padding-bottom: 8px;
+                }
+            }
+            .CrxIndicates {
+                padding-bottom: 9px !important; 
+                padding-top: 16px !important
+            }
+            .optionalSticky {
+                display: none;
+            }
+            .CRXContent {
+                padding-bottom: 17px !important;
+            }
+            .createCaseClose  {
+                padding: 0px !important;
+                .createCaseCloseRow {
+                    margin-bottom: 25px !important;
+                    .caseCloseHeadingCol {
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                        .labelUi {
+                            font-size: 14px;
+                            font-weight: var(--Font-style-bold);
+                        }
+                    }
+                    .caseCloseAutoComplete   {
+                        width: 250px !important;
+                    }
+                    .caseCloseDateHeadingCol {
+                        display: flex;
+                        justify-content: flex-end;
+                        line-height: 36px;
+                        .labelUi {
+                            font-size: 14px;
+                            font-weight: var(--Font-style-bold);
+                        }
+                    }
+                    .caseCloseDateTimeHeadingCol {
+                        position: relative;
+                        .errorStyle{
+                            position: absolute;
+                            color: #aa1d1d;
+                            top: 75px !important;
+                            .fas {
+                                padding-right: 3px !important;
+                             }
+                        }
+                        display: flex;
+                        align-items: flex-end;
+                        .DateTimeUi {
+                            border: 1px solid #d1d2d4;
+                            width: 100%
+                        }
+                        .errorBrdr {
+                            outline: 1px solid var(--color-aa1d1d);
+                        }
+                    }
+                }
+                .createCaseCloseBtnRow {
+                    margin-top: 60px !important;
+                    .caseCloseBtnCol {
+                        gap: 14px;
+                        
+                    }
+                    .caseCloseBtnCol.rejectBtn{
+                        display: flex !important;
+                        justify-content: space-between !important;
+                    }
+                }
+            }
+        }
+    }
+}
+

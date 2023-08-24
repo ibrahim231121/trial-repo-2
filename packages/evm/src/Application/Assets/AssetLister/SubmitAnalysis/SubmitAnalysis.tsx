@@ -15,7 +15,7 @@ import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import { ProjectStateEnum, ProjectStatusEnum, ProjectTypeEnum, RedactionStatus } from '../../utils/RedactionEnum';
 import { MultiSelectBoxCategory } from '@cb/shared';
-import { SelectedCategoryModel } from '../Category/Model/FormContainerModel';
+import { SelectedCategoryModel } from '../Category/Model/CategoryFormContainerModel';
 import { filterCategory } from '../Category/Utility/UtilityFunctions';
 import { RootState } from '../../../../Redux/rootReducer';
 import { getUsersIdsAsync, getUsersInfoAsync } from '../../../../Redux/UserReducer';
@@ -359,12 +359,9 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
                           <MultiSelectBoxCategory
                             className='categoryBox'
                             multiple={true}
-                            CheckBox={true}
-                            visibility={true}
                             options={filterCategory(categoryOptions)}
                             value={selectedCategoryValues}
                             autoComplete={false}
-                            isSearchable={true}
                             onChange={(event: any, newValue: any, reason: any, detail: any) => {
                               return handleChange(event, 1, newValue, reason, detail);
                             }}

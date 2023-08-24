@@ -11,7 +11,7 @@ export interface FormData {
     record: CMTEntityRecord;
     fields: Field[];
 }
-export interface AssetAction {
+export interface AssetAction { 
     masterId: number,
     assetId: number,
     evidenceId: number,
@@ -21,11 +21,15 @@ export interface AssetAction {
     fileType?: any,
     expireOn?: Date,
     holduntil?: Date,
+    isRestricted?: boolean,
 }
 export interface EvidenceAssetAction {
     evidenceId: number,
     assetId: number,
+    masterassetId?: number,
     action: string,
+    masterAssetName?: string,
+    assetName?: string,
 }
 export interface EvidenceRetention {
     evidenceId: number,
@@ -34,8 +38,12 @@ export interface EvidenceRetention {
 export interface AssetsLinking {
     evidenceId: number,
     assetId: number,
+    masterassetId?: number,
     action: string,
     evidenceRetentionList: EvidenceRetention[],
+    masterAssetName?: string,
+    assetName?: string,
+
 }
 export interface Category {
     id: number;
@@ -150,8 +158,9 @@ export interface AddOwner {
     owners: number[];
 }
 export interface ExtendRetention {
-    id: number;
+    evidenceId: number;
     extendedDays: number | null;
+    holdUntil: number;
 }
 
 export interface PermissionModel {
@@ -190,6 +199,7 @@ export interface AssetSharingModel {
     shared: SharedModel;
     revoked: RevokedModel;
     version: string;
+    sharingReason: string;
 }
 export interface Form {
     fields: Field[];
@@ -209,6 +219,7 @@ export interface SharedAssetLister {
     duration: number;
     categories: string;
     fields: string;
+    evidenceAsset?: any;
     //categories: categoriesModel[];
 
 }
@@ -238,17 +249,23 @@ export interface Evidence {
     computerAidedDispatch: string;
     tag: string;
     version: string;
-    createdOn: Date;
+    createdOn: string;
     modifiedOn?: Date;
     masterAssetRecId?: number;
+    relatedAssets: RelatedAssets[] | null;
 }
 
 export interface EvdenceCategoryAssignment {
     unAssignCategories: Category[];
     assignedCategories: Category[];
     updateCategories: Category[];
-    categorizedBy: number | null;
     evidenceId : number;
+}
+
+export interface EvidenceCategory {
+    evidenceId: number;
+    categories: Array<Category>;
+    categorizedBy: number;
 }
 
 export type securityDescriptorType = {
@@ -277,11 +294,46 @@ export enum MetadataFileType {
 export interface AssetLogType {
     evidenceId : number
     assetId : number
-    action : string
+    assetLog : AssetLog
+}
+export interface EvidenceAssetNotes {
+    evidenceId : number
+    assetId : number 
     notes : string
 }
-
+export interface PublicAssetLog {
+    evidenceId : number
+    assetId : number 
+    tenantId : number 
+    email : string 
+    notes : string
+}
+export interface MultiAssetLog {
+    evidenceAssetNotes : EvidenceAssetNotes[]
+    assetLog : AssetLog 
+}
 export interface AssetLog {
     action : string
     notes : string
+    auditTableNamesEnum? : number
+}
+
+export type RelatedAssets = {
+    asset: Asset;
+    evidenceId : number;
+    relationType : string;
+    rankScore : number;
+}
+
+export enum AuditTableNames  {
+    AssetLock = 0,
+    EvidenceAsset = 1,
+    AssetOwner = 2,
+    AssetSharing = 3,
+    AssetSharingLog = 4,
+    AssetViewReason = 5,
+    AssetBookmark = 6,
+    AssetFile = 7,
+    AssetNotes = 8,
+    EvidenceCategory = 9
 }

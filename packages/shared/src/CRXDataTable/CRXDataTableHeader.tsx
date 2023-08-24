@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import TableCell from "@material-ui/core/TableCell";
 import IconButton from "@material-ui/core/IconButton";
 import Draggable from "react-draggable";
 import { useStyles, DataTableHeaderProps } from "./CRXDataTableTypes";
 import { useTranslation } from "react-i18next";
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({
-  id,
   orderColumn,
   headCells,
   orderData,
@@ -15,154 +14,43 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   showCheckBoxesCol,
   showActionCol,
   setBodyCellWidth,
+  selfSorting,
   //expanViews,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation<string>();
   const [clientWidth, setClientWidth] = useState<any>([]);
-
   const [resizeWidth, setResizeWidth] = useState<any>();
+  const [newWidth, setNewWidth] = useState<any>()
+  const colResizeRef : any = useRef(null)
 
   React.useEffect(() => {
     const divWidth = document.getElementsByClassName("getWidth");
-      setClientWidth(divWidth);
+    setClientWidth(divWidth);
+    
   }, []);
 
-  let finalWidth =
-    resizeWidth &&
-    resizeWidth.deltaX + clientWidth[(resizeWidth.colIdx)].clientWidth + "px";
+  let finalWidth : any;
 
     React.useEffect(() => {
-      
       setBodyCellWidth({finalWidth, resizeWidth })
-    },[resizeWidth]);
+    },[]);
   
 
-  //
+ 
+  const onDraggingStop = (_ : any, ui : any) => {
+    console.log("resizeWidth", newWidth)
+    if(clientWidth[resizeWidth.colIdx].id == headCells[resizeWidth.colIdx].id) {
+        setNewWidth(ui.x)
+    }
+  }
 
-  const resizeRow = (e: { colIdx: number; deltaX: number, colID : any }) => {
+  const onDragResize = (e : {colIdx: number; deltaX: number, colID : any }) => {
     setResizeWidth(e);
-  };
-
-  // const getGridColWidth = (window : any) => {
-  //   let winMinus : any;
-  //   let colWidth : any;
-  //   if(showCheckBoxesCol == true && showActionCol == true && viewName === "assetListerView") {
-
-  //       winMinus = window - 253;
-  //   }else if (showCheckBoxesCol == false && showActionCol == true) {
-
-  //       winMinus = window;
-  //   }else if (showCheckBoxesCol == true && showActionCol == false) {
-
-  //       winMinus = window - 173;
-  //   }else {
-
-  //      winMinus = window - 286.5;
-  //   }
-    
-   
-  //   if(window < 1600 && window > 1365)  {
-      
-        // headCells && headCells.map((x:any, i : any) => {
-        //   let assetIdMinu = (x.id != "id" || x.id != "assetId" && headCells.length > 6) ? winMinus - 141 : winMinus - 60;
-
-  //           if(x.id != "id" && x.id != "assetId" && headCells.length > 6) {
-  //               if(i < 7 ) {
-  //                 colWidth = x.minWidth = Math.round(assetIdMinu / 6);
-  //               }
-  //           }else if(headCells.length > 6 ) {
-  //             if(i <= 6) {
-  //               colWidth = x.minWidth = Math.round(assetIdMinu / 5);
-  //             }
-  //           }else if(headCells.length == 6 ) {
-  //             if(i <= 5) {
-  //               const minColWidth = winMinus - 78
-  //               colWidth = x.minWidth = (Math.round(minColWidth / 6));
-  //             }
-  //           }else if(headCells.length == 5 ){
-  //             if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == false) {
-                
-  //               const minColWidths = assetIdMinu  - 165;
-  //               colWidth = x.minWidth = (Math.round(minColWidths / 4));
-                
-  //             }else if(i < 6 && i != 0 && showActionCol == true && showCheckBoxesCol == true) {
-               
-  //               const minColWidths = assetIdMinu + 52;
-  //               colWidth = x.minWidth = (Math.round(minColWidths / 4));
-  //             }
-  //           }else if(headCells.length < 3){
-  //             if(i < 3 && i != 0) {
-                
-  //               const forOneColumn = winMinus - 20;
-  //               colWidth = x.minWidth = (Math.round(forOneColumn));
-  //             }
-  //           }else if(headCells.length == 4){
-  //             if(i < 4 && i != 0) {
-                
-  //               const forThreeColumn = assetIdMinu - 140
-  //               colWidth = x.minWidth = (Math.round(forThreeColumn / 3));
-  //             }
-  //           }else {
-  //             if(i != 0) {
-  //               const forTwoColumn = winMinus - 46
-  //               colWidth = x.minWidth = (Math.round(forTwoColumn / 2));
-  //             }
-  //           }
-  //         return colWidth
-  //     })
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const win = window.screen.width;
-  //  getGridColWidth(win);
-   
-  // },[])
-
-  // const gridColumnWidthExpand = (window : any) => {
-    
-  //   if(window > 1680 && expanViews === true) {
-      
-  //       const dx = headCells && headCells.map((x : any, _ : any) => {
-  //       let calcWidth : any = 0;
-  //       calcWidth += parseInt(x.minWidth);
-  //         return calcWidth;
-  //       })
-        
-  //       const totalGridWidth = dx.reduce((d : any, a:any) => d + a, 0);
-      
-  //       const PercentageFullwidth = totalGridWidth / 1920;
-  //       const Percentage = PercentageFullwidth  * 100;
-        
-  //       const PercentageToPixel = Percentage * window / 100;
-        
-  //       let colWidths : any; 
-  //       headCells && headCells.map((x : any, _ : any) => {
-        
-  //       //let calcCol = parseInt(x.minWidth) / totalGridWidth * 100;
-        
-  //       // let colPercentangeToPX = calcCol * PercentageToPixel / 100;
-
-  //       let getRemaining = window - PercentageToPixel;
-  //         if(PercentageToPixel < window && x.id != "id") {
-  //             let oneColumn = Math.round(getRemaining / headCells.length);
-  //             colWidths = x.minWidth = parseInt(x.minWidth) + oneColumn;
-  //         }else {
-  //            colWidths = x.minWidth = parseInt(x.minWidth);
-  //         }
-          
-      
-  //         return colWidths;
-  //       })
-  //   }
-  // }
-  // useEffect(() => {
-  //    gridColumnWidthExpand(window.screen.width) 
-  // }, [expanViews])
-
+  }
   return (
     <>
+    
       {/* {dragVisibility === true || dragVisibility === undefined ? (
         <TableCell
           className={
@@ -180,6 +68,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
       ) : null} */}
       {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
         <TableCell
+          data-qa="col-1"
           className={
             classes.headerStickness +
             " CRXDataTableLabelCell crxTableHeaderSize dataTableActionColumn"
@@ -195,6 +84,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
       ) : null}
       {showActionCol === true || showActionCol === undefined ? (
         <TableCell
+        data-qa="col-action"
           className={
             classes.headerStickness +
             " CRXDataTableLabelCell crxTableHeaderSize dataTableCheckBoxColumn"
@@ -216,7 +106,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         </TableCell>
       ) : null}
 
-      {orderColumn.map((colIdx, i) => (
+      {orderColumn.map((colIdx, _) => (
         //index needs to be CURRENT
         //key needs to be STATIC
 
@@ -245,28 +135,25 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         >
 
           <div
+          ref={colResizeRef}
             className={classes.headerCellDiv + " crxTableHeaderSize getWidth"}
             id={headCells[colIdx].id}
             style={{
               minWidth: "100%",
-              width:
-                colIdx === resizeWidth?.colIdx
-                  ? finalWidth : headCells[colIdx].id == "assetId" ? "121px" : 
-                   headCells[colIdx].minWidth + "px",
-              
+              width:colIdx === resizeWidth?.colIdx ? resizeWidth.deltaX + clientWidth[(resizeWidth.colIdx)].clientWidth + "px" : headCells[colIdx].minWidth
             }}
             
           >
             <div className={classes.headerStickness} key={headCells[colIdx].id}>
-              <label>{headCells[colIdx].label}</label>
+              <label>{t(headCells[colIdx].label)}</label>
             </div>
             <div className="gridSortResize">
               {headCells[colIdx].sort === true ? (
                 <span
                   className="GridSortIcon"
-                  onClick={() => onHandleRequestSort(id == "assetDataTable" ? headCells[colIdx].id : headCells[colIdx].attributeName)} 
+                  onClick={() => onHandleRequestSort(selfSorting ? headCells[colIdx].id : headCells[colIdx].attributeName)} 
                 >
-                  {orderData.orderBy === (id == "assetDataTable" ? headCells[colIdx].id : headCells[colIdx].attributeName) ? (
+                  {orderData.orderBy === (selfSorting ? headCells[colIdx].id : headCells[colIdx].attributeName) ? (
                     <span>
                       {orderData.order === "desc" ? (
                         <IconButton
@@ -302,32 +189,13 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 defaultClassName="DragHandle"
                 defaultClassNameDragging="DragHandleActive"
                 onDrag={(_, deltaX) => {
-                  resizeRow({
-                    //Using deltax.x because of consistant value in x direction (drag) divide by 3 because of react dragable doc says.
+                  onDragResize({
                     colIdx,
-                    deltaX: deltaX.x / 2,
+                    deltaX: deltaX.x,
                     colID : headCells[colIdx].id
-                  });
+                  })
                 }}
-                onStop={() => {
-                  const memo: any = {};
-                  for (i = 0; i < clientWidth.length; i++) {
-                    if (clientWidth[colIdx] in memo)
-                      return clientWidth[colIdx].id;
-                    if (clientWidth[colIdx].id == headCells[colIdx].id) {
-                      memo[clientWidth[colIdx]] =
-                        clientWidth[colIdx].id;
-
-                      headCells[colIdx].width =
-                        resizeWidth.deltaX +
-                          clientWidth[colIdx].clientWidth >
-                        (headCells[colIdx]?.minWidth || 125)
-                          ? resizeWidth.deltaX +
-                            clientWidth[colIdx].clientWidth
-                          : headCells[colIdx].minWidth;
-                    }
-                  }
-                }}
+                onStop={onDraggingStop}
                 position={{ x: 0, y: 0 }}
               >
                 <span className="DragHandleIcon"></span>

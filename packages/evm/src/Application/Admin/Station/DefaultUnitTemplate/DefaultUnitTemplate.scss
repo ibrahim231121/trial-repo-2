@@ -75,6 +75,7 @@
             font-family:var(--base-font-family);
             background-color: var(--color-White);
             text-align: left;
+            margin-left: 0px;
             &:hover {
               border: 1px solid var(--color-888787);
               transition: all 0.25s ease-in-out;
@@ -159,4 +160,10 @@
         }
     }
     
+}
+.defaultUnitTempFooterBtn  {
+        button {
+            margin-right: 30px;
+
+        }
 }

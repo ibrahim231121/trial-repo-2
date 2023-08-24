@@ -10,7 +10,6 @@ import { AppBar, Box, Tab, Tabs, Theme, Typography, makeStyles } from "@material
 // import { useStyles } from "@cb/shared/build/CRXDataTable/CRXDataTableTypes";
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
@@ -56,9 +55,9 @@ const AssetsDisplayTabsHeaders = (props: any) => {
 
 
   return <>
-    <div className="TabsMenuHead" style={{ textDecoration: isSelected ? "underline" : "" }}>
-      <button onClick={() => { setTypeOfAssetCurrentTab(typeOfAssetTab.index) }} disabled={!(categoryAssets?.length > 0)}>{typeOfAssetTab.label + "(" + categoryAssets.length + ")"}</button>
-      <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
+    <div className="TabsMenuHead" >
+      <button style={{ textDecoration: isSelected ? "underline" : "" }} className={!(categoryAssets?.length > 0) ? "split_btn_disabled" : "split_btn_enabled"} onClick={() => { setTypeOfAssetCurrentTab(typeOfAssetTab.index) }} disabled={!(categoryAssets?.length > 0)}>{typeOfAssetTab.label + " "+ "(" + categoryAssets.length + ")"}</button>
+      <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button" className={!(categoryAssets?.length > 0) ? "split_btn_disabled_arrow" : "split_btn_enabled_arrow"}>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
@@ -67,7 +66,7 @@ const AssetsDisplayTabsHeaders = (props: any) => {
           aria-haspopup="menu"
           onClick={handleToggle}
         >
-          <ArrowDropDownIcon />
+          <i className="fas fa-caret-down"></i>
         </Button>
       </ButtonGroup>
       <Popper
@@ -76,6 +75,7 @@ const AssetsDisplayTabsHeaders = (props: any) => {
         }}
         open={open}
         anchorEl={anchorRef.current}
+        placement={"bottom-end"}
         role={undefined}
         transition
         disablePortal
@@ -87,15 +87,17 @@ const AssetsDisplayTabsHeaders = (props: any) => {
               transformOrigin:
                 placement === 'bottom' ? 'center top' : 'center bottom',
             }}
+            id="split-button-menu-main"
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList id="split-button-menu" autoFocusItem>
+                <MenuList id="split-button-menu" className="asset_detail_header_split_buttons" autoFocusItem>
                   {sortedCategoryAssets.map((option: any) => (
                     <MenuItem
                       key={option}
                       selected={option.id === selectedId}
                       onClick={(event) => handleMenuItemClick(event, option.id)}
+                      disableRipple 
                     >
                       {option.name}
                     </MenuItem>

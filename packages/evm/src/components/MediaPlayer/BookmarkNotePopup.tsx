@@ -4,7 +4,6 @@ import { TextField, CRXTooltip } from "@cb/shared";
 import { red } from "@material-ui/core/colors";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addAssetLog } from "../../Redux/AssetLogReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import { EvidenceAgent } from "../../utils/Api/ApiAgent";
 import { CMTEntityRecord } from "../../utils/Api/models/CommonModels";
@@ -19,7 +18,7 @@ interface BookmarkNotePopupprops {
   timelinedetail: any
   toasterMsgRef: any
   setIsEditBookmarkNotePopup: any
-  assetLog : AssetLogType
+  saveLogs : any
 }
 
 const BookmarkNotePopup = ({
@@ -30,7 +29,7 @@ const BookmarkNotePopup = ({
   timelinedetail,
   toasterMsgRef,
   setIsEditBookmarkNotePopup,
-  assetLog
+  saveLogs
 }: BookmarkNotePopupprops) => {
   const [description, setDescription] = React.useState<string>("");
   const [editDescription, setEditDescription] = React.useState<boolean>(false);
@@ -188,9 +187,7 @@ const BookmarkNotePopup = ({
           duration: 5000,
           clearButtton: true,
         });
-        assetLog.assetId = body.assetId;
-        assetLog.notes = "Bookmark Updated";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(body.assetId, "Bookmark Updated");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -231,9 +228,7 @@ const BookmarkNotePopup = ({
           duration: 5000,
           clearButtton: true,
         });
-        assetLog.assetId = body.assetId;
-        assetLog.notes = "Note Updated";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(body.assetId, "Note Updated");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -306,9 +301,7 @@ const BookmarkNotePopup = ({
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
-        assetLog.assetId = bookmarkNotePopupObj.assetId;
-        assetLog.notes = "Bookmark Deleted";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(bookmarkNotePopupObj.assetId, "Bookmark Deleted");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -339,9 +332,7 @@ const BookmarkNotePopup = ({
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
-        assetLog.assetId = bookmarkNotePopupObj.assetId;
-        assetLog.notes = "Note Deleted";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(bookmarkNotePopupObj.assetId, "Note Deleted");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({

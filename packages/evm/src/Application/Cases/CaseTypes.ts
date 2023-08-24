@@ -43,7 +43,7 @@ export type TCaseDetail = {
     cadId: number;
     cadCsv: string;
     rmsId: string;
-    stateId: number;
+    state: number;
     stateName: string;
     status: number;
     statusName: string;
@@ -61,6 +61,7 @@ export type TCaseDetail = {
     caseDeleteRequests: any[];
     caseSharings: any[];
     caseTimeline: TCaseTimeline[];
+    caseClosed: TCaseClose[]
 };
 
 export type TCaseAsset = {
@@ -72,6 +73,10 @@ export type TCaseAsset = {
     evidenceId: number;
     notes: string;
     sequenceNumber: string;
+    fileId: number;
+    fileName: string,
+    fileType: string,
+    accessCode?: string
 }
 
 export type TCaseTimeline = {
@@ -85,6 +90,14 @@ export type TCaseTimeline = {
     detailId: number;
     isEdit: boolean;
     isHighlight: boolean;
+    fileId: number;
+    fileName: string;
+    fileType: string;
+    accessCode: string;
+    userName?: string;
+    updatedOn?: string;
+    evidenceId?: number;
+    assetName?: string;
 }
 
 export type TCaseAudit = {
@@ -133,7 +146,8 @@ export type TCaseEditUserDetail = {
     createdOn: string,
     updatedOn: string,
     createdById: number,
-    createdByName: string
+    createdByName: string,
+    closedByName: string
 }
 
 export type TCaseHighlight = {
@@ -145,6 +159,42 @@ export type TCaseHighlight = {
     sequenceNumber: string | null;
     timeStamp: string;
     assetType: number;
+}
+
+export type renderCheckMultiselect = {
+    value: string;
+    id: string;
+}
+
+export type TCaseClosedReason = {
+    id : number;
+    name : string;
+}
+
+export type TCaseClose = {
+    id : number;
+    caseId : number;
+    caseClosedReasonId : AutoCompleteOptionType;
+    closingType : string;
+    closingAction : string;
+    closingRequestDate : string;
+    remarks : string;
+    status : string;
+}
+
+export type CaseSearchEvidenceData = {
+    searchBy: CASE_SEARCH_BY,
+    cadId: AutoCompleteOptionType,
+    users: SearchByUser[],
+    startDate: string,
+    endDate: string,
+}
+
+export type SearchByUser = {
+    id: number;
+    label: string;
+    userName: string;
+    selectedAssets: any[]
 }
 
 export enum CASE_STATE  {
@@ -196,4 +246,33 @@ export enum CASE_ASSET_TYPE {
 export enum CASE_VIEW_TYPE {
     ViewOnly = 1,
     Contribute = 2
+}
+
+export const enum CASE_SEARCH_BY {
+    cadId = "1",
+    userAndDate = "2"
+}
+
+export enum CASE_ACTION_MENU_PARENT_COMPONENT {
+    CaseLister,
+    CaseDetail,
+    CaseTimeline
+}
+
+export enum CASE_CLOSE_STATUS  {
+    Pending = 1,
+    Approved = 2,
+    Reject = 3
+}
+
+export enum CASE_CLOSE_TYPE  {
+    Null = 0,
+    CloseAndReleaseAssets = 1,
+    CloseAndExpireAssets = 2
+}
+
+export enum CASE_CLOSE_ACTION  {
+    Null = 0,
+    Immediate = 1,
+    Future = 2
 }

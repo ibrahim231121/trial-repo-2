@@ -14,9 +14,9 @@ import { getAllSensorsEvents, getAllData } from "../../../../Redux/SensorEvents"
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXTabs, CrxTabPanel } from "@cb/shared";
 import { getByPlaceholderText } from "@testing-library/react";
-import { MultiSelectBoxCategory } from "@cb/shared";
-import { CRXMultiSelectBoxLight } from "@cb/shared";
+import { CRXMultiSelectBoxLight, NumberField } from "@cb/shared";
 import { Camera } from "@material-ui/icons";
+import { CRXToaster } from "@cb/shared";
 
 type SensorsAndTriggersDetailProps = {
     id: string
@@ -32,6 +32,7 @@ const defaultValidationModel: SensorAndTriggerDetailValidationModel = {
     description: '',
     camera: '',
     emailAlert: '',
+    allowCancellation: '',
 }
 
 const CAMERAS = [
@@ -54,6 +55,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
         description: { id: 0, data: "" },
         camera: { id: 0, data: [{ value: 0, label: "" }] },
         emailAlert: { id: 0, data: false },
+        allowCancellation: { id: 0, data: false },
     }
 
     const defaultDeviceParameter = {
@@ -95,7 +97,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const getAll: any = useSelector((state: RootState) => state.sensorEventsSlice.getAll);
-
+    const sensorFormRef = useRef<typeof CRXToaster>(null)
 
     const [cameraMultiValue,setCameraMultiValue] = useState<any>();
     const [cameraValue,setcameraValue] = useState<SelectBoxType[]>([{value:0,label:'0'}]);
@@ -409,8 +411,10 @@ const setCamera = (obj:string) => {
 
     const onDeviceParameterChange = (e: ChangeEvent<HTMLInputElement>, idx: number, field: keyof DeviceParameterModel) => {
         let parameters = [...deviceParameters];
+        let value = ((parseInt(e.target.value) >= 0) ? parseInt(e.target.value) : parseInt(e.target.value)*(-1));
+        if(value.toString().length > 15)
+            value = parseInt(value.toString().substring(0, value.toString().length - 1));
         if(field === 'value') {
-            const value = parseInt(e.target.value);
             if(!isNaN(value)) {
                 parameters[idx][field] = value;
             }
@@ -422,7 +426,7 @@ const setCamera = (obj:string) => {
             if(field === 'device') {
                 parameters[idx].parameter.value = 0;
             }
-            (parameters[idx][field] as SelectBoxType).value = parseInt(e.target.value);
+            (parameters[idx][field] as SelectBoxType).value = value;
         }
 
         if (parameters[idx] != null) {
@@ -431,7 +435,6 @@ const setCamera = (obj:string) => {
                 isFirstRenderRef.current = false;
             }
         }
-
         setDeviceParameter(parameters);
     }
 
@@ -525,29 +528,59 @@ const setCamera = (obj:string) => {
 
     const onSave = async () => {
         const payload = setAddPayload();
-        const urlEditSensorsAndTriggers =  parseInt(id) > 0 ? 'SensorEvents/UpdateEvent' : 'SensorEvents/InsertEvent';
-        SetupConfigurationAgent.putSensorsAndTriggersTemplate(urlEditSensorsAndTriggers,payload).then(()=>{        
-            setSwitchParameters(defaultSwitchParameters);
-            setDeviceParameter([defaultDeviceParameter]);
-            setSuccess(true);
-            setError(false);
-            dispatch(getAllSensorsEvents());
-            setTimeout(() => history.goBack(), 500);
-          })
-          .catch((e:any) => {
-        if (e.request.status == 409) {
-            setError(true);
-            setResponseError(
-                "Duplicate Name is not allowed."
-            );
-        }
-        else{
-          console.error(e.message);
-          setError(false);
-          return e;
-        }
-      })
-        }
+
+        if (parseInt(id) > 0) {
+            const urlEditSensorsAndTriggers  = "SensorEvents/" + id;
+            SetupConfigurationAgent.putSensorsAndTriggersTemplate(urlEditSensorsAndTriggers, payload)
+            .then(()=>{        
+                setSwitchParameters(defaultSwitchParameters);
+                setDeviceParameter([defaultDeviceParameter]);
+                //setSuccess(true);
+                SaveSensorTriggerMsg()
+                setError(false);
+                dispatch(getAllSensorsEvents());
+                setTimeout(() => history.goBack(), 5000);
+            })
+            .catch((e:any) => {
+                if (e.request.status == 409) {
+                    setError(true);
+                    setResponseError(
+                        "Duplicate Name is not allowed."
+                    );
+                }
+                else{
+                    console.error(e.message);
+                    setError(false);
+                    return e;
+                }
+            })
+        } else {
+            const urlAddSensorsAndTriggers = "SensorEvents";
+            SetupConfigurationAgent.postSensorsAndTriggersTemplate(urlAddSensorsAndTriggers, payload)
+            .then(()=>{        
+                setSwitchParameters(defaultSwitchParameters);
+                setDeviceParameter([defaultDeviceParameter]);
+                //setSuccess(true);
+                SaveSensorTriggerMsg()
+                setError(false);
+                dispatch(getAllSensorsEvents());
+                setTimeout(() => history.goBack(), 500);
+            })
+            .catch((e:any) => {
+            if (e.request.status == 409) {
+                setError(true);
+                setResponseError(
+                    "Duplicate Name is not allowed."
+                );
+            }
+            else{
+                console.error(e.message);
+                setError(false);
+                return e;
+            }
+        })
+      }
+    }
 
     const DeviceParametersDataChanged = (switchParameters: SwitchParametersModel, isDataChanged: boolean, dataToEdit: any) => {
         for (let item in switchParameters) {
@@ -631,20 +664,30 @@ const setCamera = (obj:string) => {
         e.isDefaultPrevented();
 
       };
-
+    
+      const SaveSensorTriggerMsg = () => {
+        sensorFormRef?.current?.showToaster({
+          message: `${t("Success you have saved the Sensors And Triggers")}`,
+          variant: "success",
+          duration: 7000,
+          clearButtton: false,
+        });
+      }
     return (
 
-        <div className="sensors-and-triggers crxTabsPermission switchLeftComponents" style={{}}>
-            {success && (
+        <div className="sensors-and-triggers crxTabsPermission">
+            <CRXToaster ref={sensorFormRef} />
+            {/* {success && (
                   <CRXAlert
+                    className="sensorTriggerMsg"
                     message={t("Success_You_have_saved_the_Sensors_And_Triggers")}
                     alertType="toast"
                     open={true}
                   />
-                )}
+                )} */}
                 {error && (
                   <CRXAlert
-                    className=""
+                    className="sensorinlineError"
                     message={responseError}
                     type="error"
                     alertType="inline"
@@ -652,7 +695,7 @@ const setCamera = (obj:string) => {
                   />
                 )} 
             
-            <CRXTabs  value={value} onChange={handleChange} tabitems={tabs} stickyTab={138}/>
+            <CRXTabs  value={value} onChange={handleChange} tabitems={tabs} stickyTab={129}/>
                 <CrxTabPanel value={value} index={0}>
 
                 <div className="itemIndicator">
@@ -809,12 +852,20 @@ const setCamera = (obj:string) => {
                             </div>
                         
                         <div className="email_checkBox_ui">
-                        <label>{t("Email alert")}</label>   
+                        <label>{t("Email_alert")}</label>   
                             <CRXCheckBox
                                 checked={switchParameters.emailAlert.data}
                                 lightMode={true}
                                 className='crxCheckBoxCreate '
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDeviceSettingChange(e, 'emailAlert')} />
+                        </div>
+                        <div className="email_checkBox_ui">
+                        <label>{t("Allow_Cancellation")}</label>   
+                            <CRXCheckBox
+                                checked={switchParameters.allowCancellation.data}
+                                lightMode={true}
+                                className='crxCheckBoxCreate '
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDeviceSettingChange(e, 'allowCancellation')} />
                         </div>
                     </Grid>
                 </Grid>
@@ -884,24 +935,33 @@ const setCamera = (obj:string) => {
                                                 defaultValue={defaultCriteria} />
                                         </CRXColumn>
                                         <CRXColumn className="deviceParameterCol" item xs={3}>
-                                            <TextField
+                                            {/* <TextField
                                                 errorMsg={t("Name_is_required")}
                                                 value={deviceParameter.value}
                                                 className="input-field"
                                                 onChange={(e: any) => onDeviceParameterChange(e, idx, 'value')}
                                                 disabled = {deviceParameter.device.value > 0 ? false : true}
-                                                type="text"
+                                                type="number"
                                                 name="sensorAndTriggerName"
-                                                regex="" />
+                                                regex="" /> */}
+                                            <div className="input-number-snt">
+                                                <NumberField
+                                                    errorMsg={t("Name_is_required")}
+                                                    value={deviceParameter.value}
+                                                    className="input-field"
+                                                    onChange={(e: any) => onDeviceParameterChange(e, idx, 'value')}
+                                                    disabled = {deviceParameter.device.value > 0 ? false : true}
+                                                    type="number"
+                                                    name="sensorAndTriggerName"
+                                                    regex=""
+                                                />
+                                            </div>
                                         </CRXColumn>
                                         <CRXColumn className="deviceParameterBtnRemove" container item xs={3} spacing={0}>
-                                            {
-                                                deviceParameter.device.value > 0 &&
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveDeviceParameter(idx)}
                                                 ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon"/></button>
-                                            }
                                         </CRXColumn>
                                     </CRXRows>
                                 </div>

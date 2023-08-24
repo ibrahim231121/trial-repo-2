@@ -8,7 +8,6 @@ import NumberSearch from '../../../../GlobalComponents/DataTableSearch/NumberSea
 import TextSearch from '../../../../GlobalComponents/DataTableSearch/TextSearch';
 import { DateTimeComponent } from '../../../../GlobalComponents/DateTime';
 import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
-import dateDisplayFormat from '../../../../GlobalFunctions/DateFormat';
 import {ValueString, SearchObject, GridFilter, onClearAll, onResizeRow, onSetSingleHeadCellVisibility, onSetSearchDataValue, HeadCellProps } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import { getToken } from '../../../../Login/API/auth';
 import { GetAllHotListData } from '../../../../Redux/AlprHotListReducer';
@@ -27,6 +26,7 @@ import "./LicensePlateHistoryLister.scss"
 import { type } from 'os';
 import { states } from '../../GlobalDropdown';
 import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from '../../AlprGlobal';
+import { dateDisplayFormat } from '../../../../GlobalFunctions/DateFormat';
   
   type LicensePlateHistoryListerProp ={
     setLicensePlateHistoryData: (data:AlprPlateHistoryInfo[]) => void;

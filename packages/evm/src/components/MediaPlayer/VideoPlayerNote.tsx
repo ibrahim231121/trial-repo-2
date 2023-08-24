@@ -13,7 +13,6 @@ import { AssetLogType, Note } from '../../utils/Api/models/EvidenceModels';
 import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
 import { useDispatch } from 'react-redux';
 import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
-import { addAssetLog } from '../../Redux/AssetLogReducer';
 
 type VideoPlayerNoteProps = {
     openNoteForm: boolean;
@@ -27,11 +26,11 @@ type VideoPlayerNoteProps = {
     noteAssetId?: number;
     toasterMsgRef: any;
     timelinedetail: any;
-    assetLog: AssetLogType
+    saveLogs: any
 };
 
 const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
-    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail,assetLog} = props;
+    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail,saveLogs} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [onSave, setOnSave] = useState(true);
@@ -39,17 +38,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     const [description, setdescription] = React.useState(editNoteForm ? note.description : "");
     const dispatch = useDispatch();
 
-    const [noteobj, setnoteobj] = React.useState<any>({
-        assetId: editNoteForm ? noteAssetId : AssetData.dataId,
-        createdOn: "",
-        description: "",
-        id: 0,
-        madeBy: "",
-        modifiedOn: null,
-        noteTime: "",
-        position: 0,
-        version: ""
-    });
+    const [ currentAssetId, setcurrentAssetId ] = React.useState<any>(editNoteForm ? noteAssetId : AssetData.dataId);
 
     React.useEffect(() => {
         setOpenModal(openNoteForm)
@@ -125,7 +114,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
             EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
                 let responseObj = {
-                    assetId: noteobj.assetId,
+                    assetId: currentAssetId,
                     createdOn: "",
                     description: body.description,
                     id: response,
@@ -136,13 +125,11 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                     version: ""
                 }
                 setNotesInTimelineDetail("Add", responseObj);
-                toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-                assetLog.assetId = Number(timelinedetail[0].dataId);
-                assetLog.notes = "Note Taken";
-                dispatch(addAssetLog(assetLog));
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "success", duration: 5000, clearButtton: true});
+                saveLogs(Number(currentAssetId), "Note Taken");
             })
             .catch((e:any) =>{
-                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "error", duration: 5000, clearButtton: true});
             })
         }
         else
@@ -176,7 +163,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             setopenNoteForm(false);
             EvidenceAgent.updateNote(url, body).then(() => {
                 let responseObj = {
-                    assetId: noteobj.assetId,
+                    assetId: currentAssetId,
                     createdOn: note.createdOn,
                     description: body.description,
                     id: body.id,
@@ -188,6 +175,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                 }
                 setNotesInTimelineDetail("Update", responseObj);
                 toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "success", duration: 5000, clearButtton: true});
+                saveLogs(body.assetId, "Note Update");
             })
             .catch((err: any) => {
                 toasterMsgRef.current.showToaster({message: "Some error occured", variant: "error", duration: 5000, clearButtton: true});
@@ -208,14 +196,14 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             setopenNoteForm(false);
             EvidenceAgent.deleteNote(url).then(() => {
                 let responseObj = {
-                    assetId: noteobj.assetId,
+                    assetId: currentAssetId,
                     id: note.id
                 }
                 setNotesInTimelineDetail("Delete", responseObj);
-                toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "success", duration: 5000, clearButtton: true});
             })
             .catch(() => {
-                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "error", duration: 5000, clearButtton: true});
 
             });
         }
@@ -285,6 +273,20 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             >
                 <div>
                     <div className='modalEditCrx'>
+                        {editNoteForm && <CRXAlert
+                          className={"crx-alert-notification file-upload"}
+                          message={"sucess.msg"}
+                          type="info"
+                          open={editNoteForm}
+                          alertType="inline"
+                          persist={true}
+                          showCloseButton={false}
+                          children={
+                            <div>
+                                Note already exists at this time
+                            </div>
+                          }
+                        />}
                         <div className='CrxEditForm'>
                             <TextField
                                 error={!!descriptionErr}
@@ -305,9 +307,9 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                             <CRXButton className='secondary' onClick={handleClose}>
                                 Cancel
                             </CRXButton>
-                            {editNoteForm && <CRXButton className='secondary' onClick={onDeleteClick} style={{ left: "250px"}}>
+                            {/* {editNoteForm && <CRXButton className='secondary' onClick={onDeleteClick} style={{ left: "250px"}}>
                                 Delete
-                            </CRXButton>}
+                            </CRXButton>} */}
                         </div>
                     </div>
                 </div>

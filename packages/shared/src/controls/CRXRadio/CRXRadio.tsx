@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import './CRXRadio.scss';
 
 type Props = {
-  content?: { value: any; label: string;isDisabled: boolean;isDisableRipple:boolean; Comp:any}[];
+  content?: { value: any; label: string;isDisabled: boolean;isDisableRipple:boolean; Comp:any; isChecked: any;}[];
   value:any;
   onChange?:any;
   setValue:any;
@@ -68,6 +68,7 @@ const CRXRadio: React.FC<Props> = ({ content ,value,setValue, singleRadioChange,
             key={x.value}
               value={x.value}
               disabled={x.isDisabled}
+              checked={x.isChecked}
               control={<Radio 
                 disableRipple={true}
                 checkedIcon={<span className={classes.checkedIcon + " " + cehckedIcon}></span>}

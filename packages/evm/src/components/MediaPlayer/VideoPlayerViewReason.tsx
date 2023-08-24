@@ -20,6 +20,8 @@ type VideoPlayerViewReasonProps = {
     setOnRefreshViewReasonOpen: any
     setOpenViewRequirement: any
     reasons: any
+    saveLogs: any
+    assetViewed: any
 };
 
 type ViewReason = {
@@ -34,7 +36,7 @@ type ViewReasonTimerObject = {
 }
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement, reasons } = props;
+    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement, reasons, saveLogs, assetViewed } = props;
     const [openModal, setOpenModal] = React.useState(true);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -158,6 +160,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             setReasonForViewing(false);
             setLocalStorage();
             setOnRefreshViewReasonOpen(false);
+            saveLogs(AssetId, "Viewed Reason: "+body.viewReason);
         })
         .catch((e:any) => {
             console.log(e);
@@ -166,6 +169,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                 "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
             );
         })
+        assetViewed.current = true
+        saveLogs(AssetId, "Asset Viewed");
         setOpenModal(false);
         setReasonForViewing(false);
     };

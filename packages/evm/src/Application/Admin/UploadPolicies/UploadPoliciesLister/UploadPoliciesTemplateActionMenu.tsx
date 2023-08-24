@@ -15,12 +15,11 @@ import { SetupConfigurationAgent } from '../../../../utils/Api/ApiAgent';
 type Props = {
   selectedItems?: any;
   row?: any;
-  getRowData: () => void;
-  getSelectedData: () => void;
+  updateSelectedItems: () => void;
   onMessageShow: (isSuccess: boolean, message: string) => void;
 };
 
-const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, onMessageShow }) => {
+const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, updateSelectedItems, onMessageShow }) => {
   const { t } = useTranslation<string>();
   const history = useHistory();
   const [nondefault, setnondefault] = useState(false);
@@ -28,21 +27,29 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
 
   const deleteUploadPolicies = () => {
     let eventIds: number[] = [];
-    if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+    // if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+    //   eventIds = selectedItems.map((data: any) => {
+    //     return data.id;
+    //   });
+    // }
+    // else
+    // {
+    //   eventIds.push(row.id);
+    // }
+    if(row && !selectedItems.includes(row)) {
+      eventIds.push(row.id);
+    }
+    else if(Array.isArray(selectedItems) && selectedItems.length > 0) {
       eventIds = selectedItems.map((data: any) => {
         return data.id;
       });
     }
-    else
-    {
-      eventIds.push(row.id);
-    }
+    if (eventIds.length > 0) {
       SetupConfigurationAgent.deleteAllUploadPoliciesTemplate(eventIds)
         .then(function (response: any) {
           let { AssignIdName, UnAssignsIds } = response;
           deleteUploadPoliciesHandler(AssignIdName, UnAssignsIds);
-          getRowData();
-          getSelectedData();
+          updateSelectedItems();
         })
         .catch(function (error) {
           if (error) {
@@ -50,7 +57,7 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
             return error;
           }
         });
-      
+    }
 
     const deleteUploadPoliciesHandler = (AssignIdName: any, UnAssignsIds: any) => {
       if (AssignIdName.length > 0) {
@@ -112,7 +119,7 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row,
         }
 
       >
-        {selectedItems.length <= 1 ? (
+        {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1)  ? (
           <MenuItem onClick={openCreateUploadPolicyForm}>
             <Restricted moduleId={63}>
               <div className="crx-meu-content crx-spac "  >

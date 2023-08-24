@@ -23,10 +23,6 @@
       background: var(--color-6e6e6e);
       color: var(--color-d1d2d4);
     }
-    .rc-menu__item--disabled {
-      background: var(--color-transparent) !important;
-      color: var(--color-69696a);
-    }
 
     .rc-menu__item--open {
       background: var(--color-6e6e6e);
@@ -216,6 +212,21 @@
 }
 .mainListerAction {
   margin-left: -52px;
+  .crx-menu-icon {
+    position: relative;
+    .icon_position_plus {
+      position: absolute;
+      left: 24px;
+      top: 12px;
+      font-size: 8px;
+    }
+    .icon_position_minus {
+      position: absolute;
+      left: 24px;
+      top: 12px;
+      font-size: 8px;
+    }
+  }
 }
 .export{
   .crx-menu-icon{
@@ -229,15 +240,14 @@
     transition-delay:.4s;
   }
 }
-.CRXModalAssignToCase {
-  .modelTitle {
-    text-align: center;
-  }
-  .MuiDialog-paperWidthLg {
-    height: 400px;
-    width: 800px;
-  }
-  .CRXContent {
-    padding-bottom: 20px;
+.removeScrollModel {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.bucketWithRemoveAsset {
+  width: 266px !important;
+  .crx-menu-list {
+    width: 227px !important;
   }
 }

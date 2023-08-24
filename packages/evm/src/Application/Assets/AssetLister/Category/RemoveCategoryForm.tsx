@@ -9,7 +9,7 @@ import { FormValues, RemoveCategoryFormProps, RetentionDetailForCalculation } fr
 import { ExtractHoursFromCMTEntityRecord, RetentionDateTimeFormatter } from '../../../../GlobalFunctions/AssetRetentionFormat';
 import { SetupConfigurationAgent, UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { StationPolicy } from '../../../../utils/Api/models/StationModels';
-import { CategoryRemovalType } from './Model/FormContainerModel';
+import { CategoryRemovalType } from './Model/CategoryFormContainerModel';
 import { setLoaderValue } from '../../../../Redux/loaderSlice';
 import { CalculateCategoryRetentionDetail } from './Utility/UtilityFunctions';
 
@@ -138,7 +138,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       }
     } else {
       //Multi Asset Selection Case.
-      const categoryObject = categoryOptions.filter((o: any) => props.selectedItems[0].evidence.categories.some((i: string) => i === o.name));;
+      const categoryObject = categoryOptions.filter((o: any) => props.selectedItems[0].evidence.categories.some((i: string) => i === o.name));
       for (const category of categoryObject) {
         const retentionId = category.policies.retentionPolicyId;
         const retentionTime = retentionDetail.find((x : any) => x.id == retentionId).detail.limit;

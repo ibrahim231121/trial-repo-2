@@ -9,9 +9,9 @@ const ReFormatPropsForActionMenu = (evidence: SearchModel.Evidence, assetId: num
     return o;
 };
 
-const checkIndefiniteDate = (date : Date) => {
+const checkIndefiniteDate = (date : Date, isEvidenceRelations : boolean) => {
     let differenceOfYears = date.getFullYear() - moment().year();
-    if(differenceOfYears > 50)
+    if(differenceOfYears > 50 || isEvidenceRelations == true)
       return true;
     return false;
   }

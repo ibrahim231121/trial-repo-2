@@ -10,7 +10,7 @@ import moment from "moment";
 import anchorDisplayUnit from "../../../GlobalComponents/Display/AnchorDisplayUnit";
 import './index.scss'
 import { getUnitInfoAsync, getAllUnitVersionKeyValuesAsync, getAllUnitStatusKeyValuesAsync, getAllUnitTemplateKeyValuesAsync, getAllUnitAssignmentKeyValuesAsync } from "../../../Redux/UnitReducer";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+import { dateDisplayFormat } from "../../../GlobalFunctions/DateFormat";
 import textDisplayStatus from "../../../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../../../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../../../GlobalComponents/Display/multitextDisplayAssigned";
@@ -39,6 +39,7 @@ import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../../../utils/hub_config";
 import { CADTemplate } from "../../../Application/CAD/CADTypes";
+
 
 
 type Unit = {

@@ -6,11 +6,12 @@ import IconButton from "@material-ui/core/IconButton";
 import { Button, Fade } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
 import "./CRXAlert.scss";
+import CRXTooltip from "../../controls/CRXTooltip/CRXTooltip";
 
 const notificationStyle = makeStyles(() =>
   createStyles({
     root: {
-      width: "100%",
+      width: "max-content",
     },
     notification: {
       background: "rgba(250,250,250,0.9)",
@@ -122,7 +123,8 @@ const CRXAlert: React.FC<Props> = ({
                     setOpenState(false);
                   }}
                 >
-                  { <i className="icon icon-cross2"></i>}
+                  <CRXTooltip iconName="icon icon-cross2" placement="bottom" arrow={false} title="dismiss" className=""/>
+                  {/* { <i className=""></i>} */}
                 </IconButton>
               }
             >

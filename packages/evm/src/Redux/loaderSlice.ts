@@ -25,7 +25,7 @@ const loaderSlice = createSlice({
         state.loadingValue = state.loadingValue + 1;
       }
       else{
-        state.loadingValue = state.loadingValue - 1;
+        state.loadingValue = state.loadingValue <= 0 ? 0 : state.loadingValue - 1;
         state.message = payload.message;
         state.error = payload.error;
       }

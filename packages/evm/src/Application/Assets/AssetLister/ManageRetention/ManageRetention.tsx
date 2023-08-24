@@ -1,12 +1,12 @@
 import React from 'react';
 import { Formik, Form, FormikHelpers, Field } from 'formik';
 import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog } from '@cb/shared';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
+import { AssetLog, AssetLogType, AuditTableNames, Evidence, ExtendRetention } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router";
@@ -14,6 +14,11 @@ import "./ManageRetention.scss";
 import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 import { SearchType } from '../../utils/constants';  
+import { addAssetLog } from '../../../../Redux/AssetLogReducer';
+import { RootState } from '../../../../Redux/rootReducer';
+import { addMetaDataInfoAsync } from '../../../../Redux/MetaDataInfoDetailReducer';
+import { number } from 'yup';
+import { setLoaderValue } from '../../../../Redux/loaderSlice';
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -21,7 +26,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
-  const [prevRecord, setPrevRecord] = React.useState<Evidence>();
+  const [isIndefinite, setIsIndefinite] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<boolean>(false);
   const alertRef = React.useRef(null);
   const retentionRadioDefaultOptions = [
@@ -46,6 +51,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const [formPayload, setFormPayload] = React.useState<RetentionFormType>(initialValues);
 
   React.useEffect(() => {
+    setIsIndefinite(false);
     if (props.items.length <= 1)
       getRetentionData();
   }, []);
@@ -88,15 +94,19 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const getRetentionData = () => {
     props.setIsformUpdated(false);
+    dispatch(setLoaderValue({ isLoading: true }));
     EvidenceAgent.getEvidence(props.rowData.id ?? props.rowData.evidence.id ).then((response: Evidence) => {
       if (response.expireOn != null) {
         formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
-        if(response.holdUntil !=null)
-        {
+        if (response.holdUntil != null) {
           if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
-            formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
+            if (!formPayload.RetentionOptions.find((x: any) => x?.value == '3')) {
+              formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
+            }
             formPayload.CurrentRetention = 'Current Retention: Indefinite';
-            formPayload.RetentionOptions = formPayload.RetentionOptions.map((options: any)=> options.value == '2' ? {...options , isDisabled : true} : options)
+            formPayload.RetentionOptions = formPayload.RetentionOptions.map((options: any) => options.value == '2' || options.value == '1' ? { ...options, isDisabled: true, isChecked: false } : options)
+            formPayload.RetentionOptions = formPayload.RetentionOptions.map((options: any) => options.value == '3' ? { ...options, isChecked: true } : options)
+            setIsIndefinite(true);
           }
           else {
             formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
@@ -109,7 +119,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         };
         setFormPayload(newObj);
       }
-    });
+      dispatch(setLoaderValue({ isLoading: false }));
+    }).catch(() => {
+      dispatch(setLoaderValue({ isLoading: false, error: true }));
+    });;
   }
 
   const cancelBtn = () => props.setOnClose();
@@ -121,7 +134,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       setFieldValue('SaveButtonIsDisable', false, false);
       setFieldValue('RetentionList',  GetRetentionList(null, 0), false);
       props.setIsformUpdated(true);
-      console.log("infinity","retentionDays")
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
@@ -134,12 +146,12 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     setFieldValue('SaveButtonIsDisable', false, false);
   }
 
-  function GetRetentionList(retentionDays: any, holdUntil: any) {
+  const GetRetentionList = (retentionDays: any, holdUntil: any) => {
     let retentionList: { evidenceId: any; extendedDays: number; holdUntil: number }[] = [];
     if (props?.items?.length > 1) {
       props.items.forEach((el) => {
         retentionList.push({
-          evidenceId: el.id,
+          evidenceId: el?.id == undefined ? el?.evidence?.id : el?.id,
           extendedDays: parseInt(retentionDays),
           holdUntil: holdUntil
         });
@@ -156,45 +168,99 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     return retentionList;
   }
 
-
   const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     e.preventDefault();
     SetRetentionList(parseInt(e.target.value), setFieldValue);
   }
 
-  function SetRetentionList(retentionDays: number, setFieldValue: any)
-  {
+  const SetRetentionList = (retentionDays: number, setFieldValue: any) => {
     retentionDays = retentionDays >= 1 ? retentionDays : 1;
-    console.log("retentionDays",retentionDays)
     setFieldValue('RetentionDays', retentionDays, false);
     setFieldValue('RetentionList', GetRetentionList(retentionDays, null), false);
     setFieldValue('SaveButtonIsDisable', false, false);
     props.setIsformUpdated(true);
   }
 
+  const retentionLog = (values: RetentionFormType, body: ExtendRetention[] | { evidenceId: any; extendedDays: number; holdUntil: number }[]) => {
+    body.forEach((x:any) =>
+    { let note = ""
+      if(values.RetentionStatus == "1"){
+        note = "Retention Extended: "+x.extendedDays+" days"
+      }
+      else if(values.RetentionStatus == "2"){
+        note = "Retention Extended: Indefinitely"
+      }
+      else if(values.RetentionStatus == "3"){
+        note = "Retention Reverted to Original"
+      }
+      let assetLog : AssetLog = { action : "Update", notes : note, auditTableNamesEnum :  AuditTableNames.EvidenceAsset};
+      let assetLogType : AssetLogType = { evidenceId : x?.evidenceId, assetId : 0, assetLog : assetLog};
+      dispatch(addAssetLog(assetLogType));
+    })
+  }
+
+  const isAssetDetailPage: boolean = useSelector((state: RootState) => state.metadatainfoDetailReducer.isAssetDetailPage);
+
   const onSubmitForm = (values: RetentionFormType, actions: FormikHelpers<RetentionFormType>) => {
     const url = '/Evidences/Retention';
-    console.log("values.RetentionDays",values.RetentionDays)
-    EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
+    let body: ExtendRetention[] = [];
+    if (values?.RetentionList?.length == 0 && isIndefinite)
+      body = GetRetentionList(null, null);
+    else
+      body = values.RetentionList;
+      
+    dispatch(setLoaderValue({ isLoading: true }));
+    EvidenceAgent.updateRetentionPolicy(url, body).then(() => {
       props.setOnClose();
+      retentionLog(values, body)
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
       }, 2000);
+      if(isAssetDetailPage){
+        dispatch(addMetaDataInfoAsync(body[0]?.evidenceId));
+      }
       props.showToastMsg({
-        message: (values.RetentionStatus == RetentionStatusEnum.CustomExtention || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),
+        message: ((values.RetentionStatus == RetentionStatusEnum.CustomExtention && !isIndefinite) || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),
         variant: "success",
         duration: 7000,
         clearButtton: true,
       });
+      setIsIndefinite(false);
+      dispatch(setLoaderValue({ isLoading: false }));
     })
       .catch((error) => {
         setAlert(true);
+        dispatch(setLoaderValue({ isLoading: false, error: true }));
         setResponseError(
           t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
         );
         return error;
       });
     actions.setSubmitting(false);
+  }
+
+  const calculateSelectedAssetsLenght = (): number => {
+    if ((props.rowData) && (props.items.length > 1)) {
+      if(props.items.includes(props.rowData)){
+        const distinctiveAssetsByMasterId = props.items.reduce((array, element) => {
+          array[element.evidence.masterAssetId] = ++array[element.evidence.masterAssetId] || 0;
+          return array;
+        }, {});
+        const lenghtOfAssets = Object.values(distinctiveAssetsByMasterId).length;
+        return lenghtOfAssets;
+      }
+      return 1;
+    }
+    else if (!(props.rowData) && (props.items.length > 1)) {
+      const distinctiveAssetsByMasterId = props.items.reduce((array, element) => {
+        array[element.evidence.masterAssetId] = ++array[element.evidence.masterAssetId] || 0;
+        return array;
+      }, {});
+      const lenghtOfAssets = Object.values(distinctiveAssetsByMasterId).length;
+      return lenghtOfAssets;
+    }
+    else
+      return 1;
   }
 
   return (
@@ -211,39 +277,12 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       <div className='retention-modal'>
         <Formik initialValues={formPayload} onSubmit={onSubmitForm} enableReinitialize={true}>
           {({ setFieldValue, values }) => (
-            
             <Form>
               <div className='_rententionModalCotent'>
                 <div className='_rentention_fields'>
                   <div className='retention-modal-sub'>
-                    {t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Asset(s)")}
-                  
+                    {t("Extend")} {calculateSelectedAssetsLenght()} {t("Asset_Groups")}
                   </div>
-                  
-                  {/* <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
-                    name="RetentionStatus"
-                    value={values.RetentionStatus}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      RadioButtonOnChange(e, setFieldValue)}
-                  >
-                    {values.RetentionOptions.map((x) => (
-                      <>
-                      <div className='user-radio-group'>
-                        <FormControlLabel
-                          className='crxEditRadioBtn'
-                          key={x.value}
-                          value={x.value}
-                          control={<Radio />}
-                          label={x.label}
-                          
-                        />
-                        </div>
-                      </>
-                      
-                    ))}
-                  </RadioGroup> */}
                    <CRXRadio
                     value={values.RetentionStatus}
                     content={values.RetentionOptions}
@@ -257,7 +296,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                   name="RetentionDays"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   onChangeEvent(e, setFieldValue)}
-                  disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
+                  disabled={(values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true) || isIndefinite}
                   />
                   <div className="retention-label-days"><span>
                     days
@@ -272,7 +311,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
-                  <CRXButton type='submit' className='primeryBtn' disabled={values.SaveButtonIsDisable}>
+                  <CRXButton type='submit' className='primeryBtn' disabled={isIndefinite ? false : values.SaveButtonIsDisable}>
                     {t("Save")}
                   </CRXButton>
                 </div>
@@ -309,4 +348,3 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 };
 
 export default ManageRetention;
-

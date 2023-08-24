@@ -73,12 +73,50 @@ export const getAssetSearchNameAsync: any = createAsyncThunk(
     }
 });
 
+
 export const assetSearchSlice = createSlice({
     name: 'assetSearch',
     initialState: { assetSearchInfo: [], assetSearchName: []  },
-    reducers: {},
+    reducers: {
+        updateAssignUser: (state: any, action: any) => {
+            const items = [...state.assetSearchInfo]
+            const newItems = items.map((item: any) => {
+
+                return {
+                    ...item,
+                    asset: [...item.asset]
+                            .map((asset: any) => {
+                                    return  {...asset, 
+                                            owners: asset.assetId == action.payload.assetId ? 
+                                                    action.payload.owners
+                                                    : 
+                                                    [...asset.owners]
+                                            }
+                                }),
+                    categories: [...item.categories]
+                                .map((category: any) => {
+                                        return  {...category}
+                                    }),
+                    formData: [...item.formData]
+                                .map((formData: any) => {
+                                        return  {...formData}
+                                    }),
+                    masterAsset: {...item.masterAsset, 
+                                     owners: item.masterAsset.assetId == action.payload.assetId ? 
+                                             action.payload.owners : [...item.masterAsset.owners]},
+                    securityDescriptors: [...item.securityDescriptors]
+                                            .map((securityDescriptor: any) => {
+                                                    return  {...securityDescriptor}
+                                                }),
+                }
+
+            })
+            state.assetSearchInfo = newItems
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getAssetSearchInfoAsync.fulfilled, (state: any, { payload }) => {
+            
             state.assetSearchInfo = payload;
         }).addCase(getAssetSearchNameAsync.fulfilled, (state: any, { payload }) => {
             state.assetSearchName = payload;
@@ -87,3 +125,6 @@ export const assetSearchSlice = createSlice({
 });
 
 export default assetSearchSlice;
+export const {
+    updateAssignUser: updateAssignUser
+} = assetSearchSlice.actions;

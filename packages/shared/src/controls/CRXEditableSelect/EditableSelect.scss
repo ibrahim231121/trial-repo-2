@@ -1,4 +1,9 @@
 .getac-simple-select {
+  &.CRXAISearchFiltere {
+    .MuiAutocomplete-endAdornment {
+      display: flex;
+    }
+  }
   select {
     padding: 5px;
     min-width: 250px;

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { CRXBreadcrumb, CBXLink, CRXTitle } from "@cb/shared";
 import clsx from "clsx";
 import { CRXPanelStyle } from "@cb/shared";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import { urlList, urlNames } from "../../../utils/urlList"
 import { useTranslation } from "react-i18next";
+import { RootState } from "../../../Redux/rootReducer";
 
 type BreadCrumbItem = {
   type: string,
@@ -21,8 +22,10 @@ const Breadcrumb: React.FC<any> = (props) => {
   const { location: { pathname }, } = props;
   const [width, setWidth] = React.useState<number>(window.innerHeight);
   const [otherLabels, setOtherLabels] = React.useState<string>("")
+  const [assetClass,setAssetClass] = React.useState<string>("")
 
   const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
+  const isPrimaryAsset: boolean = useSelector((state: RootState) => state.AssetDetailPrimaryBreadcrumbSlice.isPrimaryAsset);
 
   React.useEffect(() => {
     setOtherLabels("")
@@ -122,7 +125,11 @@ const Breadcrumb: React.FC<any> = (props) => {
       paths && paths.map((path: BreadCrumbItem, index: number) => {
           if (path.type === "link") {
             return (
-              <Link key={index} className="brdLinks breadCrumbItem" to={homePageLinks.includes(path.routeTo) ? "/" : path.routeTo}>
+              <Link 
+                key={index} className="brdLinks breadCrumbItem" 
+                to={path.routeTo}
+                //to={homePageLinks.includes(path.routeTo) ? "/" : path.routeTo}
+              >
                 {path.label}
               </Link>
             );
@@ -148,7 +155,30 @@ const Breadcrumb: React.FC<any> = (props) => {
       )
     )
   };
-  
+  let location: any = useLocation();
+  useEffect(()=>{
+    
+    let pageDetailClass = location.pathname.split("/").includes("assetdetail");
+    setAssetClass(pageDetailClass ? "assetDetail_Title" : "page_Title");
+
+    let pathBody = document.querySelector("body");
+    let path = window.location.pathname;
+    let htmlElement: any = document.querySelector("html");
+    
+    if (path == urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url) {
+      pathBody?.classList.add("pathVideoPlayer");
+      htmlElement.style.overflow = "hidden";
+    } else if (path == urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+      pathBody?.classList.add("pathAssetDetail");
+      htmlElement.style.overflow = "hidden";
+    } else {
+      pathBody?.classList.remove("pathVideoPlayer");
+      pathBody?.classList.remove("pathAssetDetail");
+      htmlElement.style.overflow = "auto";
+    }
+
+  },[location])
+
   return (
     <div
       className={
@@ -161,13 +191,17 @@ const Breadcrumb: React.FC<any> = (props) => {
       {urlList.filter((item:any) => item.url === urlPath)[0] &&
         <>
           <CRXBreadcrumb maxItems={width <= 650 ? 3 : 100}>
-            <Link className="brdLinks breadCrumbItem" to="/">
+            <Link className="brdLinks breadCrumbItem" to="/assets/">
               {t("Home")}
             </Link>
             {getPaths()} 
             {otherLabels && <label>{otherLabels}</label>}
           </CRXBreadcrumb>
+          <div className={`titlePrimaryBtn ${assetClass}`}>
           <CRXTitle key={otherLabels} text={getTitle()} className="titlePage" />
+          {isPrimaryAsset && <div className="assetDetailPrimaryBtn">Primary</div> }
+          </div>
+
         </>
       }
     </div>

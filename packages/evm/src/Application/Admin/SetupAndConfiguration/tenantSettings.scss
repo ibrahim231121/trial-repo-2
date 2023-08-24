@@ -94,5 +94,28 @@
         margin: 20px 0;
     }
    }
+  .timeDateRadio{
+    display: grid;
+    .crx-radio-btn{
+        display: inline-block;
+        span{
+            font-size: 14px;
+            font-weight: 100;
+        }
+    }
+  }
+  .CBX-input{
+    margin-bottom: 15px;
+    .styleCertificatePassword{
+    display: flex;
+    .gridFilterTextBox{
+        width: 190px;
+        padding: 0px;
+    }
+    }
+  }
+  .DateTimeFormat{
+    width : 300px;
+  }
   
 }

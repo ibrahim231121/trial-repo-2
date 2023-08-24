@@ -30,13 +30,21 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
 
   const deleteRetentionPolicies = () => {
     let retentionIds: number[] = [];
-    if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+    // if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+    //   retentionIds = selectedItems.map((data: any) => {
+    //     return data.id;
+    //   });
+    // }
+    // else {
+    //   retentionIds.push(row.id);
+    // }
+    if(row && !selectedItems.includes(row)) {
+      retentionIds.push(row.id);
+    }
+    else if(Array.isArray(selectedItems) && selectedItems.length > 0) {
       retentionIds = selectedItems.map((data: any) => {
         return data.id;
       });
-    }
-    else {
-      retentionIds.push(row.id);
     }
     if (retentionIds.length > 0) {
       SetupConfigurationAgent.deleteAllRetentionPoliciesTemplate(retentionIds)
@@ -123,7 +131,7 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
       }
     
     >
-        {selectedItems.length <=1 ? (
+        {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1) ? (
       <MenuItem onClick={() => EditRetentionPolicy()}>
       <Restricted moduleId={63}>
           <div className="crx-meu-content groupingMenu  crx-spac"  >

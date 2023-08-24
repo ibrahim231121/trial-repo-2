@@ -1,0 +1,44 @@
+.caseAudit-main {
+    width : 100%;
+    height: auto;
+    margin-bottom: 50px;
+    .caseAuditBtn {
+      margin-bottom: 12px;
+      i {
+        color: #FFF;
+        margin-right: 8px;
+        font-size: 15px;
+      }
+      
+    }
+    .dataTablePages   {
+      z-index: 0 !important;
+      position: relative;
+      border-top: 0px solid var(--color-ccc) !important;
+      bottom: 0px !important;
+    }
+    .crxCaseAuditDataTable {
+        margin-top: 0px;
+        width: 100% !important;
+        padding-right: 0 !important;
+        padding-bottom: 0px !important;
+        table {
+          width: 100% !important;
+          thead {
+            position: inherit;
+          }
+          tbody {
+            tr {
+                td {
+                    &:nth-child(1) {
+                        position: inherit !important;
+                    }
+                }
+            }
+          }
+        }
+        .gotoTop {
+          display: none;
+        }
+      }
+  }

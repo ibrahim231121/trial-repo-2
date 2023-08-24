@@ -72,7 +72,7 @@
                     }
                 }
                 .modalFooter {
-                    z-index: 3;
+                    z-index: 100;
                 }
                 &::-webkit-scrollbar-button:vertical:decrement { 
                     height: 88px; 

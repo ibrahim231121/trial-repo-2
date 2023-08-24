@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 import { AuthenticationAgent, setAPIAgentConfig } from "../utils/Api/ApiAgent";
 import jwt_decode from 'jwt-decode';
+import { getDomainName } from "../utils/settings";
 
 
 
@@ -10,7 +11,8 @@ interface IDecoded{
 }
 interface CounterState {
     path: string,
-    expires:Date
+    expires:Date,
+    domain: string | undefined,
 }
 
 
@@ -26,9 +28,10 @@ export const getAccessAndRefreshTokenAsync: any = createAsyncThunk('accessAndRef
         let tokenexpiry = decodedAccessToken.exp;
         const isCommandOpen = parseInt(cookies.get('command_tab_count')) > 0;
         //const url = '/Authentication/GetAccessToken'+`?refreshToken=${localStorage.getItem('refreshToken')}`;
+        var userId = parseInt(localStorage.getItem('User Id') ?? "0");
         if ( (tokenexpiry-300) < currentData && tokenexpiry > 0 && !isCommandOpen)
         {
-            return await AuthenticationAgent.getAccessAndRefreshToken('/Authentication/GetAccessToken'+`?refreshToken=${cookies.get('refreshToken')}`)
+            return await AuthenticationAgent.getAccessAndRefreshToken('/Authentication/GetAccessToken'+`?refreshToken=${cookies.get('refreshToken')}&userId=${userId}`)
                 .then((response:any) => {
                     updatetokens(response.refreshToken, response.accessToken); 
                     return {success: true, accessToken: response.accessToken, refreshToken: response.refreshToken};
@@ -78,6 +81,7 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
     decoded = jwt_decode(accessToken)
     localStorage.setItem("expirytime_token",decoded.exp)
     const condition = localStorage.getItem('remember me')   
+    const domainName = getDomainName();
     if (condition == "True")
     {
         const date:any = localStorage.getItem('expiryDate')
@@ -86,14 +90,14 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
         const difference = dateToTimeStamp - currentDate
         var newdateInTimeStamp = difference + currentDate
         var newdateReadable = new Date(newdateInTimeStamp)
-        const options:CounterState = { path:'/',expires:newdateReadable };
+        const options:CounterState = { path:'/',expires:newdateReadable, domain: domainName };
         cookies.set('access_token', accessToken, options)
         cookies.set('refreshToken', refreshToken, options)
         setAPIAgentConfig();
     }
     else
     {
-        const options = {path:'/'}
+        const options = {path:'/', domain: domainName}
         cookies.set('access_token',accessToken,options);
         cookies.set('refreshToken', refreshToken, options)
         setAPIAgentConfig();

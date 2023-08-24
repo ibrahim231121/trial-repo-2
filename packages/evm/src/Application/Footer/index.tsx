@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
-import useGetFetch from "../../utils/Api/useGetFetch";
-import { EVIDENCE_SEARCH_VERSION_URL } from '../../utils/Api/url'
 import { useTranslation } from "react-i18next";
-import { getToken } from "../../Login/API/auth";
-import { buildVersionNumber } from "../../version"
+import { buildVersionNumber } from "../../version";
 
 const Footer = React.memo((SetBottomPos : any) => {
   const { t } = useTranslation<string>();
-  const [versionNumber, setVersionNumber] = React.useState("");
-  const [getResponse, res] = useGetFetch<any>(EVIDENCE_SEARCH_VERSION_URL, { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` });
   const [showScroll, setShowScroll] = React.useState(false);
   const [bottom, setBottom] = useState<any>(SetBottomPos)
   useEffect(() => {
@@ -32,14 +27,6 @@ const Footer = React.memo((SetBottomPos : any) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
-  React.useEffect(() => {
-    getResponse();
-  }, [getResponse]);
-
-  React.useEffect(() => {
-    setVersionNumber(res); //res.replace(/^"|"$/g, '')
-  }, [res]);
 
   let buildNumber : any = buildVersionNumber;
   

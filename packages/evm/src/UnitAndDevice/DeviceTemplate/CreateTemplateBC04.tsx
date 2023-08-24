@@ -15,12 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDeviceTypesAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { ConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
+import { ConfigurationTemplate, DeviceConfigurations, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
 import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import {getAllSensorsEvents} from '../../Redux/SensorEvents';
 import Dialogbox from "../../Application/Admin/UnitConfiguration/ConfigurationTemplates/Dialogbox";
+import { setLoaderValue } from "../../Redux/loaderSlice";
 
 
 
@@ -53,11 +54,19 @@ const applyValidation = (arrayOfObj: any) => {
             keySplittedWhen[1] = keySplitted[1];
             keyWhen = keySplittedWhen.join('_')
           }
-          validationstring = validationstring.when( keyWhen, {
-            is: (key: any)=> key === y.when.value, 
-            then: x.value.type == "multiselect" ? validationstring.min(1, y.msg) : validationstring.required(y.msg),
-            otherwise: validationstring,
-          })
+          if (y.key == "required") {
+            validationstring = validationstring.when( keyWhen, {
+              is: (key: any)=> key === y.when.value, 
+              then: x.value.type == "multiselect" ? validationstring.min(1, y.msg) : validationstring.required(y.msg),
+              otherwise: validationstring,
+            })          }
+          if (y.key == "min") {
+            validationstring = validationstring.when( keyWhen, {
+              is: (key: any)=> key === y.when.value, 
+              then: validationstring.min(y.value, y.msg),
+              otherwise: validationstring,
+            })          
+          }
         }
         else{
           if (y.key == "required") {
@@ -68,6 +77,9 @@ const applyValidation = (arrayOfObj: any) => {
           }
           if (y.key == "max") {
             validationstring = validationstring.max(y.value, y.msg);
+          }
+          if(y.key == "regex"){
+            validationstring = validationstring.matches(y.value, y.msg)
           }
         }
       })
@@ -98,6 +110,7 @@ const CreateTemplate = (props: any) => {
   else {
     templateNameHistory = historyState.name;
   }
+  const [dirtyOnCloneHandler, setDirtyOnCloneHandler] = React.useState<boolean>(historyState.isclone);
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
@@ -114,26 +127,13 @@ const CreateTemplate = (props: any) => {
   const [alert] = React.useState<boolean>(false);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
-  const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
+  const [fieldLoaded, setFieldLoaded] = React.useState<boolean>(false);
+  const [validationFailed, setValidationFailed] = React.useState<boolean>(historyState.isclone ?? true);
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] = React.useState<boolean>(false);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
-  const valuesOfDevices = [
-    { device: "NF-21-N", url: "rtsp://192.168.5.28/live/0", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21-W", url: "rtsp://192.168.5.29/live/0", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21-WI", url: "rtsp://192.168.5.30/live/0", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21A-70", url: "rtsp://192.168.5.36/live", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21A-146", url: "rtsp://192.168.5.37/live", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21A-180", url: "rtsp://192.168.5.38/live", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-21A-146IR", url: "rtsp://192.168.5.35/live", port: 554, userId: "admin", password: 2100 },
-    { device: "NF-22-N", url: "rtsp://192.168.5.47/live/1", port: 554, userId: "admin", password: 2200 },
-    { device: "NF-22-W", url: "rtsp://192.168.5.47/live/0", port: 554, userId: "admin", password: 2200 },
-    { device: "NF22L-N", url: "rtsp://192.168.5.48/live/1", port: 554, userId: "admin", password: 2200 },
-    { device: "NF22L-W", url: "rtsp://192.168.5.48/live/0", port: 554, userId: "admin", password: 2200 },
-    { device: "Zero-Dark", url: "http://192.168.5.8/live/stream1.cgi", port: 81, userId: "admin", password: 8131 },
-    { device: "NF-42-N", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
-    { device: "NF-42-W", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
-  ]
+  const httpHolder = `http:`;
+  const [valuesOfDevices, setValuesOfDevices] = React.useState<DeviceConfigurations[]>([]);
 
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
@@ -154,7 +154,15 @@ const CreateTemplate = (props: any) => {
   }
 
   React.useEffect(() => {
+    let dType  = historyState.deviceType.replace(/\s/g, '');
+    if (dType == "Incar") {
+      UnitsAndDevicesAgent.getAllDeviceConfigurations().then((response) => setValuesOfDevices(response));
+    }
+  }, [])
+
+  React.useEffect(() => {
     setintialschema();
+    setintial();
   }, [])
 
   React.useEffect(() => {
@@ -173,7 +181,14 @@ const CreateTemplate = (props: any) => {
       })
       settabss(tabs);
       settabss1(tabs1);
-      setintial();
+      if (historyState.isedit || historyState.isclone) {
+        dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
+        loadData(historyState.id);
+      }
+      else {
+        setDataFetched(true);
+        dispatch(enterPathActionCreator({ val: t("Create_Template") + ": " + historyState.deviceType }));
+      }
     }
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
@@ -189,15 +204,11 @@ const CreateTemplate = (props: any) => {
       dispatch(getAllSensorsEvents());
     }
     dispatch(getRetentionStateAsync());
-    dispatch(getCategoryAsync());
-    dispatch(getStationsInfoAllAsync());
-    if (historyState.isedit || historyState.isclone) {
-      dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
-      loadData(historyState.id);
+    if(categories && categories.length === 0) {
+      dispatch(getCategoryAsync());
     }
-    else {
-      setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: t("Create_Template") + ": " + historyState.deviceType }));
+    if (stations && stations.length === 0) {
+      dispatch(getStationsInfoAllAsync());
     }
   }
 
@@ -259,9 +270,9 @@ const CreateTemplate = (props: any) => {
     else
     {
       let mediaRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/mediaRetentionPolicy/Select" && x.options.length == 1)
-      let blackboxRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1)
+	    let blackboxRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1)
       mediaRetentionPolicy?.options.push(...retentionOptions)
-      blackboxRetentionPolicy?.options.push(...retentionOptions)
+	    blackboxRetentionPolicy?.options.push(...retentionOptions)
     }
     setFormSchema(FormSchema);
   }
@@ -285,7 +296,18 @@ const CreateTemplate = (props: any) => {
       }
     }
     setFormSchema(FormSchema);
+    setFieldLoaded(true)
   }
+
+  useEffect(() => {
+    if(fieldLoaded)
+    {
+      dispatch(setLoaderValue({ isLoading: false }));
+    }
+    else{
+      dispatch(setLoaderValue({ isLoading: true }));
+    }
+  }, [fieldLoaded])
 
   const setCameraDeviceDropdown = () => {
     var captureDevicesOptions: any = [];
@@ -413,7 +435,7 @@ const CreateTemplate = (props: any) => {
               val = templateNameHistory;
             }
           }
-
+         
           var keySplitted = e0.key.split('_');
           if (keySplitted.length > 1) {
             var key = e0.group + "/" + e0.key + "/" + e0.valueType;
@@ -684,7 +706,7 @@ const CreateTemplate = (props: any) => {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
             {
-              let valuesOfDevice = valuesOfDevices.find(x => x.device == deviceType.name);
+              let valuesOfDevice = valuesOfDevices.find(x => x.deviceTypeId == valueRaw);
               if(valuesOfDevice)
               {
                 let isExistUserId = Initial_Values.find((x: any) => x.key == "userId_" + keySubSplit[1] + "_" + keySubSplit[2]);
@@ -697,7 +719,7 @@ const CreateTemplate = (props: any) => {
                     key: "userId_" + keySubSplit[1] + "_" + keySubSplit[2],
                     value: valuesOfDevice.userId,
                     group: split[0],
-                    valueType: split[2],
+                    valueType: 1,
                     sequence: 1,
                   });
                 }
@@ -712,22 +734,7 @@ const CreateTemplate = (props: any) => {
                     key: "password_" + keySubSplit[1] + "_" + keySubSplit[2],
                     value: valuesOfDevice.password,
                     group: split[0],
-                    valueType: split[2],
-                    sequence: 1,
-                  });
-                }
-
-                let isExistUrl = Initial_Values.find((x: any) => x.key == "url_" + keySubSplit[1] + "_" + keySubSplit[2]);
-                if(isExistUrl)
-                {
-                  isExistUrl.value = valuesOfDevice.url;
-                }
-                else{
-                  Initial_Values.push({
-                    key: "url_" + keySubSplit[1] + "_" + keySubSplit[2],
-                    value: valuesOfDevice.url,
-                    group: split[0],
-                    valueType: split[2],
+                    valueType: 1,
                     sequence: 1,
                   });
                 }
@@ -742,7 +749,7 @@ const CreateTemplate = (props: any) => {
                     key: "streamPort_" + keySubSplit[1] + "_" + keySubSplit[2],
                     value: valuesOfDevice.port,
                     group: split[0],
-                    valueType: split[2],
+                    valueType: 5,
                     sequence: 1,
                   });
                 }
@@ -891,7 +898,7 @@ const CreateTemplate = (props: any) => {
       const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true });
-        history.replace(urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: historyState.id, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+        history.replace(urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateEditBCO4)[0].url, { id: historyState.id, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
         history.go(0)
       })
       .catch((e:any) => {
@@ -919,7 +926,7 @@ const CreateTemplate = (props: any) => {
 
   return (
     <>
-      {tabss1 && tabss && <div className="CrxCreateTemplate switchLeftComponents CrxCreateTemplateUi ">
+      {tabss1 && tabss && fieldLoaded && <div className="CrxCreateTemplate CrxCreateTemplateUi ">
         <CRXToaster ref={targetRef} />
       {alert && 
         <CRXAlert
@@ -1020,7 +1027,7 @@ const CreateTemplate = (props: any) => {
                         return <CrxTabPanel value={value} index={x.index}>
                           <div className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</div>
                        
-                          <div className="_template_form_row">
+                          <div className="_template_form_row sensor_label_row">
                           {FormSchema[x.label].map(
                             (formObj: any, key: number) => {
                               return (
@@ -1049,6 +1056,7 @@ const CreateTemplate = (props: any) => {
                                       setValidationFailed = {setValidationFailed}
                                       handleBlur={handleBlur}
                                       setTouched={setTouched}
+                                      valuesOfDevices={valuesOfDevices}
                                       sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
                                   </div>) : (<></>)
                               }
@@ -1063,8 +1071,8 @@ const CreateTemplate = (props: any) => {
                   <div className="tctButton stickyFooter_Tab">
                     <div className="tctLeft">
                       <CRXButton
-                        className={`primary ${validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}`}
-                        disabled={validationFailed || !dirty}
+                        className={`primary ${validationFailed || (dirtyOnCloneHandler ? false : !dirty) ? "tctSaveDisable " : " tctSaveEnable"}`}
+                        disabled={validationFailed || (dirtyOnCloneHandler ? false : !dirty)}
                         type="submit"
                         onClick={() => handleSave(values, resetForm)}
                       >

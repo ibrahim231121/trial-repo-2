@@ -159,6 +159,12 @@ export type ValueString = {
   value: string;
 };
 
+type isDisabledActionFunction = {
+  key: true,
+  value: string,
+  Message: string
+}
+
 export interface HeadCellProps {
   //disablePadding: boolean;
   id: any;
@@ -181,6 +187,7 @@ export interface HeadCellProps {
   attributeName? : string;
   attributeType? : string;
   attributeOperator? : string;
+  isDisabledActionFunction? : isDisabledActionFunction;
 }
 
 interface searchTypeName {
@@ -211,7 +218,8 @@ export interface DataTableToolbarProps {
   showSearchPanel?: any,
   searchResultText? : searchTypeName,
   advanceSearchText? : any,
-  presetPerUser? : string
+  presetPerUser? : string,
+  title? : string
 }
 
 export type DataTableProps = {
@@ -264,7 +272,9 @@ export type DataTableProps = {
   searchResultText? : searchTypeName,
   advanceSearchText? : any
   presetPerUser? : string
-  selfSorting?: boolean
+  selfSorting?: boolean,
+  title? : string,
+  overlay? : boolean
 };
 
 export type OrderData = {
@@ -313,6 +323,7 @@ export type DataTableContainerProps = {
   viewName? : string,
   expanViews : boolean,
   totalRecords? : undefined | any
+  selfSorting?: boolean
 };
 
 export type DataTableStickyHeadersProps = {
@@ -348,7 +359,8 @@ export type DataTableStickyHeadersProps = {
   dragableHeaderPosition? : number,
   topSpaceDrag? : number,
   viewName? : string,
-  expanViews : boolean
+  expanViews : boolean,
+  selfSorting?: boolean
 };
 
 export type DataTableBodyProps = {
@@ -406,7 +418,8 @@ export type DataTableHeaderProps = {
   showActionCol?: boolean;
   setBodyCellWidth? : any,
   viewName? : string,
-  expanViews : boolean
+  expanViews : boolean,
+  selfSorting?: boolean
 };
 
 export type DataTableClearFilterProps = {

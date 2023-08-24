@@ -10,6 +10,45 @@ iframe {
   padding-bottom: 0px !important;
 }
 
+.drawerOff{
+  .dataTableExpandView{
+    .RetentionPoliciesTableTemplate {
+    .CRXDataTableCustom{
+      .drag_header{
+        tr{
+          .dataTableActionColumn{
+            left: 0px !important;
+         }
+         .dataTableCheckBoxColumn {
+          left: 60px !important;
+         }
+        }
+      }
+      .searchable_header{
+        tr{
+          .dragHeadFirstCol {
+            left: 0px !important;
+          }
+          .dragHeadsecondCol {
+            left: 60px !important;
+          }
+         }
+        }
+        .table_body_{
+          tr{
+            .CellCheckBox {
+              left: 0px !important;
+            }
+            .dataTableCheckBoxColumn{
+              left: 60px !important;
+            }
+          }
+        }
+       }
+      }
+     }
+    }
+
 .CrxRetentionPoliciesTable {
   // .toolbar-button {
   //   margin-top: 6px;

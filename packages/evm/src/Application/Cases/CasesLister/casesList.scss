@@ -190,9 +190,19 @@
         }
       }
     }
-
+    
   }
   
+}
+.content-truncation.truncate{
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 12;
+  overflow-y: hidden !important;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  max-height: max-content !important;
+  padding-bottom: 5px !important;
 }
 // Sation Detail page start
 .ManageCaseUi {
@@ -411,3 +421,57 @@
     font-size: 14px;
   }
 }
+.caseOpenedForEvidenceIdentifier {
+  width: fit-content;
+  height: fit-content;
+  color: var(--color-White);
+  background-color: var(--color-d74b00);
+}
+
+.caseStatusClosed{
+  font-size: 13px;
+  background-color: transparent;
+  color: red;
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-weight: bold;
+  font-family: var(--base-font-family);
+  width: fit-content;
+  height: fit-content;
+}
+
+.caseStatusCloseRequested{
+  font-size: 13px;
+  background-color: transparent;
+  color: green;
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-weight: bold;
+  font-family: var(--base-font-family);
+  width: fit-content;
+  height: fit-content;
+}
+
+.caseStatusPendingClose{
+  font-size: 13px;
+  background-color: transparent;
+  color: orange;
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-weight: bold;
+  font-family: var(--base-font-family);
+  width: fit-content;
+  height: fit-content;
+}
+
+// .MuiAutocomplete-popper  {
+//   margin-top : 0px !important;
+//   .MuiAutocomplete-paper{
+//       .MuiAutocomplete-listbox {
+//         margin-top: -15px !important
+//       }
+//   }
+// }

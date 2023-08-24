@@ -260,7 +260,7 @@ const FormFieldDetailPage: FC<FormFieldsDetailProps> = (
   });
 
   return (
-    <div className="searchComponents create_form_fields_form">
+    <div className="create_form_fields_form">
       <CRXToaster ref={toasterRef} className="formFieldToaster" />
       <Formik
         enableReinitialize={true}

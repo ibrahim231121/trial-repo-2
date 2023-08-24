@@ -2,7 +2,7 @@ import moment from 'moment';
 import { IDecoded } from '../../../Login/API/auth';
 import { GenerateLockFilterQuery } from '../utils/constants';
 
-let GetAssetsByState = (status: string, decoded: IDecoded) => {
+const GetAssetsByState = (status: string, decoded: IDecoded) => {
     const lockQuery = GenerateLockFilterQuery(decoded);
     return {
         bool: {
@@ -16,7 +16,7 @@ let GetAssetsByState = (status: string, decoded: IDecoded) => {
     }
 };
 
-let GetAssetsByUserName = (decoded: IDecoded) => {
+const GetAssetsByUserName = (startDate: string, endDate: string, decoded: IDecoded) => {
     const userName = decoded.LoginId;
     const lockQuery = GenerateLockFilterQuery(decoded);
     return {
@@ -30,6 +30,20 @@ let GetAssetsByUserName = (decoded: IDecoded) => {
                         ],
                         "operator": "and"
                     }
+                },
+                {
+                    range: {
+                        "masterAsset.recordingStarted": {
+                            gte: `${moment(startDate).toISOString()}`,
+                        },
+                    },
+                },
+                {
+                    range: {
+                        "masterAsset.recordingStarted": {
+                            lte: `${moment(endDate).toISOString()}`,
+                        },
+                    },
                 }
             ],
             "filter": lockQuery
@@ -37,7 +51,7 @@ let GetAssetsByUserName = (decoded: IDecoded) => {
     }
 }
 
-let GetAssetsUnCategorized = (startDate: string, endDate: string, decoded: IDecoded) => {
+const GetAssetsUnCategorized = (startDate: string, endDate: string, decoded: IDecoded) => {
     let lockQuery = GenerateLockFilterQuery(decoded);
     let mustQuery = [
         {
@@ -89,78 +103,87 @@ let GetAssetsUnCategorized = (startDate: string, endDate: string, decoded: IDeco
     return query;
 };
 
-let GetAssetsApproachingDeletion = (startDate: string, endDate: string, decoded: IDecoded) => {
+const GetAssetsApproachingDeletion = (startDate: string, endDate: string, decoded: IDecoded) => {
     const lockQuery = GenerateLockFilterQuery(decoded);
     const infinite = '9999-12-31T00:00:00Z';
+    const holdUntilFieldName = "holdUntil";
+    const evidenceRelationsFieldName = "evidenceRelations";
     let approachingDeletion = {
         bool: {
-            "must": [
+            must: [
                 {
-                    "bool": {
-                        "must": {
-                            "bool": {
-                                "should": [
-                                    {
-                                        "bool": {
-                                            "must_not": {
-                                                "exists": {
-                                                    "field": "holdUntil"
-                                                }
-                                            },
-                                            "must": [
-                                                {
-                                                    "range": {
-                                                        "expireOn": {
-                                                            "gte": `${moment(startDate).toISOString()}`
-                                                        }
-                                                    }
-                                                },
-                                                {
-                                                    "range": {
-                                                        "expireOn": {
-                                                            "lte": `${moment(endDate).toISOString()}`
-                                                        }
-                                                    }
-                                                }
-                                            ]
+                    bool: {
+                        should: [
+                            {
+                                bool: {
+                                    must_not: {
+                                        exists: {
+                                            field: `${holdUntilFieldName}`
                                         }
                                     },
-                                    {
-                                        "bool": {
-                                            "must_not": {
-                                                "term": {
-                                                    "holdUntil": `${infinite}`
+                                    must: [
+                                        {
+                                            range: {
+                                                expireOn: {
+                                                    gte: `${moment(startDate).toISOString()}`
                                                 }
-                                            },
-                                            "must": [
-                                                {
-                                                    "exists": {
-                                                        "field": "holdUntil"
-                                                    }
-                                                },
-                                                {
-                                                    "range": {
-                                                        "holdUntil": {
-                                                            "gte": `${moment(startDate).toISOString()}`
-                                                        }
-                                                    }
-                                                },
-                                                {
-                                                    "range": {
-                                                        "holdUntil": {
-                                                            "lte": `${moment(endDate).toISOString()}`
-                                                        }
-                                                    }
+                                            }
+                                        },
+                                        {
+                                            range: {
+                                                expireOn: {
+                                                    lte: `${moment(endDate).toISOString()}`
                                                 }
-                                            ]
+                                            }
                                         }
-                                    }
-                                ]
+                                    ]
+                                }
+                            },
+                            {
+                                bool: {
+                                    must_not: {
+                                        term: {
+                                            holdUntil: `${infinite}`
+                                        }
+                                    },
+                                    must: [
+                                        {
+                                            exists: {
+                                                field: `${holdUntilFieldName}`
+                                            }
+                                        },
+                                        {
+                                            range: {
+                                                holdUntil: {
+                                                    gte: `${moment(startDate).toISOString()}`
+                                                }
+                                            }
+                                        },
+                                        {
+                                            range: {
+                                                holdUntil: {
+                                                    lte: `${moment(endDate).toISOString()}`
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
                             }
-                        },
-                        "should": [
-                            ...lockQuery.bool.should
                         ]
+                    }
+                },
+                {
+                    bool: {
+                        must_not: {
+                            exists: {
+                                field: `${evidenceRelationsFieldName}`
+                            }
+                        }
+                    }
+                },
+                {
+                    bool: {
+                        should: [...lockQuery.bool.should]
                     }
                 }
             ]

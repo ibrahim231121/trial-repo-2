@@ -40,3 +40,65 @@
         }
       }
 }
+
+
+// media query for station tabs start
+@media only screen and (max-width: 1560px) {
+  .ManageStationUi {
+    #crx-tabpanel-0 {
+      .crxStationDetail {
+        justify-content: space-between;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1370px) { 
+  .ManageStationUi {
+    #crx-tabpanel-0 { 
+      .crxStationDetail {
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 6vh;
+        margin: 0 0;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 1279px) {   
+  .ManageStationUi {  
+    #crx-tabpanel-2 {   
+      .CRXUnitTemplate {
+        justify-content: flex-end;
+        margin-top: 55px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 1140px) {  
+  .ManageStationUi { 
+    #crx-tabpanel-1 {  
+      .centerSettingTab {
+        width: 100%;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 1045px) {  
+  .ManageStationUi { 
+    #crx-tabpanel-1 {  
+      .crxStationDetail {
+        margin: 0 50px;
+      }
+    }
+  }
+}
+@media only screen and (max-height: 600px) {  
+  .ManageStationUi { 
+    #crx-tabpanel-2 {  
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+  }
+}
+// media query for station tabs end

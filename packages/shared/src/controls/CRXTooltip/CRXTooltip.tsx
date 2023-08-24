@@ -25,13 +25,13 @@ const CRXUseStyles = makeStyles(() => ({
     padding: "12px 16px",
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.20)",
     borderRadius: "0px",
-    maxWidth: "250px",
-    minWidth: "130px",
+    maxWidth: "400px",
+    minWidth: "auto",
     textAlign : "center"
   },
   popper : {
     color : "#d1d2d4",
-    maxWidth : "320px"
+    maxWidth : "400px"
   }
 }));
 
@@ -65,7 +65,7 @@ function CRXCustomizedTooltip(props: any) {
 
         tooltip:
           props.placement.length && classes.tooltip + " " + " crxTooltipAll",
-          popper : classes.popper
+          popper : classes.popper + " " + props.className
       }}
       {...props}
     />

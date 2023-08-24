@@ -13,15 +13,19 @@ import { getUsersIdsAsync } from "../../../../Redux/UserReducer";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
-import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import { getAssetSearchInfoAsync, updateAssignUser } from "../../../../Redux/AssetSearchReducer";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
-import { AddOwner } from "../../../../utils/Api/models/EvidenceModels";
+import { AddOwner, AssetLog, AssetLogType, AuditTableNames } from "../../../../utils/Api/models/EvidenceModels";
 import { CMTEntityRecord } from "../../../../utils/Api/models/CommonModels";
 import { useTranslation } from "react-i18next";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { SearchType } from "../../utils/constants";
+import { addAssetLog } from "../../../../Redux/AssetLogReducer";
+import { resetRelatedAsset } from "../../../../Redux/FilteredRelatedAssetsReducer";
+import { addMetaDataInfoAsync } from "../../../../Redux/MetaDataInfoDetailReducer";
+
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -114,9 +118,11 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       "/Evidences/AssignUsers?IsChildAssetincluded=" + `${assignUserCheck}`;
     EvidenceAgent.addUsersToMultipleAsset(url, assetOwners)
       .then(() => {
-        setTimeout(() => {
-          dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
-        }, 1500);
+        // setTimeout(() => {
+        //   dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
+        // }, 1500);
+        dispatch(updateAssignUser({owners: assetOwners.map((item:any) => item.owners), assetId: assetOwners.map((item:any) => item.assetId)}))
+        dispatch(resetRelatedAsset()) 
         props.setOnClose();
         props.showToastMsg({
           message: t("Asset_Assignees_updated"),
@@ -243,6 +249,20 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     }
     return false;
   };
+
+  const userAssignmentLog = () => {
+    let note = "Assigned User Changed to: "
+    props.filterValue.forEach((x:any) =>
+    { 
+      note = note + x.label +"  ";
+    });
+    let assetLog : AssetLog = { action : "Update", notes : note, auditTableNamesEnum :  AuditTableNames.EvidenceAsset};
+    let assetLogType : AssetLogType = { evidenceId : props.rowData.id ? props.rowData.id : props.rowData.evidence.id, assetId : 0, assetLog : assetLog};
+    dispatch(addAssetLog(assetLogType));
+  }
+
+  const isAssetDetailPage: boolean = useSelector((state: RootState) => state.metadatainfoDetailReducer.isAssetDetailPage);
+
   const onSubmitForm = async () => {
     setResponseError("");
     setAlert(false);
@@ -265,14 +285,17 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         `${props?.rowData?.assetId}` +
         "/AssignUsersToAssets?IsChildAssetincluded=" +
         `${assignUserCheck}`;
-      EvidenceAgent.addUsersToAsset(
-        url,
-        props.filterValue.map((x) => x.id)
-      )
+        EvidenceAgent.addUsersToAsset(url, props.filterValue.map((x) => x.id))
         .then(() => {
-          setTimeout(() => {
-            dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
-          }, 1510);
+          userAssignmentLog();
+          //setTimeout(() => {
+            //dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
+            dispatch(updateAssignUser({owners: props.filterValue.map((item:any) => item.label), assetId: props?.rowData?.assetId}))
+          //}, 1510);
+          if(isAssetDetailPage){
+            dispatch(addMetaDataInfoAsync(props.rowData.id ? props.rowData.id : props.rowData.evidence.id));
+          }
+          dispatch(resetRelatedAsset()) 
           props.setOnClose();
           props.showToastMsg({
             message: t("Asset_Assignees_updated"),
@@ -336,12 +359,9 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   {users.data && <MultiSelectBoxCategory
                     className="categortAutocomplete"
                     multiple={true}
-                    CheckBox={true}
-                    visibility={true}
                     options={filterUser(users.data)}
                     value={props.filterValue}
                     autoComplete={true}
-                    isSearchable={true}
                     onChange={(
                       event: any,
                       newValue: any,

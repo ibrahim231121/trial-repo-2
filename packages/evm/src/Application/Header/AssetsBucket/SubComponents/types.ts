@@ -30,6 +30,11 @@ export type UserNameAndValue = {
     loginId: string;
 };
 
+export type StationIdandLabel = {
+    id: string;
+    label: string;
+}
+
 export type CategoryNameAndValue = {
     categoryId: string;
     categoryName: string;

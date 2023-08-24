@@ -110,6 +110,7 @@ export interface UnitTemplateConfigurationInfo {
 }
 
 export interface GetPrimaryDeviceInfo {
+    id: number | null,
     name: string,
     description: string,
     triggerGroup: string,
@@ -189,14 +190,15 @@ export interface DefaultUnitTemplate {
 
 export interface ScheduleVersion {
     days: string,
-    timeStart: Date,
-    timeEnd: Date,
+    timeStart?: Date,
+    timeEnd?: Date,
 }
 
 export interface UpdateVersionDevice {
     id?: number,
     deviceId: number,
     deviceStatus: string,
+    logs?: string,
 }
 
 export interface UpdateVersion {
@@ -229,9 +231,29 @@ export interface FilterUpdateVersion {
     serialNumber: string,
     station: string,
     stationId: number,
+    description: string,
     lastCheckedIn?: Date,
     status: string,
     targetVersion: string,
     logOutput: string,
+}
+export interface DeviceConfigurations {
+    deviceTypeId: number,
+    deviceType: DeviceType,
+    url: string,
+    port: string,
+    userId: string,
+    password: string,
+}
+export enum DeviceStatus
+{
+    Pending = 0,
+    Fail = 1,
+    Success = 2,
+    Requested = 3,
+    Downloading= 4,
+    Downloaded = 5,
+    Executing = 6,
+    Canceled = 7,
 }
 

@@ -40,6 +40,10 @@ type Props = {
   text?: string;
   primaryDisabled?: boolean,
   maxWidth? : maxsize,
+  disableScrollLock?:boolean,
+  isCloseButton? :boolean;
+  setCloseButton? : any;
+  isPrimaryHide?: boolean;
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -53,7 +57,10 @@ const CRXConfirmDialog: React.FC<Props> = ({
   primary, secondary,
   primaryDisabled,
   text,
-  maxWidth
+  maxWidth,
+  setCloseButton,
+  isCloseButton,
+  isPrimaryHide
 }) => {
 
   const classes = DialogJcss()
@@ -61,6 +68,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
     <Dialog 
       open={isOpen} 
       maxWidth={maxWidth} 
+      disableScrollLock={true} 
       className={"crx-confirm-modal userConfirmationModal crx-unblock-modal " + className + " " + classes.root}>
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -71,7 +79,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
       <div className="CRXPopupCrossButton">
         <Button
           className={className + " CRXCloseButton"}
-          onClick={() => setIsOpen(false)}
+          onClick={() => isCloseButton ? setCloseButton(true) : setIsOpen(false)}
           disableRipple={true}>
           <i className="icon icon-cross2 closeModalIconUnblock"></i>
         </Button>
@@ -93,7 +101,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
       </DialogContent>
       <Divider className="CRXDivider" />
       <DialogActions className="crxConfirmFooterModal">
-        <CRXButton
+       {isPrimaryHide!=true? <CRXButton
           id="yes"
           disabled={primaryDisabled}
           className="primary"
@@ -102,14 +110,15 @@ const CRXConfirmDialog: React.FC<Props> = ({
             onConfirm();
             //setIsOpen(true);
           }}
+          
         >
           { primary || "primary"}
           
-        </CRXButton>
-
+        </CRXButton>:<></>
+}
         <CRXButton
           id="no"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsOpen(false)} 
           className="secondary"
           variant="outlined"
           color="secondary">

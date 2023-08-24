@@ -83,7 +83,7 @@ const CategoryFormsList: React.FC = () => {
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
+    onSaveHeadCellData(headCells, "CategoryFormTemplateDataTable");
     dispatch(enterPathActionCreator({ val: "" }));
   }, []);
   
@@ -269,6 +269,17 @@ const CategoryFormsList: React.FC = () => {
     }
   }, [searchData]);
 
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
+
+  const updateSelectedItems = () => {
+    getFilteredCategoryFormsData();
+    setSelectedItems([]);
+    
+  }
+
   return (
     <ClickAwayListener onClickAway={handleBlur}>
     <div className="category_tab_parent" onKeyDown={handleKeyDown}>
@@ -276,12 +287,13 @@ const CategoryFormsList: React.FC = () => {
       {
         rows && (
           <CRXDataTable
-            id="CategoriesTemplateDataTable"
+            id="CategoryFormTemplateDataTable"
             actionComponent={<CategoryFormsTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
-              pageiGrid={pageiGrid}
+              //pageiGrid={pageiGrid}
               toasterRef={retentionMsgFormRef}
+              updateSelectedItems={updateSelectedItems}
             />}
             toolBarButton={
               <>
@@ -322,7 +334,6 @@ const CategoryFormsList: React.FC = () => {
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterCategoryForms?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
-          
           />
 
         )

@@ -288,3 +288,10 @@ iframe {
   .txtStyle:hover {
       text-decoration: underline;
   }
+  .drawerOff {
+    .AssetsDataGrid{
+      &:after{
+        background: var(--color-ccc) !important;
+      }
+    }
+  }  

@@ -1,20 +1,36 @@
 import { TextField, CRXSelectBox } from "@cb/shared";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UnitInfoModel } from "./UnitDetail";
 import { useTranslation } from "react-i18next";
 import { UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
+import { CRXConfirmDialog } from "@cb/shared";
+import { CRXButton } from "@cb/shared";
+import { urlList, urlNames } from "../../utils/urlList";
+import { useHistory } from "react-router";
 
 
 type infoProps = {
   info: UnitInfoModel;
   onChangeGroupInfo: any;
-  validationCheckOnButton: (p: boolean) => void;
+  onSave: (e: React.MouseEventHandler<HTMLInputElement>) => void;
+  isSaveButtonDisabled: boolean;
+  redirectPage: () => void;
+  closeDialog: () => void;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  isOpen: boolean;
+  setIsSaveButtonDisabled: any;
 }
 
 const UnitConfigurationInfo: React.FC<infoProps> = ({
   info,
   onChangeGroupInfo,
-  validationCheckOnButton
+  onSave,
+  isSaveButtonDisabled,
+  redirectPage,
+  setIsOpen,
+  closeDialog,
+  isOpen,
+  setIsSaveButtonDisabled
 }) => {
   const { t } = useTranslation<string>();
   const [name, setName] = React.useState(info.name);
@@ -25,7 +41,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   const [stationlst, setstationList] = React.useState(info.stationList);
   const [stationId, setstationId] = React.useState(info.stationId);
 
-
+  const history = useHistory();
 
   const filterTemplatesByStation = (templates: any[], stationId: number) => {
     var filteredTemplates = templates.filter(function (item: any) {
@@ -83,6 +99,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
 
   const [formpayloadErr, setFormPayloadErr] = React.useState({
     nameErr: "",
+    groupnameErr: "",
   });
   const onChange = (e: any) => {
     onChangeGroupInfo(name, description, groupName, e.target.value, configList, stationlst, stationId);
@@ -112,12 +129,32 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     } else if (name.length < 3) {
       return {
         error: true,
-        errorMessage: t("Unit_Id_must_contains_atleast_three_characters."),
+        errorMessage: t("Minimum_3_character_and_maximum_15"),
       };
-    } else if (name.length > 10) {
+    } else if (name.length > 15) {
       return {
         error: true,
-        errorMessage: t("Unit_Id_must_not_exceed_10_characters."),
+        errorMessage: t("Minimum_3_character_and_maximum_15"),
+      };
+    }
+    return { error: false, errorMessage: "" };
+  };
+  const validateGroupName = (groupName: string): { error: boolean; errorMessage: string } => {
+    const chracterRegx = /^[a-zA-Z0-9-.\s]+$/.test(String(groupName).toLowerCase());
+    if (!chracterRegx && groupName.length > 0) {
+      return { 
+        error: true, 
+        errorMessage: t("Please Provide a Valid Group Name.") 
+      };
+    } else if (groupName.length > 0 && groupName.length < 3) {
+      return {
+        error: true,
+        errorMessage: t("Group Name is Less than 3 characters"),
+      };
+    } else if (groupName.length > 6) {
+      return {
+        error: true,
+        errorMessage: t("Group Name is Greater than 6 characters"),
       };
     }
     return { error: false, errorMessage: "" };
@@ -138,10 +175,27 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       setFormPayloadErr({ ...formpayloadErr, nameErr: "" });
     }
   };
+  const checkGroupName = () => {
+    const isGroupNameValid = validateGroupName(groupName);
+    if (isGroupNameValid.error) {
+      setFormPayloadErr({
+        ...formpayloadErr,
+        groupnameErr: isGroupNameValid.errorMessage,
+      });
+    } else {
+      setFormPayloadErr({ ...formpayloadErr, groupnameErr: "" });
+    }
+  }
 
   React.useEffect(() => {
-    validationCheckOnButton(!!formpayloadErr.nameErr)
-  }, [formpayloadErr.nameErr])
+    if(!!formpayloadErr.groupnameErr || !!formpayloadErr.nameErr){
+      setIsSaveButtonDisabled(true)
+    }
+    else{
+      setIsSaveButtonDisabled(false)
+    }
+  }, [formpayloadErr])
+
   return (
     <div className="crx-group-info-form CBX-input unit_device_configuration_form">
       <div className="crx-group-info unitConfiguration">
@@ -201,10 +255,66 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
             variant="outlined"
             rows={2}
             value={groupName}
+            error={!!formpayloadErr.groupnameErr}
             onChange={onChangeGroupName}
+            errorMsg={formpayloadErr.groupnameErr} 
+            onBlur={checkGroupName}
           />
         </div>
       </div>
+      <div className="tab-bottom-buttons pd-b-50 tab-bottom-buttons-ui">
+        <div className="save-cancel-unitDevice">
+          <CRXButton
+            variant="contained"
+            className="groupInfoTabButtons"
+            onClick={onSave}
+            disabled={isSaveButtonDisabled}
+          >
+            {t("Save")}
+          </CRXButton>
+          <CRXButton
+            className="groupInfoTabButtons secondary"
+            color="secondary"
+            variant="outlined"
+            onClick={() =>
+              history.push(
+                urlList.filter(
+                  (item: any) => item.name === urlNames.unitsAndDevices
+                )[0].url
+              )
+            }
+          >
+            {t("Cancel")}
+          </CRXButton>
+        </div>
+        <CRXButton
+          onClick={() => redirectPage()}
+          className="groupInfoTabButtons-Close secondary"
+          color="secondary"
+          variant="outlined"
+        >
+          {t("Close")}
+        </CRXButton>
+      </div>
+      <CRXConfirmDialog
+        setIsOpen={() => setIsOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isOpen}
+        className="userGroupNameConfirm"
+        primary="Yes, close"
+        secondary="No, do not close"
+        text="unit configuration form"
+      >
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'unit_configuration_form'")}</strong>. {t("If_you_close_the_form")},
+          {t("any_changes_you_ve_made_will_not_be_saved.")}
+          {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          </div>
+        </div>
+      </CRXConfirmDialog>
     </div>
   );
 };

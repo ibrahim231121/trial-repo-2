@@ -6,9 +6,9 @@ import VideoPlayerSeekbar from '../../../../components/MediaPlayer/VideoPlayerSe
 import "./LicensePlateHistoryMap.scss"
 import { CRXMultiSelectBoxLight } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
-import dateDisplayFormat from '../../../../GlobalFunctions/DateFormat';
 import { useDispatch } from 'react-redux';
 import { setLoaderValue } from '../../../../Redux/loaderSlice';
+import { dateDisplayFormat } from '../../../../GlobalFunctions/DateFormat';
 
 
 type LicensePlateHistoryMapProp = {
@@ -284,7 +284,7 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
   }
 
   const getInfoWindowContentOnMarkerClick = (logTime:any):string =>{
-    let historyItem = historyData.find(history=>history.capturedAt == logTime);
+    let historyItem = historyData.find(history=>history.capturedAtStr == logTime);
     let content:string = "";
 
     if(historyItem){

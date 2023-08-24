@@ -185,6 +185,7 @@ const CRXInput = ({
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
               checkError(e.target.value);
             }}
+            data-qa={"qa-input" + "-" + id}
             inputRef={inputRefs}
             value={value}
             defaultValue={defaultValue}

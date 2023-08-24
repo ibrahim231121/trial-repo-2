@@ -19,6 +19,8 @@ export namespace SearchModel {
         description: string;
         retentionSpanText: string;
         onlyforlinkedasset?:string;
+        relatedAssets : RelatedAssets[] | null;
+        evidenceRelations : EvidenceRelations[];
     };
 
     export type FormDataKeyValue = {
@@ -59,6 +61,7 @@ export namespace SearchModel {
         filesId: number;
         type: string;
         accessCode?:string;
+        fileName?: string;
     };
 
     export type AssetEventGeoData = {
@@ -82,5 +85,19 @@ export namespace SearchModel {
     export type SecurityDescriptor = {
         groupId: number;
         permission: string;
+    };
+
+    export type RelatedAssets = {
+        asset: Asset;
+        evidenceId : number;
+        relationType : string;
+        rankScore : number;
+    }
+
+    export type EvidenceRelations = {
+        valueRecId : number;
+        valueDisplayName : string;
+        evidenceId : number;
+        assetId : number;
     };
 }

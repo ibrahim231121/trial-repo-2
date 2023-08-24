@@ -1,40 +1,56 @@
-import React, { useRef, useEffect, useState, useImperativeHandle, ForwardRefRenderFunction, forwardRef } from "react";
-import { CompositeDecorator, Editor, EditorState, convertToRaw, convertFromRaw, ContentState } from "draft-js";
+import React, { useRef, useEffect, useState, useImperativeHandle, ForwardRefRenderFunction, forwardRef, useMemo } from "react";
+import { CompositeDecorator, Editor, EditorState, convertToRaw, convertFromRaw, ContentState, RichUtils } from "draft-js";
 import { Popover, makeStyles } from '@material-ui/core';
 import './CRXRichTextBox.scss';
+import { Link } from "react-router-dom";
+import CRXTruncation from "../controls/CRXTextPopover/CRXTruncation";
 
 type CRXRichTextBoxPropsType = {
     value: string,
     disabled?: boolean,
-    onChange: (value: any) => void
+    assets: any[],
+    onChange: (value: string) => void,
+    onHashLinkChange: (value: string[]) => void,
   }
   
 const CRXRichTextBox: ForwardRefRenderFunction<any, CRXRichTextBoxPropsType> = (props, ref) => {
 
     const compositeDecorator = new CompositeDecorator([
         {
-            strategy: (contentBlock, callback, contentState) => hashtagStrategy(contentState, contentBlock, callback),
+            strategy: (contentBlock, callback) => hashtagStrategy(contentBlock, callback),
             component: hashtagHTML,
-            props: { context: [{assetID: 1, evidenceGroupId: 1, description: "Asset 1", thumbnail: "abc", orderIdStr: "1" }], onChange: props.onChange }
+            props: { context: props.assets ?? [], value: props.value, onChange: props.onHashLinkChange }
         }
     ]);
 
     const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty(compositeDecorator));
-    const editorElementRef = useRef(null);
+    const editorElementRef = useRef<any>(null);
+
+    const memoizedEditorValue = useMemo(() => {
+        return props.value;
+    }, [props.value]);
 
     useEffect(() => {
-        if(props.value != null && props.value.length > 0) {
-            const exitingContentState = editorState.getCurrentContent();
-            const parsedValue = tryParseValue(props.value);
+        if(memoizedEditorValue != null && memoizedEditorValue.length > 0) {
+            const parsedValue = tryParseValue(memoizedEditorValue);
             const newContentState = parsedValue === false ? ContentState.createFromText('') : convertFromRaw(parsedValue);
-            if(newContentState.getPlainText('\u0001') != exitingContentState.getPlainText('\u0001')) {
-                const stateFromParent = EditorState.createWithContent(newContentState, compositeDecorator);
-                if(stateFromParent != editorState) {
-                    setEditorState(stateFromParent);
+            const compositeDecorator = new CompositeDecorator([
+                {
+                    strategy: (contentBlock, callback) => hashtagStrategy(contentBlock, callback),
+                    component: hashtagHTML,
+                    props: { context: props.assets ?? [], value: memoizedEditorValue, onChange: props.onHashLinkChange }
                 }
+            ]);
+            const stateFromParent = EditorState.createWithContent(newContentState, compositeDecorator);
+            let editorSelectionState = stateFromParent;
+            if(newContentState.hasText()) {
+                editorSelectionState = EditorState.moveSelectionToEnd(stateFromParent);
+            }
+            if(editorSelectionState != editorState) {
+                setEditorState(editorSelectionState);
             }
         }
-    }, [props.value])
+    }, [memoizedEditorValue]);
 
     useImperativeHandle(ref, () => ({
         getContentAsPlainText,
@@ -53,17 +69,15 @@ const CRXRichTextBox: ForwardRefRenderFunction<any, CRXRichTextBoxPropsType> = (
     const onContentChange = (newEditorState: EditorState) => {
         const currentContentState = convertToRaw(editorState.getCurrentContent());
         const newContentState = convertToRaw(newEditorState.getCurrentContent());
-        if(currentContentState !== newContentState) {
-            setEditorState(newEditorState);
-        }
-        if(typeof props.onChange === "function") {
-            props.onChange(newContentState);
+        setEditorState(newEditorState);
+        if(typeof props.onChange === "function" && deepEqual(currentContentState, newContentState) === false) {
+            props.onChange(getContentAsPlainText(newEditorState));
         }
     }
 
-    const getContentAsPlainText = (delimiter?: any) => {
+    const getContentAsPlainText = (newEditorState?: EditorState, delimiter?: any) => {
         let plainText = "";
-        let contentState = editorState.getCurrentContent();
+        let contentState = newEditorState != null ? newEditorState.getCurrentContent() : editorState.getCurrentContent();
         if (contentState.hasText())
             plainText = contentState.getPlainText(delimiter ? delimiter : null);
         return plainText;
@@ -73,8 +87,18 @@ const CRXRichTextBox: ForwardRefRenderFunction<any, CRXRichTextBoxPropsType> = (
         return convertToRaw(editorState.getCurrentContent());
     }
 
+    const handleKeyCommand = (command: any, editorState: any) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            onContentChange(newState);
+            return 'handled';
+        }
+        return 'not-handled';
+    }
+
     return (
-        <Editor ref={editorElementRef} editorState={editorState} onChange={(e: EditorState) => onContentChange(e)} readOnly={props.disabled === true} />
+        <Editor ref={editorElementRef} editorState={editorState} onChange={(e: EditorState) => onContentChange(e)} readOnly={props.disabled === true}
+            handleKeyCommand={(command, editorState) => handleKeyCommand(command, editorState)}/>
     )
 }
 
@@ -91,8 +115,7 @@ function findWithRegex(regex: any, contentBlock: any, callback: any) {
     }
 }
 
-function hashtagStrategy(contentState: any, contentBlock: any, callback: any) {
-    console.log(contentState);
+function hashtagStrategy(contentBlock: any, callback: any) {
     findWithRegex(HASHTAG_REGEX, contentBlock, callback);
 }
 
@@ -103,23 +126,73 @@ const hashtagHTML = (props: any) => {
     let ui = <span>{props.children}</span>
     if (arr.length > 1) {
         let orderId = arr[1];
-        let taggedAsset = props.context.find((e: any) => e.orderIdStr == orderId);
+        let taggedAsset = props.context.find((e: any) => e.sequenceNumber == orderId);
         if (taggedAsset != null) {
             ui = <HashValue propsChildren={props.children} taggedAsset={taggedAsset} />
             assetRefrenceIds.push(orderId);
-            props.onChange("Tagged asset matched strategy: " + assetRefrenceIds);
+            props.onChange(orderId);
         }
     }
     return ui;
 };
 
+type HashValuePropsType = {
+    propsChildren: any,
+    taggedAsset: any
+}
+    
+const HashValue: React.FC<HashValuePropsType> = ({ propsChildren, taggedAsset }) => {
+    const [anchorEl, setAnchorEl] = useState<HTMLAnchorElement | null>(null);
+    const targetContainerRef = useRef<HTMLAnchorElement>(null);
+
+    const openPopoverTimeoutRef = useRef<number>(0);
+    const closePopoverTimeoutRef = useRef<number>(0);
+
+    const onClick = (e: any) => {
+        e.preventDefault();
+        let url = "/Media/Detail?id=" + taggedAsset.assetID + 
+                "&EvidenceGroupId=" + taggedAsset.evidenceGroupId;
+        window.open(url);
+    }
+
+    const popoverHandleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        const {currentTarget} = e;
+        e.preventDefault();
+        clearTimeout(openPopoverTimeoutRef.current);
+        openPopoverTimeoutRef.current = window.setTimeout(() => {
+            setAnchorEl(currentTarget);
+        }, 100);
+    }
+
+    const popoverHandleClose = (e: React.MouseEvent) => {
+        e.preventDefault();
+        console.log("On Mouse Leave fired")
+        clearTimeout(closePopoverTimeoutRef.current);
+        closePopoverTimeoutRef.current = window.setTimeout(() => {
+            setAnchorEl(null);
+        }, 100);
+    }
+
+    return (<span className="hash-value"> 
+        <a  ref={targetContainerRef} style={{'color':'#006aae','textDecoration':'none', 'padding' : '15px 0px', 'cursor' : 'pointer'}}
+                onMouseOver={(e: React.MouseEvent<HTMLAnchorElement>) => popoverHandleClick(e)}
+                onMouseLeave={(e: React.MouseEvent) => popoverHandleClose(e)}
+                onClick={(e: any) => onClick(e)}>
+            <span>{propsChildren}</span>
+        </a>
+        {   Boolean(anchorEl) === true ?
+                <HashValuePopover taggedAsset={taggedAsset} anchorEl={anchorEl}/>
+            : null
+        }
+    </span>)
+}    
+
 type HashValuePopoverPropsType = {
     taggedAsset: any,
-    anchorEl: any,
-    onClose: (e: React.MouseEvent) => void
+    anchorEl: HTMLAnchorElement | null,
 }
 
-const HashValuePopover: React.FC<HashValuePopoverPropsType> = ({ taggedAsset, anchorEl, onClose }) => {
+const HashValuePopover: React.FC<HashValuePopoverPropsType> = ({ taggedAsset, anchorEl }) => {
     const [url, setUrl] = useState<string>(taggedAsset?.thumbnail ?? "");
 
     const paperRef = useRef<HTMLInputElement>(null);
@@ -136,7 +209,38 @@ const HashValuePopover: React.FC<HashValuePopoverPropsType> = ({ taggedAsset, an
     const classesPopover = useGapStyles();
 
     const onErrorMediaImage = () => {
-        setUrl("");
+       setUrl("");
+    }
+
+    const assetNameTemplate = (assetName: string) => {
+        // let assets = evidence.asset.filter(x => x.assetId != evidence.masterAsset.assetId);
+        let dataLink =
+          <>
+            <Link
+              className="linkColor"
+              to={{
+                // pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
+                // state: {
+                //   evidenceId: evidence.id,
+                //   assetId: evidence.masterAsset.assetId,
+                //   assetName: assetName,
+                //   evidenceSearchObject: evidence
+                // } as AssetDetailRouteStateType,
+              }}
+            >
+              <div className="assetName">
+    
+                <CRXTruncation placement="top" content={assetName.length >
+                  25
+                  ? assetName.substring(0,
+                    25
+                  ) + "..."
+                  : assetName} />
+              </div>
+            </Link>
+            {/* <DetailedAssetPopup asset={assets} row={evidence} /> */}
+          </>
+        return dataLink;
     }
 
     return (
@@ -144,77 +248,56 @@ const HashValuePopover: React.FC<HashValuePopoverPropsType> = ({ taggedAsset, an
             id="mouse-over-popover"
             ref={paperRef}
             open={true}
+            className="crxRichTextBox-taggedAssetPopover"
             anchorEl={anchorEl}
-            onClose={onClose}
-            classes={{
-                ...classesPopover
-            }}
+            anchorReference="anchorPosition"
+            classes={classesPopover}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
             }}
-            
             transformOrigin={{
                 vertical: "bottom",
                 horizontal: 'center',
             }}
-            className="crxRichTextBox-taggedAssetPopover"
+            disableRestoreFocus
+            disableAutoFocus={true}
+            disableEnforceFocus={true}
         >
         <div className="crxRichTextBox-taggedAssetPopover-container">
             <div className="taggedAssetPopover-container-thumbnail">
                 <img src={url} onError={onErrorMediaImage} />
             </div>
             <div className="taggedAssetPopover-container-detail">
-                <a href="#">{taggedAsset.assetID}</a>
-                <p>{taggedAsset.description}</p>
+                {assetNameTemplate(taggedAsset.assetName)}
             </div>
         </div>
     </Popover>
     )
 }
 
-type HashValuePropsType = {
-propsChildren: any,
-taggedAsset: any
-}
-
-const HashValue: React.FC<HashValuePropsType> = ({ propsChildren, taggedAsset }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const targetContainerRef = useRef(null);
-
-    const onClick = (e: any) => {
-        e.preventDefault();
-        let url = "/Media/Detail?id=" + taggedAsset.assetID + 
-                "&EvidenceGroupId=" + taggedAsset.evidenceGroupId;
-        window.open(url);
+const deepEqual = (x: any, y: any) => {
+    if (x === y) {
+      return true;
     }
-
-    const popoverHandleClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setTimeout(() => {
-            setAnchorEl(targetContainerRef.current);
-        }, 100);
-    }
-
-    const popoverHandleClose = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setTimeout(() => {
-            setAnchorEl(null);
-        }, 100);
-    }
-
-    return (<span className="hash-value">
-        <a  ref={targetContainerRef} style={{'color':'#006aae','textDecoration':'none', 'padding' : '15px 0px', 'cursor' : 'pointer'}}
-                onMouseOver={(e: React.MouseEvent) => popoverHandleClick(e)}
-                onMouseLeave={(e: React.MouseEvent) => popoverHandleClose(e)}
-                onClick={(e: any) => onClick(e)}>
-            <span>{propsChildren}</span>
-        </a>
-        {  Boolean(anchorEl) === true ? <HashValuePopover taggedAsset={taggedAsset}
-                anchorEl={targetContainerRef.current} onClose={(e: React.MouseEvent) => popoverHandleClose(e)} />
-            : null
+    else if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
+      if (Object.keys(x).length != Object.keys(y).length)
+        return false;
+  
+      for (var prop in x) {
+        if (y.hasOwnProperty(prop))
+        {  
+          if (! deepEqual(x[prop], y[prop]))
+            return false;
         }
-    </span>)
-}
+        else
+          return false;
+      }
+      
+      return true;
+    }
+    else 
+      return false;
+  }
 
 export default forwardRef(CRXRichTextBox);

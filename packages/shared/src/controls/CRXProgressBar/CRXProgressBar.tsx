@@ -38,6 +38,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
       backgroundImage: (_) => maxDataSize ? `url(${progressImage})` : "",
       backgroundRepeatY: "no-repeat",
       backgroundPositionY: "1.1px",
+      backgroundSize: "18px 13px",
     },
 
     barColorSecondary: {

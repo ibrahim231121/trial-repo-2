@@ -41,3 +41,40 @@ export interface ObjectToUpdateAssetBucketCategoryField {
     requestBody : Array<AssetCategoryObject>;
     assetBucketData : AssetBucket[];
 }
+
+export type Props = {
+    row: any;
+    selectedItems?: any;
+    setSelectedItems?: (obj: any) => void;
+    isPrimaryOptionOpen?: boolean;
+    asset?: any;
+    portal?: boolean;
+    showToastMsg?: (obj: any) => void;
+    setIsPrimaryOptionOpen?: (obj: boolean) => void;
+    actionMenuPlacement: ActionMenuPlacement;
+    className?: string;
+    actionViewScroll?: any;
+    setIsAddedToBucket?: any;
+    isRelatedAsset?: boolean;
+};
+
+export type AssetLink = {
+    masterId: number;
+    assetId: number;
+    evidenceId: number;
+    assetName?: string;
+    assetType?: any;
+    fileType?: any;
+    expireOn?: any;
+    holduntil?: any;
+};
+
+export type MasterAssetEvidence = {
+    masterId: number;
+    evidenceId: number;
+    assetName?: string;
+    assetType?: any;
+    fileType?: any;
+    expireOn?: any;
+    holduntil?: any;
+};

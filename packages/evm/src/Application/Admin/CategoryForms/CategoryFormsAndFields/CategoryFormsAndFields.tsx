@@ -16,7 +16,6 @@ import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
 import { UserGroups } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import CategoryFormsList from "../CategoryFormsLister/CategoryFormsList";
-import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
 import FormFieldsList from "../FormFieldsLister/FormFieldsList";
 
 
@@ -32,14 +31,6 @@ const CategoryFormsAndFields = () => {
   const [showMessageError, setShowMessageError] = useState<string>("");
   const [res, setRes] = React.useState<UserGroups>()
   const groupMsgRef = useRef<typeof CRXToaster>(null);
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-    gridFilter: {
-      logic: "and",
-      filters: []
-    },
-    page: 0,
-    size: 25
-  })
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -76,7 +67,7 @@ const CategoryFormsAndFields = () => {
   }, [messages]);
 
   return (
-    <div className="switchLeftComponents category_ui_forms" style={{}}>
+    <div className="category_ui_forms" style={{}}>
       {showSuccess && showSuccess ? <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}

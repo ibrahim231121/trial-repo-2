@@ -1,0 +1,314 @@
+.mainConsole {
+    background-color: var(--color-333333);
+    margin: 10px 0px 10px 0px;
+    color: white;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    .response_title {
+      font-size: 18px;
+      padding-left: 10px;
+    }
+    .response_body {
+      font-size: medium;
+      margin: 15px 0px;
+      word-wrap: break-word;
+      white-space: pre-line;
+      overflow: auto;
+      flex-direction: column-reverse;
+    }
+    .snapshot{
+      img {
+        width: 100% !important;
+      }
+    }
+}
+.dss-logs{
+  width: 100%;
+  overflow-y: auto;
+  max-height: 300px;
+  margin: 20px 0px;
+}
+
+.button_class {
+  margin: auto;
+  position: relative;
+}
+
+.logs_btn_group {
+  gap: 30px;
+  display: flex;
+  margin-top: 15px;
+}
+.logs_btn {
+  margin: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  width: 10%;
+}
+
+  .diagnosticTabs {
+  // position: fixed;
+  position: inherit;
+    div#crx-tabpanel-3 {
+      width: max-content;
+  }
+  .desktop-mainConsole{
+      .main{
+        background: none !important;
+        padding: 16px 0px;
+      }
+    }
+  .tabPanel{
+    padding: 10px 50px;
+    
+    .CRXDataTableLabelCell{
+      left: 0;
+      color: #d1d2d4 !important;
+      padding: 0px 11px !important;
+      z-index: 3;
+      position: sticky;
+      white-space: nowrap;
+      background-color: #333333 !important;
+      height: 35px;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 100;
+      width: 15%;
+    }
+    .message{
+      width: 50%;
+    }
+  }
+  .logs_btn_group{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+  }
+  .tabLabel{
+    color: var(--color-333333) !important;
+    font-family: var(--base-font-family);
+    font-size: 14px;
+    font-weight: var(--Font-style-normal);
+    text-transform: capitalize;
+    // text-align: left;
+  }
+  .MuiTabs-indicator{
+    background: #C34400;
+  }
+  .dignosticLogs{
+    width: 100%;
+    margin: 0 auto;
+    // display: flex;
+    display: contents;
+    .dignosticField{
+      display: grid;
+      margin: 10px 20px;
+      font-size: 14px;
+      .label{
+        margin-bottom: 10px;
+      }
+    }
+    .CRXSimpleSelect{
+      width: 400px;
+    }
+    .CBX-Number-input{
+      width: 400px;
+    }
+    span{
+      // width: 250px;
+      font-size: 14px;
+      // margin-bottom: 10px;
+    }
+    .number_field_textBox {
+      margin: 0px 0 0;
+      display: inline-block;
+    }
+    .logsBtnRow{
+      .logs_btn{
+        width: 125px;
+      }
+    }
+    
+  }
+  .statusTable{
+    margin-top: 15px;
+    margin-bottom: 45px;
+      td{
+        border-right: 1px solid var(--color-ccc);
+        padding: 7px 11px 7px 9px;
+        font-size: 14px;
+        color: var(--color-333333);
+        vertical-align: middle;
+        line-height: 21px;
+        text-indent: 0px;
+        position: relative;
+        max-width: 350px;
+        
+      }
+      tr{
+        &:hover{
+          background-color: #333;
+          color: var(--color-d1d2d4) !important;
+          .loadingText{
+            color:#d1d2d4
+          }
+          .mqttMessage{
+            label{
+              color:#d1d2d4
+            }
+          }
+          span{
+            color: var(--color-d1d2d4) !important;
+          }
+        }
+      }
+      .mqttStatus{
+        .crx-progress-br .loader .loadingIcon{
+          display: none;
+        }
+        .Progress_Text{
+          display: none;
+        }
+        &:hover{
+        .loadingText{
+            color:#d1d2d4
+          }
+          
+        } 
+      }
+  }
+  .css-19kzrtu {
+    padding: 0px 24px;
+  }
+  .snapshot{
+    width: 250px;
+    height: 250px;
+
+  }
+  .main_column{
+    .main{
+          height: 31vh;
+    }
+    .dss-logs{
+      .main{
+        margin-top: 5px;
+
+      }
+    }
+    
+    .modalBtn{
+      margin:  auto 0px;
+      height: 30px;
+    }
+  }
+  .modalBtn{
+    // margin: auto 15px;
+    height: 30px;
+  }
+  
+  .desktopThumDetail{  
+ 
+      display: flex;
+      flex-direction: column;
+  
+    .snapshot{
+    .snapshotImage{
+      width: 250px;
+      margin: 0px auto;
+      height: 250px; 
+      } 
+    }
+    .overlay{
+      position: relative;
+      font-size: 35px;
+      background-color: #333;
+      opacity: .7;
+      width: 275px;
+      height: 275px;
+      
+      .fa-magnifying-glass{
+        cursor: pointer;
+        position: absolute;
+        top: 38%;
+        left: 43%;
+        &:hover{
+          top: 34%;
+          left: 40%;
+          font-size: 50px;
+          
+        }
+      }
+    }
+  }
+  .mqttMessage{
+    .content-truncation{
+      height: 4em;
+      overflow-y: scroll;
+    }
+  }
+
+  div#crx-tabpanel-1{
+    padding: 0px 20px;
+  }
+  div#crx-tabpanel-2{
+    padding: 0px 20px;
+  }
+  div#crx-tabpanel-3{
+    padding: 0px 20px;
+  }
+}
+
+
+.desktopSSModal{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  .main{
+    width: 95%;
+    height: 89%;
+    display: block;
+  }
+}
+
+.mqttStatus{
+    .syncedMqttStatus{
+      .MuiLinearProgress-bar{
+      background-color: green;
+      }
+    }
+    .syncingMqttStatus{
+      .MuiLinearProgress-bar{
+      background-color: orange;
+      }
+    }
+    .failedMqttStatus{
+      .MuiLinearProgress-colorPrimary{
+      background-color: red;
+      }
+    } 
+    .defaultMqttStatus{
+      .MuiLinearProgress-bar{
+      background-color: blue;
+      }
+    }  
+  }
+
+  .diagnostic-logs{
+    z-index: 9999 !important;
+    .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
+      max-height: calc(100vh - 100px) !important;
+      top: 25px;
+      max-width: fit-content !important;
+    }
+  }
+  .desktopSnapshot{
+    z-index: 9999 !important;
+    .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
+      max-height: calc(100vh - 100px) !important;
+      top: 25px;
+      max-width: max-content;
+    }
+  }
+  

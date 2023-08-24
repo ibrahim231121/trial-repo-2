@@ -8,7 +8,7 @@ export const getAllFilteredUpdateVersionsPagedAsync: any = createAsyncThunk(
   'getAllFilteredUpdateVersionsPaged',
   async (obj: any, thunkAPI) => {
     thunkAPI.dispatch(setLoaderValue({isLoading: true}))
-    let headers = [{key : 'GridFilter', value : JSON.stringify(obj.pageiFilter.gridFilter)}]
+    let headers = [{key : 'GridFilter', value : JSON.stringify(obj.pageiFilter.gridFilter)}, {key : 'GridSort', value : JSON.stringify(obj.pageiFilter.gridSort)}]
     return await UnitsAndDevicesAgent.getFilteredDeviceByStation(`/Stations/${obj.primaryDeviceFilter.stationId}/Devices/Types/${obj.primaryDeviceFilter.deviceTypeId}?Page=${obj.pageiFilter.page+1}&Size=${obj.pageiFilter.size}`, headers)
       .then((response:any) => {
         thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))

@@ -35,14 +35,15 @@
       padding-left: 39px;
       .asset_group_tabs_data_row {
         display: grid;
-        gap: 22px;
-        column-gap: 143px;
+        gap: 21px;
+        column-gap: 50px;
         grid-template-columns: auto auto;
         .asset_group_tabs_data_col {
           display: flex;
           place-items: center;
-          width: 375px;
+          width: 490px;
           height: 73px;
+          position: relative;
           ._detail_checkBox_column {
             padding-right: 9px;
             padding-left: 3px;
@@ -53,7 +54,14 @@
           ._asset_detail_link_meta {
             position: relative;
             top: 0px;
+            width: 221px;
             font-family: var(--Arial-font-family);
+            .detail_seeMore_link {
+              margin-bottom: 1px;
+              }
+            .detail_asset_truncation {
+              height: 0px;
+            }
             .linkColor {
               color: #d74b00 !important;
               #middletruncate {
@@ -66,6 +74,18 @@
                 display: block;
               }
             }
+            .detail_seeMore_info {
+              font-size: 14px;
+              color: var(--color-333333);
+              line-height: 18px;
+              .detail_box_text {
+                display: flex;
+              }
+              .detail_file_type {
+                text-transform: lowercase;
+              }
+            }
+          }
             .timeLineLister {
               ._asset_video_type_detail {
                 padding-bottom: 2px;
@@ -86,42 +106,27 @@
             }
           }
         }
-      }
-    }
-    .asset_detail_AT_table {
-      .stickyPos {
-        top: 0px;
-        padding-top: 0px;
-        min-height: 30px;
-        height: 30px;
-        margin-bottom: 22px;
-        &::before {
-          width: 100%;
-          height: 25px;
-          background: #fff;
+        .assetDetialPrimary_indicator {
           position: absolute;
-          top: -25px;
-          content: " ";
-        }
-        &::after {
-            width: 100%;
-            height: 23px;
-            background: #fff;
-            position: absolute;
-            bottom: -23px;
-            content: " ";
-        }
-        //    .auditTrailButton {
-        //     margin-left: -17px;
-        //    }
+          right: 0px;
+          top: -5px;
+          border: 1px solid #33333380;
+          padding: 5px 6px 3px 6px;
+          border-radius: 3px;
+          background: white;
+          color: #333333;
+          font-size: 14px;
+          text-transform: uppercase;
+          line-height: 16px;
       }
     }
+
     .cbxTabsContent {
       .asset_export_button_group {
-        margin-top: -2px;
+        margin-top: -36px;
         padding: 0px;
         padding-top: 0px;
-        margin-bottom: 22px;
+        margin-bottom: 24px;
         margin-left: -17px;
       }
       .crx-accordion {
@@ -134,12 +139,31 @@
         }
       }
       .asset_detail_AT_dataTable {
+        .searchable_header {
+          tr {
+            th {
+              &:nth-child(2) {
+                .MuiGrid-root {
+                  width: 100%;
+                  max-width: 100%;
+                  .dateRangeContainer {
+                    padding: 0;
+                    .wrapper {
+                      margin: 0 !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
         tr {
           td {
-            padding-left: 12px;
+            padding: 13px;
             text-align: left;
             &:first-child {
               background: none;
+              border-left: none;
             }
             &:nth-child(2) {
               background: none;
@@ -170,9 +194,10 @@
     &.CRX_accordion_main {
       .cbxTabsContent {
         .MuiAccordionDetails-root {
-          padding: 45px 25px 75px ;
+          padding: 46px 25px 75px ;
           ._detail_thumb_column {
-              margin-top: -4px;
+              margin-top: 0px;
+              margin-left: 1px;
           }
         }
         .MuiAccordionSummary-root {
@@ -196,78 +221,17 @@
             }
         }
       }
-      #crx-tabpanel-2 {
-        padding: 25px 30px 21px 35px;
-        .toolbar-button {
-            margin-top: 17px;
-            .auditTrailButton {
-                .iconButton_global {
-                    margin-left: -16px;
-                }
-            }
-        }
-        .dataTableColumnShoHide {
-            margin-top: 20px;
-            i {
-                font-size: 14px;
-            }
-        }
-        .asset_detail_AT_table {
-           .overlayPanel {
-            width: 0px;
-           } 
-           .AssetsDataGrid {
-            table {
-                thead {
-                    tr {
-                        th {
-                            &.TableSearchAbleHead {
-                                padding: 10px 10px 11px;
-                                &:nth-child(2) {
-                                  .MuiGrid-grid-xs-11 {
-                                    max-width: 100%;
-                                    flex-basis: 100%;
-                                  }
-                                }
-                            }
-                            &.CRXDataTableLabelCell  {
-                                padding: 7px 24px 6px 16px !important;
-                            }
-                            .crxTableHeaderSize {
-                                .gridSortResize {
-                                    align-items: center;
-                                    bottom: 0;
-                                    .GridSortIcon {
-                                        top:0px;
-                                        button {
-                                            i {
-                                                font-size: 16px;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-                .crxTableHeaderSize {
-                    height: 22px;
-                }
-            }
-           
-           }
-           .dataTablePages {
-            .MuiInputBase-root{
-                margin-left: 5px;
-                margin-right: 36px;
-                svg {
-                    color: var(--color-333333);
-                }
-            }
-           }
-        }
-      }
     }
   } /* ........ List main.........*/
 } /*...... Detail_view ......*/
+
+.box-wrapper {
+  display: flex;
+}
+.box { 
+  flex: 1;
+  
+  margin: 10px;
+  padding: 10px;
+  background: #aaa;
+}

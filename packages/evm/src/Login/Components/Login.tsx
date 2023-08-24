@@ -1,14 +1,25 @@
 import {CRXButton} from '@cb/shared';
 import {CRXPaper} from '@cb/shared';
-import { useEffect } from "react";
+import  React, { useEffect } from "react";
 import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { utils } from "../../utils/settings";
 import { AUTHENTICATION_LOGIN_URL } from '../../utils/Api/url'
 import {useTranslation} from 'react-i18next';
 import { useSelector } from "react-redux";
 import { RootState } from "./../../Redux/rootReducer";
+import { AuthenticationAgent} from "../../utils/Api/ApiAgent";
 
 export default function Login (){
+  
+  React.useEffect(() => {
+    AuthenticationAgent.getAzureCred().then((response:any) => {
+      localStorage.setItem("clientId",JSON.stringify(response.applicationClientId))
+      localStorage.setItem("tenantId",JSON.stringify(response.applicationTenantId))
+    });
+
+    
+ 
+},[])
   const {t} = useTranslation();
     let culture: string = useSelector(
       (state: RootState) => state.cultureReducer.value

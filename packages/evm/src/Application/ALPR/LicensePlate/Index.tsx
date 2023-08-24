@@ -37,9 +37,10 @@ import { states } from "../GlobalDropdown";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { renderCheckMultiselect } from "../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+
 import { GetAllHotListData } from "../../../Redux/AlprHotListReducer";
 import { AlprGlobalConstants, alprToasterMessages, gridAlignment, nullValidationHandling } from "../AlprGlobal";
+import { dateDisplayFormat } from "../../../GlobalFunctions/DateFormat";
 
 type DateTimeObject = {
   startDate: string;
@@ -714,7 +715,7 @@ const LicensePlate = () => {
   
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-      <div className="switchLeftComponents " onKeyDown={handleKeyDown}>
+      <div className="Alpr_LicensePlate_switchLeftComponents" onKeyDown={handleKeyDown}>
         <CRXToaster ref={alertMessageRef} />
         {rows && (
           <CRXDataTable

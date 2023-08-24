@@ -8,6 +8,7 @@ import {
 import { useHistory } from "react-router";
 import UnitConfigurationInfo from "./UnitConfigurationInfo";
 import useGetFetch from "../../utils/Api/useGetFetch";
+import BC02 from "../../Assets/Images/BC02.png";
 import BC03 from "../../Assets/Images/BC03.png";
 import DVRVRX20 from "../../Assets/Images/DVR-VR-X20.png";
 import BC04 from "../../Assets/Images/BC04.png";
@@ -44,6 +45,10 @@ import { RootState } from "../../Redux/rootReducer";
 import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../../utils/hub_config";
 import Restricted from "../../ApplicationPermission/Restricted";
 import moment from "moment";
+import LiveDiagnostic from "./LiveDiagnostics/LiveDiagnostic";
+import { CRXTooltip } from "@cb/shared";
+import { CRXModalDialog } from "@cb/shared";
+import UnitDeviceAssignUser from "../UnitDeviceAssignUser";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -64,6 +69,8 @@ type stateProps = {
   unitId: any;
   stationId: any;
   deviceType: any;
+  deviceTypeName: any;
+
 };
 
 type locationProps = {
@@ -98,12 +105,10 @@ const UnitCreate = (props: historyProps) => {
   const [showSuccess,] = useState<boolean>(false);
   const [showMessageError] = useState<string>("");
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
-  const [buttonLogic, setButton] = useState<boolean>();
   const [rows, setRows] = React.useState<UnitAndDevice[]>([]);
   const [order] = React.useState<Order>("asc");
   const [orderBy] = React.useState<string>("name");
   const [open, setOpen] = React.useState<boolean>(false);
-  const validationCheckOnButton = (checkError: boolean) => { setButton(checkError); };
   const [selectedActionRow, setSelectedActionRow] = React.useState<UnitAndDevice>();
   const [selectedItems, setSelectedItems] = React.useState<UnitAndDevice[]>([]);
   const [queuedAssets, setQueuedAssets] = React.useState<number>(0);
@@ -115,7 +120,7 @@ const UnitCreate = (props: historyProps) => {
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
-
+  const [openAssignUser, setOpenAssignUser] = React.useState(false);
   const statusJson = useRef<any>(null);
   const [unitStatus, setUnitStatus] = useState<any>();
   const [stationName, SetStationName] = React.useState<string>('');
@@ -146,30 +151,36 @@ const UnitCreate = (props: historyProps) => {
 
   const tabs1 = [
     { label: t("Configuration"), index: 0 },
-    { label: t("Queued_Assets"), index: 1 },
+    { label: t("Queued_Assets_Caps"), index: 1 },
     { label: t("Events"), index: 2 },
     { label: t("Device_Diagnostic"), index: 3 },
-    { label: t("Update_History"), index: 4 }
+    { label: t("Update_History"), index: 4 },
+    { label: t("Live_Diagnostic"), index: 5 },
   ];
 
   const tabs = [
     { label: t("Configurations"), index: 0 },
     { label: t("Devices"), index: 1 },
-    { label: t("Queued_Assets"), index: 2 },
+    { label: t("Queued_Assets_Caps"), index: 2 },
     { label: t("Events"), index: 3 },
     { label: t("Device_Diagnostic"), index: 4 },
+    { label: t("Live_Diagnostic"), index: 5 },
   ];
   const [allconfigTemplateList, setAllconfigTemplateList] = useState<any[]>([]);
   const [configTemplateList, setConfigTemplateList] = useState<any[]>([]);
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
   const stationList: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
-
+  const [IsformUpdated, setIsformUpdated] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [filterGroupValue, setFilterGroupValue] = React.useState<any>([]);
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const [filterValue, setFilterValue] = React.useState<any>([]);
 
   React.useEffect(() => {
-
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
     subscribeGroupToSocket("UnitStatus");
     UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response: GetPrimaryDeviceInfo) => {
+      response.id = unitID;
       setPrimaryDeviceInfo(response);
       if (response != undefined) {
         let currentTime = new Date();
@@ -223,17 +234,6 @@ const UnitCreate = (props: historyProps) => {
   }, [unitInfo]);
 
   React.useEffect(() => {
-    if (buttonLogic == true) setIsSaveButtonDisabled(true);
-
-    if (buttonLogic == false) setIsSaveButtonDisabled(false);
-  }, [buttonLogic]);
-
-  React.useEffect(() => {
-
-    if (buttonLogic == true) setIsSaveButtonDisabled(true);
-  }, []);
-
-  React.useEffect(() => {
     if (primaryDeviceInfo && configTemplateList && stationList && configTemplateList.length > 0 && stationList.length > 0) {
       SetStationName(primaryDeviceInfo.station)
       let template: any = [{ displayText: t("None"), value: "0", stationId: null }];
@@ -275,10 +275,32 @@ const UnitCreate = (props: historyProps) => {
   //   console.log(templates, "templates")
   //   setConfigTemplateList(templates)
   // }, [unitInfo])
-
+  const UpdateDescription = (status: string) => {
+    switch (status) {
+      case "Offline":
+        return "Offline"
+      case "Live":
+        return "Live Streaming"
+      case "Recording":
+        return "Recording"
+      case "StandBy":
+        return "Standby"
+      case "Online":
+        return "Online"
+      case "OnlineWithGETAC":
+        return "Online with GETAC"
+      case "UnitBeingDiagnosed":
+        return "Live Diagnosis"
+      case "Unregistered":
+        return "Unregistered"
+      default:
+        return "";
+    }
+  }
   function onMsgReceived(e: any) {
     if (e != null && e.data != null && e.data.body != null) {
       statusJson.current = JSON.parse(e.data.body.data);
+      statusJson.current.Data = UpdateDescription(statusJson.current.Data)
       if (statusJson.current.UnitId === unitID) {
         setUnitStatus(statusJson.current.Data.toUpperCase());
       }
@@ -433,7 +455,14 @@ const UnitCreate = (props: historyProps) => {
       setresChecker(true);
     }
   };
-
+  const showToastMsg = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
 
@@ -443,7 +472,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth: "380"
+      minWidth: "280"
     },
     {
       label: `${t("Device_Type")}`,
@@ -451,7 +480,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth: "350"
+      minWidth: "250"
     },
     {
       label: `${t("Description")}`,
@@ -459,7 +488,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth: "350"
+      minWidth: "750"
     },
     {
       label: `${t("Status")}`,
@@ -467,7 +496,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth: "350"
+      minWidth: "280"
     },
     {
       label: `${t("Version")}`,
@@ -475,10 +504,16 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth: "400"
+      minWidth: "260"
     }
   ]);
-
+  const assignUser = () => {
+    setOpenAssignUser(true);
+  }
+  const handleCloseAssignUser = () => {
+    if (IsformUpdated) setIsModalOpen(true);
+    else setOpenAssignUser(false);
+  }
   const clearAll = () => {
     const clearButton: any = document.getElementsByClassName(
       "MuiAutocomplete-clearIndicator"
@@ -498,8 +533,30 @@ const UnitCreate = (props: historyProps) => {
     setHeadCells(headCellsArray);
   };
   return (
-    <div className="UnitDetailMain switchLeftComponents _Unit_Detail_View">
+    <div className="UnitDetailMain _Unit_Detail_View">
       <CRXToaster ref={targetRef} />
+      <CRXModalDialog
+        maxWidth="lg"
+        title={t("Assign_user(s)")}
+        className={"CRXModal CRXModalAssignUser"}
+        modelOpen={openAssignUser}
+        onClose={() => handleCloseAssignUser}
+        defaultButton={false}
+        indicatesText={true}
+      >
+        <UnitDeviceAssignUser
+          selectedItems={selectedItems}
+          filterValue={filterValue}
+          setFilterValue={(v: any) => setFilterValue(v)}
+          filterGroupValue={filterGroupValue}
+          setFilterGroupValue={(v: any) => setFilterGroupValue(v)}
+          rowData={primaryDeviceInfo}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenAssignUser(false)}
+          showToastMsg={showToastMsg}
+          setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
+        />
+      </CRXModalDialog>
       <div className="unitDetailAction">
         <div className="menuUnitDetail">
           <Menu
@@ -517,10 +574,21 @@ const UnitCreate = (props: historyProps) => {
           >
             <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${stationID}&unitSysSerial=${unitID}&unitId=${primaryDeviceInfo ? primaryDeviceInfo.name : ""}`} target="_blank">
               <Restricted moduleId={57}>
-                <div className="crx-meu-content ">
+                <div className="crx-meu-content  crx-spac">
+                  <div className="crx-menu-icon">
+                  </div>
                   <div className="crx-menu-list">{t("View_Live_Video")}</div>
                 </div>
               </Restricted>
+            </MenuItem>
+            <MenuItem>
+              <div className="crx-meu-content crx-spac" onClick={assignUser} >
+                <div className="crx-menu-icon">
+                </div>
+                <div className="crx-menu-list">
+                  {t("Assign_user(s)")}
+                </div>
+              </div>
             </MenuItem>
           </Menu>
         </div>
@@ -559,17 +627,21 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-59"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.deviceType.toUpperCase()}</div>
+                    <div className="panel_Heading_unitDetail" id="unitDeviceType">{location?.state?.deviceTypeName?.toUpperCase()}</div>
                     <img
                       className="deviceImage"
                       src={
-                        primaryDeviceInfo.deviceType === "BC03"
+                        location?.state?.deviceTypeName === "BC04"
+                          ? BC04
+                          : location?.state?.deviceTypeName === "BC03 LTE"
                           ? BC03
-                          : primaryDeviceInfo.deviceType === "BC04"
-                            ? BC04
-                            : primaryDeviceInfo.deviceType === "MasterDock"
-                              ? MASTERDOCK
-                              : DVRVRX20
+                          : location?.state?.deviceTypeName === "BC02"
+                          ? BC02
+                          : location?.state?.deviceTypeName === "Incar"
+                            ? DVRVRX20
+                          //   : primaryDeviceInfo.deviceType === "MasterDock"
+                          //     ? MASTERDOCK
+                              : MASTERDOCK
                       }
                       alt={primaryDeviceInfo.deviceType}
                     />
@@ -582,7 +654,7 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-59"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{unitStatus}</div>
+                    <div className="panel_Heading_unitDetail" id="unitStatus">{unitStatus}</div>
                     <span className={`pdStatus ${unitStatus}`}>
 
                       <i className="fas fa-circle"></i>
@@ -590,22 +662,22 @@ const UnitCreate = (props: historyProps) => {
                     <p>{t("STATUS")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.serialNumber.toUpperCase()}</div>
+                    <div className="panel_Heading_unitDetail" id="unitSerialNum">{primaryDeviceInfo.serialNumber.toUpperCase()}</div>
                     <span className="noRow"></span>
                     <p>{t("SERIAL_NUMBER")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.key.toUpperCase()}</div>
+                    <div className="panel_Heading_unitDetail" id="unitKey">{primaryDeviceInfo.key.toUpperCase()}</div>
                     <span className="noRow"></span>
                     <p>{t("KEY")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.version}</div>
+                    <div className="panel_Heading_unitDetail" id="unitVersion">{primaryDeviceInfo.version}</div>
                     <span className="noRow"></span>
                     <p>{t("CURRENT_VERSION")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
-                    <div className="panel_Heading_unitDetail">{stationName.toUpperCase()}</div>
+                    <div className="panel_Heading_unitDetail" id="unitStationName">{stationName.toUpperCase()}</div>
                     <span className="noRow"></span>
                     <p>{t("STATION")}</p>
                   </div>
@@ -614,7 +686,7 @@ const UnitCreate = (props: historyProps) => {
 
                 <div className="RightBoard">
                   <div className="pannelBoard mr-50">
-                    <div className="panel_Heading_unitDetail">{queuedAssets}</div>
+                    <div className="panel_Heading_unitDetail" id="unitAssetStatus">{queuedAssets}</div>
                     <span className="pdUpload" onClick={updateUploading}>
                       <i className="fad fa-sync-alt"></i>
                     </span>
@@ -627,7 +699,7 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-50"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{assetsCount}</div>
+                    <div className="panel_Heading_unitDetail" id="unitAssetCount">{assetsCount}</div>
                     <span className="noRow"></span>
                     <p>{t("ASSETS")}</p>
                   </div>
@@ -638,10 +710,11 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.assignedTo}</div>
-                    <span className="pdDotted">
-                      <i className="fas fa-ellipsis-h"></i>
-                    </span>
+                    <div className="panel_Heading_unitDetail" id="unitAssignTo">{primaryDeviceInfo.assignedTo}</div>
+                    <CRXTooltip iconName="fa-solid fa-ellipsis-h" className='crxTooltipFilter' placement={"top"} arrow={false} title={primaryDeviceInfo.assignedToString}>
+                      <span className="pdDotted">
+                      </span>
+                    </CRXTooltip>
                     <p>{t("ASSIGNED_TO")}</p>
                   </div>
                 </div>
@@ -686,7 +759,15 @@ const UnitCreate = (props: historyProps) => {
           <UnitConfigurationInfo
             info={unitInfo}
             onChangeGroupInfo={onChangeGroupInfo}
-            validationCheckOnButton={validationCheckOnButton}
+            // validationCheckOnButton={validationCheckOnButton}
+            // setButton={setButton}
+            setIsSaveButtonDisabled={setIsSaveButtonDisabled}
+            onSave={onSave}
+            isSaveButtonDisabled={isSaveButtonDisabled}
+            redirectPage={redirectPage}
+            setIsOpen={setIsOpen}
+            closeDialog={closeDialog}
+            isOpen={isOpen}
           />
 
         </CrxTabPanel>
@@ -695,6 +776,7 @@ const UnitCreate = (props: historyProps) => {
         {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={1}>
             <div className="unit_detail_tab_events unit_Device_tabUI">
+              {/* <div className="indicates-label">Table auto refreshes every 10 seconds</div> */}
               {rows && (
                 <CRXDataTable
                   id={t("Unit_Details")}
@@ -767,61 +849,15 @@ const UnitCreate = (props: historyProps) => {
           </CrxTabPanel>
         ) : null}
 
+        <CrxTabPanel value={value} index={5}>
+          <LiveDiagnostic unitName={unitInfo.name} stationId={location.state.stationId} unitId={location.state.unitId} deviceType={location.state.deviceType} />
+        </CrxTabPanel>
+
         <div className="tab-bottom-buttons stickyFooter_Tab pd-b-50">
-          <div className="save-cancel-unitDevice">
-            <CRXButton
-              variant="contained"
-              className="groupInfoTabButtons"
-              onClick={onSave}
-              disabled={isSaveButtonDisabled}
-            >
-              {t("Save")}
-            </CRXButton>
-            <CRXButton
-              className="groupInfoTabButtons secondary"
-              color="secondary"
-              variant="outlined"
-              onClick={() =>
-                history.push(
-                  urlList.filter(
-                    (item: any) => item.name === urlNames.unitsAndDevices
-                  )[0].url
-                )
-              }
-            >
-              {t("Cancel")}
-            </CRXButton>
-          </div>
-          <CRXButton
-            onClick={() => redirectPage()}
-            className="groupInfoTabButtons-Close secondary"
-            color="secondary"
-            variant="outlined"
-          >
-            {t("Close")}
-          </CRXButton>
+
         </div>
-        <CRXConfirmDialog
-          setIsOpen={() => setIsOpen(false)}
-          onConfirm={closeDialog}
-          isOpen={isOpen}
-          className="userGroupNameConfirm"
-          primary="Yes, close"
-          secondary="No, do not close"
-          text="unit configuration form"
-        >
-          <div className="confirmMessage">
-            {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
-            <strong>{t("'unit_configuration_form'")}</strong>. {t("If_you_close_the_form")},
-            {t("any_changes_you_ve_made_will_not_be_saved.")}
-            {t("You_will_not_be_able_to_undo_this_action.")}
-            <div className="confirmMessageBottom">
-              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-            </div>
-          </div>
-        </CRXConfirmDialog>
       </div>
-    </div>
+    </div >
   );
 };
 

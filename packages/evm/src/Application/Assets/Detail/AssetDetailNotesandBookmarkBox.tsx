@@ -43,12 +43,13 @@ interface propsObject {
   selectDropDown: any
   onClickBookmarkNote: any
   toasterMsgRef: any
-  assetLog: AssetLogType
-  searchTerm: string
+  saveLogs: any
+  searchTerm: string,
+  ViewScreen: boolean
 }
 
 
-const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, selectDropDown, onClickBookmarkNote, toasterMsgRef, assetLog, searchTerm }: propsObject) => {
+const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, selectDropDown, onClickBookmarkNote, toasterMsgRef, saveLogs, searchTerm, ViewScreen }: propsObject) => {
   const { t } = useTranslation<string>();
   const [description, setDescription] = React.useState<string>("");
   const [editDescription, setEditDescription] = React.useState<boolean>(false);
@@ -222,9 +223,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           duration: 5000,
           clearButtton: true,
         });
-        assetLog.assetId = body.assetId;
-        assetLog.notes = "Bookmark Updated";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(body.assetId, "Bookmark Updated");
       })
       .catch((err: any) => {
         onUpdateDone();
@@ -267,9 +266,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           duration: 5000,
           clearButtton: true,
         });
-        assetLog.assetId = body.assetId;
-        assetLog.notes = "Note Updated";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(body.assetId, "Note Updated");
       })
       .catch((err: any) => {
         onUpdateDone();
@@ -335,9 +332,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
-        assetLog.assetId = stateObj.assetId;
-        assetLog.notes = "Bookmark Deleted";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(stateObj.assetId, "Bookmark Deleted");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -368,9 +363,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
           clearButtton: true,
         });
         setIsOpenConfirmDailog(false);
-        assetLog.assetId = stateObj.assetId;
-        assetLog.notes = "Note Deleted";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(stateObj.assetId, "Note Deleted");
       })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
@@ -553,7 +546,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
                     <div ref={wrapperRef} className="action_menu_bookmarkNotes">
                       <ul>
                         <li onClick={onClickEnableEdit}><i className="fas fa-pencil"></i>{t("Edit")}</li>
-                        <li onClick={onClickDelete}><i className="fa-solid fa-trash-can BN_fa-trash"></i>{t("Delete")}</li>
+                        {ViewScreen && <li onClick={onClickDelete}><i className="fa-solid fa-trash-can BN_fa-trash"></i>{t("Delete")}</li>}
 
                       </ul>
                     </div>

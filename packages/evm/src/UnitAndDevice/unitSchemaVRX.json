@@ -790,6 +790,7 @@
                         "key": "CameraSetup/cameraMode_1_Camera/Select",
                         "type": "select",
                         "label": "Camera Mode",
+                        "class": "CameraModeField",
                         "sequence": 3,
                         "hintText": "Allows to select Camera Mode for the screen on startup",
                         "value": "",

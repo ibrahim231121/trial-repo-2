@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef} from "react";
 import "./categoryFormsDetail.scss"
 import { Field, FormikErrors, FormikTouched } from "formik";
 import { TextField } from "@material-ui/core";
 import { CategoryFormsModel } from "./CategoryFormsDetail";
-import { useTranslation } from "react-i18next";
 
 type infoProps = {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
@@ -14,22 +13,7 @@ type infoProps = {
 }
 
 const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, errors, touched }) => {
-  const { t } = useTranslation<string>();
-  const [position, setPosition] = useState<string>("relative")
   const stickyForm : any = useRef()
-//   useEffect(() => {
-//     window.addEventListener('scroll', function() {
-//        const win = window.pageYOffset;
-//        if(win > 0) {
-//         stickyForm && (stickyForm.current.style.position = "sticky");
-//         stickyForm && (stickyForm.current.style.top = "135px")
-            
-//        }else {
-//           stickyForm && (stickyForm.current.style.position = "relative");
-//           stickyForm && (stickyForm.current.style.top = "55px")
-//        }
-//     });
-// },[])
   return (
     <>
       <div className="formDetailInfo" ref={stickyForm}>
@@ -74,6 +58,14 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
                 disabled={false}
                 type="text"
               />
+              {(errors?.description?.length !== undefined && errors?.description?.length > 0) ? (
+                      <div className="errorTenantStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {errors.description}
+                      </div>
+                    ) : (
+                      <></>
+                    )}
           </div>
         </div>
       </div>

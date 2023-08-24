@@ -1,9 +1,11 @@
 import React from "react";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
+import randomNumberGenerator from "../utils/numberGenerator";
 
 function rand() {
-  return Math.round(Math.random() * 20) - 10;
+  const randomNumGenerated = randomNumberGenerator();
+  return Math.round(randomNumGenerated * 20) - 10;
 }
 
 function getModalStyle() {

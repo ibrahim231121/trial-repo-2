@@ -25,6 +25,12 @@ export type SearchObject = {
 //   recordingStarted: string;
 // };
 
+type isDisabledActionFunction = {
+  key: true,
+  value: string,
+  Message: string
+}
+
 export interface HeadCellProps {
   id: any;
   label: string;
@@ -45,6 +51,7 @@ export interface HeadCellProps {
   attributeName? : string;
   attributeType? : string;
   attributeOperator? : string;
+  isDisabledActionFunction? : isDisabledActionFunction;
 }
 
 export type GridFilter = {
@@ -128,6 +135,25 @@ export const onTextCompare = (
   });
   return dataRows;
 };
+
+export const onTextMultiCompare = (
+   dataRows: any[],
+   headCells: HeadCellProps[],
+   el: SearchObject
+ ) => {
+   dataRows = dataRows.filter((x: any) => { 
+    return (
+      (x[headCells[el.colIdx].id] != undefined
+        ? x[headCells[el.colIdx].id].join(', ')
+          : ""
+         )
+           ?.toString().toLowerCase()
+           .indexOf(el.value[0].toString().toLowerCase()) !== -1
+       );
+     });
+     return dataRows;
+   };
+
 
 export const onMultipleCompare = (
   dataRows: any[],

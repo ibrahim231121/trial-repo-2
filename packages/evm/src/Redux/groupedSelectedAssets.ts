@@ -61,7 +61,7 @@ const groupedSelectedAssets = createSlice({
         //work for local storage.
     },
 
-    // clearAll: (state: any, action: PayloadAction<any>) => {
+    // clearAll: (state: any, action: PayloadAction<any>) => { 
     //     state.groupedSelectedAssets = [];
     // },
     clearAll: (state: any) => {

@@ -263,7 +263,9 @@ const DateTime = () => {
         value={dateTimeDetail.value}
         onChange={onOptionChange}
         options={dateOptionsValues}
-        disabled={disabled}>
+        disabled={disabled}
+        id="dateTime-select"
+        >  
         <CRXDropContainer
           icon={img}
           content={data}

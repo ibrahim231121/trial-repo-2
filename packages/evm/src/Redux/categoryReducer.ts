@@ -6,7 +6,7 @@ import { CATEGORY_INFO_GET_URL } from '../utils/Api/url';
 export const getCategoryAsync: any = createAsyncThunk(
     'category/getCategoriesAsync',
     async () => {
-        return await SetupConfigurationAgent.getCategories(CATEGORY_INFO_GET_URL).then((response:Category[]) => response);
+        return await SetupConfigurationAgent.getAllCategories(CATEGORY_INFO_GET_URL).then((response: Category[]) => response);
     }
 );
 

@@ -16,6 +16,8 @@ import { urlList, urlNames } from "../../../../utils/urlList";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
 import { CRXAlert } from "@cb/shared";
+import "./AssetLinkConfirm.scss"
+
 
 type AssetLinkConfirmProps = {
     items: any[];
@@ -43,6 +45,7 @@ type AssetModel = {
     fileType: string;
     assetType: string;
     isValid: boolean;
+    isRestricted?:boolean;
 }
 const cookies = new Cookies();
 
@@ -62,7 +65,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
     const [assetModel, setAssetModel] = React.useState<AssetModel[]>([]);
     const [buttonState, setButtonState] = React.useState(true);
 
-
+   
     const groupedSelectedAssetsActions: any = useSelector(
         (state: RootState) => state.groupedSelectedAssetsActionsReducer.groupedSelectedAssetsActions
     );
@@ -84,6 +87,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                 return isValid;
             }
         }
+        
         return isValid;
     }
     React.useEffect(() => {
@@ -110,7 +114,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
             }
         })
 
-        if (inValidCount > 0 || assetsToBeLink.filter(x => x.isChecked == true).length == 0) {
+        if (inValidCount > 0 || assetsToBeLink.filter(x => x.isChecked == true).length == 0 || assetsLinkIn.filter(x => x.isChecked == true).length == 0) {
             setButtonState(true);
         }
         else {
@@ -118,6 +122,16 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
         }
 
     }, [assetsToBeLink])
+
+    React.useEffect(() => {
+        if (assetsLinkIn.length > 0 && assetModel.length > 0 && (assetsLinkIn.filter(x => x.isChecked == true).length == 0 || assetModel.filter(e => e.isValid == false).length > 0)) {
+            setButtonState(true);
+        }
+        else {
+            setButtonState(false);
+        }
+
+    }, [assetsLinkIn])
     const checkValidation = (tempAssetLinkIn: any[]) => {
         let newAssetModel: AssetModel[] = [];
         var masterChildAssets: any[] = [];
@@ -148,6 +162,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                     fileType: a.fileType,
                     assetType: a.assetType,
                     isValid: allChildAssets.filter(c => c == a.assetId).length > 0 ? false : true,
+                    isRestricted: a.isRestricted ? true:false,
                 })
             })
             setAssetModel(newAssetModel);
@@ -161,7 +176,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
         let tempModel: AssetModel[] = [];
         groupedSelectedAssetsActions.map((obj: any, index: number) => {
             confirmAssets.push({
-                isChecked: true,
+                isChecked: validate(obj.assetId),
                 assetId: obj.assetId,
                 index: index
             });
@@ -176,6 +191,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                 fileType: obj.fileType,
                 assetType: obj.assetType,
                 isValid: validate(obj.assetId),
+                isRestricted: obj.isRestricted ? true:false,
             });
             setAssetModel(tempModel);
         });
@@ -201,7 +217,7 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
 
     }, []);
     React.useEffect(() => {
-        if (confirmModaltxt.length > 0) { 
+        if (confirmModaltxt.length > 0) {
             //setIsModalOpen(true)
             sendData();
         }
@@ -229,16 +245,25 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
 
                 if (assetsLinkIn[0].isChecked) {
                     tempAssetsLinking.push({
-                        evidenceId: props.rowData.id,
-                        assetId: sobj.assetId,
-                        action: "add",
-                        evidenceRetentionList:temp,
-                    })
-                    tempAssetsLinking.push({
                         evidenceId: sobj.evidenceId,
                         assetId: sobj.assetId,
                         action: "delete",
-                        evidenceRetentionList:temp,
+                        evidenceRetentionList: temp,
+                        masterAssetName: props.rowData.assetName,
+                        assetName: sobj.assetName,
+                        masterassetId:props.rowData.assetId
+                        
+                    })
+                    tempAssetsLinking.push({
+                        evidenceId: props.rowData.id,
+                        assetId: sobj.assetId,
+                        action: "add",
+                        evidenceRetentionList: temp,
+                        masterAssetName: props.rowData.assetName,
+                        assetName: sobj.assetName,
+                        masterassetId:props.rowData.assetId
+
+
                     })
                 }
             }
@@ -254,7 +279,6 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
         let tempAssetsLinking: AssetsLinking[] = [];
         let maxDestinationExpiry: any;
         setConfirmModaltxt("");
-
         ////check duplicate assets////
 
 
@@ -278,8 +302,8 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
             }
         }
         ////EvidenceAssetAction////
-
         groupedSelectedAssetsActions.map((sobj: any, index: number) => {
+            
             if (assetsToBeLink[index].isChecked) {
                 if (props.items.length > 0) {
 
@@ -289,6 +313,10 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                                 evidenceId: obj.id,
                                 assetId: sobj.assetId,
                                 action: "add",
+                                masterAssetName: obj.assetName,
+                                assetName: sobj.assetName,
+                                masterassetId:obj.assetId
+
                             })
                         }
                     })
@@ -299,6 +327,10 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                             evidenceId: props.rowData.id,
                             assetId: sobj.assetId,
                             action: "add",
+                            masterAssetName: props.rowData.assetName,
+                            assetName: sobj.assetName,
+                            masterassetId:props.rowData.assetId
+
                         })
                     }
                 }
@@ -330,10 +362,14 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
         }
         tempEvidenceAsset.forEach((x) => {
             tempAssetsLinking.push({
-                assetId:x.assetId,
-                evidenceId:x.evidenceId,
-                action:x.action,
-                evidenceRetentionList:temp
+                assetId: x.assetId,
+                evidenceId: x.evidenceId,
+                action: x.action,
+                evidenceRetentionList: temp,
+                masterAssetName: x.masterAssetName,
+                assetName: x.assetName,
+                masterassetId: x.masterassetId
+
             })
         })
         setLinkAssets(tempAssetsLinking);
@@ -423,7 +459,6 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
     const masterAssetList = (obj1: any) => {
         return (
             obj1.map((obj: any, index: number) => {
-
                 const id = `checkBox'+${index}`;
                 return (
                     <>
@@ -444,9 +479,10 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
                                 <AssetThumbnail
                                     assetName={obj.assetName}
                                     assetType={obj.assetType}
-                                    fileType={obj.evidence.asset[0].files[0].type}
-                                    accessCode={obj.evidence.asset[0].files[0].accessCode}
+                                    fileType={obj.evidence.masterAsset.files[0].type}
+                                    accessCode={obj.evidence.masterAsset.files[0].accessCode}
                                     className={"CRXPopupTableImage"}
+                                    isRestricted={obj.isRestricted}
                                 />
                             </div>
                             <div className="_asset_group_list_detail">
@@ -465,160 +501,162 @@ const AssetLinkConfirm: React.FC<AssetLinkConfirmProps> = (props) => {
 
     return (
         <>
-            <div className="__Crx__Share__Asset__Modal" style={{ height: '600px' }}>
+            <div className="linkAsset __Crx__Share__Asset__Modal">
 
-                <Formik initialValues={{ email }} onSubmit={() => onSubmitForm()}>
-                    {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
-                        <>
-                            <Form>
-                                <div className="CrxCreateUser">
-                                    <div className="CrxIndicates">
-                                    {assetModel.filter(e => e.isValid == false).length == assetModel.length &&
-                                            <>
-                                            <CRXAlert
-                                                    className="formFieldError"
-                                                    message={t("Asset_already_exists_in_the_destination_group_Link_action_cant_be_performed")}
-                                                    type="error"
-                                                    showCloseButton={false}
-                                                    alertType="inline"
-                                                    open={true}
-                                                />
-                                                {/* <i className="fas fa-exclamation-circle errorIcon"></i> */}
-                                                
-                                                {/* <div style={{ color: 'red' }}>
-                                                    {t("Asset_already_exists_in_the_destination_group. Link_action_cant_be_performed.")}
-                                                </div> */}
-                                            </>
+                <div className="modalContent">
 
-                                        }
-                                        Are you sure want to link the selected asset(s)? <br></br>
-                                        
-                                        {assetModel.map((obj: any, index: number) => {
-
-                                            const id = `checkBox'+${index}`;
-                                            return (
+                    <Formik initialValues={{ email }} onSubmit={() => onSubmitForm()}>
+                        {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
+                            <>
+                                <Form>
+                                    <div className="CrxCreateUser">
+                                        <div className="CrxIndicates">
+                                            {assetModel.filter(e => e.isValid == false).length == assetModel.length &&
                                                 <>
-                                                    <div >
-                                                        <div className="_asset_group_list_row" key={index} style={{ border: (assetModel.filter(e => e.isValid == false).length < assetModel.length && obj.isValid === false) ? "2px solid red" : "0px solid white" }} >
-                                                            <div className="_asset_group_single_check">
-                                                                <CRXCheckBox
-                                                                    inputProps={id}
-                                                                    className="relatedAssetsCheckbox"
-                                                                    checked={(assetsToBeLink[index]?.isChecked == undefined) ? true : assetsToBeLink[index].isChecked}
-                                                                    onChange={(
-                                                                        e: React.ChangeEvent<HTMLInputElement>
-                                                                    ) => handleCheck(e, assetsToBeLink[index].assetId)}
-                                                                    lightMode={true}
-                                                                />
-                                                            </div>
-                                                            <div className="_asset_group_list_thumb">
-                                                                <AssetThumbnail
-                                                                    assetName={obj.assetName}
-                                                                    assetType={obj.assetType}
-                                                                    fileType={obj.fileType}
-                                                                    accessCode={obj.accessCode}
-                                                                    className={"CRXPopupTableImage"}
-                                                                />
-                                                            </div>
-                                                            <div className="_asset_group_list_detail">
+                                                    <CRXAlert
+                                                        className="formFieldError"
+                                                        message={assetModel[0]?.actionType == "link"? t("Asset_already_exists_in_the_destination_group_Link_action_cant_be_performed"):t("Asset_already_exists_in_the_destination_group_Move_action_cant_be_performed")}
+                                                        type="error"
+                                                        showCloseButton={false}
+                                                        alertType="inline"
+                                                        open={true}
+                                                    />
+                                                </>
+                                            }
+                                            Are you sure want to {groupedSelectedAssetsActions.length > 0 ? groupedSelectedAssetsActions[0].actionType: ""} the selected asset(s)? <br></br>
 
-                                                                <div className="_asset_group_list_link">
-                                                                    {obj.assetName}
+                                            {assetModel.map((obj: any, index: number) => {
+
+                                                const id = `checkBox'+${index}`;
+                                                return (
+                                                    <>
+                                                        <div >
+                                                            <div className="_asset_group_list_row" key={index} >
+                                                                <div className="_asset_group_single_check">
+                                                                    <CRXCheckBox
+                                                                        inputProps={id}
+                                                                        className="relatedAssetsCheckbox"
+                                                                        checked={(assetsToBeLink[index]?.isChecked == undefined) ? true : assetsToBeLink[index].isChecked}
+                                                                        onChange={(
+                                                                            e: React.ChangeEvent<HTMLInputElement>
+                                                                        ) => handleCheck(e, assetsToBeLink[index].assetId)}
+                                                                        lightMode={true}
+                                                                    />
+                                                                </div>
+                                                                <div className="_asset_group_list_thumb">
+                                                                    <AssetThumbnail
+                                                                        assetName={obj.assetName}
+                                                                        assetType={obj.assetType}
+                                                                        fileType={obj.fileType}
+                                                                        accessCode={obj.accessCode}
+                                                                        className={"CRXPopupTableImage"}
+                                                                        isRestricted={obj.isRestricted}
+                                                                    />
+                                                                </div>
+                                                                <div className="_asset_group_list_detail">
+
+                                                                    <div className="_asset_group_list_link">
+                                                                        {obj.assetName}
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                            {assetModel.filter(e => e.isValid == false).length < assetModel.length &&
+                                                                obj.isValid === false &&
+                                                                <>
+                                                                    <CRXAlert
+                                                                        className="formFieldError"
+                                                                        message={t("Asset_already_exists_in_the_destination_group")}
+                                                                        type="info"
+                                                                        showCloseButton={false}
+                                                                        alertType="inline"
+                                                                        open={true}
+                                                                    />
+
+                                                                </>
+                                                            }
                                                         </div>
-                                                        {assetModel.filter(e => e.isValid == false).length < assetModel.length &&
-                                                            obj.isValid === false &&
-                                                            <>
-                                                                <CRXAlert
-                                                                    className="formFieldError"
-                                                                    message={t("Asset_already_exists_in_the_destination_group")}
-                                                                    type="warning"
-                                                                    showCloseButton={false}
-                                                                    alertType="inline"
-                                                                    open={true}
-                                                                />
+                                                        <CRXConfirmDialog
+                                                            setIsOpen={() => setIsModalOpen(false)}
+                                                            onConfirm={closeDialog}
+                                                            isOpen={isModalOpen}
+                                                            className="userGroupNameConfirm"
+                                                            primary={t("Link asset(s)")}
+                                                            secondary={t("No, do not link")}
+                                                            text="user group form"
+                                                        >
+                                                            <div className="confirmMessage">
+                                                                {t("The_retention_of_the_following_assets_will_be_increased")}<br></br>
+                                                                {t("_by_the_retention_of_destination_evidence")}.<br></br>
+                                                                <strong>{confirmModaltxt}</strong>
+                                                                <br></br>
+                                                                {t("Do_you_want_to_link.")}
 
-                                                            </>
-                                                        }
-                                                    </div>
-                                                    <CRXConfirmDialog
-                                                        setIsOpen={() => setIsModalOpen(false)}
-                                                        onConfirm={closeDialog}
-                                                        isOpen={isModalOpen}
-                                                        className="userGroupNameConfirm"
-                                                        primary={t("Link asset(s)")}
-                                                        secondary={t("No, do not link")}
-                                                        text="user group form"
-                                                    >
-                                                        <div className="confirmMessage">
-                                                            {t("The_retention_of_the_following_assets_will_be_increased")}<br></br>
-                                                            {t("_by_the_retention_of_destination_evidence")}.<br></br>
-                                                            <strong>{confirmModaltxt}</strong>
-                                                            <br></br>
-                                                            {t("Do_you_want_to_link.")}
-
-                                                            <div className="confirmMessageBottom">
-                                                                {t("Are_you_sure_you_would_like_to")}{" "}
-                                                                <strong>{t("close")}</strong> {t("the_form?")}
+                                                                <div className="confirmMessageBottom">
+                                                                    {t("Are_you_sure_you_would_like_to")}{" "}
+                                                                    <strong>{t("close")}</strong> {t("the_form?")}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </CRXConfirmDialog>
-                                                </>
-                                            );
+                                                        </CRXConfirmDialog>
+                                                    </>
+                                                );
 
-                                        })
+                                            })
+                                            }
+                                            <div className="_asset_group_list_row_primary">
+                                                The Assets will be {groupedSelectedAssetsActions.length > 0 ? groupedSelectedAssetsActions[0].actionType == "link"?"linked":"moved": ""} to the following Primary Asset(s) <br></br>
+                                                {
+
+                                                    (props.items.length > 0) ?
+
+                                                        masterAssetList(props.items)
+
+                                                        : masterAssetList([props.rowData])
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modalFooter CRXFooter">
+                                        {assetModel.filter(e => e.isValid == false).length != assetModel.length &&
+                                            <>
+                                                <div className="nextBtn">
+                                                    <CRXButton
+                                                        type="submit"
+                                                        className={"primeryBtn"}
+                                                        disabled={buttonState}
+                                                    >
+                                                        {t("Submit")}
+                                                    </CRXButton>
+                                                </div>
+                                                <div className="cancelBtn">
+                                                    <CRXButton
+                                                        onClick={cancelBtn}
+                                                        className="cancelButton secondary"
+                                                    >
+                                                        {t("Cancel")}
+                                                    </CRXButton>
+                                                </div>
+                                            </>
                                         }
-                                        <br></br>
-                                        The Assets will be linked to the following Primary Asset(s) <br></br>
-                                        {
-
-                                            (props.items.length > 0) ?
-
-                                                masterAssetList(props.items)
-
-                                                : masterAssetList([props.rowData])
+                                        {assetModel.filter(e => e.isValid == false).length == assetModel.length &&
+                                            <div className="cancelBtn">
+                                                <CRXButton
+                                                    onClick={cancelBtn}
+                                                    className="cancelButton secondary"
+                                                >
+                                                    {t("Close")}
+                                                </CRXButton>
+                                            </div>
                                         }
+                                    </div>
+                                </Form>
+                            </>
+                        )}
+                    </Formik>
 
-                                    </div>
-                                </div>
-                                <div className="modalFooter CRXFooter">
-                                {assetModel.filter(e => e.isValid == false).length != assetModel.length &&
-                                <>
-                                    <div className="nextBtn">
-                                        <CRXButton
-                                            type="submit"
-                                            className={"primeryBtn"}
-                                            disabled={buttonState}
-                                        >
-                                            {t("Submit")}
-                                        </CRXButton>
-                                    </div>
-                                    <div className="cancelBtn">
-                                        <CRXButton
-                                            onClick={cancelBtn}
-                                            className="cancelButton secondary"
-                                        >
-                                            {t("Cancel")}
-                                        </CRXButton>
-                                    </div>
-                                    </>
-                                }
-                                {assetModel.filter(e => e.isValid == false).length == assetModel.length &&
-                                    <div className="cancelBtn">
-                                <CRXButton
-                                    onClick={cancelBtn}
-                                    className="cancelButton secondary"
-                                >
-                                    {t("Close")}
-                                </CRXButton>
-                            </div>
-                            }
-                                </div>
-                            </Form>
-                        </>
-                    )}
-                </Formik>
+                </div>
+
+
+
             </div>
         </>
     );

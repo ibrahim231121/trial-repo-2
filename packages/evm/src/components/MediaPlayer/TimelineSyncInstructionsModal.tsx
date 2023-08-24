@@ -38,7 +38,7 @@ const TimelineSyncInstructionsModal: React.FC<VideoPlayerTimelineSyncInstruction
                                 <li>Simply click anywhere on timeline to choose as new start time.</li>
                                 <li>Single arrow for 100 millisecond change.</li>
                                 <li>Double arrow for 1 second change.</li>
-                                <li>Grab and drag beggining of timeline handle for big jump.</li>
+                                {/* <li>Grab and drag beggining of timeline handle for big jump.</li> */}
                                 <li>or, select timeline and Alt+arrow keys to move frame by frame.</li>
                             </ul>
 

@@ -1,20 +1,21 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { CRXHeading } from "@cb/shared";
+import { DisplayCategoryFormProps, FieldsFunctionType } from "../Model/DisplayCategoryForm";
 import { useTranslation } from "react-i18next";
-import { DisplayCategoryFormProps } from "../Model/DisplayCategoryForm";
 import { FieldTypes } from "../Model/FieldTypes";
 import { FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropDownListType, FieldRadioButtonListType } from "./FieldTypes/Index";
 import { IsFieldtypeEquals } from "../Utility/UtilityFunctions";
 import "./DisplayCategoryForm.scss";
+import _ from "lodash";
 
-const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
+const IsPropsEqual = (prevProps: DisplayCategoryFormProps, nextProps: DisplayCategoryFormProps) => !_.isEqual(prevProps, nextProps);
+const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = React.memo(({initialValueObjects, formCollection, validationSchema, setFieldsFunction}) => {
   const { t } = useTranslation<string>();
   return (
     <>
-      {(Object.keys(props.initialValueObjects).length > 0) &&
-        props.formCollection.map((categoryObject: any) => (
+      {(Object.keys(initialValueObjects).length > 0) &&
+        formCollection.map((categoryObject: any) => (
           categoryObject.form.map((formObj: any) => (
             <div className="categoryFormAdded" key={formObj.formId}>
               <CRXHeading variant="h4" className="categoryFormTitle">
@@ -24,54 +25,51 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
               </CRXHeading>
               <Formik
                 enableReinitialize={true}
-                initialValues={props.initialValueObjects}
+                initialValues={initialValueObjects}
                 onSubmit={() => { }}
-                validationSchema={Yup.object({
-                  ...props.validationSchema,
-                })}>
-                {({ errors,touched }) => (
+                validationSchema={validationSchema}>
+                {({ errors, touched }) => (
                   <Form>
                     {formObj.fields.map((field: any) => (
                       <div className={`categoryInnerField `} key={field.id}>
                         <div className="categoryFormLabel_UI">
-                            <label className="categoryFormLabel  " htmlFor={field.id}>
-                              {field?.display?.caption}
-                            </label>
+                          <label className="categoryFormLabel  " htmlFor={field.id}>
+                            {field?.display?.caption}
+                          </label>
+                          {field.isRequired &&
                             <div className={errors[field.name ?? field.key] && touched[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</div>
+                          }
                         </div>
-                       
                         <div className="CBX-input">
                           {(IsFieldtypeEquals(field, FieldTypes.FieldTextBoxType) || IsFieldtypeEquals(field, FieldTypes.CaseNO) || IsFieldtypeEquals(field, FieldTypes.PolygraphLogNumber) || IsFieldtypeEquals(field, FieldTypes.CADID) || IsFieldtypeEquals(field, FieldTypes.Unknown)) &&
                             <Field
                               className={
-                                `editCategoryField ${errors[field.name ?? field.key] && touched[field.name ?? field.key]  ? 'errorBrdr' : ''}`
+                                `editCategoryField ${errors[field.name ?? field.key] && touched[field.name ?? field.key] ? 'errorBrdr' : ''}`
                               }
                               id={field.id}
                               name={
                                 field.name ?? field.key
                               }
-                              onKeyUp={(e: any) => {
-                                props.setFieldsFunction({ name: e.target.name, value: e.target.value });
-                              }}
+                              onBlur={(e: React.FocusEvent<HTMLInputElement>) => setFieldsFunction({ name: e.target.name, value: e.target.value })
+                              }
                             />
                           }
                           {(IsFieldtypeEquals(field, FieldTypes.FieldDropDownListType)) &&
-                                  <div  className="categoryFormDropDown_UI">
-                                  <Field
-                                      id={field.id}
-                                      name={
-                                        field.name ?? field.key
-                                      }
-                                      component={(formikProps: any) =>
-                                        <FieldDropDownListType
-                                          formikProps={formikProps}
-                                          options={field.defaultFieldValue.split('|')}
-                                          setFieldsFunction={(e) => { props.setFieldsFunction({ name: e.name, value: e.value }); }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                        
+                            <div className="categoryFormDropDown_UI">
+                              <Field
+                                id={field.id}
+                                name={
+                                  field.name ?? field.key
+                                }
+                                component={(formikProps: any) =>
+                                  <FieldDropDownListType
+                                    formikProps={formikProps}
+                                    options={field.defaultFieldValue.split('|')}
+                                    setFieldsFunction={(e) => setFieldsFunction({ name: e.name, value: e.value })}
+                                  />
+                                }
+                              />
+                            </div>
                           }
                           {(IsFieldtypeEquals(field, FieldTypes.FieldCheckedBoxType)) &&
                             <Field
@@ -82,7 +80,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               component={(formikProps: any) =>
                                 <FieldCheckedBoxType
                                   formikProps={formikProps}
-                                  setFieldsFunction={(e) => props.setFieldsFunction({ name: e.name, value: e.value })}
+                                  setFieldsFunction={(e) => setFieldsFunction({ name: e.name, value: e.value })}
                                 />
                               }
                             />
@@ -97,9 +95,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               name={
                                 field.name ?? field.key
                               }
-                              onKeyUp={(e: any) => {
-                                props.setFieldsFunction({ name: e.target.name, value: e.target.value });
-                              }}
+                              onBlur={(e: React.FocusEvent<HTMLInputElement>) => setFieldsFunction({ name: e.target.name, value: e.target.value })}
                             />
                           }
                           {(IsFieldtypeEquals(field, FieldTypes.FieldCheckedBoxListType)) &&
@@ -112,7 +108,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                                 <FieldCheckedBoxListType
                                   formikProps={formikProps}
                                   options={field.defaultFieldValue.split('|')}
-                                  setFieldsFunction={(e) => props.setFieldsFunction({ name: e.name, value: e.value })}
+                                  setFieldsFunction={(e) => setFieldsFunction({ name: e.name, value: e.value })}
                                 />
                               }
                             />
@@ -127,15 +123,15 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                                 <FieldRadioButtonListType
                                   formikProps={formikProps}
                                   options={field.defaultFieldValue.split('|')}
-                                  setFieldsFunction={(e) => props.setFieldsFunction({ name: e.name, value: e.value })}
+                                  setFieldsFunction={(e) => setFieldsFunction({ name: e.name, value: e.value })}
                                 />
                               }
                             />
                           }
-                          {errors[field.name ?? field.key] && touched[field.name ?? field.key] &&(
+                          {errors[field.name ?? field.key] && (
                             <div className="errorStyle">
                               <i className="fas fa-exclamation-circle"></i>
-                              {errors[field.name ?? field.key]}
+                              {t(`${errors[field.name ?? field.key]}`)}
                             </div>
                           )}
                         </div>
@@ -150,6 +146,6 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
       }
     </>
   );
-}
+}, IsPropsEqual);
 
 export default DisplayCategoryForm;

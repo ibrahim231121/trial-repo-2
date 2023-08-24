@@ -5,6 +5,7 @@ import { CRXButton, CRXConfirmDialog } from '@cb/shared';
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Restricted from '../../ApplicationPermission/Restricted';
+import { DeviceConfigurations } from '../../utils/Api/models/UnitModels';
 
 var re = /[\/]/;
 
@@ -23,13 +24,16 @@ const CustomizedSelectForFormik = (props: any) => {
       <CRXSelectBox
         {...field}
         value={value ?? ""}
-        onChange={(e: any) => { onChange(e) }}
+        disablePortal={true}
+        onChange={(e: any) => { onChange(e)
+}}
         className="selectFormikIncar"
         options={options}
         isRequried={touched[field.name] == true && (errors[formObj.key]?.length > 0)}
         error={!(errors[formObj.key]?.length > 0)}
         errorMsg={(formObj.label ?? "") + " " + errors[formObj.key]}
         icon={true}
+        zIndex={9}
         popover={"selectFormikIncar_wraper"}
         defaultOptionText={value}
         defaultValue={value}
@@ -48,7 +52,6 @@ const cameraTemplateFledForRadio = (props: any) => {
   return (
     <>
       <CRXRadio
-        className="usama"
         value={value}
         checked={values[formObj.key]}
         name={formObj.key}
@@ -82,10 +85,13 @@ const CustomizedMultiSelectForFormik = (props: any) => {
         className="_device_template_multiselect"
         multiple={true}
         CheckBox={false}
+        zIndex={9}
         error={errors[formObj.key]?.length > 0}
         errorMsg={(formObj.label ?? "") + " " + errors[formObj.key]}
         options={options}
-        value={options.filter((x: any) => valueArray.includes(x.value))}
+        value={valueArray.map((x: any) => {
+          return options.find((y: any) => y.value == x)
+        }).filter((x: any) => x != undefined)}
         isSearchable={false}
         onChange={(e: any, value: any[]) => {
           let valueArrayTemp = value.map((x: any) => x.value ?? x);
@@ -255,10 +261,29 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
       }
     }
   }
-  setValues(values);
-  console.log("resolution values", values["CameraSetup/Camera/FieldArray"]?.feilds)
+  let jsonString = JSON.stringify(values);
+  let parsedJsonString = JSON.parse(jsonString);
+  setValues(parsedJsonString);
 }
 
+const urlHandling = (e: any, formObj: any, setFieldValue: any, valuesOfDevices: DeviceConfigurations[], values: any) => {
+  let parentSplittedKey = formObj.key.split('_');
+  if(parentSplittedKey[0] == "CameraSetup/device")
+  {
+    let splittedKey = "CameraSetup/url_1_Camera/TextBox".split('_');
+    if (splittedKey.length > 0) {
+      let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+      let valuesOfDevice = valuesOfDevices.find(x => x.deviceTypeId == e);
+      if(valuesOfDevice)
+      {
+        setFieldValue(key, valuesOfDevice.url);
+      }
+      else{
+        setFieldValue(key, "");
+      }
+    }
+  }
+}
 
 const valueSetOnChange = (e: any, formObj: any, setFieldValue: any) => {
   let parentSplittedKey = formObj.key.split('_');
@@ -328,7 +353,7 @@ export const CreateTempelateCase = (props: any) => {
 
 
 
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors, setValidationFailed, handleBlur, setTouched, sensorsEvent } = props;
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors, setValidationFailed, handleBlur, setTouched, valuesOfDevices, sensorsEvent } = props;
 
 
   const handleRowIdDependency = (key: string, extraFieldDependency?: any) => {
@@ -359,9 +384,19 @@ export const CreateTempelateCase = (props: any) => {
     setValidationFailed(validationError);
   }, [errors]);
 
+  const [reloadStateForResolutionUnkownError, setReloadStateForResolutionUnkownError] = useState<any>(0);
 
   React.useEffect(() => {
-    optionAppendOnChange(values[formObj.key], formObj, values, setValues, index, FormSchema);
+    if (formObj.key.includes("CameraSetup/device") && (reloadStateForResolutionUnkownError < 2)) {
+      setReloadStateForResolutionUnkownError(reloadStateForResolutionUnkownError + 1)
+      optionAppendOnChange(values[formObj.key], formObj, values, setValues, index, FormSchema);
+    }
+  }, [values["CameraSetup/Camera/FieldArray"]]);
+
+  React.useEffect(() => {
+    if (!formObj.key.includes("CameraSetup/device")) {
+      optionAppendOnChange(values[formObj.key], formObj, values, setValues, index, FormSchema);
+    }
   }, []);
 
 
@@ -488,6 +523,7 @@ export const CreateTempelateCase = (props: any) => {
 
                       </label>
                       <label className="radio_label">{t(formObj.label)}
+                      
                         <label>
                           {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                         </label>
@@ -546,6 +582,7 @@ export const CreateTempelateCase = (props: any) => {
                       if (formObj.optionAppendOnChange) {
                         optionAppendOnChange(e.target.value, formObj, values, setValues, index, FormSchema);
                       }
+                      urlHandling(e.target.value, formObj, setFieldValue, valuesOfDevices, values);
                       setFieldValue(formObj.key, e.target.value);
                     }}
                     options={formObj.options?.filter((x: any) => x.hidden != true).map((x: any) => {
@@ -623,7 +660,9 @@ export const CreateTempelateCase = (props: any) => {
                   placement="right"
                 />) : (<></>)}
             </div>
-            <Restricted moduleId={52}>
+
+            {/*Temporarily hidden
+             <Restricted moduleId={52}>
             {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
               <CRXButton
                 color='primary'
@@ -632,10 +671,11 @@ export const CreateTempelateCase = (props: any) => {
                 {t("Create Sensor & Trigger")}
               </CRXButton>
             </div>) : (<></>)}
-          </Restricted>
+          </Restricted> 
+          Temporarily hidden */}
           </div>
-    
-    
+
+
         </div>
 
       );
@@ -703,7 +743,7 @@ export const CreateTempelateCase = (props: any) => {
 
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
 
-        <div className={touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError NumberField " : "NumberField " + formObj.label}>
+        <div className={formObj.class + " " + (touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError NumberField " : "NumberField " + formObj.label)}>
           <div className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiNumberSelectorDepend' : ''}>
             <div
               className={`${(formObj.postFieldText && formObj.postFieldText == "minutes") ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
@@ -725,7 +765,7 @@ export const CreateTempelateCase = (props: any) => {
                       id={formObj.id}
                       type="number"
                       className="numberField"
-                      onWheel={(e : any) => e.target.blur()}
+                      onWheel={(e: any) => e.target.blur()}
                     />
                     <label className="timeShow">
                       {formObj.postFieldText ? t(formObj.postFieldText) : ""}
@@ -786,10 +826,10 @@ export const CreateTempelateCase = (props: any) => {
                           </div>
 
                           <div className={'_camera_setup_flieds ' + feild.class ?? ""} key={formObj.key + "_DIV" + key}>
-                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} valuesOfDevices={valuesOfDevices} />
                           </div></> :
                         <div className={'_camera_setup_flieds ' + feild.class ?? ""} key={formObj.key + "_DIV" + key}>
-                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} />
+                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} valuesOfDevices={valuesOfDevices} />
 
                         </div>
 

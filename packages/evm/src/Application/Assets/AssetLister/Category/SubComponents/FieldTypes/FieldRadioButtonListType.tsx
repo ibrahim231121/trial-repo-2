@@ -20,6 +20,7 @@ const FieldRadioButtonListType: React.FC<FieldRadioButtonListType> = ({ formikPr
     const radioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>,) => {
         setFieldsFunction({ name: field.name, value: e.target.value });
         form.setFieldValue(field.name, e.target.value, true);
+        form.setFieldTouched(field.name, true, false);
     }
 
     return (

@@ -41,7 +41,6 @@ export type AddGroup = {
     groupRecIds: number [],
     groupObj?: KeyValue[],
     isChanged : boolean,
-    isDeleted : boolean,
     serverType : number
 }
 export type KeyValue = {

@@ -30,7 +30,6 @@ import { getAllAlprCapturePlatesInfo } from "../../../../Redux/AlprCapturePlateR
 import moment from "moment";
 import { basicDateDefaultValue, dateOptionsTypes } from "../../../../utils/constant";
 import { GetAlprCapturePayload } from "../../ALPRTypes";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { CRXColumn } from "@cb/shared";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
 import { CBXMultiCheckBoxDataFilter } from "@cb/shared";

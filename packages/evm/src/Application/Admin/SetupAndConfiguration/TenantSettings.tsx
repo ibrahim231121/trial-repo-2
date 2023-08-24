@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import "./tenantSettings.scss";
 import timeZonesData from "./Timezones.json";
 import { CRXColumn } from "@cb/shared";
@@ -13,11 +13,16 @@ import {
 import { CRXRows } from "@cb/shared";
 import { Field, Form, Formik } from "formik";
 import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload";
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 import { TextField } from "@cb/shared";
 import { SetupConfigurationAgent } from "../../../utils/Api/ApiAgent";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import moment from "moment";
+import { CRXRadio } from "@cb/shared";
+import { FieldTypes } from "../../Assets/AssetLister/Category/Model/FieldTypes";
+import saveAs from "file-saver";
+
 declare const window: any;
 
 const cookies = new Cookies();
@@ -34,6 +39,7 @@ const TenantSettings: React.FC = () => {
     );
   const [actionVerb, setActionVerb] = React.useState<string>("PUT");
   const [setReasons, setReasonsValue] = React.useState<string[]>([]);
+  const [dateFormatLabel, setdateFormatLabel] = React.useState<string>("");
   const [setTimezone, setTimezoneValue] = React.useState<any[]>([]);
   const cookies = new Cookies();
   const [mapAllFields, setmapAllFieldsValue] = React.useState<any>({
@@ -41,8 +47,9 @@ const TenantSettings: React.FC = () => {
     PasswordRules: "",
     TimeFormat: "",
     Timezone: "",
-    Culture: "",
-    DateTimeFormat : "",
+    TimezoneUTCFormat: "",
+    Language: "",
+    DateFormat: "",
     WaterMarkLogo: "",
     LogoName: "",
     MailServer: "",
@@ -55,8 +62,8 @@ const TenantSettings: React.FC = () => {
     CertificatePath: "",
     CertificatePassword: "",
     LiveStreamUser: "",
-    LiveStreamType:"",
-    LiveStreamUrlForWeb:"",
+    LiveStreamType: "",
+    LiveStreamUrlForWeb: "",
     AssetViewReasonRequired: "false",
     NTPServer: "",
     AuthServer: "",
@@ -77,15 +84,34 @@ const TenantSettings: React.FC = () => {
     fileDetails: [],
   });
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const handleClickk = () => {
-    if(hiddenFileInput?.current)
-      hiddenFileInput.current.click();
+  const generateCertificate = (password: string) => {
+    SetupConfigurationAgent.getTenantSettingCertificate(
+      "/TenantSettings/GenerateCertificate/" + password
+    )
+      .then((certificate: any) => {
+        var blob = new Blob([certificate.data],{type: "application/octet-stream"});
+        saveAs(blob,"Certificates.zip")
+      })
+      .catch((ex:any) => {
+        console.log("Error : " + ex);
+      });
   };
-  const cultures = [
-    { label: 'en-US', value: 'en-US'},
-    { label: 'en-GB', value: 'en-GB'},
-    { label: 'de-DE', value: 'de-DE'},
-    { label: 'ar-EG', value: 'ar-EG'},
+  const handleClickk = () => {
+    if (hiddenFileInput?.current) hiddenFileInput.current.click();
+  };
+
+  const languages = [
+    { label: "(en) English - US", value: "en-US" },
+    { label: "(en) English - UK", value: "en-UK" },
+    { label: "(fr)   French - CA", value: "fr-CA" },
+    { label: "(pl)  Polish", value: "pl" },
+    { label: "(he) Hebrew", value: "he" },
+    { label: "(ar)  Arabic", value: "ar" },
+  ];
+  const dateFormat = [
+    { label: "MM/DD/YYYY", value: "MM/DD/YYYY" },
+    { label: "DD/MM/YYYY", value: "DD/MM/YYYY" },
+    { label: "YYYY/MM/DD", value: "YYYY/MM/DD" },
   ];
 
   React.useEffect(() => {
@@ -108,7 +134,7 @@ const TenantSettings: React.FC = () => {
     AddFilesToFileService(e.fileDetails, window.onRecvLogoData);
   };
   React.useEffect(() => {
-    dispatch(setLoaderValue({ isLoading: true, message: "" }))
+    dispatch(setLoaderValue({ isLoading: true, message: "" }));
     SetupConfigurationAgent.getTenantSetting()
       .then((tenantsett) => {
         tenantsett["settingEntries"].forEach(
@@ -122,7 +148,11 @@ const TenantSettings: React.FC = () => {
                 mapAllFields[x.key] = temp.map((x: any) => {
                   return { label: x, inputValue: x };
                 });
-              } else if (x.key == "Timezone" || x.key == "Culture") {
+              } else if (
+                x.key == "Timezone" ||
+                x.key == "Language" ||
+                x.key == "DateFormat"
+              ) {
                 mapAllFields[x.key] = { label: x.value, value: x.value };
               } else {
                 mapAllFields[x.key] = x.value;
@@ -133,12 +163,21 @@ const TenantSettings: React.FC = () => {
         mapAllFields["fileDetails"] = new File([], "asd", {
           type: "image/jpg",
         });
-        dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
+        dispatch(
+          setLoaderValue({ isLoading: false, message: "", error: true })
+        );
       })
-      .catch((err: any) => {setActionVerb("POST");});
+      .catch((err: any) => {
+        dispatch(
+          setLoaderValue({ isLoading: false, message: "", error: true })
+        );
+        setActionVerb("POST");
+      });
   }, []);
   React.useEffect(() => {
-    SetupConfigurationAgent.getTenantSetting('/TenantSettings/getassetviewreasons')
+    SetupConfigurationAgent.getTenantSetting(
+      "/TenantSettings/getassetviewreasons"
+    )
       .then((reasons: any) => {
         setReasonsValue(reasons);
       })
@@ -147,84 +186,111 @@ const TenantSettings: React.FC = () => {
   React.useEffect(() => {
     dispatch(enterPathActionCreator({ val: "" }));
     const temp = timeZonesData.map((x) => {
-      return { label: x.text, value: x.value }
-    })
+      return { label: x.text, value: x.value };
+    });
     setTimezoneValue(temp);
   }, []);
+  const checkDateFormat = async (value: any, timeFormat: any) => {
+    if (value && value.value != "") {
+      if (timeFormat == "AM/PM") {
+        setdateFormatLabel(value.value + " hh:mm:ss a");
+      } else {
+        setdateFormatLabel(value.value + " HH:mm:ss");
+      }
+    } else {
+      setdateFormatLabel("");
+    }
+  };
+  const RadioTimePeriodBtnValues = [
+    {
+      id: 1,
+      value: "AM/PM",
+      isDisabled: false,
+      label: "12 hour (AM/PM)",
+      Comp: () => {},
+      Name: "12 hour (AM/PM)",
+    },
+    {
+      id: 2,
+      value: "24hour",
+      isDisabled: false,
+      label: "24hour",
+      Comp: () => {},
+      Name: "24hour",
+    },
+  ];
   const validatingFields = async (values: any) => {
     if (values.MailServer != "Custom") {
-     await SetupConfigurationAgent.getMailServerSettings("/MailServers/1").then((defaultMailSettings : any) =>{
-      values.CustomURL=defaultMailSettings.server?.smtp;
-      values.CustomFromEmail = defaultMailSettings.from;
-      values.CustomPort = defaultMailSettings.server?.port;
-      values.CustomName = defaultMailSettings.name;
-      values.CustomPassword = defaultMailSettings.credential?.password;
-      values.URL="";
-      values.FromEmail="";
-      values.Port="";
-      values.Name="";
-      values.Password="";
-    }).catch((e : any)=> {
-      console.log("ERORRR : "+ e.message);
-    });
-    }
-    else {
-      values.CustomURL=values.URL;
+      await SetupConfigurationAgent.getMailServerSettings("/MailServers/1")
+        .then((defaultMailSettings: any) => {
+          values.CustomURL = defaultMailSettings.server?.smtp;
+          values.CustomFromEmail = defaultMailSettings.from;
+          values.CustomPort = defaultMailSettings.server?.port;
+          values.CustomName = defaultMailSettings.name;
+          values.CustomPassword = defaultMailSettings.credential?.password;
+          values.MailServer = "Default";
+          values.URL = "";
+          values.FromEmail = "";
+          values.Port = "";
+          values.Name = "";
+          values.Password = "";
+        })
+        .catch((e: any) => {
+          console.log("ERORRR : " + e.message);
+        });
+    } else {
+      values.CustomURL = values.URL;
       values.CustomFromEmail = values.FromEmail;
       values.CustomPort = values.Port;
       values.CustomName = values.Name;
       values.CustomPassword = values.Password;
     }
-    if (
-      values.TimeFormat != "AM/PM" &&
-      values.TimeFormat != "24hour" &&
-      values.TimeFormat != "Military"
-    ) {
+    if (values.TimeFormat != "AM/PM" && values.TimeFormat != "24hour") {
       values.TimeFormat = "AM/PM";
     }
     if (
-      values.MeasurementUnit != "Statute" &&
+      values.MeasurementUnit != "Imperial" &&
       values.MeasurementUnit != "Metric"
     ) {
-      values.MeasurementUnit = "Statute";
+      values.MeasurementUnit = "Imperial";
     }
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
     }
-    if (values.Culture == null || values.Culture == "" || values.Culture?.label == "") {
-      values.Culture = navigator.languages[0];
+    if (
+      values.Language == null ||
+      values.Language == "" ||
+      values.Language?.label == ""
+    ) {
+      values.Language = navigator.languages[0];
     }
     if (values.AssetViewReasonRequired == "false") {
       values.Reasons = [];
     }
-    if (
-      values.AuthServer != "1" &&
-      values.AuthServer != "2"
-    ) {
+    if (values.AuthServer != "1" && values.AuthServer != "2") {
       values.AuthServer = "3";
     }
 
     if (values.AuthServer == "1") {
-      values.RedirectingURL = "";
+      values.ConfigurationName = "";
     } else if (values.AuthServer == "3") {
       values.ApplicationClientId = "";
       values.DirectoryTenantId = "";
-      values.CertificatePath = "";
+      //values.CertificatePath = "";
       values.CertificatePassword = "";
-      values.ClientSecretId = "";
-      values.RedirectingURL = "";
-    }
-    else {
+      //values.ClientSecretId = "";
+      values.ConfigurationName = "";
+    } else {
       values.ApplicationClientId = "";
       values.DirectoryTenantId = "";
-      values.CertificatePath = "";
+      //values.CertificatePath = "";
       values.CertificatePassword = "";
-      values.ClientSecretId = "";
+      //values.ClientSecretId = "";
     }
   };
   const submitTenantSettings = async (values: any) => {
     await validatingFields(values);
-    
+
     const body = {
       settingEntries: null,
       tenantSettingEntries: [
@@ -341,25 +407,25 @@ const TenantSettings: React.FC = () => {
           key: "DirectoryTenantId",
           value: values.DirectoryTenantId,
         },
-        {
-          TenantTypeId: 6,
-          key: "CertificatePath",
-          value: values.CertificatePath,
-        },
+        // {
+        //   TenantTypeId: 6,
+        //   key: "CertificatePath",
+        //   value: values.CertificatePath,
+        // },
         {
           TenantTypeId: 6,
           key: "CertificatePassword",
           value: values.CertificatePassword,
         },
+        // {
+        //   TenantTypeId: 6,
+        //   key: "ClientSecretId",
+        //   value: values.ClientSecretId,
+        // },
         {
           TenantTypeId: 6,
-          key: "ClientSecretId",
-          value: values.ClientSecretId,
-        },
-        {
-          TenantTypeId: 6,
-          key: "RedirectingURL",
-          value: values.RedirectingURL,
+          key: "ConfigurationName",
+          value: values.ConfigurationName,
         },
         {
           TenantTypeId: 4,
@@ -376,11 +442,11 @@ const TenantSettings: React.FC = () => {
           key: "TimeFormat",
           value: values.TimeFormat,
         },
-        {
-          TenantTypeId: 4,
-          key: "DateTimeFormat",
-          value: new Date().toLocaleDateString(values.Culture.value),
-        },
+        // {
+        //   TenantTypeId: 4,
+        //   key: "DateTimeFormat",
+        //   value: new Date().toLocaleDateString(values.Culture.value),
+        // },
         {
           TenantTypeId: 4,
           key: "MeasurementUnit",
@@ -410,22 +476,31 @@ const TenantSettings: React.FC = () => {
           TenantTypeId: 5,
           key: "LiveStreamUrlForWeb",
           value: values.LiveStreamUrlForWeb,
-        }
+        },
       ],
     };
-    if(values.Culture.value != null){
+    if (values.Language.value != null) {
       body.tenantSettingEntries.push({
         TenantTypeId: 4,
-        key: "Culture",
-        value: values.Culture.value,
-      })
+        key: "Language",
+        //value: values.Language.value, FOR PILOT
+        value: "en-US",
+      });
+    } else {
+      body.tenantSettingEntries.push({
+        TenantTypeId: 4,
+        key: "Language",
+        //value: values.Language FOR PILOT
+        value: "en-US",
+      });
     }
-    else{
+    if (values.DateFormat != null && values.DateFormat != "") {
       body.tenantSettingEntries.push({
         TenantTypeId: 4,
-        key: "Culture",
-        value: values.Culture
-      })
+        key: "DateFormat",
+        //value: values.Language.value, FOR PILOT
+        value: values.DateFormat.value,
+      });
     }
     if (values.Reasons?.length > 0) {
       body.tenantSettingEntries.push({
@@ -453,33 +528,38 @@ const TenantSettings: React.FC = () => {
         key: "Timezone",
         value: values.Timezone.value,
       });
+      body.tenantSettingEntries.push({
+        TenantTypeId: 4,
+        key: "TimezoneUTCFormat",
+        value: values.Timezone.label,
+      });
     }
-    if(actionVerb == "POST"){
+    if (actionVerb == "POST") {
       SetupConfigurationAgent.postTenantSetting(body)
-      .then((res: any) => {
+        .then((res: any) => {
           setActionVerb("PUT");
           setSuccess(true);
           setTimeout(() => window.location.reload(), 1000);
-       
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err);
-      });
-    }
-    else{
-      dispatch(setLoaderValue({ isLoading: true, message: "" }))
+        })
+        .catch((err: any) => {
+          setError(true);
+          console.error(err);
+        });
+    } else {
+      dispatch(setLoaderValue({ isLoading: true, message: "" }));
       SetupConfigurationAgent.putTenantSetting(body)
-      .then((res: any) => {
+        .then((res: any) => {
           setActionVerb("PUT");
           setSuccess(true);
-          dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
+          dispatch(
+            setLoaderValue({ isLoading: false, message: "", error: true })
+          );
           setTimeout(() => window.location.reload(), 1000);
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err);
-      });
+        })
+        .catch((err: any) => {
+          setError(true);
+          console.error(err);
+        });
     }
   };
   const onSubmit = (values: any) => {
@@ -525,11 +605,11 @@ const TenantSettings: React.FC = () => {
       then: Yup.string().required("User name is required"),
       otherwise: Yup.string(),
     }),
-    Password: Yup.string().when("MailServer", {
-      is: "Custom",
-      then: Yup.string().required("Password is required"),
-      otherwise: Yup.string(),
-    }),
+    // Password: Yup.string().when("MailServer", {
+    //   is: "Custom",
+    //   then: Yup.string().required("Password is required"),
+    //   otherwise: Yup.string(),
+    // }),
     Port: Yup.number().when("MailServer", {
       is: "Custom",
       then: Yup.number()
@@ -562,9 +642,9 @@ const TenantSettings: React.FC = () => {
     //   then: Yup.string().required("ClientSecretId is required"),
     //   otherwise: Yup.string(),
     // }),
-    RedirectingURL: Yup.string().when("AuthServer", {
+    ConfigurationName: Yup.string().when("AuthServer", {
       is: "2",
-      then: Yup.string().required("RedirectingURL is required"),
+      then: Yup.string().required("ConfigurationName is required"),
       otherwise: Yup.string(),
     }),
   });
@@ -652,17 +732,17 @@ const TenantSettings: React.FC = () => {
                         Watermark Logo on Playback
                       </label>
                       <CRXButton
-                    onClick={handleClickk}
-                    variant="contained"
-                    className="groupInfoTabButtons"
-                  >
-                    Upload
-                  </CRXButton>
+                        onClick={handleClickk}
+                        variant="contained"
+                        className="groupInfoTabButtons"
+                      >
+                        Upload
+                      </CRXButton>
                       <input
                         type="file"
                         accept="image/*"
                         ref={hiddenFileInput}
-                        style={{display: 'none'}} 
+                        style={{ display: "none" }}
                         id="contained"
                         name="fileDetails"
                         onChange={(event) => {
@@ -745,9 +825,7 @@ const TenantSettings: React.FC = () => {
                           </CRXRows>
                           <CRXRows>
                             <div className="CBX-input">
-                              <label htmlFor="FromEmail">
-                                From Email
-                              </label>
+                              <label htmlFor="FromEmail">From Email</label>
                               <Field
                                 id="FromEmail"
                                 type="Email"
@@ -794,20 +872,26 @@ const TenantSettings: React.FC = () => {
                               )}
                             </div>
                           </CRXRows>
-                          <CRXRows style={{display:"none"}}>
+                          <CRXRows style={{ display: "none" }}>
                             <div className="CBX-input">
                               <label htmlFor="Password">Password</label>
-                              <TextField id="password"
-                            type={passwordVisible ? "text" : "password"}
-                            placeholder={
-                              passwordVisible? values.Password:
-                              values.Password.length > 0?
-                              new Array(values.Password.length + 1).join("*") : ""
-                              }
-                            name="Password"
-                            onChange={(e: any) => setFieldValue("Password", e.target.value)}>
-                            
-                          </TextField>
+                              <TextField
+                                id="password"
+                                type={passwordVisible ? "text" : "password"}
+                                placeholder={
+                                  passwordVisible
+                                    ? values.Password
+                                    : values.Password.length > 0
+                                    ? new Array(
+                                        values.Password.length + 1
+                                      ).join("*")
+                                    : ""
+                                }
+                                name="Password"
+                                onChange={(e: any) =>
+                                  setFieldValue("Password", e.target.value)
+                                }
+                              ></TextField>
                               {/* <Field
                                 id="CustomPassword"
                                 type={passwordVisible ? "text" : "password"}
@@ -852,28 +936,28 @@ const TenantSettings: React.FC = () => {
                           )}
                         </div>
                       </CRXRows>
-                    </CRXColumn>
-                  </CRXColumn>
-                  <CRXColumn
-                    className="stationDetailCol "
-                    container="container"
-                    item="item"
-                    lg={6}
-                    xs={6}
-                    spacing={0}
-                  >
-                    <CRXColumn
-                      className="stationDetailCol stationDetailCol1"
-                      container="container"
-                      item="item"
-                      lg={12}
-                      xs={12}
-                      spacing={0}
-                    >
                       <CRXRows>
                         <label htmlFor="location">Location</label>
                       </CRXRows>
 
+                      <CRXRows>
+                        <CRXMultiSelectBoxLight
+                          className="DateTimeFormatAutocomplete"
+                          label="Language"
+                          multiple={false}
+                          CheckBox={true}
+                          required={false}
+                          options={languages}
+                          value={values.Language}
+                          isSearchable={true}
+                          onChange={(
+                            e: React.SyntheticEvent,
+                            value: string
+                          ) => {
+                            setFieldValue("Language", value, true);
+                          }}
+                        />
+                      </CRXRows>
                       <CRXRows>
                         <CRXMultiSelectBoxLight
                           className="timezoneAutocomplete"
@@ -895,62 +979,86 @@ const TenantSettings: React.FC = () => {
                       <CRXRows>
                         <CRXMultiSelectBoxLight
                           className="DateTimeFormatAutocomplete"
-                          label="Cultures"
+                          label="Date Format"
                           multiple={false}
                           CheckBox={true}
                           required={false}
-                          options={cultures}
-                          value={values.Culture}
+                          options={dateFormat}
+                          value={values.DateFormat}
                           isSearchable={true}
                           onChange={(
                             e: React.SyntheticEvent,
                             value: string
                           ) => {
-                            setFieldValue("Culture", value, true);
+                            setFieldValue("DateFormat", value, true);
+                            checkDateFormat(value, values.TimeFormat);
                           }}
                         />
                       </CRXRows>
-                      <CRXRows>
+                      <CRXRows className="timeDateRadio">
                         <label htmlFor="TimeFormat">Time Format</label>
-                        <div role="group" aria-labelledby="my-radio-group">
-                          <label>
-                            <Field
-                              type="radio"
-                              name="TimeFormat"
-                              value="AM/PM"
-                            />
-                            AM/PM
-                          </label>
-                          <label>
-                            <Field
-                              type="radio"
-                              name="TimeFormat"
-                              value="24hour"
-                            />
-                            24hour
-                          </label>
-                          <label>
-                            <Field
-                              type="radio"
-                              name="TimeFormat"
-                              value="Military"
-                            />
-                            Military
-                          </label>
-                        </div>
+                        <CRXRadio
+                          className=""
+                          content={RadioTimePeriodBtnValues}
+                          value={values.TimeFormat}
+                          // setValue={(e: any) =>
+                          //   onRetentionTypeChange(RadioTimePeriodBtnValues[0].Name)
+                          // }
+                          onChange={(
+                            e: React.SyntheticEvent,
+                            value: string
+                          ) => {
+                            setFieldValue("TimeFormat", value, true);
+                            checkDateFormat(values.DateFormat, value);
+                          }}
+                          checked={true}
+                          name="TimeFormat"
+                        />
                       </CRXRows>
                       <CRXRows>
+                        <div className="DateTimeFormat">
+                          <strong>
+                            <label htmlFor="DateTimeFormat">
+                              Date/Time Example:{" "}
+                              {values.DateFormat
+                                ? moment(moment().toDate())
+                                    .local()
+                                    .format(dateFormatLabel)
+                                : ""}
+                            </label>
+                          </strong>
+                        </div>
+                      </CRXRows>
+                    </CRXColumn>
+                  </CRXColumn>
+                  <CRXColumn
+                    className="stationDetailCol "
+                    container="container"
+                    item="item"
+                    lg={6}
+                    xs={6}
+                    spacing={0}
+                  >
+                    <CRXColumn
+                      className="stationDetailCol stationDetailCol1"
+                      container="container"
+                      item="item"
+                      lg={12}
+                      xs={12}
+                      spacing={0}
+                    >
+                      <CRXRows>
                         <label htmlFor="MeasurementUnit">
-                        Measurement Unit
+                          Measurement Unit
                         </label>
                         <div role="group" aria-labelledby="my-radio-group">
                           <label>
                             <Field
                               type="radio"
                               name="MeasurementUnit"
-                              value="Statute"
+                              value="Imperial"
                             />
-                            Statute
+                            Imperial (MPH)
                           </label>
                           <label>
                             <Field
@@ -958,7 +1066,7 @@ const TenantSettings: React.FC = () => {
                               name="MeasurementUnit"
                               value="Metric"
                             />
-                            Metric
+                            Metric (KPH)
                           </label>
                         </div>
                       </CRXRows>
@@ -1054,7 +1162,7 @@ const TenantSettings: React.FC = () => {
                         className="crxStationDetail"
                         container="container"
                         spacing={0}
-                        style={{display:"none"}}
+                        style={{ display: "none" }}
                       >
                         <div className="CBX-input">
                           <label htmlFor="name">Name</label>
@@ -1065,25 +1173,30 @@ const TenantSettings: React.FC = () => {
                         className="crxStationDetail"
                         container="container"
                         spacing={0}
-                        style={{display:"none"}}
+                        style={{ display: "none" }}
                       >
                         <div className="CBX-input">
                           <label htmlFor="password">Password</label>
-                          <TextField id="password"
+                          <TextField
+                            id="password"
                             type="password"
                             onBlur=""
                             name="LiveStreamPassword"
-                            placeholder={
-                              new Array(values.LiveStreamPassword.length + 1).join("*") 
-                              }
-                            onChange={(e: any) => setFieldValue("LiveStreamPassword", e.target.value)}>
-                            
-                          </TextField>
+                            placeholder={new Array(
+                              values.LiveStreamPassword.length + 1
+                            ).join("*")}
+                            onChange={(e: any) =>
+                              setFieldValue(
+                                "LiveStreamPassword",
+                                e.target.value
+                              )
+                            }
+                          ></TextField>
                         </div>
                       </CRXRows>
                     </CRXColumn>
                     <CRXColumn>
-                    <CRXRows
+                      <CRXRows
                         className="crxStationDetail"
                         container="container"
                         spacing={0}
@@ -1094,7 +1207,6 @@ const TenantSettings: React.FC = () => {
                         </div>
                       </CRXRows>
 
-
                       <CRXRows>
                         <div role="group" aria-labelledby="my-radio-group">
                           <label>
@@ -1102,14 +1214,16 @@ const TenantSettings: React.FC = () => {
                               type="radio"
                               name="LiveStreamType"
                               value="HLS"
-                            /> HLS
+                            />{" "}
+                            HLS
                           </label>
                           <label>
                             <Field
                               type="radio"
                               name="LiveStreamType"
                               value="WebRTC"
-                            /> WebRTC
+                            />{" "}
+                            WebRTC
                           </label>
                         </div>
                       </CRXRows>
@@ -1139,27 +1253,15 @@ const TenantSettings: React.FC = () => {
                       <label htmlFor="AuthServer">Auth Server</label>
                       <div role="group" aria-labelledby="my-radio-group">
                         <label>
-                          <Field
-                            type="radio"
-                            name="AuthServer"
-                            value="1"
-                          />
+                          <Field type="radio" name="AuthServer" value="1" />
                           External OpenId
                         </label>
                         <label>
-                          <Field
-                            type="radio"
-                            name="AuthServer"
-                            value="2"
-                          />
+                          <Field type="radio" name="AuthServer" value="2" />
                           Getac OpenId with AD
                         </label>
                         <label>
-                          <Field
-                            type="radio"
-                            name="AuthServer"
-                            value="3"
-                          />
+                          <Field type="radio" name="AuthServer" value="3" />
                           Getac OpenId Without AD
                         </label>
                       </div>
@@ -1209,12 +1311,12 @@ const TenantSettings: React.FC = () => {
                             <></>
                           )}
                         </div>
-                        <div className="CBX-input">
+                        {/* <div className="CBX-input">
                           <label htmlFor="ClientSecretId">
                             Client Secret Id
                           </label>
                           <Field id="ClientSecretId" name="ClientSecretId" />
-                          {/* {errors.ClientSecretId !== undefined &&
+                          {errors.ClientSecretId !== undefined &&
                           touched.ClientSecretId ? (
                             <div className="errorTenantStyle">
                               <i className="fas fa-exclamation-circle"></i>
@@ -1222,9 +1324,9 @@ const TenantSettings: React.FC = () => {
                             </div>
                           ) : (
                             <></>
-                          )} */}
-                        </div>
-                        <div className="CBX-input">
+                          )}
+                        </div> */}
+                        {/* <div className="CBX-input">
                           <label htmlFor="CertificatePath">
                             Certificate Path 
                           </label>
@@ -1232,7 +1334,7 @@ const TenantSettings: React.FC = () => {
                             id="CertificatePath"
                             name="CertificatePath"
                           />
-                          {/* {errors.CertificatePath !== undefined &&
+                          {errors.CertificatePath !== undefined &&
                           touched.CertificatePath ? (
                             <div className="errorTenantStyle">
                               <i className="fas fa-exclamation-circle"></i>
@@ -1240,39 +1342,54 @@ const TenantSettings: React.FC = () => {
                             </div>
                           ) : (
                             <></>
-                          )} */}
-                        </div>
+                          )}
+                        </div> */}
                         <div className="CBX-input">
-                          <label htmlFor="CertificatePassword">
-                            Certificate Password
-                          </label>
-                          <TextField id="password"
-                            type="password"
-                            onBlur=""
-                            name="CertificatePassword"
-                            placeholder={
-                              new Array(values.CertificatePassword.length + 1).join("*") 
+                          <div className="styleCertificatePassword">
+                            <label htmlFor="CertificatePassword">
+                              Certificate Password
+                            </label>
+                            <TextField
+                              id="password"
+                              type="password"
+                              onBlur=""
+                              name="CertificatePassword"
+                              placeholder={new Array(
+                                values.CertificatePassword.length + 1
+                              ).join("*")}
+                              onChange={(e: any) =>
+                                setFieldValue(
+                                  "CertificatePassword",
+                                  e.target.value
+                                )
                               }
-                            onChange={(e: any) => setFieldValue("CertificatePassword", e.target.value)}>
-                            
-                          </TextField>
-                          {/* <Field id="CertificatePassword" name="CertificatePassword" type="password"
+                            ></TextField>
+                            {/* <Field id="CertificatePassword" name="CertificatePassword" type="password"
                           placeholder={
                             new Array(values.LiveStreamPassword.length + 1).join("*") 
                             }
                           onChange={(e: any) => setFieldValue("CertificatePassword", e.target.value)}
                           onBlur=""/> */}
-                          {errors.CertificatePassword !== undefined &&
-                          touched.CertificatePassword ? (
-                            <div className="errorTenantStyle">
-                              <i className="fas fa-exclamation-circle"></i>
-                              {errors.CertificatePassword}
-                            </div>
-                          ) : (
-                            <></>
-                          )}
+                            {errors.CertificatePassword !== undefined &&
+                            touched.CertificatePassword ? (
+                              <div className="errorTenantStyle">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {errors.CertificatePassword}
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
                         </div>
-                        
+                        <label htmlFor="CERTIFICATE">CERTIFICATE</label>
+                        <CRXButton
+                         onClick={() => generateCertificate(values.CertificatePassword)}
+                          variant="contained"
+                          className="groupInfoTabButtons"
+                          disabled={values.CertificatePassword == ""}
+                        >
+                          Generate
+                        </CRXButton>
                       </CRXColumn>
                     )}
                     {values.AuthServer == "2" && (
@@ -1285,15 +1402,18 @@ const TenantSettings: React.FC = () => {
                         spacing={0}
                       >
                         <div className="CBX-input">
-                          <label htmlFor="RedirectingURL">
-                            Auth Service URL <span>*</span>
+                          <label htmlFor="ConfigurationName">
+                            Configuration Name <span>*</span>
                           </label>
-                          <Field id="RedirectingURL" name="RedirectingURL" />
-                          {errors.RedirectingURL !== undefined &&
-                          touched.RedirectingURL ? (
+                          <Field
+                            id="ConfigurationName"
+                            name="ConfigurationName"
+                          />
+                          {errors.ConfigurationName !== undefined &&
+                          touched.ConfigurationName ? (
                             <div className="errorTenantStyle">
                               <i className="fas fa-exclamation-circle"></i>
-                              {errors.RedirectingURL}
+                              {errors.ConfigurationName}
                             </div>
                           ) : (
                             <></>

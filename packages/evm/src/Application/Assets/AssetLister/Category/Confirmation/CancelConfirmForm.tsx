@@ -29,7 +29,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
      * * Redirect to Previous Form
      */
     props.setActiveForm(props.previousActive);
-  };
+  }
 
   const findPreviouslyRemovedCategories = () => {
     const previouslyRemovedCategories = categoryOptions
@@ -43,7 +43,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
         };
       })[0];
     return previouslyRemovedCategories;
-  };
+  }
 
   return (
     <>

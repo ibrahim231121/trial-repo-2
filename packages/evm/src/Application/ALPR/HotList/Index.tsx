@@ -475,7 +475,7 @@ const HotList = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-      <div className="switchLeftComponents" onKeyDown={handleKeyDown}>
+      <div className="Alpr_Hotlist_switchLeftComponents" onKeyDown={handleKeyDown}>
         {rows && (
           <CRXDataTable
             id="HotListTemplateDataTable"

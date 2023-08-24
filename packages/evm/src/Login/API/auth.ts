@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie';
 import jwt_decode from 'jwt-decode';
-import { codeChallengeRemove } from '../../utils/settings';
+import { codeChallengeRemove, getDomainName } from '../../utils/settings';
 import { setAPIAgentConfig } from '../../utils/Api/ApiAgent';
 
 export interface IDecoded {
@@ -13,10 +13,10 @@ export interface IDecoded {
 }
 const cookies = new Cookies();
 let decoded: IDecoded;
-
 export const authenticate = (accessToken: string, idToken: string, refreshToken: string, next: () => void) => {
+    
     if (accessToken == null && idToken == null && refreshToken == null) {
-        window.location.replace('/');
+        window.location.replace('/accessDenied');
     }
 
     decoded = jwt_decode(idToken);
@@ -25,6 +25,7 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
     localStorage.setItem('User Id', decoded.UserId);
     localStorage.setItem('expirytime_token', decoded.exp);
     const condition = localStorage.getItem('remember me');
+    const domainName = getDomainName();
 
     if (condition === 'True') {
         let date = new Date().getTime();
@@ -32,12 +33,12 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
         const expireDate = new Date(expire);
         const expireDateLocalStorage: any = new Date(expireDate);
         localStorage.setItem('expiryDate', expireDateLocalStorage);
-        const options = { path: '/', expires: expireDate };
+        const options = { path: '/', expires: expireDate, domain: domainName };
         cookies.set('access_token', accessToken, options);
         cookies.set('refreshToken', refreshToken, options);
         setAPIAgentConfig();
     } else {
-        const options = { path: '/' };
+        const options = { path: '/', domain: domainName };
         cookies.set('access_token', accessToken, options);
         cookies.set('refreshToken', refreshToken, options);
         setAPIAgentConfig();
@@ -69,11 +70,13 @@ export const logOutUser = () => {
     sessionStorage.removeItem('code_challenge_string');
 
     var opt;
-    const options = { path: '/' };
+    const domainName = getDomainName();
+    const options = { path: '/', domain: domainName };
     opt = cookies.remove('access_token', options);
     opt = localStorage.removeItem('loginId');
     opt = localStorage.removeItem('remember me');
     localStorage.removeItem('User Id');
+    localStorage.removeItem("caseOpenedForEvidence");
     window.location.href = '/';
 };
 export const getToken = () => {

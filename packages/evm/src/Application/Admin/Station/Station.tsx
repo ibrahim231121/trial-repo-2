@@ -36,11 +36,11 @@ import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemp
 import { StationType, DateTimeProps } from './StationTypes';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
+import Restricted from '../../../ApplicationPermission/Restricted';
 
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const stations: any = useSelector((state: RootState) => state.stationReducer.stations);
   const [rows, setRows] = React.useState<StationType[]>([]);
@@ -48,7 +48,6 @@ const Station: React.FC = () => {
   const [orderBy, setOrderBy] = React.useState<string>('Name');
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<StationType[]>([]);
-  const [reformattedRows, setReformattedRows] = React.useState<StationType[]>();
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [selectedActionRow, setSelectedActionRow] = React.useState<StationType>();
@@ -92,11 +91,9 @@ const Station: React.FC = () => {
       });
     }
     setRows(stationRows);
-    setReformattedRows(stationRows);
   };
 
   useEffect(() => {
-    //dispatch(getStationsAsync(pageiGrid));
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'stationDataTable');
@@ -105,8 +102,6 @@ const Station: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    //dataArrayBuilder();
-    console.log("searchData", searchData)
     if(searchData.length > 0)
       setIsSearchable(true)
   }, [searchData]);
@@ -194,13 +189,11 @@ const Station: React.FC = () => {
       label: t('Station'),
       id: 'name',
       align: 'left',
-      // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
       dataComponent: (e: string) => getModuleIds().includes(19) ? AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url) : textDisplay(e, ''),
-      //AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '415',
+      minWidth: '435',
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -226,7 +219,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '435',
+      minWidth: '470',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"
@@ -252,13 +245,11 @@ const Station: React.FC = () => {
   };
 
   const handleClickOpen = () => {
-    // setOpen(true);
     const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationCreate)[0].url}`;
     history.push(path);
   };
 
   const unitClickOpen = () => {
-    // setOpen(true);
     const path = `${urlList.filter((item: any) => item.name === urlNames.defaultUnitTemplate)[0].url}`;
     history.push(path);
   };
@@ -288,12 +279,10 @@ const Station: React.FC = () => {
   };
 
   const getFilteredStationData = () => {
-
       pageiGrid.gridFilter.filters = []
       searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
         let x: GridFilter = {
           operator: headCells[item.colIdx].attributeOperator,
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
           field: headCells[item.colIdx].attributeName,
           value: item.value.length > 1 ? item.value.join('@') : item.value[0],
           fieldType: headCells[item.colIdx].attributeType,
@@ -307,7 +296,6 @@ const Station: React.FC = () => {
         setPage(0)
       else
         dispatch(getStationsAsync(pageiGrid));
-
       setIsSearchable(false)
   }
 
@@ -323,7 +311,7 @@ const Station: React.FC = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className='crxManageUsers crxStationDataUser  switchLeftComponents' onKeyDown={handleKeyDown}>
+    <div className='crxManageUsers crxStationDataUser ExpandViewOverlay' onKeyDown={handleKeyDown}>
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -337,14 +325,11 @@ const Station: React.FC = () => {
           }
           toolBarButton={
             <>
-              <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
-                {t('Create_Station')}
-              </CRXButton>
-
-              {/* <CRXButton className='secondary unitTemplateBtn' onClick={unitClickOpen}>
-                {t('Manage_Default_Unit_Templates')}
-              </CRXButton> */}
-              {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
+              <Restricted moduleId={18}>
+                <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
+                  {t('Create_Station')}
+                </CRXButton>
+              </Restricted>
             </>
           }
           getRowOnActionClick={(val: StationType) => setSelectedActionRow(val)}
@@ -356,7 +341,7 @@ const Station: React.FC = () => {
           searchHeader={true}
           columnVisibilityBar={true}
           allowDragableToList={false}
-          className='ManageAssetDataTable crxStationDataTable'
+          className='ManageAssetDataTable crxStationDataTable TableWithOutCheck'
           onClearAll={clearAll}
           getSelectedItems={(v: StationType[]) => setSelectedItems(v)}
           onResizeRow={resizeRowStation}
@@ -379,10 +364,11 @@ const Station: React.FC = () => {
           setSortOrder={(sort:any) => sortingOrder(sort)}
           //Please dont miss this block.
           offsetY={50}
-          stickyToolbar={129}
-          searchHeaderPosition={221}
-          dragableHeaderPosition={186}
+          stickyToolbar={130}
+          searchHeaderPosition={223}
+          dragableHeaderPosition={188}
           //End here
+          overlay={true}
           showExpandViewOption={true}
         />
       )}

@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Popper from '@material-ui/core/Popper';
 import Checkbox from '@material-ui/core/Checkbox';
 import styled from 'styled-components';
+import CRXTooltip from '../CRXTooltip/CRXTooltip';
 import "./cbxMultiDataFilter.scss"
 
 const selectStyled = makeStyles((_: Theme) =>
@@ -52,6 +53,7 @@ const selectBoxStyled = makeStyles({
         background: "#404041",
         marginTop: "2px",
         marginLeft : "-3px",
+        width : "100%"
     },
     paper : {
         background: "#404041",
@@ -163,7 +165,8 @@ const OverlayWraper = styled('div')`
   top:0px;
   left : 0px;
 `
-const SelectButton = styled('button')`
+//const buttons = styled.button``;
+const SelectButton = styled.button`
     background : transparent;
     color: #d1d2d4;
     font-size : 14px;
@@ -171,7 +174,10 @@ const SelectButton = styled('button')`
     outline : 0px;
     height: 100%;
     width: 40px;
-    cursor : pointer
+    cursor : pointer;
+    &:hover .crxTooltip{
+      color: #d1d2d4;
+    }
 `
 const Tag = styled(({ label, onDelete, ...props }) => (
   <div {...props} className="select_custom_chips">
@@ -301,10 +307,27 @@ export default function CBXMultiSelectForDatatable({onChange, percentage, multip
     
     {value && value.length > 0 && open == false ?  
     <OverlayWraper> 
-        <SelectButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
-            <i className='fas fa-filter'></i>
+        <SelectButton theme="pink" onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
+            
+            <CRXTooltip
+              className="bucketIcon bucketAIIcon"
+              title="filter"
+              iconName="fas fa-filter"
+              placement="bottom"
+              arrow={false}
+              id=""
+        ></CRXTooltip>
         </SelectButton>  
-        <SelectButton onClick={(e : any) => onSelectedClear(e)}><i className="icon icon-cross2"></i></SelectButton>  
+        <SelectButton onClick={(e : any) => onSelectedClear(e)}>
+        <CRXTooltip
+              className="bucketIcon bucketAIIcon"
+              title="clear"
+              iconName="icon icon-cross2"
+              placement="bottom"
+              arrow={false}
+              id=""
+        ></CRXTooltip>
+        </SelectButton>  
     </OverlayWraper>
     : "" }
     

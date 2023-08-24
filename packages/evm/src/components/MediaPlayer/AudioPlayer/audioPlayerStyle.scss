@@ -1,0 +1,88 @@
+.CRX_Audio_Player_Screen {
+    .videoContainer {
+        video {
+            width: 300px !important;
+            height: 166px !important;
+        }
+    }
+    #CRX_Audio_Player_Controls {
+        padding: 0 9px  0px 14px;
+        .videoPlayer_Timeline_Time {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            color: #fff;
+            font-size: 14px;
+            font-family: var(--base-font-family);
+        }
+        .playerViewFlex {
+            .playerViewLeft {
+                width: 118px !important;
+                #volume-controls { 
+                    left: 55px !important;
+                }
+                .playBtn {
+                    left: 7px !important;
+                }
+                .pauseBtn {
+                    left: 7px !important;
+                }
+            }
+            .playerViewRight  {
+                .playerView {
+                    margin-right: 17px !important;
+                }
+            }
+        }
+    }
+    #volumePercentage {
+        height: calc(100vh - 295px) ;
+    }
+    .modeButton {
+        left: 50%;
+        transform: translate(-26px, 0px);
+    }
+}  
+
+
+.fullscreen-enabled {
+    .CRX_Audio_Player_Screen {
+        .videoContainer {
+            video {
+                width: 450px !important;
+            }
+        }
+        #CRX_Audio_Player_Controls {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 0 35px 0px 32px;
+            .volume-icon {
+                z-index: 1;
+            }
+            .playerViewRight  {
+                .playerView {
+                    margin-right: 20px !important;
+                }
+            }
+            .playerViewLeft  {
+                .playBtn {
+                    left: 12px !important;
+                }
+                #volume-controls {
+                    left: 63px !important;
+                } 
+                .pauseBtn {
+                    left: 12px !important;
+                }
+            }
+        }
+        #volumePercentage , .videoFrontLayer{
+            height: 100% !important;
+        }
+    }
+    .modeButton {
+        bottom: 128px;
+    }
+  
+}

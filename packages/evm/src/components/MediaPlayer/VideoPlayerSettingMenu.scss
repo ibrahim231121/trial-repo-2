@@ -13,8 +13,8 @@
             position: absolute;
             left: unset !important;
             top: unset !important;
-            right: 198px;
-            bottom: 133px;
+            right: 219px;
+            bottom: 130px;
 
             &::after {
                 position: absolute;
@@ -283,8 +283,8 @@
             position: absolute;
             left: unset !important;
             top: unset !important;
-            right: 198px;
-            bottom: 133px;
+            right: 50px;
+            bottom: 129px;
 
             .CRXCheckBox {
                 .fa-square {
@@ -379,6 +379,11 @@
 
     }
 
+    .settingBack_notesEnabled_On    {
+        .MuiPaper-root { 
+            right: 116px;
+        }
+    }
     .CheckedAllTrueMain {
         .MuiPaper-root {
 
@@ -517,18 +522,6 @@
         }
 
     }
-    .MultiBackMenu {
-        .MuiMenu-paper  {
-            margin-top: -96px;
-            margin-left: -124px;
-        }
-    }
-    .enabledMultiLine  +   .MultiBackMenu {
-        .MuiMenu-paper  {
-            top: 598px !important;
-        }
-    }  
-    
 }
 
 .mainFullView  {
@@ -540,8 +533,8 @@
     }
     .SettingBackMenu {
         .MuiMenu-paper {
-            right: 142px;
-            bottom: 52px;
+            right: 157px;
+            bottom: 68px;
         }
     }
     .settingEnabled_on {
@@ -549,8 +542,8 @@
             position: absolute !important;
             left: unset !important;
             top: unset !important;
-            right: 187px;
-            bottom: 161px;
+            right: 156px;
+            bottom: 67px;
         }
         .SettingBackMenu {
             right: 187px;
@@ -566,24 +559,107 @@
         position: absolute !important;
         left: unset !important;
         top: unset !important;
-        right: 199px;
-        bottom: 166px;
+        right: 27px;
+        bottom: 126px;
     }
     .SettingBackMenu {
         right: 187px;
         bottom: 190px;
-    }
-
-}
-.enabledMultiLine  {
-    .MuiMenu-paper { 
-        bottom: 161px;
     }
 }
 
 
 .notesEnabled_On {
     .MuiMenu-paper {
-        right: 265px;
+        right: 100px !important;
     }
+}
+
+
+._scrollView_audiofalse_multitrue_view2 , ._scrollView_audiotrue_multitrue_view2 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 181px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 275px;
+        } 
+      }
+}
+
+
+._scrollView_audiofalse_multitrue_view3 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 257px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 346px;
+        } 
+      }
+}
+._scrollView_audiotrue_multitrue_view3 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 262px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 355px;
+        } 
+      }
+}
+
+._scrollView_audiofalse_multitrue_view4 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 299px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 392px;
+        } 
+      }
+}
+ ._scrollView_audiotrue_multitrue_view4 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 304px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 396px;
+        } 
+      }
+}
+._scrollView_audiofalse_multitrue_view6 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 389px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 479px;
+        } 
+      }
+}
+._scrollView_audiotrue_multitrue_view6 {
+    .settingEnabled_on {
+        .MuiMenu-paper  {
+          bottom: 388px !important;
+        }
+      }
+      .SettingBackMenu  {
+        .MuiPaper-root {
+            bottom: 481px;
+        } 
+      }
 }

@@ -8,11 +8,12 @@ import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { CRXCheckBox } from "@cb/shared";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
-import { CRXButton } from "@cb/shared";
 import { FilterUpdateVersion, UpdateVersion, UpdateVersionDevice, ScheduleVersion } from "../../../utils/Api/models/UnitModels";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { useDispatch } from "react-redux";
-import { CRXConfirmDialog } from "@cb/shared";
+import { CRXRows, CRXColumn, CRXButton, CRXConfirmDialog } from "@cb/shared";
+
+
 type Props = {
     primaryDeviceFilter: any
     selectedItems: FilterUpdateVersion[],
@@ -20,6 +21,7 @@ type Props = {
     setPrimaryDeviceFilter: any,
     formData: UpdateDeviceVersion | undefined
 };
+
 
 export interface UpdateDeviceVersion {
     id?: number,
@@ -31,7 +33,7 @@ export interface UpdateDeviceVersion {
     timeEnd: string,
     versionId: number,
     silent: boolean,
-    devicesId?: number[]
+    updateVersionDevices?: any[]
 }
 export const constantdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
 
@@ -50,13 +52,16 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
     const [isSave, setIsSave] = React.useState<boolean>(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [formModified, setFormModified] = React.useState(false);
+    const startTime = React.useRef<string>("00:00");
+    const endTime = React.useRef<string>("00:00");
+    const [nameErr, setNameErr] = React.useState("");
     const [updateDeviceVersion, setUpdateDeviceVersion] = React.useState<UpdateDeviceVersion>({
         name: 'UpdateVersionJob_' + currentDataTime,
         daysWeek: 0,
         timeRange: 0,
         weeks: constantdays,
         timeStart: '00:01',
-        timeEnd: '00:00',
+        timeEnd: '12:00',
         versionId: 0,
         silent: true
     });
@@ -80,7 +85,7 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
         if (updateDeviceVersion.timeRange == 0) {
             setIsDisplayTime(false);
         }
-        if ((updateDeviceVersion.name.length > 0 && updateDeviceVersion.versionId > 0 && selectedItems.length > 0) && (updateDeviceVersion.daysWeek > 0 ? updateDeviceVersion.weeks.length > 0 : true)) {
+        if ((validateTime() && checkNameValidation() && updateDeviceVersion.versionId > 0 && selectedItems.length > 0) && (updateDeviceVersion.daysWeek > 0 ? updateDeviceVersion.weeks.length > 0 : true)) {
             setIsSave(true);
         }
         else {
@@ -88,7 +93,7 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
         }
     }, [updateDeviceVersion, selectedItems]);
 
-    useEffect(() => {
+    const deviceTypeIdChangeEvent = () => {
         if (primaryDeviceFilter.deviceTypeId > 0) {
             UnitsAndDevicesAgent
                 .getDeviceSoftwareVersion('/DeviceSoftwareVersion/' + `${primaryDeviceFilter.deviceTypeId}`)
@@ -97,19 +102,13 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
                 })
         }
         else {
-            setUpdateDeviceVersion({ ...updateDeviceVersion, versionId: 0 })
             setIsDeviceTypeId(false);
         }
-        setUpdateDeviceVersion({
-            name: 'UpdateVersionJob_' + currentDataTime,
-            daysWeek: 0,
-            timeRange: 0,
-            weeks: constantdays,
-            timeStart: '00:01',
-            timeEnd: '00:00',
-            versionId: 0,
-            silent: true
-        })
+        setUpdateDeviceVersion({ ...updateDeviceVersion, versionId: 0 })
+    }
+
+    useEffect(() => {
+        deviceTypeIdChangeEvent();
     }, [primaryDeviceFilter.deviceTypeId]);
 
     const setVersionData = (data: any) => {
@@ -161,12 +160,35 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
         setFormModified(true)
     };
 
+    const updateTime = () => {
+        startTime.current = updateDeviceVersion.timeStart;
+        endTime.current = updateDeviceVersion.timeEnd;
+    };
+
+    const validateTime = () => {
+        if (updateDeviceVersion.timeRange > 0) {
+            updateTime();
+            let sTime = startTime.current;
+            let eTime = endTime.current;
+            let timeStartArray = sTime.split(":");
+            let timeStartInMinutes = Number(timeStartArray[0]) * 60 + Number(timeStartArray[1]);
+
+            const timeEndArray = eTime.split(":");
+            let timeEndInMinutes = Number(timeEndArray[0]) * 60 + Number(timeEndArray[1]);
+            if (((timeEndInMinutes - timeStartInMinutes) > 60) && ((timeEndInMinutes - timeStartInMinutes) >= 0)) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    };
+
     const onClickSync = () => {
         dispatch(setLoaderValue({ isLoading: true, message: "" }))
         UnitsAndDevicesAgent
             .syncSoftwareVersion('/DeviceSoftwareVersion/SyncSoftwareVersion')
             .then((response) => {
-                setIntialState();
+                deviceTypeIdChangeEvent();
                 dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
                 toasterMsgRef.current.showToaster({
                     message: "Version Synced", variant: "success", duration: 5000, clearButtton: true
@@ -204,8 +226,6 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
     }
     const onSubmit = () => {
         let days: string;
-        let timeStart: Date;
-        let timeEnd: Date;
         let versionId: any;
         if (updateDeviceVersion.daysWeek > 0) {
             days = updateDeviceVersion.weeks.join(',')
@@ -214,38 +234,32 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
             days = constantdays.join(',')
         }
         if (updateDeviceVersion.timeRange > 0) {
-            const timeStartArray = updateDeviceVersion.timeStart.split(":");
-            const timeEndArray = updateDeviceVersion.timeEnd.split(":");
-            let Time1 = new Date();
-            let Time2 = new Date();
-            Time1.setHours(Number(timeStartArray[0]));
-            Time1.setMinutes(Number(timeStartArray[1]));
-            Time1.setSeconds(0);
-            timeStart = Time1;
-            Time2.setHours(Number(timeEndArray[0]));
-            Time2.setMinutes(Number(timeEndArray[1]));
-            Time2.setSeconds(0);
-            timeEnd = Time2;
+            updateTime();
         }
         else {
-            let Time1 = new Date();
-            let Time2 = new Date();
-            Time1.setHours(0);
-            Time1.setMinutes(0);
-            Time1.setSeconds(0);
-            timeStart = Time1;
-            Time2.setHours(24);
-            Time2.setMinutes(0);
-            Time2.setSeconds(0);
-            timeEnd = Time2;
+            startTime.current = '';
+            endTime.current = '';
         }
         versionId = versionKeyValue.find((x: any) => x.value == updateDeviceVersion.versionId)?.value;
-
+        let tempTimeStart;
+        let tempTimeEnd;
+        if(startTime.current && startTime.current.length>0){
+            tempTimeStart = new Date();
+            let tempTime = startTime.current.split(':');
+            tempTimeStart.setHours(Number(tempTime[0]));
+            tempTimeStart.setMinutes(Number(tempTime[1]));
+        }
+        if(endTime.current && endTime.current.length>0){
+            tempTimeEnd = new Date();
+            let tempTime = endTime.current.split(':');
+            tempTimeEnd.setHours(Number(tempTime[0]));
+            tempTimeEnd.setMinutes(Number(tempTime[1]));
+        }
         let scheduleVersion: ScheduleVersion =
         {
             days: days,
-            timeStart: timeStart,
-            timeEnd: timeEnd
+            timeStart: tempTimeStart,
+            timeEnd: tempTimeEnd
         }
 
         let updateVersionDevice: UpdateVersionDevice[] = selectedItems.map((x: FilterUpdateVersion) => {
@@ -273,6 +287,7 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
                     toasterMsgRef.current.showToaster({
                         message: "Saved", variant: "success", duration: 5000, clearButtton: true
                     });
+                    setFormModified(false);
                 })
                 .catch((error: any) => {
                     dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
@@ -283,12 +298,13 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
                 });
         }
         else {
-            UnitsAndDevicesAgent.putUpdateVersions(`/UpdateVersion/`+ formData?.id, updateVersionObject)
+            UnitsAndDevicesAgent.putUpdateVersions(`/UpdateVersion/` + formData?.id, updateVersionObject)
                 .then((response: any) => {
                     dispatch(setLoaderValue({ isLoading: false, message: "" }))
                     toasterMsgRef.current.showToaster({
                         message: "Saved", variant: "success", duration: 5000, clearButtton: true
                     });
+                    setFormModified(false);
                 })
                 .catch((error: any) => {
                     dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
@@ -298,6 +314,24 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
                     console.error(error.response.data);
                 });
         }
+    };
+    const checkNameValidation = () => {
+        let isValid = false;
+        var pattern = new RegExp("^([a-zA-Z0-9._-]){1}[A-Za-z0-9._-]*$");
+        if (!updateDeviceVersion.name) {
+            setNameErr(t("Name_is_required"))
+        }
+        else if (!pattern.test(updateDeviceVersion.name)) {
+            setNameErr(t("Special characters are not allowed"))
+        }
+        else if (updateDeviceVersion.name.length < 3 || updateDeviceVersion.name.length > 128) {
+            setNameErr(t("Character length between 3 to 128"))
+        }
+        else {
+            setNameErr("")
+            isValid = true;
+        }
+        return isValid;
     };
 
     return (
@@ -319,9 +353,12 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
             <TextField
                 value={updateDeviceVersion.name}
                 label='Name'
-                className='description-input'
+                className='description-input gridFilterTextBox'
                 required={true}
                 onChange={(e: any) => onChangeName(e)}
+                onBlur={() => checkNameValidation()}
+                error={!!nameErr}
+                errorMsg={nameErr}
             />
             <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
                 <div className="select_label">{t("Days of the Week")}</div>
@@ -426,24 +463,33 @@ const CreateUpdateVersion: React.FC<Props> = ({ primaryDeviceFilter, selectedIte
                 />
                 <label>Silent Update</label>
             </div>
-            <div>
-                <CRXButton className='primary' onClick={onClickSync}>
-                    Sync Version
-                </CRXButton>
-            </div>
-            <div>
-                <CRXButton className='primary' onClick={onSubmit} disabled={!isSave}>
-                    Save
-                </CRXButton>
-            </div>
-            <div>
-                <CRXButton className='primary' onClick={handleCancel} >
-                    Cancel
-                </CRXButton>
-            </div>
+
+
+        
+            <CRXRows container spacing={3} className="crtVersionBtns">
+                <CRXColumn item xs={3} alignItems="center">
+                <div><CRXButton className='primary' onClick={onClickSync}>
+                        Sync Version
+                    </CRXButton></div>
+                </CRXColumn>
+                <CRXColumn item xs={2} alignItems="center">
+                <div> <CRXButton className='primary' onClick={onSubmit} disabled={!isSave}>
+                        Save
+                    </CRXButton></div>
+                </CRXColumn>
+                <CRXColumn item xs={2} alignItems="center">
+                <div><CRXButton className='primary' onClick={handleCancel} >
+                        Cancel
+                    </CRXButton></div>
+                </CRXColumn>
+            </CRXRows>
+
+            
+            
             <div>
                 <label>Devices selected for update: {selectedItems.length}</label>
             </div>
+
         </>
     );
 };

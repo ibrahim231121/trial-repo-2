@@ -1,6 +1,6 @@
 import React from 'react'
-import { CRXDataTable, CRXMenu } from "@cb/shared";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
+import { CRXDataTable } from "@cb/shared";
+import {dateDisplayFormat} from "../../../../GlobalFunctions/DateFormat";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
@@ -193,7 +193,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
       },[page, rowsPerPage])
 
   return (
-    <div className="CrxConfigTemplate switchLeftComponents">    
+    <div className="CrxConfigTemplate">    
       {
         rows && (    
           <CRXDataTable

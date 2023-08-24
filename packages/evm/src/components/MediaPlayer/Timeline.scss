@@ -352,6 +352,7 @@
     }
   }
 
+
   ._fwrw_timeLine_pipeRed {
     width: 2px;
     height: 36px;
@@ -430,6 +431,7 @@
 
   #video_player_hover_thumb1 {
      bottom: 144px !important;
+     transform: translate(-325px, 0px) !important;
     }
 
     #video_player_hover_thumb2 {
@@ -448,4 +450,20 @@
       bottom: 269px  !important;
      }
 
+}
+
+#stopTimelineSync {
+  .time_line_container {
+    .canvas-width {
+      border: none !important;
+    }
+    &:hover {
+      .canvas-width {
+        border: none !important;
+      }
+    }
+  }
+}
+.tooltip_sync_button {
+  line-height: 20px;
 }

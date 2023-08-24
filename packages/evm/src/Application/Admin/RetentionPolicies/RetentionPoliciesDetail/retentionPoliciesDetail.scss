@@ -291,6 +291,7 @@
               font-size: 14px;
               min-width: 94px;
               max-width: 94px;
+              padding-right: 14px;
               &.errors {
                 outline: 2px solid var(--color-aa1d1d);
                 border: none;
@@ -327,9 +328,10 @@
           }
           .number_field_child {
             input {
-              min-width: 135px;
-              min-width: 60px;
+              //min-width: 135px;
+              min-width: 70px;
               max-width: 60px;
+              padding-right: 12px;
               &:disabled {
                 background-color: var(--color-e5e5e5);
                 border: none;

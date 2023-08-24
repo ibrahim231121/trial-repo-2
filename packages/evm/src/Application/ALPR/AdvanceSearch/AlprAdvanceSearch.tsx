@@ -461,7 +461,7 @@ const AlprAdvanceSearch = (props: any) => {
     return (
         <div>
             <div className='Alpr_advanceSearchChildren'>
-                <div className='searchComponents' style={{ paddingTop: showShortCutSearch == false ? "56px" : "124px" }}>
+                <div className='Alpr_AdvanceSearchComponents' style={{ paddingTop: showShortCutSearch == false ? "49px" : "124px" }}>
                     {isOverLay == true ? <div className='search-modal-overlay'></div> : ""}
                     <div ref={searchBar} className={`Alpr_lister_search_panel ${searchPanelModal}`}>
                         {

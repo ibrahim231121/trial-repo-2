@@ -15,7 +15,8 @@ type typoProps = {
     arrowRef? : any,
     title : string,
     arrowDown : boolean,
-    disablePortal: boolean
+    disablePortal: boolean,
+    removeOnScroll?: boolean
 }
 
 
@@ -103,10 +104,11 @@ const cbxPopoverStyle = makeStyles(() => ({
 )
 
 
-const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl,disablePortal=false ,placement="top-start",id, className, onSetAnchorE1}) => {
+const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl,disablePortal=false ,placement="top-start",id, className, onSetAnchorE1 , removeOnScroll=true}) => {
   const classes = cbxPopoverStyle();
   const [initScroll, setInitScroll] = useState<any>()
   const [arrowRef, setArrowRef] = useState<any>();
+
     const handlePopoverClose = () => {
       onSetAnchorE1(null);
     };
@@ -116,7 +118,7 @@ const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, ancho
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (initScroll < currentScrollY) {
-          handlePopoverClose()
+        removeOnScroll && handlePopoverClose() 
       }
       setInitScroll(currentScrollY)
     };

@@ -52,7 +52,7 @@ const SensorsAndTriggersList: React.FC = () => {
   const [orderBy, setOrderBy] = React.useState<string>("Description");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<SensorAndTriggersTemplate[]>([]);
-  const [selectedActionRow,setSelectedActionRow] = useState<SensorAndTriggersTemplate[]>();
+  const [selectedActionRow,setSelectedActionRow] = useState<SensorAndTriggersTemplate>();
   const [reformattedRows, setReformattedRows] = React.useState<any>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -161,7 +161,7 @@ const SensorsAndTriggersList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "1610",
+      minWidth: "1620",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
@@ -277,9 +277,14 @@ const SensorsAndTriggersList: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
+
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxSensorsAndTriggersTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="CrxSensorsAndTriggersTable ExpandViewOverlay" onKeyDown={handleKeyDown}>
       <CRXToaster ref={sensorsAndTriggersMsgFormRef} />
         {
         rows && (
@@ -317,8 +322,8 @@ const SensorsAndTriggersList: React.FC = () => {
             allowDragableToList={false}
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
-            showCustomizeIcon={true}
-            className="crxTableHeight crxTableDataUi SensorsAndTriggersTableTemplate"
+            showCustomizeIcon={false}
+            className="crxTableHeight crxTableDataUi SensorsAndTriggersTableTemplate TableWithCheck"
             onClearAll={clearAll}
             getSelectedItems={(v: SensorAndTriggersTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -338,6 +343,7 @@ const SensorsAndTriggersList: React.FC = () => {
             totalRecords={filterSensorEvents?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             showExpandViewOption={true}
+            overlay={true}
           />
         )
       }

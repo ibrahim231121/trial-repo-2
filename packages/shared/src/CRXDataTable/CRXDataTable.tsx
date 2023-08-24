@@ -129,7 +129,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   searchResultText,
   advanceSearchText,
   presetPerUser,
-  selfSorting
+  selfSorting,
+  title,
+  overlay
 }) => {
   const classes = useStyles();
   
@@ -170,6 +172,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
     let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id + "_" + presetPerUser);
+    
     if (checkOrderPreset !== null) {
       let arr = JSON.parse(checkOrderPreset).map((x: OrderValue) => x.order);
       setOrderColumn(arr);
@@ -396,7 +399,7 @@ useEffect(() => {
         return (
           
           <div key={container.id} className={expandView == true ? "dataTableExpandView" : "dataTableECollapseView"}>
-            
+            {overlay && <div className='overlaySticky-content'></div> }
             <Grid className={classes.gridStyle} item>
               {container.id === id ? (
                 <ThemeProvider theme={theme}>
@@ -426,6 +429,7 @@ useEffect(() => {
                         searchResultText={searchResultText}
                         advanceSearchText={advanceSearchText}
 						            presetPerUser= {presetPerUser}
+                        title={title}
                       />
                     )}
 
@@ -468,14 +472,16 @@ useEffect(() => {
                       viewName={viewName}
                       expanViews={expandView}
                       totalRecords={totalRecords}
+                      selfSorting={selfSorting}
                     />
                     {(isPaginationRequired == null || isPaginationRequired == true) ?
                       <TablePagination
                         className="dataTablePages"
-                        //classes = {clxFooter.root}  
+                        //classes = {clxFooter.root} 
                         SelectProps={{
                           MenuProps: {
-                            classes: {paper: classes.selectDropdown }
+                            classes: {paper: classes.selectDropdown },
+                            disableScrollLock:true
                           },
                         }}
                         

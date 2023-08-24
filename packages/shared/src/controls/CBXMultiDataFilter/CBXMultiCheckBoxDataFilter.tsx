@@ -13,31 +13,33 @@ import CRXTooltip from '../CRXTooltip/CRXTooltip';
 const selectStyled = makeStyles((_: Theme) =>
   createStyles({
     root: {
-      position : "relative",
+      position: "relative",
       margin: "auto",
-      '& : hover' : {
-        border:"0px",
+      '& : hover': {
+        border: "0px",
         borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none",
+        outline: "0px",
+        boxShadow: "none",
       },
-      '&:focus' : {
-        border:"0px",
+      '&:focus': {
+        border: "0px",
         borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none",
+        outline: "0px",
+        boxShadow: "none",
       }
     },
-
+    popper: {
+      width : "100%"
+    },
   }),
 );
 
 
 const CheckBoxStyle = makeStyles({
 
-    root : {
-      padding:"0px",
-    }
+  root: {
+    padding: "0px",
+  }
 
 })
 const ClickInput = styled('div')`
@@ -70,6 +72,21 @@ const InnerButton = styled('button')`
   justify-content: flex-end;
   color: #333 !important
 `
+const RemoveButton = styled('button')`
+ 
+  height : 26px;
+  opacity : 1;
+  background : none;
+  border:0px;
+  outline : 0px;
+  text-align : right;
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
+  align-items : center;
+  color: #333 !important
+`
+
 const OverlayWraper = styled('div')`
   width : 100%;
   height : 30px;
@@ -80,6 +97,7 @@ const OverlayWraper = styled('div')`
   position : absolute;
   top:0px;
   left : 0px;
+  
 `
 const SelectButton = styled('button')`
     background : transparent;
@@ -89,7 +107,10 @@ const SelectButton = styled('button')`
     outline : 0px;
     height: 100%;
     width: 40px;
-    cursor : pointer
+    cursor : pointer;
+    &:hover .crxTooltip{
+      color: #d1d2d4;
+    }
 `
 
 // const ClearButton = styled('button')`
@@ -147,135 +168,137 @@ const Tag = styled(({ label, onDelete, ...props }) => (
 
 const SingleTag = styled(({ label, ...props }) => (
   <div {...props} className="select_checkBox_chips">
-    
+
     <span>{label}</span>
   </div>
 ))`
   font-size : 14px;
   color : #333; 
+  width: 90%;
 `;
 
 interface LabelType {
-    value : string,
-    id : number
+  value: string,
+  id: number
 }
 
 type SelectProps = {
-    onChange: (val : any) => void;
-    value?:any[];
-    option : LabelType[];
-    defaultValue ? : any;
-    width : number;
-    onSelectedClear : () => void,
-    isCheckBox? : boolean,
-	  isduplicate? : boolean
-    multiple? : boolean,
-    selectAllLabel? : string,
-    poperZindex? : number,
-    percentage? : boolean,
-    disablePortal? : boolean
+  onChange: (val: any) => void;
+  value?: any[];
+  option: LabelType[];
+  defaultValue?: any;
+  width: number;
+  onSelectedClear: () => void,
+  isCheckBox?: boolean,
+  isduplicate?: boolean
+  multiple?: boolean,
+  selectAllLabel?: string,
+  poperZindex?: number,
+  percentage?: boolean,
+  disablePortal?: boolean
 }
-export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, percentage, disablePortal, ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({ onChange, poperZindex, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, percentage, disablePortal, ...props }: SelectProps) {
+
   const selectBoxStyled = makeStyles({
-  
+
     root: {
-      border:"0px",
+      border: "0px",
       borderRadius: "0px",
-      outline : "0px",
-      boxShadow : "none",
-      height : "0px",
+      outline: "0px",
+      boxShadow: "none",
+      height: "0px",
     },
     fullWidth: {
-        background : "#333"
+      background: "#333"
     },
-    focused : {
-        border:"0px",
-        background: "#404041",
-        borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none"
+    focused: {
+      border: "0px",
+      background: "#404041",
+      borderRadius: "0px",
+      outline: "0px",
+      boxShadow: "none"
     },
-    popper : {
-        background: "#404041",
-        marginTop: "1px",
-        marginLeft : "0px",
-        zIndex : `${poperZindex}` as any,
+    popper: {
+      background: "#404041",
+      marginTop: "1px",
+      marginLeft: "0px",
+      zIndex: `${poperZindex}` as any,
     },
-    paper : {
-        background: "#404041",
-        borderRadius : "0px",
-        border:"0px",
-        margin: "0px",
-       
+    paper: {
+      background: "#404041",
+      borderRadius: "0px",
+      border: "0px",
+      margin: "0px",
+
     },
 
-    inputRoot : {
-        border:"0px",
-        borderRadius : "0px",
-        padding:"0px 0px !important",
-        
-        '& : hover' : {
-            border:"0px",
-            borderRadius: "0px",
-            outline : "0px",
-            boxShadow : "none",
-          },
-          '&:focus' : {
-            border:"0px",
-            borderRadius: "0px",
-            outline : "0px",
-            boxShadow : "none",
-          }
-        
-    },
-    inputFocused : {
-        border:"0px",
+    inputRoot: {
+      border: "0px",
+      borderRadius: "0px",
+      padding: "0px 0px !important",
+
+      '& : hover': {
+        border: "0px",
         borderRadius: "0px",
-        outline : "0px",
-        boxShadow : "none",
+        outline: "0px",
+        boxShadow: "none",
+      },
+      '&:focus': {
+        border: "0px",
+        borderRadius: "0px",
+        outline: "0px",
+        boxShadow: "none",
+      }
+
+    },
+    inputFocused: {
+      border: "0px",
+      borderRadius: "0px",
+      outline: "0px",
+      boxShadow: "none",
     },
 
-    option : {
-      color:"#d1d2d4",
-      fontSize:"14px",
-      fontFamily : "Arial, Helvetica, sans-serif, Segoe UI",
-      padding : "8px 10px",
+    option: {
+      color: "#d1d2d4",
+      fontSize: "14px",
+      fontFamily: "Arial, Helvetica, sans-serif, Segoe UI",
+      padding: "6px 10px",
       placeItems: "center",
-      '&:hover' : {
+      '&:hover': {
         background: "#231f20",
-        color : "#F5F5F5",
-        '&:focus' : {
+        color: "#F5F5F5",
+        '&:focus': {
           background: "#6E6E6E",
-          color:"#d1d2d4",
+          color: "#d1d2d4",
         }
       },
-      '&:focus' : {
+      '&:focus': {
         background: "#6E6E6E",
-        color:"#d1d2d4",
+        color: "#d1d2d4",
       },
 
-      '&[aria-selected="true"]' : {
+      '&[aria-selected="true"]': {
         backgroundColor: "#231f20",
-        color:"#f5f5f5",
+        color: "#D1D2D4",
       }
     },
 
-    listbox : {
-      paddingTop : "3px"
+    listbox: {
+      paddingTop: "3px"
     }
   }
-);
+  );
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [singleValue, setSingleValue] = useState<any>()
+  //const [singleValue, setSingleValue] = useState<any>()
   const selectRefs = useRef(null)
-  
+
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
   const checkedIcon = <i className="fa-light fa-square-check"></i>;
 
- if(isduplicate) {
+  if (isduplicate) {
     let unique: any = option.map((x: any) => x);
     if (option.length > 0) {
       unique = [];
@@ -290,11 +313,11 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
   }
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-  
+
     setAnchorEl(event.currentTarget);
-    
+
   };
-  
+
   const OnCloseHandler = () => {
     setAnchorEl(null)
   }
@@ -303,18 +326,18 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
   const id = open ? 'data-table-filter-select' : undefined;
 
   useLayoutEffect(() => {
-    
-    let tableContainer : any = document.querySelector("#customizedStickyHeader")
-    if(open == true) {
+
+    let tableContainer: any = document.querySelector("#customizedStickyHeader")
+    if (open == true) {
       tableContainer && (tableContainer.style.overflow = "visible");
-    }else {
+    } else {
       tableContainer && (tableContainer.style.overflow = "hidden");
     }
 
-  },[open])
-  
+  }, [open])
+
   useLayoutEffect(() => {
-    const handleScroll = () => { 
+    const handleScroll = () => {
       if (window.scrollY > 1) {
         setAnchorEl(null)
       }
@@ -329,20 +352,24 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const allSelected = option.length === selectedOptions.length;
 
-  const handleToggleOption = (selectedOptions : any) =>
+  const handleToggleOption = (selectedOptions: any) =>
     setSelectedOptions(selectedOptions);
 
-  const handleClearOptions = () => {setSelectedOptions([]); onSelectedClear()};
+  const handleClearOptions = () => { setSelectedOptions([]); onSelectedClear() };
 
-  useEffect(() =>{
-    if(value?.length == 0) {
+  useEffect(() => {
+    if (value?.length == 0) {
       setSelectedOptions([])
     }
-  },[value?.length == 0])
+  }, [value?.length == 0])
 
-  const getOptionLabel = (option : any) => `${option.value}`;
+  const getOptionLabel = (option: any) => {
 
-  const handleSelectAll = (isSelected : any) => {
+    return option.name == undefined ? `${option.value}` : `${option.name}`
+
+  }
+
+  const handleSelectAll = (isSelected: any) => {
     if (isSelected) {
       setSelectedOptions(option);
     } else {
@@ -354,10 +381,11 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
     handleSelectAll && handleSelectAll(!allSelected);
   };
 
-  const handleChange = (_ : any, selectedOptions : any, reason : any) => {
+  const handleChange = (_: any, selectedOptions: any, reason: any) => {
 
-    if (reason === "select-option" || reason === "remove-option") {
-      if (selectedOptions.find((option : any) => option.value === selectAllLabel)) {
+    if ((reason === "select-option" || reason === "remove-option") && isCheckBox === true && multiple === true) {
+
+      if (selectedOptions.find((option: any) => option.value === selectAllLabel)) {
         handleToggleSelectAll();
         let result = [];
         result = option.filter(el => el.value !== selectAllLabel);
@@ -369,79 +397,114 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
       }
     } else if (reason === "clear") {
       handleClearOptions && handleClearOptions();
+
+    } else {
+
+      handleToggleOption && handleToggleOption([selectedOptions]);
+
+      let selectItem = [{
+        id: selectedOptions.id,
+        value: selectedOptions.value
+      }]
+
+      return onChange(selectItem);
     }
   };
-
-  const optionRenderer = (option : any, { selected } : any) => {
+  const [filterShowAll,setFilterShowAll] = useState(false)
+  const optionRenderer = (option: any, { selected }: any) => {
+    if (option.value == undefined)
+      return <></>
     const selectAllProps =
       option.value === selectAllLabel // To control the state of 'select-all' checkbox
         ? { checked: allSelected }
         : {};
+        const FilterShow: any = allSelected && "radactionShowAllFilter";
+        setFilterShowAll(FilterShow)
+    if (isCheckBox === true) {
+      return (
+        <>
 
-    return (
-      <>
+          <Checkbox
+            icon={icon}
+            checkedIcon={checkedIcon}
+            style={{ marginRight: 10 }}
+            checked={selected}
+            disableRipple
+            className="select_checkbox"
+            classes={{
+              ...checkBoxClass
+            }}
+            {...selectAllProps}
+          />
+          {getOptionLabel(option)}
 
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 10 }}
-              checked={selected}
-              disableRipple
-              className="select_checkbox"
-              classes = {{
-                ...checkBoxClass
-              }}
-              {...selectAllProps}
-            />
-            {getOptionLabel(option)}
-      
-      </>
-    );
+        </>
+      );
+    } else {
+      return <>{getOptionLabel(option)}</>
+    }
+
   };
-  const inputRenderer = (params : any) => (
-    <TextField className={'select_Checkbox_input_field ' + `${ selectedOptions.length > 0 && "bg-dp-value"}` } style={{width : props.width + `${percentage == true ? "%" : "px"}`}} {...params} variant="outlined" />
+  const inputRenderer = (params: any) => (
+    <TextField className={'select_Checkbox_input_field ' + `${selectedOptions.length > 0 && "bg-dp-value"}`} style={{ width: props.width + `${percentage == true ? "%" : "px"}` }} {...params} variant="outlined" />
   );
+
   const getOptionSelected = (option: any, selectedOptions: any) =>
     option.value === selectedOptions.value;
 
-  const filter = createFilterOptions()
-  return (
-    <ClickAwayListener onClickAway={OnCloseHandler}>
-    <div  ref={selectRefs} style={{width : props.width + `${percentage == true ? "%" : "px"}`}} className={"cbx_multi_data_filter " + classes.root}>
-    
-    <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
+  const filter = createFilterOptions();
 
-        {selectedOptions.length > 0 && multiple == true && singleValue && allSelected == false ?
-        <SingleTag label={singleValue[0].value} /> : <SingleTag label={selectedOptions.length > 0 && selectAllLabel} /> }
+  const renderSelectedItems = () => {
 
-         <InnerButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
-          <i className="fa-solid fa-sort-down"></i>
-        </InnerButton>
+    return (
+      <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}`}>
+
+
+        {selectedOptions.length > 0 && allSelected == false ?
+          <SingleTag label={selectedOptions[0].name == undefined ? `${selectedOptions[0].value}` : `${selectedOptions[0].name}`} onClick={(e: React.MouseEvent<HTMLElement>) => handleClick(e)} /> : <SingleTag label={selectedOptions.length > 0 && selectAllLabel} />}
+
+        {selectedOptions.length > 0 && allSelected == false && multiple == false && isCheckBox == false ?
+
+          <RemoveButton onClick={(_: any) => handleClearOptions()}>
+            <i className="icon icon-cross2"></i>
+          </RemoveButton> :
+          <InnerButton onClick={(e: React.MouseEvent<HTMLElement>) => handleClick(e)}>
+            <i className="fa-solid fa-sort-down"></i>
+          </InnerButton>
+        }
+
         {/* {multiple == false && singleValue ? <>
         <SingleTag label={singleValue.value} />
         <ClearButton onClick={(e : any) => onSelectedClear(e)}>
           <i className="icon icon-cross2 clearItem"></i>
         </ClearButton></> :  */}
-    </ClickInput>
+      </ClickInput>
+    )
+  }
+  return (
+    <ClickAwayListener onClickAway={OnCloseHandler}>
+    <div  ref={selectRefs} style={{width : props.width + `${percentage == true ? "%" : "px"}`}} className={"cbx_multi_data_filter " + classes.root}>
+    
+    {renderSelectedItems()}
     
     {selectedOptions.length > 1 && selectedOptions.length !== option.length && open == false || selectedOptions.length > 1 && open === true && selectedOptions.length !== option.length ?  
     <OverlayWraper> 
         <SelectButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
         <CRXTooltip
-          className="bucketIcon"
+          className="bucketIcon bucketAIIcon"
           title="filter"
           iconName="fas fa-filter"
-          placement="top"
+          placement="bottom"
           arrow={false}
           id=""
         ></CRXTooltip>
         </SelectButton>  
         <SelectButton onClick={(_ : any) => handleClearOptions()}>
           <CRXTooltip
-            className="bucketIcon"
+            className="bucketIcon bucketAIIcon"
             title="clear"
             iconName="icon icon-cross2"
-            placement="top"
+            placement="bottom"
             arrow={false}
             id=""
           ></CRXTooltip>
@@ -471,14 +534,15 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
         disablePortal={disablePortal}
         className="data_filter_select_list_checkbox"
         classes = {{
-            ...selectClass
+          ...selectClass,
+          popper: classes.popper + " " + filterShowAll
         }}
         filterSelectedOptions={false}
         size="medium"
         value={selectedOptions}
         getOptionLabel={getOptionLabel}
         defaultValue={ defaultValue }
-        disableCloseOnSelect={true}
+        disableCloseOnSelect={false}
         getOptionSelected={getOptionSelected}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
@@ -507,7 +571,8 @@ export default function CBXMultiCheckBoxDataFilter({onChange, poperZindex, multi
         //   </React.Fragment>
         // )}
         renderTags={(tagValue, getTagProps) => {
-          setSingleValue(tagValue)
+          //setSingleValue(tagValue)
+         
           return tagValue.map((option, index) => (
             <Tag {...getTagProps({ index })} label={option.value} />
           ));

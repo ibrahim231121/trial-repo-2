@@ -81,11 +81,20 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
       newArray.push(arr[i]);
     }
     return newArray;
-  }
-  
+  }  
+
+  const notification_Panel = document.querySelector("body")
+  useEffect(()=> {
+    if (isOpen == true) {
+      notification_Panel?.classList.add("notification_Panel") 
+    }else{
+      notification_Panel?.classList.remove("notification_Panel") 
+    }
+  })
+
   return (
     <CRXDrawer
-      className='CRXBucketPanel crxBucketPanelStyle'
+      className='CRXBucketPanel crxBucketPanelStyle Notification_Bucket_Panel'
       anchor='right'
       button={ToggleDot}
       btnStyle='NotificationIconButton'

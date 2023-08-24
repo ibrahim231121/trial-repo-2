@@ -416,9 +416,11 @@ useEffect(() => {
             <div className="add_ex_datatable" onKeyDown={handleKeyDown}>
               {rows && (
                 <CRXDataTable
-                  id="group-userDataTable"
+                  id="fields"
                   actionComponent={() => { }}
                   getRowOnActionClick={() => { }}
+                  showTotalSelectedText={true}
+                  showCountText={false}
                   showToolbar={true}
                   dataRows={rows}
                   initialRows={reformattedRows}
@@ -439,9 +441,7 @@ useEffect(() => {
                   showCheckBoxes={true}
                   showActionCol={false}
                   showActionSearchHeaderCell={false}
-                  showCountText={false}
                   showCustomizeIcon={false}
-                  showTotalSelectedText={true}
                   lightMode={false}
               
                   page={page}
@@ -451,7 +451,8 @@ useEffect(() => {
                   totalRecords={filterFormFields?.totalCount}
                   setSortOrder={(sort: any) => sortingOrder(sort)}
                      //Please dont miss this block.
-                    offsetY={44}
+                     offsetY={44}
+                   
                   
                   //End here
                   

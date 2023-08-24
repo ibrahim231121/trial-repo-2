@@ -23,7 +23,8 @@ type SelectBoxProps = {
   isRequried? : boolean,
   errorMsg? : string,
   error? : boolean,
-  zIndex? : any
+  zIndex? : any,
+  disablePortal?:boolean
 
 };
 
@@ -71,13 +72,17 @@ const StyledMenuItem = withStyles(() => ({
 }))(MenuItem);
 
 const CreateStyleProps = makeStyles(({
+  popover : {
+    position : "absolute"
+  },
   rounded : {
     borderRadius : "0px",
     background : "#fff",
     boxShadow : "rgb(0 0 0 / 15%) 0px 0px 11px -2px",
     marginTop : "10px",
     maxHeight : "300px",
-    border: "1px solid #d1d2d4"
+    border: "1px solid #d1d2d4",
+    maxWidth: "100%"
   }
 }))
 const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
@@ -95,6 +100,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       onClose,
       error,
       zIndex = 13001,
+      disablePortal,
       disabled=false,},
     ref
   ) => {
@@ -133,7 +139,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         onChange={onChange}
         input={<InputBase id={"input" + id} />}
         MenuProps={{
-          style: {zIndex : zIndex},
+          style: {zIndex : zIndex, position : "absolute"},
           anchorOrigin: {
             vertical: "bottom",
             horizontal: "center",
@@ -146,7 +152,9 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
             paper: MenuPropsStyle.rounded
           },
           getContentAnchorEl: null,
+          disablePortal: disablePortal,
         }}
+       
         disabled={disabled}
       >
         {defaultOption && (

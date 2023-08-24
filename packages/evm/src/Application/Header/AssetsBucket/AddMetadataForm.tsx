@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { EVIDENCE_ASSET_DATA_URL, FILE_SERVICE_URL_V2 } from "../../../utils/Api/url";
+import { EVIDENCE_ASSET_DATA_URL } from "../../../utils/Api/url";
 import { useDispatch, useSelector } from "react-redux";
-import { CRXSelectBox, CRXMultiSelectBoxLight, CRXConfirmDialog } from "@cb/shared";
+import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { CRXButton } from "@cb/shared";
@@ -9,17 +9,19 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { EvidenceAgent, FileAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
-import { Station } from "../../../utils/Api/models/StationModels";
+import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
-import moment from "moment";
-import { getCategoryAsync } from "../../../Redux/categoryReducer";
-import { addMetadata, AddMetadataFormProps, CategoryNameAndValue, masterAsset, MasterAssetBucket, masterAssetFile, masterAssetStation, MasterNameAndValue, NameAndValue, UserNameAndValue } from "./SubComponents/types";
+import { addMetadata, AddMetadataFormProps, masterAsset, MasterAssetBucket, masterAssetFile, masterAssetStation, MasterNameAndValue, StationIdandLabel, UserNameAndValue } from "./SubComponents/types";
 import { SubmitType } from "../../Assets/AssetLister/Category/Model/CategoryFormModel";
-import { MAX_REQUEST_SIZE_FOR } from "../../../utils/constant";
 import DisplayCategoryForm from "../../Assets/AssetLister/Category/SubComponents/DisplayCategoryForm";
-import { applyValidation, RemapFormFieldKeyName, RevertKeyName } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
+import { applyValidation, CategoryScenarioCallingFrom, CreateCategoryFormObjectCollection, filterCategory, RemapFormFieldKeyName } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
+import { FieldsFunctionType } from "../../Assets/AssetLister/Category/Model/DisplayCategoryForm";
+import { AddMetaDataUtility } from './Utility';
+import { checkAssetType, checkFileStatus, checkFileType, currentStartDate, getDecimalPart } from "./AssetBucketMetaDataUtil";
+import { getStationsInfoAllAsync } from "../../../Redux/StationReducer";
+import { getAllCategoriesFilter } from "../../../Redux/Categories";
+import { findMaximumDescriptorId } from "../../../GlobalFunctions/SecurityDescriptor";
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
@@ -51,9 +53,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     stationErr: "",
     ownerErr: "",
   });
-  const [stationList, setStationList] = useState<any>([]);
   const [userOption, setUserOption] = useState<any>([]);
-  const [categoryOption, setCategoryOption] = useState<any>([]);
   const [masterAssetOption, setMasterAssetOption] = useState<any>([]);
   const [isNext, setIsNext] = useState<boolean>(true);
   const [isEditCase, setIsEditCase] = useState<boolean>(false);
@@ -61,8 +61,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [isSaveBtnDisable, setIsSaveBtnDisable] = useState<boolean>(false);
   const [isOwnerDisable, setIsOwnerDisable] = useState<boolean>(false);
   const [isCategoryDisable, setIsCategoryDisable] = useState<boolean>(false);
-  const [formFields, setFormFields] = useState<any>([]);
-  const [InitialValues, setInitialValues] = React.useState<any>({});
+  const [initialValuesOfFormForFormik, setInitialValuesOfFormForFormik] = React.useState<any>({});
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
   });
@@ -72,18 +71,23 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [responseError, setResponseError] = useState<string>("");
   const [errorType, setErrorType] = useState<string>("error");
   const [isCategoryFormEmpty, setIsCategoryFormEmpty] = useState<boolean>(false);
+  const [validationSchema, setValidationSchema] = React.useState<any>();
+  const [formpayloadForstoredValue, setFormPayloadForStoredValues] = useState<addMetadata>({
+    station: {},
+    masterAsset: "",
+    owner: [],
+    category: []
+  });
+
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
-  const categories: any = useSelector(
-    (state: RootState) => state.assetCategory.category
-  );
+  const categories: any = useSelector((state: any) => state.categoriesSlice.filterCategories);
 
   const stations: any = useSelector(
     (state: RootState) => state.stationReducer.stationInfo
   );
-
-  const [pageiGrid, setPageiGrid] = useState<PageiGrid>({
+  const [pageiGrid] = useState<PageiGrid>({
     gridFilter: {
       logic: "and",
       filters: []
@@ -91,19 +95,30 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     page: 0,
     size: 1000
   });
-  const [validationSchema, setValidationSchema] = React.useState<any>({});
+
+  const getCategories = React.useCallback(async () => {
+    dispatch(getAllCategoriesFilter({
+      pageiGrid: pageiGrid,
+      search: "deep"
+    }));
+  }, [dispatch]);
 
   React.useEffect(() => {
-    fetchStation();
+    if (!stations || stations?.length == 0) {
+      dispatch(getStationsInfoAllAsync());
+    }
     masterAssets();
     dispatch(getUsersInfoAsync(pageiGrid));
-    dispatch(getCategoryAsync());
   }, []);
 
   React.useEffect(() => {
+    if(categories && Object.keys(categories).length == 0)
+       getCategories();
+   }, [getCategories]);
+
+  React.useEffect(() => {
     fetchUser();
-    fetchCategory();
-  }, [users.data, categories, stations]);
+  }, [users.data]);
 
   React.useEffect(() => {
     if (formpayload.category.length == 0) {
@@ -131,7 +146,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       !formpayload.station ||
       formpayload.owner.length == 0
     ) {
-
       setIsSaveBtnDisable(true);
     } else {
       setIsSaveBtnDisable(false);
@@ -143,6 +157,14 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     else {
       setIsformUpdated(false)
     }
+
+    if (formpayload && (Object.keys(formpayload.station).length !== 0 && formpayload.owner.length > 0)) {
+      setIsSaveBtnDisable(false);
+    }
+    else {
+      setIsSaveBtnDisable(true);
+    }
+
   }, [formpayload]);
 
   React.useEffect(() => {
@@ -162,48 +184,46 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       let categoryData: any = [];
       let owners: any = [];
       checkSubmitType
-        .filter(
-          (x: any) =>
-            x.evidence.masterAsset.assetName === formpayload.masterAsset
-        )
-        .forEach((x: any) => {
-          assetName = x.assetName;
-          station = x.station;
-          x.evidence.masterAsset.owners.forEach((owner: any) => {
+        .filter((checkSubmit: any) => checkSubmit.evidence.masterAsset.assetName === formpayload.masterAsset)
+        .forEach((checkSubmit: any) => {
+          assetName = checkSubmit.assetName;
+          station = checkSubmit.station;
+          checkSubmit.evidence.masterAsset.owners.forEach((owner: any) => {
             owners.push(owner);
           });
-          x.categories.forEach((i: any) => {
-            categoryData.push(i);
+          checkSubmit.categories.forEach((category: any) => {
+            categoryData.push(category);
           });
         });
-      let stationObject = {};
-      stationList
-        .filter((x: any) => station == x.label)
-        .forEach((x: any) => {
-          stationObject = {
-            id: x.id,
-            label : x.label
-          } ;
-        });
+      const stationObject = stations.filter((s: any) => station == s.name)
+        .map((o: any) => {
+          return {
+            id: o.id,
+            label: o.name
+          }
+        })[0];
       const ownerDateOfArry: any = [];
-      userOption.map((item: any, counter: number) =>
-        owners.forEach((x: any) => {
-          if (item.label == x) {
-            ownerDateOfArry.push(item);
-            return item;
+      userOption.map((user: any) =>
+        owners.forEach((owner: any) => {
+          if (user.label == owner) {
+            ownerDateOfArry.push(user);
+            return user;
           }
         })
       );
       const categoryDateOfArry: any = [];
-      categoryOption.map((item: any, counter: number) =>
-        categoryData.forEach((x: any) => {
-          if (item.label == x) {
-            categoryDateOfArry.push(item);
-            return item;
+      categories.data.map((category: any) =>
+        categoryData.forEach((previousCategory: any) => {
+          if (category.name == previousCategory) {
+            categoryDateOfArry.push({
+              id : category.id,
+              label : category.name,
+              retentionId: category.policies.retentionPolicyId,
+              form: RemapFormFieldKeyName(category.forms, category.id)
+             });
           }
         })
       );
-
       setFormPayload({
         masterAsset: assetName,
         station: stationObject,
@@ -217,14 +237,18 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setIsEditCase(true);
       setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
     } else if (checkSubmitType.length == 0) {
+      
       setStationDisable(false);
       setIsOwnerDisable(false);
       setIsCategoryDisable(false);
       setIsEditCase(false);
-      setFormPayload({ ...formpayload, station : {},category : [], owner: []});
+      if(formpayloadForstoredValue.masterAsset) 
+       setFormPayload({...formpayloadForstoredValue,station : formpayloadForstoredValue.station, category : formpayloadForstoredValue.category, owner: formpayloadForstoredValue.owner}) 
 
     }
   }, [formpayload.masterAsset]);
+
+  
 
   React.useEffect(() => {
     setFormPayload({ ...formpayload, masterAsset: displayText });
@@ -235,17 +259,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   }, [uploadFile]);
 
   React.useEffect(() => {
-    if (activeScreen === 1) { // 'stationDisable' used For Edit Case.
-      // NOTE : Submit Button Disable State, on the basis of Form Input.
-      const isFormValidated: boolean = formFields.some((ele: any) => (ele.value.length === 0 || ele.value.length > 1024));
-      if (!isFormValidated)
-        setIsSaveBtnDisable(false);
-      else
-        setIsSaveBtnDisable(true);
-    }
-  }, [formFields, activeScreen]);
-
-  React.useEffect(() => {
     const Initial_Values: Array<any> = [];
     formpayload.category.forEach((formIndex: any) => {
       if (formIndex.form.length > 0) {
@@ -253,23 +266,17 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
           form.fields.forEach((field: any) => {
             Initial_Values.push({
               fieldId: field.id,
-              formId: field.formId,
+              formId: form.id,
               key: field.name,
               value: "",
-              fieldType: field.dataType,
-              version: ""
-            })
-          })
+              fieldType: field.type,
+              version: "",
+              isRequired: field.isRequired
+            });
+          });
         });
         const key_value_pair = Initial_Values.reduce((obj: any, item: any) => ((obj[item.key] = item.value), obj), {});
-        setInitialValues(key_value_pair);
-        const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
-          return {
-            key: o[0],
-            value: o[1]
-          };
-        });
-        setFormFields(initial_values_of_fields);
+        setInitialValuesOfFormForFormik(key_value_pair);
         const validation = applyValidation(Initial_Values);
         setValidationSchema(validation);
       }
@@ -282,23 +289,35 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       const isFormExist = formpayload.category.every((x: any) => x.form.length === 0);
       setIsCategoryFormEmpty(isFormExist);
       setIsSaveBtnDisable(false);
-    }  
+    }
+   
+    if (formpayload && (Object.keys(formpayload.station).length !== 0 && formpayload.owner.length > 0)) {
+      setIsSaveBtnDisable(false);
+    }
+    else {
+      setIsSaveBtnDisable(true);
+    }
   }, [formpayload.category]);
 
-  const fetchStation = async () => {
-    await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1&Size=${MAX_REQUEST_SIZE_FOR.STATION}`)
-      .then((res: Station[]) => res)
-      .then(response => {
-        const stationNames = response.map((x: any, i: any) => {
-          return {
-            id: x.id,
-            label: x.name,
-          };
-        });
-        setStationList(stationNames);
-      });
-  };
+  React.useEffect(() => {
+    //NOTE: Check disable state of save button either on reaching or currently displaying categorize screen.
+    setSaveButtonDisablePropertyIfCategoryFormIsValid();
+  }, [initialValuesOfFormForFormik, activeScreen]);
 
+  const UpdateFormFields = React.useCallback(({ name, value }: FieldsFunctionType) => {
+    setInitialValuesOfFormForFormik((previous: any) => {
+      let args = { ...previous };
+      args[name] = value;
+      return args;
+    });
+  }, []);
+
+  const setSaveButtonDisablePropertyIfCategoryFormIsValid = () => {
+    if ((activeScreen === 1) && !(isCategoryFormEmpty)) {
+      const isFormValid = validationSchema.isValidSync(initialValuesOfFormForFormik);
+      isFormValid ? setIsSaveBtnDisable(false) : setIsSaveBtnDisable(true);
+    }
+  }
   const masterAssets = () => {
     let assetName = uploadFile.map((x: any) => {
       var j: MasterNameAndValue = {
@@ -307,14 +326,17 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       };
       return j;
     });
-    let assetBucket = uploadAssetBucket.filter((x: any) => x.id != undefined).map((x: any) => {
-      var j: MasterAssetBucket = {
-        id: x.assetId,
-        value: x.assetName,
-      };
-      return j;
+    let masterAssetBucket: MasterAssetBucket[] = [];
+    uploadAssetBucket.filter((x: any) => x.id != undefined).map((x: any) => {
+      let descriptor = findMaximumDescriptorId(x?.evidence?.securityDescriptors ?? []);
+      if (descriptor && descriptor >= 3) {
+        masterAssetBucket.push({
+          id: x.assetId,
+          value: x.assetName,
+        });
+      }
     });
-    setMasterAssetOption([...assetName, ...assetBucket]);
+    setMasterAssetOption([...assetName, ...masterAssetBucket]);
   };
 
   const fetchUser = () => {
@@ -340,70 +362,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     setUserOption(dateOfArry);
   };
 
-  const fetchCategory = () => {
-    if (categories && categories.length > 0) {
-      const categoryName = categories.map((categories: any) => {
-        return {
-          categoryId: categories.id,
-          categoryName: categories.name,
-          categoryForm: categories.forms,
-          categoryRetentionId: categories.policies.retentionPolicyId
-        } as CategoryNameAndValue;
-      });
-      sendCategoryOptionList(categoryName);
-    }
-  };
-
-  const sendCategoryOptionList = (data: any[]) => {
-    const dateOfArry: any = [];
-    const formOfArry: any = [];
-    data.forEach((item, index) => {
-      if (item.categoryForm.length != 0) {
-        item.categoryForm.forEach((form: any) => {
-          form.fields.forEach((field: any) => {
-            const formFields = {
-              id: field.id,
-              formId: form.id,
-              name: field.name,
-              dataType: field.type,
-              display: {
-                caption: field.display.caption,
-              },
-              defaultFieldValue: field.defaultFieldValue
-            };
-            formOfArry.push(formFields);
-          });
-          const fields = formOfArry.filter((x: any) => x.formId === form.id);
-          dateOfArry.push({
-            id: item.categoryId,
-            label: item.categoryName,
-            retentionId: item.categoryRetentionId,
-            form: [
-              {
-                id: form.id,
-                name: form.name,
-                fields,
-              },
-            ],
-          });
-        });
-      } else {
-        dateOfArry.push({
-          id: item.categoryId,
-          label: item.categoryName,
-          retentionId: item.categoryRetentionId,
-          form: [],
-        });
-      }
-    });
-    let distinctCategoryList = dateOfArry.filter((value: any, index: any, self: any) =>
-      index === self.findIndex((t: any) => (
-        t.id === value.id
-      ))
-    );
-    return setCategoryOption(distinctCategoryList);
-  };
-
   const checkOwners = () => {
     if (!formpayload.owner || formpayload.owner.length === 0) {
       setformpayloadErr({
@@ -426,251 +384,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     }
   };
 
-  const checkAssetType = (assetType: string) => {
-    let typeOfAsset: string = "";
-    assetType = assetType.toLocaleLowerCase();
-    switch (assetType) {
-      case ".mp4":
-      case ".avi":
-      case ".mkv":
-      case ".3gp":
-      case ".3gpp":
-      case ".webm":
-      case ".wmv":
-        typeOfAsset = "Video";
-        break;
-
-      case ".mp3":
-      case ".wma":
-      case ".aac":
-      case ".wav":
-        typeOfAsset = "Audio";
-        break;
-
-      case ".jpeg":
-      case ".png":
-      case ".gif":
-      case ".tiff":
-      case ".psd":
-      case ".ai":
-      case ".jpg":
-      case ".jfif":
-      case ".bmp":
-        typeOfAsset = "Image";
-        break;
-
-      case ".xlsx":
-      case ".xlsm":
-      case ".xlsb":
-      case ".xltx":
-      case ".xltm":
-      case ".xml":
-      case ".doc":
-      case ".docx":
-      case ".pdf":
-      case ".txt":
-      case ".ppt":
-      case ".csv":
-        typeOfAsset = "Doc";
-        break;
-
-      case ".dll":
-      case ".exe":
-      case ".msi":
-      case ".bin":
-        typeOfAsset = "Executable";
-        break;
-
-      case ".zip":
-      case ".rar":
-      case ".icm":
-        typeOfAsset = "Others";
-        break;
-
-      default:
-        typeOfAsset = "Others";
-    }
-    return typeOfAsset;
-  };
-
-  const checkFileStatus = (fileStatus: string) => {
-    if (fileStatus === "Uploaded") {
-      return "Available"
-    }
-    else {
-      return fileStatus
-    }
-  }
-
-  const checkFileType = (fileType: string) => {
-    let typeOfFile: string = "";
-    fileType = fileType.toLocaleLowerCase();
-    switch (fileType) {
-
-      case ".mp4":
-      case ".avi":
-      case ".mkv":
-      case ".3gp":
-      case ".3gpp":
-      case ".webm":
-        typeOfFile = "Video";
-        break;
-
-      case ".mp3":
-      case ".wma":
-      case ".aac":
-      case ".wav":
-        typeOfFile = "Audio";
-        break;
-
-      case ".jpeg":
-      case ".png":
-      case ".gif":
-      case ".tiff":
-      case ".psd":
-      case ".ai":
-      case ".jpg":
-      case ".jfif":
-      case ".bmp":
-        typeOfFile = "Image";
-        break;
-
-      case ".wmv":
-        typeOfFile = "WMVVideo";
-        break;
-
-      case ".icm":
-        typeOfFile = "AvenueSource";
-        break;
-
-      case ".doc":
-      case ".docx":
-        typeOfFile = "WordDoc";
-        break;
-
-      case ".pdf":
-        typeOfFile = "PDFDoc";
-        break;
-
-      case ".csv":
-        typeOfFile = "CSVDoc";
-        break;
-
-      case ".txt":
-        typeOfFile = "Text";
-        break;
-
-      case ".xlsx":
-      case ".xlsm":
-      case ".xlsb":
-      case ".xltx":
-      case ".xltm":
-      case ".xls":
-        typeOfFile = "ExcelDoc";
-        break;
-
-      case ".ppt":
-      case ".pptx":
-        typeOfFile = "PowerPointDoc";
-        break;
-
-      case ".dll":
-        typeOfFile = "DLL";
-        break;
-      case ".exe":
-        typeOfFile = "Exe";
-        break;
-      case ".msi":
-        typeOfFile = "Msi";
-        break;
-      case ".bin":
-        typeOfFile = "bin";
-        break;
-
-      case ".crt":
-      case ".cer":
-      case ".ca-bundle":
-      case ".p7b":
-      case ".p7c":
-      case ".p7s":
-      case ".pem":
-        typeOfFile = "BW2Certificate";
-        break;
-
-      case ".zip":
-      case ".rar":
-        typeOfFile = "Zip";
-        break;
-
-      case ".xml":
-      case ".wpt":
-      case ".dat":
-      case ".ppc":
-      case ".wpr":
-      case ".trl":
-        typeOfFile = "GPS";
-        break;
-
-      default:
-        typeOfFile = "Others";
-    }
-    return typeOfFile;
-  };
-  const currentStartDate = () => {
-
-    return moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
-  };
-
-  const insertCategory = (payloadCategory: any) => {
-    const categoryArrayIndex = new Array();
-    payloadCategory.forEach((catIndexs: any, i: any) => {
-      if (catIndexs.form.length != 0) {
-        catIndexs.form.forEach((formIndex: any) => {
-          const fieldArrayIndex = new Array();
-          formIndex.fields.forEach((fieldIndex: any) => {
-            let value: any;
-            if (fieldIndex.hasOwnProperty('key')) {
-              value = formFields.filter((x: any) => x.key == fieldIndex.key).map((i: any) => i.value)[0];
-            } else {
-              value = formFields.filter((x: any) => x.key == fieldIndex.name).map((i: any) => i.value)[0];
-            }
-
-            const _field = {
-              key: RevertKeyName(fieldIndex.key === undefined ? fieldIndex.name : fieldIndex.key),
-              value: value,
-              dataType: fieldIndex.type === undefined ? fieldIndex.dataType : fieldIndex.type,
-              defaultFieldValue: fieldIndex.defaultFieldValue
-            };
-            fieldArrayIndex.push(_field);
-          });
-
-          categoryArrayIndex.push({
-            id: catIndexs.id,
-            retentionId: catIndexs.retentionId,
-            formData: [
-              {
-                formId: formIndex.id,
-                fields: fieldArrayIndex,
-              },
-            ],
-          });
-        });
-      } else {
-        categoryArrayIndex.push({ id: catIndexs.id, retentionId: catIndexs.retentionId, formData: [] });
-      }
-    });
-    return categoryArrayIndex;
-  };
-
-  const getDecimalPart = (num: any) => {
-    return num % 1;
-  };
-
   const recordingEnded = (fileName: string) => {
     const filterObject = uploadFile.find(
-      (x: any) =>
-        x.uploadedFileName.replaceAll(" ", "_") ===
-        fileName
+      (x: any) =>  x.uploadedFileName.replaceAll(" ", "_") === fileName
     );
 
     let hh = 0;
@@ -733,24 +449,10 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       currentMiliSecond
     );
   };
-  
+
   const onAddMetaData = async (submitType: SubmitType) => {
-    
-    let station: any = formpayload.station
-
-    let categories: any[] = [];
-    if (submitType === SubmitType.WithoutForm) {
-      categories = insertCategory(formpayload.category).map((x: any) => {
-        return {
-          ...x,
-          formData: []
-        }
-      });
-    } else {
-      categories = insertCategory(formpayload.category);
-    }
-
-    
+    let station: any = formpayload.station;
+    const categories = CreateCategoryFormObjectCollection(formpayload.category, (submitType === SubmitType.WithForm), initialValuesOfFormForFormik, CategoryScenarioCallingFrom.AddAssetMetaData);
     const uploadedFile = uploadFile.map((index: any) => {
       let extension = index.name.slice(index.name.indexOf('.'));
       const files: masterAssetFile = {
@@ -778,7 +480,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         typeOfAsset: checkAssetType(extension),
         status: checkFileStatus(index.state),
         state: "Normal",
-        unitId: 20,
+        unitId: 0,
         isRestrictedView: false,
         duration: files.duration,
         recording: {
@@ -842,8 +544,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     const FilteringchildAsset = uploadedFile.filter(
       (x: any) => x.id != master.id
     );
-    const children = FilteringchildAsset.map((childAsset: any) => {
 
+    const children = FilteringchildAsset.map((childAsset: any) => {
       const owners = formpayload.owner.map((x: any) => {
         return {
           CMTFieldValue: x.id,
@@ -892,72 +594,80 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     };
   };
 
-  const getUploadedEvidence = async (evidenceId: any) => {
+  const dispatchTobucket = (res: any, x: any) => {
+    let asset = {
+      "isMetaData": true,
+      "id": x.assetId == res.masterAssetId ? res.id : undefined,
+      "assetId": x.assetId,
+      "assetName": x.assetName,
+      "assetType": x.assetType,
+      "unit": x.unit,
+      "description": res.description,
+      "categories": res.categories,
+      "categorizedBy": res.categorizedBy,
+      "devices": res.devices,
+      "station": res.station,
+      "recordedBy": x.recordedBy,
+      "recordingStarted": x.recordingStarted,
+      "status": x.status,
+      "holdUntil": res.holdUntil,
+      "expireOn": res.expireOn,
+      "duration": x.duration,
+      "size": x.size,
+      //"retentionSpanText":x.retentionSpanText,
+      "isMaster": x.assetId == res.masterAssetId,
+      "evidence": {
+        "id": res.id,
+        "tenantId": res.tenantId,
+        "masterAssetId": res.masterAssetId,
+        "holdUntil": res.holdUntil,
+        "station": res.station,
+        "cadId": res.cadId,
+        "retentionPolicyName": res.retentionPolicyName,
+        "devices": res.devices,
+        "categories": res.categories,
+        "categorizedBy": res.categorizedBy,
+        "formData": res.formData,
+        "masterAsset": res.masterAsset,
+        "asset": res.asset,
+        "assetEventGeoData": res.assetEventGeoData,
+        "securityDescriptors": res.securityDescriptors,
+        "expireOn": res.expireOn,
+        "description": res.description
+      }
+    };
+    dispatch(addAssetToBucketActionCreator(asset));
+  }
+
+  const getUploadedEvidence = async (evidenceId: any, assetsToAddBucket: any) => {
     EvidenceAgent.getUploadedEvidence(evidenceId).then((res) => {
       if (res != null && res != undefined) {
-        let bucketAssets: any = [];
         res.asset.map((x: any) => {
-
-          let asset = {
-            "isMetaData": true,
-            "id": x.assetId == res.masterAssetId ? res.id : undefined,
-            "assetId": x.assetId,
-            "assetName": x.assetName,
-            "assetType": x.assetType,
-            "unit": x.unit,
-            "description": res.description,
-            "categories": res.categories,
-            "categorizedBy": res.categorizedBy,
-            "devices": res.devices,
-            "station": res.station,
-            "recordedBy": x.recordedBy,
-            "recordingStarted": x.recordingStarted,
-            "status": x.status,
-            "holdUntil": res.holdUntil,
-            "expireOn": res.expireOn,
-            "duration": x.duration,
-            "size": x.size,
-            //"retentionSpanText":x.retentionSpanText,
-            "isMaster": x.assetId == res.masterAssetId,
-            "evidence": {
-              "id": res.id,
-              "tenantId": res.tenantId,
-              "masterAssetId": res.masterAssetId,
-              "holdUntil": res.holdUntil,
-              "station": res.station,
-              "cadId": res.cadId,
-              "retentionPolicyName": res.retentionPolicyName,
-              "devices": res.devices,
-              "categories": res.categories,
-              "categorizedBy": res.categorizedBy,
-              "formData": res.formData,
-              "masterAsset": res.masterAsset,
-              "asset": res.asset,
-              "assetEventGeoData": res.assetEventGeoData,
-              "securityDescriptors": res.securityDescriptors,
-              "expireOn": res.expireOn,
-              "description": res.description
+          if (assetsToAddBucket != null) {
+            let value = assetsToAddBucket.find((y: any) => y.name == x.assetName);
+            if (value != undefined) {
+              dispatchTobucket(res, x);
             }
-          };
-          dispatch(addAssetToBucketActionCreator(asset));
+          }
+          else {
+            dispatchTobucket(res, x);
+          }
         })
-
       }
     }).catch((error: any) => {
 
     })
   }
+
   const onAdd = async (submitType: SubmitType) => {
     const payload: any = await onAddMetaData(submitType);
-    
-
     EvidenceAgent.addEvidence(payload).then((res) => {
       onClose();
       setAddEvidence(true);
       setEvidenceId(+res);
       setActiveScreen(0);
       setTimeout(() => {
-        getUploadedEvidence(res);
+        getUploadedEvidence(res, null);
       }, 2000);
       const fileArr: any = [];
       fileId.map((x: any) => uploadInfo.forEach((y: any) => {
@@ -966,8 +676,10 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         }
       }
       ))
-      FileAgent.uploadAssetChecksum(fileArr.toString()).then((res) => {       
-      })
+      if (fileArr.length) {
+        FileAgent.uploadAssetChecksum(fileArr.toString()).then((res) => {
+        });
+      }
       return res;
     }).catch((error: any) => {
       setIsSaveBtnDisable(false);
@@ -984,7 +696,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         if (resp != undefined) {
           let error = JSON.parse(resp);
           if (!isNaN(+error)) {
-            console.error("evidence", error)
+            
           }
           else {
             setAlert(true);
@@ -1003,9 +715,10 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     });
     // newly uploaded file in seprate array
     const uploadedFile = uploadFile.map((index: any) => {
-      
+
       let extension = index.name.slice(index.name.indexOf('.'));
 
+      
       const files: masterAssetFile = {
         id: 0,
         assetId: 0,
@@ -1032,7 +745,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         typeOfAsset: checkAssetType(extension),
         status: checkFileStatus(index.state),
         state: "Normal",
-        unitId: 20,
+        unitId: 0,
         isRestrictedView: false,
         duration: files.duration,
         recording: {
@@ -1069,7 +782,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     }).then(function (res) {
       if (res.status == 200) {
         setTimeout(() => {
-          getUploadedEvidence(ids);
+          getUploadedEvidence(ids, payload);
         }, 2000);
       }
       if (res.status == 500 || res.status == 400) {
@@ -1109,47 +822,45 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     }
   };
 
+
   const categoryDropdownOnChangeHandler = (
     event: React.SyntheticEvent,
     value: any[]
   ) => {
     event.isDefaultPrevented();
-    // Remap fields of Form with FormId.
-    const categoryForm: any = value.map((i: any) => {
+    const filteredCategories = categories.data.filter((category: any) => value.some((value) => value.id == category.id));
+    //NOTE: Remap fields of Form with FormId.
+    const categoryForm: any = filteredCategories.map((filteredCategory: any) => {
       return {
-        id: i.id,
-        label: i.label,
-        retentionId: i.retentionId,
-        form: RemapFormFieldKeyName(i.form)
+        id: filteredCategory.id,
+        label: filteredCategory.name,
+        retentionId: filteredCategory.policies.retentionPolicyId,
+        form: RemapFormFieldKeyName(filteredCategory.forms, filteredCategory.id)
       }
     });
+    
+    setFormPayloadForStoredValues({...formpayloadForstoredValue, category : categoryForm})
     setFormPayload({ ...formpayload, category: categoryForm });
     setIsNext(true);
   };
 
-  const stationSelectClose = (e: any) => {
-    if (e.target.value == undefined || e.target.value != 0) {
-      formpayload.station = {}; 
-      setMetaDataErrMsg({
-        ...meteDataErrMsg,
-        required: "Station is required",
-      });
-    } else {
-      setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
-    }
-  };
+  const nextBtnHandler = () => {
+    setActiveScreen(activeScreen + 1);
+    setIsNext(false);
+  }
 
-  const setFormField = (e: any) => {
-    const { name, value } = e;
-    setInitialValues((args: any) => {
-      args[name] = value;
-      return args;
-    });
-    let excludedKeyValue = formFields.filter((o: any) => {
-      return o.key !== name;
-    });
-    setFormFields(() => [...excludedKeyValue, { key: name, value: value }]);
-  };
+  const backBtnHandler = () => {
+    setActiveScreen(activeScreen - 1);
+    setIsNext(true);
+    setIsSaveBtnDisable(false);
+  }
+
+  const SaveBtnSubmitForm = () => {
+    //NOTE: Added to Seperate Submit Button Handler to handle Submission of Categories With No Form.
+    setIsSaveBtnDisable(true);
+    isCategoryFormEmpty ? onSubmit(SubmitType.WithoutForm) : onSubmit(SubmitType.WithForm);
+  }
+
 
   const handleActiveScreen = (activeScreen: number) => {
     switch (activeScreen) {
@@ -1192,11 +903,13 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                       ? displayText
                       : formpayload.masterAsset
                   }
-                  onChange={(e: any) =>
+                  onChange={(e: any) => {
+                    setFormPayloadForStoredValues({...formpayloadForstoredValue, masterAsset : e.target.value})
                     setFormPayload({
                       ...formpayload,
                       masterAsset: e.target.value,
                     })
+                  }
                   }
                   options={masterAssetOption}
                   defaultValue=""
@@ -1216,10 +929,10 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                   }`}
               >
                 <div className={`metaData-category ${formpayloadErr.stationErr == ""
-                ? ""
-                : "__Crx_MetaData__Station_Error"
-                }`}>
-                  
+                  ? ""
+                  : "__Crx_MetaData__Station_Error"
+                  }`}>
+
                   <CRXMultiSelectBoxLight
                     className="metaData-Station-Select metaData-Station-Select_ui_field"
                     label={t("Station")}
@@ -1227,7 +940,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                     multiple={false}
                     CheckBox={true}
                     required={true}
-                    options={stationList}
+                    options={AddMetaDataUtility.filterStation(stations)}
                     value={formpayload.station}
                     autoComplete={false}
                     isSearchable={true}
@@ -1235,11 +948,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                     error={!!formpayloadErr.stationErr}
                     errorMsg={formpayloadErr.stationErr}
                     onBlur={checkStation}
-                    onChange={(e: React.SyntheticEvent, value: object) => {
-                      setFormPayload({ ...formpayload, station: value });
+                    onChange={(e: React.SyntheticEvent, value: StationIdandLabel) => {
+                      setFormPayloadForStoredValues({...formpayloadForstoredValue, station: (value == null) ? {} : value })
+                      setFormPayload({ ...formpayload, station: (value == null) ? {} : value });
                     }}
-                />
-                </div> 
+                  />
+                </div>
               </div>
             </div>
             <div
@@ -1265,6 +979,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                 onBlur={checkOwners}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   let filteredValues = value.filter((x: any) => x.inputValue !== x.label);
+                  setFormPayloadForStoredValues({...formpayloadForstoredValue, owner : filteredValues})
                   setFormPayload({ ...formpayload, owner: filteredValues });
                 }}
               />
@@ -1276,7 +991,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                 label={t("Category")}
                 multiple={true}
                 CheckBox={true}
-                options={categoryOption}
+                options={filterCategory(categories.data)}
                 value={formpayload.category}
                 autoComplete={false}
                 isSearchable={true}
@@ -1303,13 +1018,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               setShowSucess={() => null}
             />
             <div className="__CRX__Asset_MetaData__Form__">
-              {/* <RenderDialogueOrCategoryForm /> */}
               {formpayload.category.some((o: any) => o.form.length > 0) ? (
                 <DisplayCategoryForm
                   formCollection={formpayload.category}
-                  initialValueObjects={InitialValues}
+                  initialValueObjects={initialValuesOfFormForFormik}
                   validationSchema={validationSchema}
-                  setFieldsFunction={(e: any) => setFormField(e)}
+                  setFieldsFunction={(e: FieldsFunctionType) => UpdateFormFields(e)}
                 />
               )
                 : (
@@ -1321,27 +1035,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
           </>
         );
     }
-  };
-
-  const nextBtnHandler = () => {
-    setActiveScreen(activeScreen + 1);
-    setIsNext(false);
   }
 
-  const backBtnHandler = () => {
-    setActiveScreen(activeScreen - 1);
-    setIsNext(true);
-    setIsSaveBtnDisable(false);
-  }
-  // Added to Seperate Submit Button Handler to handle Submission of Categories With No Form. 
-  const SaveBtnSubmitForm = () => {
-    setIsSaveBtnDisable(true);
-    if (isCategoryFormEmpty) {
-      onSubmit(SubmitType.WithoutForm);
-    } else {
-      onSubmit(SubmitType.WithForm);
-    }
-  }
   return (
     <div className="metaData-Station-Parent">
       {handleActiveScreen(activeScreen)}

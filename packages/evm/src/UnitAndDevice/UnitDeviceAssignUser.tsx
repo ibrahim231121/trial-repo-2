@@ -40,6 +40,7 @@ type AssignUserProps = {
 };
 
 const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
+
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [initialfilterValue, setInitialfilterValue] = React.useState(
@@ -118,20 +119,20 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
     props.setIsformUpdated(false);
 
     getAssignedUsers();
-    if(isIncar)
-       getAssignedGroups();
+    if (isIncar)
+      getAssignedGroups();
   };
   const closeDialog = () => {
     setIsOpen(false);
     history.push(
-      urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url 
+      urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url
     );
   };
   const getAssignedUsers = async () => {
     const url =
       "/Stations/0" +
       "/Units/" +
-      `${props?.rowData?.id}`+
+      `${props?.rowData?.id}` +
       "/GetAssignedUsers";
     UnitsAndDevicesAgent.getAssignedUsers(url).then((response: any) => {
       let result = response.map((x: CMTEntityRecord) => {
@@ -146,14 +147,14 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
       });
       props.setFilterValue(() => result);
     });
-    setIsShowInfo( props.selectedItems.length > 1 ? true :false);
+    setIsShowInfo(props.selectedItems.length > 1 ? true : false);
   };
 
   const getAssignedGroups = async () => {
     const url =
       "/Stations/0" +
       "/Units/" +
-      `${props?.rowData?.id}`+
+      `${props?.rowData?.id}` +
       "/GetAssignedGroups";
     UnitsAndDevicesAgent.getAssignedGroups(url).then((response: any) => {
       let result = response.map((x: CMTEntityRecord) => {
@@ -166,10 +167,10 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
         };
         return item;
       });
-    
+
       props.setFilterGroupValue(() => result);
     });
-    setIsShowInfo( props.selectedItems.length > 1 ? true :false);
+    setIsShowInfo(props.selectedItems.length > 1 ? true : false);
   };
 
 
@@ -239,38 +240,45 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
     props.setIsformUpdated(true);
   };
 
-  
+
   const onSubmitForm = async () => {
     setResponseError("");
     setAlert(false);
 
     let body: AssignUsersToUnit;
-    if(props.selectedItems.length > 1)
-    {
+    if (props.selectedItems.length > 1) {
       body = {
-          unitIds: props.selectedItems.map((x: any) => x.id),
-          userIds: props.filterValue.map((x) => x.id),
-          groupIds: props.filterGroupValue.map((x) => x.id),
-    };
+        unitIds: props.selectedItems.map((x: any) => x.id),
+        userIds: props.filterValue.map((x) => x.id),
+        groupIds: props.filterGroupValue.map((x) => x.id),
+      };
     }
-    else{
-        var lst = [];
-        lst.push(props?.rowData.id);
-        body = {
-              unitIds: lst,
-              userIds: props.filterValue.map((x) => x.id),
-              groupIds: props.filterGroupValue.map((x) => x.id),
-        };
+    else {
+      var lst = [];
+      lst.push(props?.rowData.id);
+      body = {
+        unitIds: lst,
+        userIds: props.filterValue.map((x) => x.id),
+        groupIds: props.filterGroupValue.map((x) => x.id),
+      };
     }
-
-      const url =
-      "/Stations/0"+         
+    if (body.userIds.length > 1 && isIncar == false) {
+      setAlert(true);
+      setResponseError(
+        t(
+          "You_cannot_assign_more_than_one_user"
+        )
+      );
+      return;
+    }
+    const url =
+      "/Stations/0" +
       "/Units/" +
       `${props?.rowData?.id}` +
       "/AssignUsersToUnits";
-      UnitsAndDevicesAgent.addUsersToUnits(
-      url,body
-  
+    UnitsAndDevicesAgent.addUsersToUnits(
+      url, body
+
     )
       .then(() => {
         setTimeout(() => {
@@ -332,12 +340,9 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
                   {users.data && <MultiSelectBoxCategory
                     className="categortAutocomplete"
                     multiple={true}
-                    CheckBox={true}
-                    visibility={true}
                     options={filterUser(users.data)}
                     value={props.filterValue}
                     autoComplete={true}
-                    isSearchable={true}
                     onChange={(
                       event: any,
                       newValue: any,
@@ -348,39 +353,37 @@ const UnitDeviceAssignUser: React.FC<AssignUserProps> = (props) => {
                     }}
                   />}
 
-              {isIncar == true ?   <>
-                <div className="categoryTitle">
-                  {t("Groups")}
-                  <b>*</b>
-                </div>
-                {groups.data && <MultiSelectBoxCategory
-                    className="categortAutocomplete"
-                    multiple={true}
-                    CheckBox={true}
-                    visibility={true}
-                    options={filterGroup(groups.data)}
-                    value={props.filterGroupValue}
-                    autoComplete={true}
-                    isSearchable={true}
-                    onChange={(
-                      event: any,
-                      newValue: any,
-                      reason: any,
-                      detail: any
-                    ) => {
-                      return handleChange1(event, 1, newValue, reason, detail);
-                    }}
-                  />}
+                  {isIncar == true ? <>
+                    <div className="categoryTitle">
+                      {t("Groups")}
+                      <b>*</b>
+                    </div>
+                    {groups.data && <MultiSelectBoxCategory
+                      className="categortAutocomplete"
+                      multiple={true}
+                      options={filterGroup(groups.data)}
+                      value={props.filterGroupValue}
+                      autoComplete={true}
+                      onChange={(
+                        event: any,
+                        newValue: any,
+                        reason: any,
+                        detail: any
+                      ) => {
+                        return handleChange1(event, 1, newValue, reason, detail);
+                      }}
+                    />}
                   </>
-              : null}
-              </div>
+                    : null}
+                </div>
                 <div className="fieldAssigSelectT">
-                    {isShowInfo === true ? (
-                      t("(Selected_users_will_replace_all_current_assigned_users)")
-                    ) : null}
+                  {isShowInfo === true ? (
+                    t("(Selected_users_will_replace_all_current_assigned_users)")
+                  ) : null}
 
-                  </div>
+                </div>
               </div>
+
               <div className="modalFooter CRXFooter">
                 <div className="nextBtn">
                   <CRXButton

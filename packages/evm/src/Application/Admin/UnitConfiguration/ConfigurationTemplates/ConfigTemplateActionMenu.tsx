@@ -65,7 +65,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
   }
   const editTemplate = () => {
     if (row) {
-      history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, {
+      history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateEditBCO4)[0].url, {
         id: row.id,
         name: row.name,
         isedit: true,

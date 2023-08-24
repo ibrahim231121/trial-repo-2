@@ -39,6 +39,15 @@
     width: 96% !important;
    }
   }
+  &.MainAssetGridPage_Ui {
+    position: relative;
+    &::before {
+      position: relative;
+      content: "";
+      height: 29px;
+      display: block;
+    }
+  }
 }
 
 .assetThumb {
@@ -54,6 +63,35 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    font-size: 14px;
+  }
+  .assetIndTxt-exp{
+    font-size: 10px;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    border-radius: 3px;
+    background-color: rgba(242, 242, 242, 0.75);
+    position: absolute;
+    padding: 3px;
+    line-height: 1;
+    text-transform: uppercase;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+  }
+  .assetIndTxt-res{
+    font-size: 10px;
+    color: #333;
+    border: 1px solid rgba(51,51,51,.50);
+    border-radius: 3px;
+    background-color: rgba(242, 242, 242, 0.75);
+    position: absolute;
+    padding: 3px;
+    line-height: 1;
+    text-transform: uppercase;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
   }
 
   .tumbPlayIcon {
@@ -407,6 +445,141 @@
   &:hover {
     ._video_play_icon {
       display: block;
+    }
+  }
+}
+.caseTitleContainer{
+  width: 100%;
+}
+.drawerOff{
+  .dataTableExpandView{
+    .TableWithOutCheck{
+      .CRXDataTableCustom{
+        .drag_header, .searchable_header{
+          tr{
+            th.dataTableCheckBoxColumn{
+              left: 0px !important;
+            }
+          }
+        }
+        .table_body_{
+          tr{
+            td.dataTableCheckBoxColumn {
+              left: 0px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  .dataTableECollapseView{
+    .TableWithOutCheck{
+      .CRXDataTableCustom{
+        .drag_header, .searchable_header{
+          tr{
+            th.dataTableCheckBoxColumn{
+              left: 0px !important;
+            }
+          }
+        }
+        .table_body_{
+          tr{
+            td.dataTableCheckBoxColumn {
+              left: 0px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.manageUserGroupsDataTable {
+  .CRXDataTableCustom {
+    .searchable_header {
+      tr {
+        th {
+          padding: 13px 12px;
+          .number_field_textBox {
+            input {
+              width: 100%;
+              background: var(--color-d1d2d4);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.CrxCaseModel {
+  .MuiDialog-scrollPaper {
+    .MuiDialog-paperScrollPaper {
+      top: 300px !important;
+    }
+  } 
+  .modelTitle {
+    display: none;
+  }
+  .MuiDialog-paper {
+      border-radius: 5px;
+  }
+  .MuiDialog-paperScrollPaper {
+      min-height: 180px !important;
+      min-width: 500px !important;
+      padding-top: 0px !important;
+  }
+  .MuiDialog-paperWidthLg {
+      height: 180px;
+      width: 500px;
+  }
+  .CRXContent {
+      height: 100%;
+      padding: 0px;
+  }
+.assetsCasePermission {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    .assetsCasePermissionExistsIcon {
+        height: 180px;
+        width: 50px;
+        background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .fa-exclamation-circle:before {
+            font-size: 24px;
+            color: #ffffff;
+        }
+    }
+    .assetsCasePermissionText {
+        margin-top: 35px;
+        margin-left: 10px;
+    }
+    .assetsCasePermissionModalFooter {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        padding: 0px;
+        height: 60px;
+        align-items: center;
+        width: calc(100% - 50px);
+        border-top: 1px solid var(--color-d1d2d4);
+        left: 50px;
+        padding-left: 25px;
+        background-color: var(--color-White);
+        justify-content: center;
+        .assetsCasePermissionOkButton {
+            width: 100px;
+        }
+    }
+  }
+}
+
+.dataTableExpandView {
+  .MainAssetGridPage_Ui {
+    &::before {
+      height: 0px;
     }
   }
 }

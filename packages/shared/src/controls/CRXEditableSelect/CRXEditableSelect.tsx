@@ -22,6 +22,7 @@ interface selectBoxProps {
   required: boolean;
   error?: boolean;
   errorMsg?: string;
+  FilterAddClass?:string;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   onKeyUp : (event: React.KeyboardEvent<HTMLImageElement>) => void; 
 }
@@ -105,11 +106,12 @@ const CRXAutocomplete = ({
   errorMsg,
   onBlur,
   onKeyUp,
+  FilterAddClass,
 }: selectBoxProps) => {
 
   const data = options;
   // const errors = error ? "errors" : " "; 
-  
+  const [editable,setEditable] = React.useState("");
   const errorMsgIcon = (
     <i className="fas fa-exclamation-circle">
       <span className="crxErrorMsg"> {errorMsg}</span>
@@ -142,7 +144,7 @@ const CRXAutocomplete = ({
         <span>
     <Autocomplete
       multiple={multiple}
-      className={"getac-simple-select " + className + " " + classes.root}
+      className={"getac-simple-select " + className + " " + classes.root + " " + `${editable}`}
       id={id}
       freeSolo={freeSolo}
       popupIcon={opupOpenCret}
@@ -162,9 +164,15 @@ const CRXAutocomplete = ({
         option: classes.option,
         paper : classes.paper,
         clearIndicator : classes.clearIndicator,
-        popper : classes.popper
+        popper : classes.popper + " " + FilterAddClass
       }}
       onChange={(e,value) => {
+        if(value){
+          setEditable('CRXAISearchFiltere');
+         }
+         else {
+          setEditable('');
+         }
         return onChange(e,value);
       }}
       onOpen={() => handleOnOpen()}

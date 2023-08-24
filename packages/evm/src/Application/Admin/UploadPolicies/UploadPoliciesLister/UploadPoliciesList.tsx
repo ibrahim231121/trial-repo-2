@@ -186,7 +186,7 @@ const UploadPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "800",
+      minWidth: "818",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -195,13 +195,14 @@ const UploadPoliciesList: React.FC = () => {
       label: `${t("Description")}`,
       id: "description",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ''),
+      dataComponent: (e: string) => textDisplay(e, '', "right"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "788",
+      minWidth: "800",
       attributeName: "Description",
-	  detailedDataComponentId: "name",      attributeType: "String",
+	    detailedDataComponentId: "name",      
+      attributeType: "String",
       attributeOperator: "contains"
     },
   ]);
@@ -229,14 +230,6 @@ const UploadPoliciesList: React.FC = () => {
       setIsSearchable(true)
     }
   }, [searchData]);
-
-  const getSelectedItemsUpdate = () => {
-    setSelectedItems([]);
-  }
-
-  const UploadPolicyAction = () => {
-    dispatch(getAllUploadPoliciesInfoAsync(pageiGrid));
-  }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -271,8 +264,6 @@ const UploadPoliciesList: React.FC = () => {
     pageiGrid.page = 0
     pageiGrid.size = rowsPerPage
 
-    console.log("PageiGrid : ", pageiGrid)
-
     if(page !== 0)
       setPage(0)
     else
@@ -304,10 +295,20 @@ const UploadPoliciesList: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
+
+  const updateSelectedItems = () => {
+    getFilteredUploadPoliciesData();
+    setSelectedItems([]);
+  }
+
   return (
     
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxUploadPoliciesTable switchLeftComponents UploadPoliceMainPage" onKeyDown={handleKeyDown}>
+    <div className="CrxUploadPoliciesTable UploadPoliceMainPage ExpandViewOverlay" onKeyDown={handleKeyDown}>
       <CRXToaster ref={uploadMsgFormRef} />
       {
         rows && (
@@ -316,8 +317,7 @@ const UploadPoliciesList: React.FC = () => {
             actionComponent={<UploadPoliciesTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
-              getRowData={UploadPolicyAction}
-              getSelectedData={getSelectedItemsUpdate}
+              updateSelectedItems={updateSelectedItems}
               onMessageShow={onMessageShow}
             />}
             toolBarButton={
@@ -347,7 +347,7 @@ const UploadPoliciesList: React.FC = () => {
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
             showCustomizeIcon={false}
-            className="crxTableHeight crxTableDataUi UploadPoliciesTableTemplate UploadPoliciesTable_UI"
+            className="crxTableHeight crxTableDataUi UploadPoliciesTableTemplate UploadPoliciesTable_UI TableWithCheck"
             onClearAll={clearAll}
             getSelectedItems={(v: UploadPoliciesTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
@@ -359,6 +359,7 @@ const UploadPoliciesList: React.FC = () => {
             stickyToolbar={129}
             searchHeaderPosition={221}
             dragableHeaderPosition={186}
+            overlay={true}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}

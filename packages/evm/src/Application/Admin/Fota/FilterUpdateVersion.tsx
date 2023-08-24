@@ -10,10 +10,9 @@ import FilterUpdateVersionDataGrid from "./FilterUpdateVersionDataGrid";
 import "./FilterUpdateVersion.scss";
 import CreateUpdateVersion, { UpdateDeviceVersion, constantdays } from "./CreateUpdateVersion";
 import { FilterUpdateVersion as FUpdateVersion } from "../../../utils/Api/models/UnitModels";
-import { CRXToaster } from "@cb/shared";
-import { CRXConfirmDialog } from "@cb/shared";
 import { useParams } from "react-router-dom";
 import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { CRXRows, CRXToaster, CRXConfirmDialog } from "@cb/shared";
 
 const FilterUpdateVersion: React.FC = () => {
   const { id } = useParams<{ id: string | undefined }>();
@@ -41,19 +40,20 @@ const FilterUpdateVersion: React.FC = () => {
     if (jobId > 0) {
       UnitsAndDevicesAgent.getSingleUpdateVersion(jobId)
         .then(response => {
-          var timeStart = response.scheduleVersion.timeStart.toString().substr(11, 5);
-          var timeEnd = response.scheduleVersion.timeEnd.toString().substr(11, 5);
+          var timeStart = dateTimeConversion(true, response.scheduleVersion.timeStart);
+          var timeEnd = dateTimeConversion(false, response.scheduleVersion.timeEnd);
+          var resDays = response.scheduleVersion.days.split(',');
           let updateDeviceVersion: UpdateDeviceVersion = {
             id: response.id,
             name: response.name,
             daysWeek: response.scheduleVersion.days.split(',').length == 7 ? 0 : 1,
-            timeRange: response.scheduleVersion.timeStart.toString().substring(0,4) == "1970" ? 0 : 1,
-            weeks: constantdays,
+            timeRange: (response.scheduleVersion.timeStart && response.scheduleVersion.timeEnd) ? 1 : 0,
+            weeks: resDays,
             timeStart: timeStart,
             timeEnd: timeEnd,
             versionId: response.versionId,
             silent: response.isSilent,
-            devicesId: response.updateVersionDevices.map(x => x.deviceId)
+            updateVersionDevices: response.updateVersionDevices.map(x => {return {deviceId: x.deviceId, logs: x.logs }})
           }
           setPrimaryDeviceFilter({...primaryDeviceFilter, deviceTypeId: response.deviceTypeId, stationId: response.stationId})
           setFormData(updateDeviceVersion);
@@ -115,6 +115,17 @@ const FilterUpdateVersion: React.FC = () => {
     setIsOpenConfirmDailog(false);
   };
 
+  const dateTimeConversion = (start : boolean, time? : Date) => {
+    if (time)
+    {
+      let tempTime = new Date(time);
+      var preffix = String(tempTime.getHours()).padStart(2, '0');
+      var suffix = String(tempTime.getMinutes()).padStart(2, '0');
+      return preffix + ":" + suffix;
+    }
+    return start ? '00:01' : '12:00';
+  };
+
   return (
     <>
       <CRXToaster ref={toasterMsgRef} />
@@ -132,35 +143,40 @@ const FilterUpdateVersion: React.FC = () => {
           </div>
         }
       </CRXConfirmDialog>
-      <div className="filterUploadSelectGridMain">
-        <div className="filterUploadSelectGridDiv">
-          <div className="filterUploadSelectGrid_1">
-            <div className="select_label">{t("Station")}</div>
-            <div>
-              <CRXSelectBox
-                label={t("Station")}
-                name="Station"
-                value={primaryDeviceFilter.stationId}
-                icon={true}
-                options={stationListKeyValue}
-                onChange={onChangeStation}
-              />
+
+      <div className="">
+
+      <CRXRows container  direction="column" alignItems="center">
+        
+            <div className="filterUploadSelectGridMain">
+            <div className="filterUploadSelectGridDiv">
+              <div className="filterUploadSelectSelect">
+                <div className="select_label">{t("Station")}</div>
+                <div>
+                  <CRXSelectBox
+                    label={t("Station")}
+                    name="Station"
+                    value={primaryDeviceFilter.stationId}
+                    icon={true}
+                    options={stationListKeyValue}
+                    onChange={onChangeStation}
+                  />
+                </div>
+              </div>
+              <div className="filterUploadSelectSelect">
+                <div className="select_label">{"Device Type"}</div>
+                <div>
+                  <CRXSelectBox
+                    label={"Device Type"}
+                    name="DeviceType"
+                    value={primaryDeviceFilter.deviceTypeId}
+                    icon={true}
+                    options={deviceTypeListKeyValue}
+                    onChange={onChangeDeviceType}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="filterUploadSelectGrid_2">
-            <div className="select_label">{"Device Type"}</div>
-            <div>
-              <CRXSelectBox
-                label={"Device Type"}
-                name="DeviceType"
-                value={primaryDeviceFilter.deviceTypeId}
-                icon={true}
-                options={deviceTypeListKeyValue}
-                onChange={onChangeDeviceType}
-              />
-            </div>
-          </div>
-        </div>
 
 
         <div className="createUpdateVersion">
@@ -174,8 +190,9 @@ const FilterUpdateVersion: React.FC = () => {
         </div>
       </div>
 
+      </CRXRows>
 
-
+      </div>
 
       <FilterUpdateVersionDataGrid
         primaryDeviceFilter={primaryDeviceFilter}

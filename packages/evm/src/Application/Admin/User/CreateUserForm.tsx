@@ -33,6 +33,7 @@ import { UsersAndIdentitiesServiceAgent, AuthenticationAgent } from '../../../ut
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
 import { UserStatus } from './UserEnum';
 import {NameAndValue, AutoCompleteOptionType, userStateProps } from './UserTypes';
+import randomNumberGenerator from '../../Assets/utils/numberGenerator';
 let USER_DATA : userStateProps = {
   loginId: '',
   firstName: '',
@@ -80,6 +81,7 @@ const CreateUserForm = () => {
   });
 
   const [disableSave, setDisableSave] = React.useState(true);
+  const [passwordCheck, setPasswordCheck] = React.useState(true);
   const [userGroupsList, setUserGroupsList] = React.useState<NameAndValue[]>();
   const [userPayload, setUserPayload] = React.useState<any>();
 
@@ -99,7 +101,12 @@ const CreateUserForm = () => {
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
   const [isADUser, setIsADUser] = useState<boolean>(false);
+  const [isSameasLoginId, setIsSameasLoginId] = useState<boolean>(false);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const [hasCheckbox, sethasCheckbox] = useState<boolean>(false);
+
   const { getModuleIds } = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
   const userFormMessages = (obj: any) => {
@@ -114,11 +121,12 @@ const CreateUserForm = () => {
   const checkFormPayload = () =>{
     const { loginId, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber, pin } =
       formpayload;
-      if (validateEmail(loginId) && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateLoginId(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
+      
+      if (validateEmail(loginId) && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateLoginId(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error && !(middleInitial.length > 0 && !(/^[a-zA-Z]$/.test(String(middleInitial).toLowerCase())))) {
       
         return true;
       }
-
+      
       return false;
   }
 
@@ -231,7 +239,22 @@ const CreateUserForm = () => {
       setDisableSave(true);
 
     } else if (checkFormPayload()) {
-      setDisableSave(false);
+      // NOTE: For Edit Case.
+      if (id) {
+        setDisableSave(false);
+      }
+      //NOTE: For Add Case.
+      else {
+        if (radioValue == 'sendAct') {
+          setDisableSave(false)
+        }
+        else if (radioValue == 'genTemp' && generatePassword) {
+          setDisableSave(false)
+        }
+        else {
+          setDisableSave(true)
+        }
+      }
     } else {
       setDisableSave(true);
     }
@@ -269,16 +292,29 @@ const CreateUserForm = () => {
     // }
   }, [alert]);
 
-  var current_date;
+  let current_date;
   if (formpayload.deactivationDate != null) {
     current_date = formpayload.deactivationDate.split('Z')[0];
   }
+const checkSameAsloginId =(res :any) =>
+{
+  if(res)
+  {
+    setFormPayload({ ...formpayload, email: formpayload.loginId });
+    setIsSameasLoginId(true);
+  }
+  else
+  {
+    setFormPayload({ ...formpayload, email: "" });
+    setIsSameasLoginId(false);
+  }
+}
 
   const minStartDate = () => {
-    var currentDate = new Date();
-    var mm = '' + (currentDate.getMonth() + 1);
-    var dd = '' + currentDate.getDate();
-    var yyyy = currentDate.getFullYear();
+    let currentDate = new Date();
+    let mm = '' + (currentDate.getMonth() + 1);
+    let dd = '' + currentDate.getDate();
+    let yyyy = currentDate.getFullYear();
 
     if (mm.length < 2) mm = '0' + mm;
     if (dd.length < 2) dd = '0' + dd;
@@ -294,11 +330,12 @@ const CreateUserForm = () => {
   };
   const generateTempPassComp = () => {
     const onClickPass = () => {
-      var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      var passwordLength = 12;
-      var password = '';
-      for (var i = 0; i <= passwordLength; i++) {
-        var randomNumber = Math.floor(Math.random() * chars.length);
+      const chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const passwordLength = 12;
+      let password = '';
+      for (let i = 0; i <= passwordLength; i++) {
+        const randomNumGenerated = randomNumberGenerator();
+        let randomNumber = Math.floor(randomNumGenerated * chars.length);
         password += chars.substring(randomNumber, randomNumber + 1);
       }
       setGeneratePassword(password);
@@ -361,7 +398,10 @@ const CreateUserForm = () => {
             setPassword(e.target.value)
           }
           }
-          onBlur={() => checkPassword()}
+          onBlur={() => 
+            {checkPassword();
+            
+            }}
         />
         <TextField
           className='crx-gente-field crx-gente-field-confrim '
@@ -370,6 +410,7 @@ const CreateUserForm = () => {
           label={t("Confirm_Password")}
           required={true}
           type='password'
+          //disabled = {passwordCheck}
           onChange={(e: any) => {
             setConfirmPassword(e.target.value)
           }}
@@ -419,10 +460,10 @@ const CreateUserForm = () => {
 
   const fetchGroups = () => {
 
-    UsersAndIdentitiesServiceAgent.getUsersGroups().then((response: UserGroups[]) => {
-      var groupNames = response.map((x: any) => {
+    UsersAndIdentitiesServiceAgent.getAllUsersGroups().then((response: any[]) => {
+      let groupNames = response.map((x: any) => {
         let j: NameAndValue = {
-          groupId: x.id,
+          groupId: x.recId,
           groupName: x.name
         };
         return j;
@@ -490,10 +531,9 @@ const CreateUserForm = () => {
     if (radioValue == 'sendAct') {
       account.status = UserStatus.Pending;
     }
-
     const payload: User = {
       email: formpayload.email,
-      deactivationDate: formpayload.deactivationDate,
+      deactivationDate: formpayload?.deactivationDate?.length > 0  ? moment(formpayload?.deactivationDate)?.utc()?.format('YYYY-MM-DD HH:mm:ss').toString() : formpayload?.deactivationDate,
       name,
       account,
       mobileNumber: formpayload.mobileNumber,
@@ -598,7 +638,7 @@ const CreateUserForm = () => {
             setDisableSave(true)
             const path = `${urlList.filter((item: any) => item.name === urlNames.editUser)[0].url}`;
             history.push(path.substring(0, path.lastIndexOf("/")) + "/" + resp);
-            history.go(0)
+            // history.go(0)
           } 
           else {
          errorDefined(error);
@@ -665,7 +705,7 @@ const CreateUserForm = () => {
     const payload: User = {
       ...userPayload,
       email: formpayload.email,
-      deactivationDate: formpayload.deactivationDate,
+      deactivationDate: formpayload?.deactivationDate?.length > 0  ? moment(formpayload?.deactivationDate)?.utc()?.format('YYYY-MM-DD HH:mm:ss').toString() : formpayload?.deactivationDate,
       name,
       account,
       mobileNumber: formpayload.mobileNumber,
@@ -852,18 +892,21 @@ const CreateUserForm = () => {
     userNameOnChange = setValue(formpayload.loginId, userNameOnChange);
     const isUserNameValid = validateEmail(userNameOnChange);
     if (!userNameOnChange) {
+      sethasCheckbox(false);
       setFormPayloadErr({
         ...formpayloadErr,
         userNameErr: t('LoginId_is_required')
       });
     } else if (!isUserNameValid) {
+      sethasCheckbox(false);
       setFormPayloadErr({
         ...formpayloadErr,
-        userNameErr: t('Please_provide_a_valid_loginId')
+        userNameErr: t('Please_provide_a_valid_email_as_loginId')
       });
     } 
     else {
       setFormPayloadErr({ ...formpayloadErr, userNameErr: '' });
+      sethasCheckbox(true);
     }
   }
 
@@ -888,58 +931,94 @@ const CreateUserForm = () => {
   }
 
   const checkPassword = (passwordOnChange: string = "") => {
+    let formPayloadErrTemp = {...formpayloadErr};
+
     passwordOnChange = setValue(password, passwordOnChange);
-    if (!passwordOnChange) {
-      setFormPayloadErr({
-        ...formpayloadErr,
-        passwordErr: t("Password_is_required")
-      });
-      setDisableSave(true)
+    console.log("PASSSWORD : " + password + passwordOnChange)
+    if (passwordOnChange) {
+      
+      //setDisableSave(true)
+    
+    if (passwordOnChange.length < 8) {
+      formPayloadErrTemp = { ...formpayloadErr, passwordErr: `${t("Password_should_be_atleast_eight_characters")}` };
+     // setConfirmPassword('');
+      setPasswordCheck(true);
+      setDisableSave(true);
     }
-    else if (passwordOnChange.length < 8) {
-      setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_eight_characters")}` });
-      setDisableSave(true)}
     else if(!passwordOnChange.match("^(?=.*[A-Z])")) {
-        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_upper_case_letter")}` });
-      setDisableSave(true)
+      formPayloadErrTemp = ({ ...formpayloadErr, passwordErr: `${t("At_least_one_upper_case_letter")}` });
+        //setConfirmPassword('');
+        setPasswordCheck(true);
+        setDisableSave(true);
       }
     else if(!passwordOnChange.match("^(?=.*[0-9])")) {
-        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_digit")}` });
-      setDisableSave(true)
+      formPayloadErrTemp = ({ ...formpayloadErr, passwordErr: `${t("At_least_one_digit")}` });
+        //setConfirmPassword('');
+        setPasswordCheck(true);
+        setDisableSave(true)
       }
     else if(!passwordOnChange.match("^(?=.*[@@!#$%^&*])")) {
-        setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("At_least_one_special_character")}` });
-      setDisableSave(true)
+      formPayloadErrTemp = ({ ...formpayloadErr, passwordErr: `${t("At_least_one_special_character")}` });
+        console.log("ERROR : " + formpayloadErr.passwordErr);
+        //setConfirmPassword('');
+        setPasswordCheck(true);
+        setDisableSave(true);
+        
       }
     else {
-      setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
+      formPayloadErrTemp = ({ ...formpayloadErr, passwordErr: '' });
     }
+    if(confirmPassword != ''){
+      checkConfirmPassword("", formPayloadErrTemp);
+    }
+    else{
+      setFormPayloadErr(formPayloadErrTemp);
+    }
+    
+  }
+  else {
+    setFormPayloadErr({
+      ...formpayloadErr,
+      passwordErr: t("Password_is_required")
+    });
+    setPasswordCheck(true);
+  }
+  if (passwordOnChange && passwordOnChange.length >= 8 && passwordOnChange.match("^(?=.*[A-Z])") && passwordOnChange.match("^(?=.*[0-9])") && passwordOnChange.match("^(?=.*[@@!#$%^&*])")){
+    setPasswordCheck(false);
+  }
   };
+  const checkConfirmPassword = (confirmPasswordOnChange: string = "", formPayloadErrTemp?: any) => {
+    if(!formPayloadErrTemp)
+    {
+      formPayloadErrTemp = {...formpayloadErr};
+    }
 
-  const checkConfirmPassword = (confirmPasswordOnChange: string = "") => {
     confirmPasswordOnChange = setValue(confirmPassword, confirmPasswordOnChange);
+    console.log("Confirm - PASSSWORD : " + confirmPassword)
     if (!confirmPasswordOnChange) {
-      setFormPayloadErr({
-        ...formpayloadErr,
+      formPayloadErrTemp = ({
+        ...formPayloadErrTemp,
         confirmPasswordErr: t("Confirm_Password_is_required")
       });
       setDisableSave(true)
+    } 
+    else if (password.length < 8 || !password.match("^(?=.*[A-Z])") || !password.match("^(?=.*[0-9])") || !password.match("^(?=.*[@@!#$%^&*])")){
+      setDisableSave(true)
     } else if (password !== confirmPasswordOnChange) {
-      setFormPayloadErr({
-        ...formpayloadErr,
+      formPayloadErrTemp = ({
+        ...formPayloadErrTemp,
         confirmPasswordErr: t("Passwords_are_not_same")
       });
       setDisableSave(true)
-    } else if (confirmPasswordOnChange.length < 6) {
-      setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: `${t("Confirm_Password_should_be_greater_than_six_characters")}` });
-      setDisableSave(true)
-    } else {
-      setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: '' });
+    } 
+    else {
+      formPayloadErrTemp = ({ ...formPayloadErrTemp, confirmPasswordErr: '' });
 
       if (checkFormPayload()) {
         setDisableSave(false)
       }
     }
+    setFormPayloadErr(formPayloadErrTemp);
   };
 
   const sendEmail = (email: string, applicationName: string, isResendActivation : boolean = false) => {
@@ -971,7 +1050,7 @@ const CreateUserForm = () => {
 
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {
     if (phoneNumber) {
-      const phoneCharacter = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/.test(String(phoneNumber));
+      const phoneCharacter = /^\s*(?:\+\d{1,3})?(?:[-. (]*\d{3}[-. )]*)?\d{1,4}(?:[-. ]*\d{4})?(?: *x\d+)?\s*$/.test(String(phoneNumber));
       if (!phoneCharacter) {
         return { error: true, errorMessage: t("Please_provide_a_valid_mobile_number.") };
       } else if (phoneNumber.length > 15) {
@@ -999,8 +1078,13 @@ const CreateUserForm = () => {
 
   const checkMiddleInitial = (middleInitialOnChange: string = "") => {
     middleInitialOnChange = setValue(formpayload.middleInitial, middleInitialOnChange);
-    if (!middleInitialOnChange) {
-      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
+    const characterReg = /^[a-zA-Z]$/.test(String(middleInitialOnChange).toLowerCase());
+    if (middleInitialOnChange.length > 0 && !characterReg) {
+      setFormPayloadErr({
+        ...formpayloadErr,
+        middleInitialErr: `${t("Please_enter_a_single_alphabet")}.`
+      });
+      setDisableSave(true)
     } else {
       setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
     }
@@ -1072,7 +1156,7 @@ const CreateUserForm = () => {
   const firstNameFieldError = (!!formpayloadErr.firstNameErr && formpayloadErr.firstNameErr.length > 70 ) ? "FirstNameField_ErrorEnabled" : "FirstNameField_ErrorDisabled";
   const lastNameFieldError = (!!formpayloadErr.lastNameErr && formpayloadErr.lastNameErr.length > 70 ) ? "LastNameField_ErrorEnabled" : "LastNameField_ErrorDisabled";
   return (
-    <div className='createUser CrxCreateUser CreateUserUi searchComponents'>
+    <div className='createUser CrxCreateUser CreateUserUi'>
       <CRXToaster ref={userMsgFormRef} />
       <CRXAlert
         ref={alertRef}
@@ -1089,13 +1173,13 @@ const CreateUserForm = () => {
       <div className='modalEditCrx'>
         <div className='CrxEditForm'>
           <Grid container>
-            <Grid item xs={12} sm={12} md={12} lg={5} >
+            <Grid className='firstColumn' item xs={12} sm={12} md={12} lg={5} >
               <TextField
                 error={!!formpayloadErr.userNameErr}
                 errorMsg={formpayloadErr.userNameErr}
                 required={true}
                 value={formpayload.loginId}
-                label={t("LoginId")}
+                label={t("Login ID")}
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => {
                   setFormPayload({ ...formpayload, loginId: e.target.value });
@@ -1111,6 +1195,9 @@ const CreateUserForm = () => {
                 // }}
                 onBlur={() => checkUserName()}
               />
+
+ 
+
               <div className={`First_Name_Field ${firstNameFieldError}`}>
                 <TextField
                   error={!!formpayloadErr.firstNameErr}
@@ -1159,8 +1246,9 @@ const CreateUserForm = () => {
               <TextField
                 error={!!formpayloadErr.emailErr}
                 errorMsg={formpayloadErr.emailErr}
+                required={true}
                 value={formpayload.email}
-                disabled={isADUser}
+                disabled={isADUser || isSameasLoginId} 
                 label={t("Email")}
                 className={'users-input ' + isExtEmail}
                 onChange={(e: any) => {
@@ -1168,6 +1256,28 @@ const CreateUserForm = () => {
                 }}
                 onBlur={() => (checkEmail())}
               />
+              <div className='CRXValidateLoginID'>
+                  {
+                    hasCheckbox === true ?
+                    <div className="crx-requird-check crxCheckBoxCreateBtn">
+                      <div className='crxCheckBoxCreateBtnHeading'>
+                      <h6><label>checkbox</label></h6>
+                      </div>
+                    <div className='crxCheckBoxCreateBtnCheckBox'>
+                  <CRXCheckBox
+                          lightMode={true}
+                          id="crxCheckBoxCreate"
+                          className='crxCheckBoxCreate'
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        checkSameAsloginId(e.target.checked) 
+                          }
+                        />
+                        <label>{t("Same_As_LoginId")}</label>
+                        </div>
+                    </div>
+                    : null
+                  }
+                  </div>
               <TextField
                 error={!!formpayloadErr.phoneNumberErr}
                 errorMsg={formpayloadErr.phoneNumberErr}
@@ -1226,7 +1336,6 @@ const CreateUserForm = () => {
                   errorMsg={formpayloadErr.pinErr}
                   label={t("Pin")}
                   required={false}
-                  type='number'
                   value={formpayload.pin}
                   onChange={(e: any) => {
                     setFormPayload({ ...formpayload, pin: e.target.value })

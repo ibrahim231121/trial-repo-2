@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Evidence } from '../../../../../utils/Api/models/EvidenceModels';
-import { CategoryRemovalType, SelectedCategoryModel } from './FormContainerModel';
+import { CategoryRemovalType, SelectedCategoryModel } from './CategoryFormContainerModel';
 
 export type RemoveCategoryFormProps = {
     selectedCategoryValues: Array<SelectedCategoryModel>;

@@ -261,7 +261,7 @@ const LicensePlateDetail = (props: any) => {
                                                     />
                                                     <div className="LicensePlate_CrxEditFilter LicensePlate_EditFilterUi">
                                                         <CRXMultiSelectBoxLight
-                                                            className="CrxUserEditForm"
+                                                            className="ALpr_CrxLicensePlateEditForm"
                                                             id="State"
                                                             label={t("State") + ':'}
                                                             multiple={false}

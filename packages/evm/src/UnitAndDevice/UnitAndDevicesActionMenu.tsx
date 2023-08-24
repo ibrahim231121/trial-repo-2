@@ -43,12 +43,26 @@ React.useEffect(() => {
 
   }, [selectedItems]);
     const handleCloseAssignUser= () => {
-        if (IsformUpdated) setIsModalOpen(true);
+        if (IsformUpdated){
+            setIsModalOpen(true);
+            setOpenAssignUser(false);
+        } 
         else setOpenAssignUser(false);
     }
 
     const assignUser = () => {
         setOpenAssignUser(true);
+    }
+   const editUnitDevice =() =>
+   {
+      if (row) {
+        history.push(urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url + "/" + row.id  , {
+            unitId: row.id,
+            stationId: row.stationId,
+            template: row.template,
+            deviceType: row.deviceType
+          });
+      }
     }
    
     const showToastMsg = (obj: any) => {
@@ -68,7 +82,7 @@ React.useEffect(() => {
             title={t("Assign_user(s)")}
             className={"CRXModal CRXModalAssignUser"}
             modelOpen={openAssignUser}
-            onClose={() => handleCloseAssignUser}
+            onClose={() => handleCloseAssignUser()}
             defaultButton={false}
             indicatesText={true}
         >
@@ -86,7 +100,7 @@ React.useEffect(() => {
         />
         </CRXModalDialog>
         <Menu
-            align="start"
+            align="center"
             viewScroll="close"
             direction="right"
             position="auto"
@@ -95,20 +109,24 @@ React.useEffect(() => {
             portal={true}
             menuButton={<MenuButton><i className="far fa-ellipsis-v"></i></MenuButton>}
         >
+               {(selectedItems?.length < 2 || !selectedItems) &&          
                 <MenuItem>
-                    <div className="crx-meu-content crx-spac groupingMenu">
-                        <div className="crx-menu-icon">
-                            <i className="fas fa-pen"></i>
+                    <Restricted moduleId={14}>
+                        <div className="crx-meu-content crx-spac groupingMenu" onClick={editUnitDevice}>
+                            <div className="crx-menu-icon">
+                                <i className="fas fa-pen"></i>
+                            </div>
+                            <div className="crx-menu-list">
+                                {`${t("Edit_Configuration")}`}
+                            </div>
                         </div>
-                        <div className="crx-menu-list">
-                            {`${t("Edit_Configuration")}`}
-                        </div>
-                    </div>
-                </MenuItem>
+                    </Restricted>
+                </MenuItem>}
+                
                 {( (selectedItems?.length < 2) ||(!selectedItems)||(selectedItems?.length >= 2 && isDuplicate)) &&
               
                 <MenuItem>
-                    <div className="crx-meu-content crx-spac" onClick={assignUser} >
+                    <div className="crx-meu-content" onClick={assignUser} >
                         <div className="crx-menu-icon">
                         </div>
                         <div className="crx-menu-list">
@@ -117,7 +135,7 @@ React.useEffect(() => {
                     </div>
                 </MenuItem>}
                 <MenuItem>
-                    <div className="crx-meu-content crx-spac" >
+                    <div className="crx-meu-content" >
                         <div className="crx-menu-icon">
                         </div>
                         <div className="crx-menu-list">
@@ -128,7 +146,7 @@ React.useEffect(() => {
                 {(selectedItems?.length < 2 || !selectedItems) &&
                     <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId != null ? JSON.parse(row?.unitId).unitName : ""}`} target="_blank">
                         <Restricted moduleId={57}>
-                            <div className="crx-meu-content crx-spac">
+                            <div className="crx-meu-content">
                                 <div className="crx-menu-icon">
                                 </div>
                                 <div className="crx-menu-list">

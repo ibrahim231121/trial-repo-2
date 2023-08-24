@@ -49,7 +49,7 @@ const FormFieldsList: React.FC = () => {
   const [rows, setRows] = React.useState<FormFieldsTemplate[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<FormFieldsTemplate[]>([]);
-  const [selectedActionRow, setSelectedActionRow] = useState<FormFieldsTemplate[]>();
+  const [selectedActionRow, setSelectedActionRow] = useState<FormFieldsTemplate>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
@@ -72,7 +72,7 @@ const FormFieldsList: React.FC = () => {
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
+    onSaveHeadCellData(headCells, "FormFieldsTemplateDataTable");
     dispatch(enterPathActionCreator({ val: "" }));
   }, []);
   
@@ -263,7 +263,10 @@ const FormFieldsList: React.FC = () => {
 
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    dispatch(getAllCategoriesFilter(pageiGrid));
+    dispatch(getAllCategoriesFilter({
+      pageiGrid: pageiGrid, 
+      search: "deep"
+    }));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -283,7 +286,10 @@ const FormFieldsList: React.FC = () => {
 
   const updateOpenModel = (modelOpen: boolean) => {
     setOpenModel(modelOpen);
-    dispatch(getAllCategoriesFilter(pageiGrid))
+    dispatch(getAllCategoriesFilter({
+      pageiGrid: pageiGrid, 
+      search: "deep"
+    }));
   }
 
   const getFilteredFormFieldsData = () => {
@@ -339,6 +345,16 @@ const FormFieldsList: React.FC = () => {
     setPaging(true)
   }
 
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
+
+  const updateSelectedItems = () => {
+    getFilteredFormFieldsData();
+    setSelectedItems([]);
+  }
+
   return (
     <ClickAwayListener onClickAway={handleBlur}>
     <div className="category_tab_parent" onKeyDown={handleKeyDown}>
@@ -347,12 +363,12 @@ const FormFieldsList: React.FC = () => {
       {
         rows && (
           <CRXDataTable
-            id="CategoriesTemplateDataTable"
+            id="form fields"
             actionComponent={<CategoryFormsTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
               onClickOpenModel={onClickOpenModel}
-              pageGrid={pageiGrid}
+              updateSelectedItems={updateSelectedItems}
               toasterRef={retentionMsgFormRef}
             />}
             toolBarButton={

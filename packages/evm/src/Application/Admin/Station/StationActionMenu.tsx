@@ -124,19 +124,33 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         break;
       }
       case 'delete': {
-        let units = await isStationExistsInUnits();
-        let assets = await isStationExistsInAssets();
-        if (units > 0 || assets > 0) {
+        const url = '/Stations/' + `${row.id}`
+        UnitsAndDevicesAgent.deleteStation(url).then(() => {
+          setIsOpenDelete(false);
           showToastMsg?.({
-            message: t("The_station_cant_be_deleted__please_check_for_dependent_units_and_assets"),
-            variant: "error",
-            duration: 5000,
+            message: t("Station_deleted"),
+            variant: "success",
+            duration: 7000,
             clearButtton: true
           });
-        }
-        else {
-          await deleteStation();
-        }
+          dispatch(getStationsAsync({
+            gridFilter: {
+              logic: "and",
+              filters: []
+            },
+            page: 0,
+            size: 25
+          }));
+        })
+          .catch(function (error) {
+            showToastMsg?.({
+              message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+              variant: "error",
+              duration: 5000,
+              clearButtton: true
+            });
+            return error;
+          });
         break;
       }
       default: {
@@ -224,7 +238,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           }>
           <MenuItem onClick={openStationDetailForm}>
             <Restricted moduleId={19}>
-              <div className='crx-meu-content groupingMenu crx-spac osama'>
+              <div className='crx-meu-content groupingMenu crx-spac'>
                 <div className='crx-menu-icon'>
                   <i className='fas fa-pen'></i>
                 </div>
@@ -235,7 +249,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           </MenuItem>
           <MenuItem onClick={openStationDeleteForm}>
             <Restricted moduleId={20}>
-              <div className='crx-meu-content groupingMenu crx-spac osama'>
+              <div className='crx-meu-content groupingMenu crx-spac'>
                 <div className='crx-menu-icon'>
                   <i className='fas fa-trash-alt'></i>
                 </div>

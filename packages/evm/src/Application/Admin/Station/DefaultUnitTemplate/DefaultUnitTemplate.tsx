@@ -17,6 +17,8 @@ import { NotificationMessage } from '../../../Header/CRXNotifications/notificati
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import moment from 'moment';
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
+import ApplicationPermissionContext from '../../../../ApplicationPermission/ApplicationPermissionContext';
+import { setLoaderValue } from '../../../../Redux/loaderSlice';
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -25,7 +27,7 @@ const DefaultUnitTemplate: React.FC = () => {
     const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
     const [stationDataTableRow, setStationDataTableRow] = React.useState<StationInfo[]>([]);
     const [headCellState, setHeadCellState] = React.useState<HeadCellProps[]>([]);
-    const [deviceTypeCollection, setDeviceType] = React.useState<DeviceType[]>([]);
+    const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<DeviceType[]>([]);
     const [stationPolicyConfigurationTemplate, setStationPolicyConfigurationTemplate] = React.useState<StationPolicyConfigurationTemplate[]>([]);
     const [stationCollection, setStationCollection] = React.useState<any[]>([]);
     const [disableSaveBtn, setDisableSaveBtn] = React.useState<boolean>(true);
@@ -46,6 +48,9 @@ const DefaultUnitTemplate: React.FC = () => {
     const toasterRef = React.useRef<typeof CRXToaster>(null);
     const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
     const dispatch = useDispatch();
+    const { getModuleIds } = React.useContext(ApplicationPermissionContext);
+    const Assign_Default_Unit_Templates_Module_Id = 92;
+
     React.useEffect(() => {
         getDeviceTypeRecord();
         getStationPolicyConfigurationTemplate();
@@ -128,7 +133,7 @@ const DefaultUnitTemplate: React.FC = () => {
         UnitsAndDevicesAgent.getAllDeviceTypes()
             .then((response: DeviceType[]) => {
                 const shownDevices = response.filter(x => x.showDevice === true);
-                setDeviceType(shownDevices);
+                setDeviceTypeCollection(shownDevices);
             })
             .catch((error: any) => {
                 console.error(error.response.data);
@@ -146,6 +151,7 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const getAllStationRecord = () => {
+        dispatch(setLoaderValue({ isLoading: true }));
         UnitsAndDevicesAgent.getAllStationForDefaultUnitTemplate(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`)
             .then((response: any) => {
                 setStationCollection(response.data);
@@ -157,8 +163,10 @@ const DefaultUnitTemplate: React.FC = () => {
                     } as StationInfo
                 }) as StationInfo[];
                 setStationDataTableRow(stationInfo);
+                dispatch(setLoaderValue({ isLoading: false }));
             })
             .catch((error: any) => {
+                dispatch(setLoaderValue({ isLoading: false, error: true }));
                 console.error(error.response.data);
             });
     }
@@ -184,7 +192,7 @@ const DefaultUnitTemplate: React.FC = () => {
          * ! If state is changed it means, user has changed the parameters of DataTable,
          * ! Enable the save button, and check the boolean flag, that state is changed,
          */
-        setDisableSaveBtn(false);
+        getModuleIds().includes(Assign_Default_Unit_Templates_Module_Id) && setDisableSaveBtn(false);
         setIsStateChanged(true);
     }
 
@@ -259,7 +267,6 @@ const DefaultUnitTemplate: React.FC = () => {
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
-
             <DropdownComponent
                 deviceTypeId={parseInt(_deviceTypeId)}
                 stationId={parseInt(_rowId)}
@@ -273,7 +280,7 @@ const DefaultUnitTemplate: React.FC = () => {
     return (
         <>
             <CRXToaster ref={toasterRef} />
-            <div className='switchLeftComponents defaultUnitTemplate'>
+            <div className='defaultUnitTemplate'>
                 {(headCellState.length > 0 && stationDataTableRow.length > 0)
                     &&
                     <CRXDataTable
@@ -304,8 +311,7 @@ const DefaultUnitTemplate: React.FC = () => {
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                         totalRecords={stationCount}
                         //Please dont miss this block.
-                        offsetY={-27}
-                        topSpaceDrag={5}
+                        offsetY={15}
                         searchHeaderPosition={222}
                         dragableHeaderPosition={50}
                         stickyToolbar={133}
@@ -314,8 +320,7 @@ const DefaultUnitTemplate: React.FC = () => {
                 }
 
                 <div className='stickyFooter_Tab'>
-                    <div className='save-cancel-button-box'>
-
+                    <div className='save-cancel-button-box defaultUnitTempFooterBtn'>
                         <CRXButton
                             className="groupInfoTabButtons secondary"
                             onClick={saveBtnClickHandler}
@@ -328,9 +333,7 @@ const DefaultUnitTemplate: React.FC = () => {
                             disabled={false}>
                             {t("Cancel")}
                         </CRXButton>
-
                     </div>
-
                     <CRXButton
                         className="groupInfoTabButtons secondary"
                         onClick={closeBtnHandler}

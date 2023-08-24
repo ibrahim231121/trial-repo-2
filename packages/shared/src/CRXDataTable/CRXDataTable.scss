@@ -72,7 +72,7 @@
         th.TableSearchAbleHead {
           border-top: 1px solid var(--color-ccc);
           border-right: 1px solid var(--color-ccc);
-          padding: 13px 6px;
+          padding: 13px 13px;
           // z-index: 0;
           &:focus {
             outline: 0px;
@@ -113,6 +113,7 @@
           }
         }
         .gridFilterTextBox {
+          padding: 0 0px;
           span {
             .CBX-input {
               div {
@@ -165,6 +166,10 @@
                 width: 100%;
                 height: 100%;
                 cursor: pointer;
+              }
+              &.row_disabled {
+                pointer-events: none;
+                opacity: 0.4;
               }
             }
           }
@@ -1047,12 +1052,12 @@ td.CellCheckBox {
 }
 
 .gotoTop {
-  position: absolute;
+  position: fixed;
   right: 43px;
   font-size: 24px;
   margin-top: 7px;
   color: var(--color-d1d2d4);
-
+  bottom: 80px;
   &:hover {
     color: var(--color-333333);
     cursor: pointer;
@@ -1113,11 +1118,11 @@ td.CellCheckBox {
     padding-right: 0px !important;
     .CRXDataTableCustom {
       .drag_header {
-        top: 116px !important;
+        top: 126px !important;
         z-index: 9999 !important;
       }
       .searchable_header {
-        top: 151px !important;
+        top: 161px !important;
       }
       thead {
         tr {
@@ -1174,9 +1179,9 @@ td.CellCheckBox {
     width: 100% !important;
   }
 }
-.MuiMenu_Modal_Ui {
-  left: 1565px !important;
-}
+// .MuiMenu_Modal_Ui {
+//   left: 1565px !important;
+// }
 
 @media screen and (max-width: 1440px), screen and (max-height: 768px) {
   .MuiMenu_Modal_Ui {

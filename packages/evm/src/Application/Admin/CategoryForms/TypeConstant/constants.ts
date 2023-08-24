@@ -15,6 +15,5 @@ export const controlTypes = [
 export const controlTypesForValidation =  [
     { value: "FieldDropDownListType", id : 2 },
     { value: "FieldCheckedBoxListType", id : 5 },
-    { value: "FieldRadioButtonListType", id : 6 },
-    { value: "FieldCheckedBoxType", id : 3 },
+    { value: "FieldRadioButtonListType", id : 6 }
 ];

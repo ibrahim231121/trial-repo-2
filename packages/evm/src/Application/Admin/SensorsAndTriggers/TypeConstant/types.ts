@@ -21,7 +21,8 @@ export type SensorAndTriggerDetailValidationModel = {
     category: string,
     description: string,
     camera: string,
-    emailAlert: string
+    emailAlert: string,
+    allowCancellation: string,
 }
 
 export type SwitchParametersModel = {
@@ -32,7 +33,8 @@ export type SwitchParametersModel = {
     category: SelectBoxTypeExpand,
     description: StringExpand,
     camera: CameraSelectBoxTypeExpand,
-    emailAlert: BooleanExpand
+    emailAlert: BooleanExpand,
+    allowCancellation: BooleanExpand
 }
 
 export type SwitchParametersDropdownModel = {

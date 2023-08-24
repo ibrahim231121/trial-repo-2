@@ -35,6 +35,8 @@ import { logOutUser } from "./Logout/API/auth";
 import { useHistory } from "react-router-dom";
 import { RemoveSidePanelClass } from "./GlobalFunctions/globalDataTableFunctions";
 import { AssetBucketThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbialForBucket";
+import { getCategoryAsync } from "./Redux/categoryReducer";
+import { getStationsInfoAllAsync } from "./Redux/StationReducer";
 
 declare const window: any;
 interface CounterState {
@@ -93,6 +95,8 @@ function App() {
     if(accessTokenCookie != accessToken)
     {
       dispatch(setAccessAndRefreshToken({ refreshToken: refreshTokenCookie, accessToken: accessTokenCookie }))
+      dispatch(getCategoryAsync());
+      dispatch(getStationsInfoAllAsync());
     }
   }, [])
 
@@ -155,23 +159,23 @@ function App() {
   }, [culture, resources]);
 
   useEffect(() => {
+    let moduleIds = getModuleIds();
+    if (moduleIds) {
+      setModuleIds(moduleIds);
+    }
     const id = window.setInterval(() => {
       const token = getToken();
       if (token) {
         setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
         window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
-        let moduleIds = getModuleIds();
+
         let groupIds = getGroupIds();
         let tId = getTenantId();
 
-        if (moduleIds) {
-          setModuleIds(moduleIds);
-        }
         if (groupIds) {
           setGroupIds(groupIds);
         }
-        if(tId)
-        {
+        if (tId) {
           setTenantId(tId);
         }
         window.clearInterval(id);
@@ -430,10 +434,10 @@ function App() {
   return (
     <ApplicationPermissionProvider setModuleIds={
       (moduleIds: number[]) => {
-
         setModuleIds(moduleIds)
       }
     }
+    tenantId={getTenantId()}
       moduleIds={moduleIds}
       getModuleIds={() => {
         var moduleIds = getModuleIds()
@@ -452,19 +456,17 @@ function App() {
         }
       }}
       getTenantId={() => {
-        var tenantIds = getTenantId();
-    
+        let tenantIds = getTenantId();
         return tenantIds;
-        
       }} 
-                          
-                                    >
+     >
       <div dir={rtl}>
         <CRXLoader
           show={loadingValue > 0}
           loadingText="Please wait"
         />
         <SnackbarProvider
+          
           maxSnack={100}
           anchorOrigin={{
             vertical: "top",
@@ -482,6 +484,7 @@ function App() {
             variantError: "error",
             variantWarning: "warning",
             variantInfo: "info",
+            containerRoot:"globalToasterMsg"
           }}
           TransitionComponent={Fade as React.ComponentType}
         >

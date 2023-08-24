@@ -1,11 +1,14 @@
-import { forwardRef, ForwardRefRenderFunction, useRef, useImperativeHandle, useEffect, useState } from "react";
+import { forwardRef, ForwardRefRenderFunction, useRef, useImperativeHandle, useEffect, useState, useMemo } from "react";
 import { Field, Form, Formik, FormikProps } from "formik";
-import { AutoCompleteOptionType, TCaseFormType, TCaseEditUserDetail } from "../CaseTypes";
+import { AutoCompleteOptionType, TCaseFormType, TCaseEditUserDetail, TCaseAsset,CASE_STATE } from "../CaseTypes";
 import { CRXColumn, CRXRows, CRXMultiSelectBoxLight, CRXContainer, CRXRichTextBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import './CreateCase.scss';
-import moment from "moment";
+import { RootState } from "../../../Redux/rootReducer";
+import { useSelector } from "react-redux";
+import { getFormattedDateTime } from "../utils/globalFunctions";
+import { CasesAgent } from "../../../utils/Api/ApiAgent";
 
 type CreateCaseProps = {
     formInitialState?: TCaseFormType,
@@ -16,9 +19,11 @@ type CreateCaseProps = {
     isEdit: boolean,
     editDetails?: TCaseEditUserDetail,
     isViewOnly?: boolean,
+    selectedAssets?: TCaseAsset[],
     updateFormValues: (values: any) => void,
     onSubmit: (values: any, setSubmitting: (isSubmitting: boolean) => void) => void,
-    validationCallback: (isInvalid: boolean) => void
+    validationCallback: (isInvalid: boolean) => void,
+    highlightAssetByReference?: (value: string) => void
 }
 
 const caseInitialState: TCaseFormType = {
@@ -36,14 +41,24 @@ const caseInitialState: TCaseFormType = {
     ClosedType: { id: 0, label: "" }
 };
 
+
 const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref) => {
 
     const [formInitialState, setFormInitialState] = useState<TCaseFormType>(caseInitialState);
+    const [duplicateCaseId,setDuplicateCaseId]= useState<boolean>(false);
 
     const formikElementRef = useRef<FormikProps<TCaseFormType> | null>(null);
     const richTextBoxRef = useRef<any>(null);
+    const isFirstRenderRef = useRef<boolean>(true);
+    const previousCaseTitle = useRef<string>("");
+
+    const tenantSettingsKeyValues: any = useSelector((state: RootState) => state.tenantSettingsReducer.keyValues);
 
     const { t } = useTranslation<string>();
+
+    const memoizedFormValues = useMemo(() => {
+      return props.formValues
+    }, [props.formValues])
 
     useImperativeHandle(ref, () => ({
         formikElementRef: formikElementRef.current,
@@ -54,47 +69,42 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
             setFormInitialState(props.formInitialState);
         }
 
-        if(Array.isArray(props.caseLeadAutoCompleteOptions) && !props.isEdit) {
-            const currentUserId = parseInt(localStorage.getItem('User Id') ?? "0");
-            const caseLead = props.caseLeadAutoCompleteOptions.find(a => a.id === currentUserId);
-            if(caseLead != null && currentUserId > 0 && caseInitialState.CaseLead?.id === 0) {
-                caseInitialState.CaseLead = { id: currentUserId, label: caseLead.label };
-                setFormInitialState(caseInitialState);
-            }
-        }
-    }, [props.caseLeadAutoCompleteOptions, props.formInitialState])
+    }, [props.formInitialState])
 
     useEffect(() => {
-      if(props.formValues != null && formikElementRef.current != null && typeof formikElementRef.current.setValues === "function") {
-          formikElementRef.current.setValues(props.formValues);
-      }
-      else {
-        if(!props.isEdit) {
-          const uuId = generateUniqueCaseId();
-          setFormInitialState((prevState: any) => ({
-            ...prevState,
-            CaseId: uuId 
-          }));
+      if(memoizedFormValues != null && !props.isEdit) {
+        if(memoizedFormValues != null && formikElementRef.current != null && typeof formikElementRef.current.setValues === "function") {
+          formikElementRef.current.setTouched({CaseId: true, CaseLead: {id: true, label: true}, Status: {id: true, label: true}}, true);  
+          formikElementRef.current.setValues(memoizedFormValues, true);
         }
       }
+    }, [memoizedFormValues])
+
+    useEffect(() => {
+      if(!isFirstRenderRef.current && formikElementRef.current != null)
+        formikElementRef.current.validateField("CaseId");
       
-    }, []);
+      },[duplicateCaseId])
+
+    useEffect(() => {
+      isFirstRenderRef.current = false;
+    }, [])
+
+   
 
     const caseValidationSchema = Yup.object().shape({
-        CaseId: Yup.string().required("Case Id is required").when([], {
-          is: () => !props.isEdit,
-          then: Yup.string().test("caseIdValidation", t("CaseId_,_must_match_with_pattern_(_YEAR_-_6_digit_number_)"),
+        CaseId: Yup.string().min(6).required("Case Id is required").when([], {
+          is: () => true,
+          then: Yup.string().test("caseIdValidation", t("The_title_must_begin_with_the_first_three_characters_as_alphanumeric_and_may_include_'-'_or_'_'_after_that"),
             function(value) {
-              if(!props.isEdit) {
-                if(value?.match(/\d{4}[-]\d{6}$/g)) {
-                  const valueArray = value?.split('-');
-                  if(Array.isArray(valueArray) && valueArray[0] === new Date().getFullYear().toString()) {
+                if(value?.match(/^([a-zA-Z0-9]{3})([a-zA-Z0-9-_])+$/g)) {
                     return true;
-                  }
                 }
-              }
               return false;
-            })
+            }).test("duplicateCaseIdValidation", t("Duplicate ID. Please create a unique Case ID."),
+              function() {
+                return !duplicateCaseId;
+              }),
         }),
         CaseLead: Yup.object().shape({
           id: Yup.number().required('Case Lead is required').min(1).positive(),
@@ -106,22 +116,15 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
         }),
       });
 
-    const generateUniqueCaseId = () => {
-      return `${new Date().getUTCFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`
-    }
 
-    const getFormatedDateTime = (value: string) => {
-      if(typeof value === "string") {
-        const formatedDate = moment(value).format("DD/MM/YYYY HH:mm:ss A");
-        return formatedDate === "Invalid date" ? "" : formatedDate;
-      }
-      return "";
-    }
-
-    const onDescriptionChange = (value: any, setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void) => {
+    const onDescriptionChange = (currentValue: string, newValue: string, setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void) => {
       if(richTextBoxRef.current != null) {
-        const descriptionRawText = JSON.stringify(richTextBoxRef.current.getContentAsRaw());
-        setFieldValue("DescriptionPlainText", descriptionRawText, true);
+        if(currentValue === props.formInitialState?.DescriptionPlainText && newValue != currentValue) {
+          setFieldValue("DescriptionPlainText", newValue, true);
+        }
+        else if(newValue === props.formInitialState?.DescriptionPlainText) {
+          setFieldValue("DescriptionPlainText", newValue, true);
+        }
       }
     }
 
@@ -135,6 +138,34 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
       props.onSubmit(values, setSubmitting);
     }
 
+    const updateParentComponent = (values: TCaseFormType, isValid: boolean, dirty: boolean, isSubmitting: boolean ) => {
+      if(!isFirstRenderRef.current) {
+        props.updateFormValues(values);
+        props.validationCallback(!isValid || !dirty || isSubmitting);
+      }
+      return null;
+    }
+
+    const checkValidCaseTitle =  (caseTitle:string, setSubmitting: (isSubmitting: boolean) => void)=> {
+      if(previousCaseTitle.current  != caseTitle)
+      {
+        
+          previousCaseTitle.current = caseTitle;
+          setSubmitting(true);
+          CasesAgent.getCase(`/Case/CheckValidCaseTitle?caseTitle=${caseTitle}`)
+          .then(() => {      
+            setSubmitting(false);
+          })
+          .catch((ex: any) => { 
+            setSubmitting(false);
+            if(ex.response != null && ex.response?.status === 409)
+            {         
+              setDuplicateCaseId(true); 
+            }
+          });
+      }
+    }
+
     return (
         <Formik
             enableReinitialize={true}
@@ -144,11 +175,10 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
             validateOnChange={true}
             innerRef={formikElementRef}
           >
-        {({ isValid, dirty, isSubmitting, touched, errors, values, setFieldTouched, setFieldValue }) => (
+        {({ isValid, dirty, isSubmitting, touched, errors, values, setFieldTouched, setFieldValue,setSubmitting }) => (
           (
             <>
-            { props.updateFormValues(values) }
-            { props.validationCallback(!isValid || !dirty || isSubmitting) }
+            { updateParentComponent(values, isValid, dirty, isSubmitting) }
               <Form id="create-case-form" className={props.isEdit === true ? 'editCaseForm' : ''}>
                 <div className="createCaseForm">
                   <div className="centerGeneralTab">
@@ -189,8 +219,10 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
                                     e.preventDefault();
                                     setFieldTouched("CaseId", true);
                                     setFieldValue("CaseId", e.target.value, true);
+                                    setDuplicateCaseId(false); 
                                   }}
                                   disabled={props.isViewOnly === true}
+                                  onBlur={(e: any) => checkValidCaseTitle(e.target.value,setSubmitting)}
                                 />
                                 { errors.CaseId != undefined && touched.CaseId ? (
                                 <div className="caseIdError">
@@ -252,17 +284,21 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
                               spacing={0}
                               aria-rowspan={2}
                             >
-                              <div className="editContentDetailContainer">
+                              <div className={`editContentDetailContainer ${formInitialState.State.id == CASE_STATE.Closed ? 'caseClosedBy' : ''}`}>
                                 {props.editDetails != null ?
                                   (
                                     <>
                                       <div className="editContentDetailItem">
                                         <div className="editContentDetailItem-heading">Created On:</div>
-                                        <div className="editContentDetailItem-content">{getFormatedDateTime(props.editDetails.createdOn)}</div>
+                                        <div className="editContentDetailItem-content">
+                                          {getFormattedDateTime(props.editDetails.createdOn, tenantSettingsKeyValues ?? null)}
+                                        </div>
                                       </div>
                                       <div className="editContentDetailItem">
                                         <div className="editContentDetailItem-heading">Updated On:</div>
-                                        <div className="editContentDetailItem-content">{getFormatedDateTime(props.editDetails.updatedOn)}</div>
+                                        <div className="editContentDetailItem-content">
+                                          {getFormattedDateTime(props.editDetails.updatedOn, tenantSettingsKeyValues ?? null)}
+                                        </div>
                                       </div>
                                       <div className="editContentDetailItem">
                                         <div className="editContentDetailItem-heading">Created By:</div>
@@ -273,6 +309,19 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
                                   : null
                                 }
                               </div>
+                              {formInitialState.State.id == CASE_STATE.Closed ?
+                              <div className="closeCaseContentDetailContainer">
+                                {props.editDetails != null ?
+                                  (
+                                    <div className="editContentDetailItem">
+                                      <div className="editContentDetailItem-heading">Closed By:</div>
+                                      <div className="editContentDetailItem-content">{props.editDetails.closedByName}</div>  
+                                    </div>
+                                  )
+                                  : null
+                                }
+                              </div>
+                              : null}
                             </CRXColumn> )
                           : null
                         }
@@ -370,8 +419,10 @@ const CreateCase: ForwardRefRenderFunction<any, CreateCaseProps> = ((props, ref)
                             <span>Description</span>
                           </h6>
                           <div className="createCase-DraftEditor-Container">
-                            <CRXRichTextBox value={values.DescriptionJson || ""} ref={richTextBoxRef}
-                              onChange={(value: any) => onDescriptionChange(value, setFieldValue) } disabled={props.isViewOnly}/>
+                            <CRXRichTextBox value={values.DescriptionJson || ""} ref={richTextBoxRef} assets={props.isEdit === true ? props.selectedAssets ?? [] : []}
+                              onChange={(value: string) => onDescriptionChange(values.DescriptionPlainText, value, setFieldValue) } disabled={props.isViewOnly}
+                              onHashLinkChange={(value: string) => typeof props.highlightAssetByReference === "function" ?
+                                props.highlightAssetByReference(value) : () => {}}/>
                           </div>
                         </CRXColumn>
 

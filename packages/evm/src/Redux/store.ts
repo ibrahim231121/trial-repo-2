@@ -3,12 +3,15 @@ import {reducer} from './rootReducer';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { createStore } from 'redux';
+import FilteredRelatedAssetSlice from './FilteredRelatedAssetsReducer';
+import FilteredSearchEvidenceSlice from './FilterSearchEvidence';
+
 
 
 const persistConfig = {
   key: 'timerReducers',
   storage: storage,
-  whitelist: ['timerReducers','cultureReducer'] // which reducer want to store
+  whitelist: ['timerReducers','cultureReducer','NavigationStateReducer','filteredRelatedAssetsSlice','FilteredSearchEvidenceSlice'], // which reducer want to store
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);

@@ -3,57 +3,68 @@ import React, { useEffect } from "react";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 import PDFViewer from "../../../components/MediaPlayer/PdfViewer/PDFViewer";
 import { assetdata } from "./AssetDetailsTemplateModel";
-import { CRXTabs } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import ImageViewer from "../../../components/MediaPlayer/ImageViewer/ImageViewer";
-import { AppBar, Box, Tab, Tabs, Theme, Typography, makeStyles } from "@material-ui/core";
 import AssetsDisplayTabsHeaders from "./AssetsDisplayTabsHeaders";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DocViewer from "../../../components/MediaPlayer/DocsViewer/DocViewer";
 import AudioPlayerBase from "../../../components/MediaPlayer/AudioPlayer/AudioPlayerBase";
+import { urlList, urlNames } from "../../../utils/urlList";
+import { setIsPrimaryAsset } from "../../../Redux/AssetDetailPrimaryBreadcrumbReducer";
+import { Metadatainfo } from "../../../Redux/MetaDataInfoDetailReducer";
+import { RootState } from "../../../Redux/rootReducer";
 
 const AssetsDisplayTabs = (props: any) => {
   const dispatch = useDispatch();
-  const { metaData, typeOfVideoAssetToInclude, typeOfAudioAssetToInclude, typeOfImageAssetToInclude, typeOfDocAssetToInclude, typeOfOtherAssetToInclude, detailContent, setDetailContent, formattedData, evidenceId, gpsJson, sensorsDataJson, openMap, updatePrimaryAsset, isPrimaryAsset, assetId } = props;
+  const { typeOfVideoAssetToInclude, typeOfAudioAssetToInclude, typeOfImageAssetToInclude, typeOfDocAssetToInclude, typeOfOtherAssetToInclude, detailContent, setDetailContent, formattedData, evidenceId, sensorsDataJson, updatePrimaryAsset, assetId, setIsAudioActive, assetTabContainer, masterAssetId, gpsSensorData, setAssetId } = props;
   
   let defaultTab = 0;
   const [block, setBlock] = React.useState(false);
+  const metaData: Metadatainfo = useSelector(
+    (state: RootState) => state.metadatainfoDetailReducer.metadataInfoState
+  );
+  
   useEffect(() => {
-    if(formattedData[0].typeOfAsset == "Doc" && formattedData[0].files[0].typeOfAsset == "PDFDoc"){
-      defaultTab = typeOfDocAssetToInclude.includes(formattedData[0].files[0].typeOfAsset) ? 3 : defaultTab;
-    }
-    else if(formattedData[0].typeOfAsset == ("Video" || "Audio" || "AudioOnly" || "Image")){
-      defaultTab = typeOfVideoAssetToInclude.includes(formattedData[0].typeOfAsset) ? 1 : defaultTab;
-      defaultTab = typeOfAudioAssetToInclude.includes(formattedData[0].typeOfAsset) ? 0 : defaultTab;
-      defaultTab = typeOfImageAssetToInclude.includes(formattedData[0].typeOfAsset) ? 2 : defaultTab;
-    }
-    else{
-      defaultTab = typeOfOtherAssetToInclude.includes(formattedData[0].files[0].typeOfAsset) ? 4 : defaultTab;
-    }
-    setTypeOfAssetCurrentTab(defaultTab);
+    defaultTab = typeOfDocAssetToInclude.includes(formattedData[0].files[0]?.typeOfAsset) ? 3 : defaultTab;
+    defaultTab = typeOfVideoAssetToInclude.includes(formattedData[0].typeOfAsset) ? 1 : defaultTab;
+    defaultTab = typeOfAudioAssetToInclude.includes(formattedData[0].typeOfAsset) ? 0 : defaultTab;
+    defaultTab = typeOfImageAssetToInclude.includes(formattedData[0].typeOfAsset) ? 2 : defaultTab;
+    defaultTab = typeOfOtherAssetToInclude.includes(formattedData[0].files[0]?.typeOfAsset) ? 4 : defaultTab;
+    setTypeOfAssetCurrentTab1(defaultTab);
   }, [formattedData])
   const [typeOfAssetCurrentTab, setTypeOfAssetCurrentTab] = React.useState(defaultTab);
-
-  useEffect(() => {
+  const assetTabContainerRef : any = React.useRef(null)
+  const setTypeOfAssetCurrentTab1 = (typeOfAssetCurrentTab1: number) => {
     let availableAssets = formattedData.filter((x: any) => x.status == "Available");
     let {videos, images, docs, audios, otherdocs} = dataOfCategories(availableAssets);
-    if(typeOfAssetCurrentTab == 1){
-      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + videos[0]?.name }));
+    if(typeOfAssetCurrentTab1 == 1){
+      setAssetId(videos[0]?.id ?? assetId);
+      if(videos[0]?.name){dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + videos[0]?.name }))};
+      dispatch(setIsPrimaryAsset({isPrimaryAsset: videos[0]?.id == masterAssetId}));
     }
-    else if(typeOfAssetCurrentTab == 0){
-      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + audios[0]?.name }));
+    else if(typeOfAssetCurrentTab1 == 0){
+      setAssetId(audios[0]?.id ?? assetId);
+      if(audios[0]?.id){dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + audios[0]?.name }))};
+      dispatch(setIsPrimaryAsset({isPrimaryAsset: audios[0]?.id == masterAssetId}));
     }
-    else if(typeOfAssetCurrentTab == 2){
-      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + images[0]?.name }));
+    else if(typeOfAssetCurrentTab1 == 2){
+      setAssetId(images[0]?.id ?? assetId);
+      if(images[0]?.id){dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + images[0]?.name }))};
+      dispatch(setIsPrimaryAsset({isPrimaryAsset: images[0]?.id == masterAssetId}));
     }
-    else if(typeOfAssetCurrentTab == 3){
-      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + docs[0]?.name }));
+    else if(typeOfAssetCurrentTab1 == 3){
+      setAssetId(docs[0]?.id ?? assetId);
+      if(docs[0]?.id){dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + docs[0]?.name }))};
+      dispatch(setIsPrimaryAsset({isPrimaryAsset: docs[0]?.id == masterAssetId}));
     }
-    else if(typeOfAssetCurrentTab == 4){
-      dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + otherdocs[0]?.name }));
+    else if(typeOfAssetCurrentTab1 == 4){
+      setAssetId(otherdocs[0]?.id ?? assetId);
+      if(otherdocs[0]?.id){dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + otherdocs[0]?.name }))};
+      dispatch(setIsPrimaryAsset({isPrimaryAsset: otherdocs[0]?.id == masterAssetId}));
     }
-  }, [typeOfAssetCurrentTab])
+    setTypeOfAssetCurrentTab(typeOfAssetCurrentTab1);
+  }
 
 
   const [apiKey, setApiKey] = React.useState<string>("");
@@ -64,21 +75,21 @@ const AssetsDisplayTabs = (props: any) => {
     { label: t("Videos"), index: 1 },
     { label: t("Images"), index: 2 },
     { label: t("Documents"), index: 3 },
-    { label: t("Others"), index: 4 },
+    { label: t("Other"), index: 4 },
   ];
 
   const dataOfCategories = (availableAssets: assetdata[]) => {
-    let videos = availableAssets.filter(x => typeOfVideoAssetToInclude.includes(x.typeOfAsset) || (x.typeOfAsset == "AudioOnly" ? x.files.some(y => typeOfAudioAssetToInclude.includes(y.typeOfAsset)) : false));
-    let docs = availableAssets.filter((x: any) => x.typeOfAsset == "Doc" && typeOfDocAssetToInclude.includes(x.files[0].typeOfAsset));
+    let videos = availableAssets.filter(x => typeOfVideoAssetToInclude.includes(x.typeOfAsset));
+    let docs = availableAssets.filter((x: any) => x.typeOfAsset == "Doc" && typeOfDocAssetToInclude.includes(x.files[0]?.typeOfAsset));
     let images = availableAssets.filter((x: any) => typeOfImageAssetToInclude.includes(x.typeOfAsset));
     let audios = availableAssets.filter((x: any) => typeOfAudioAssetToInclude.includes(x.typeOfAsset));
-    let otherdocs = availableAssets.filter((x: any) => typeOfOtherAssetToInclude.includes(x.files[0].typeOfAsset));
+    let otherdocs = availableAssets.filter((x: any) => typeOfOtherAssetToInclude.includes(x.files[0]?.typeOfAsset));
     return {videos, docs, images, audios, otherdocs}
   }
 
 
   useEffect(() => {
-    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
+    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");
   }, [])
 
 
@@ -96,13 +107,31 @@ const AssetsDisplayTabs = (props: any) => {
   }, [formattedData])
 
 
+  useEffect(() => {
+    
+    let path = window.location.pathname;
+    let htmlElement: any = document.querySelector("html");
+    let pathBody = document.querySelector("body");
+    if (path == urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url) {
+      pathBody?.classList.add("pathVideoPlayer");
+      htmlElement.style.overflow = "hidden";
+    } else if (path == urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+      pathBody?.classList.add("pathAssetDetail");
+      htmlElement.style.overflow = "hidden";
+    } else {
+      pathBody?.classList.remove("pathVideoPlayer");
+      pathBody?.classList.remove("pathAssetDetail");
+      htmlElement.style.overflow = "auto";
 
+    }
+    assetTabContainer(assetTabContainerRef)
+  },[])
 
 //tab fun end
   const noAvailableAssetFound = () => {
     return <div className="_player_video_uploading">
       <div className="layout_inner_container">
-        {metaData.id && <div className="text_container_video">Evidence is not available!</div>}
+        {metaData?.id && <div className="text_container_video">Evidence is not available!</div>}
         <div className="_empty_arrow_seeMore">
           {detailContent == false ?
             <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
@@ -117,19 +146,20 @@ const AssetsDisplayTabs = (props: any) => {
       </div>
     </div>
   }
-
-  const assetDisplay = (formattedData: assetdata[], evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: boolean, apiKey: any) => {
+  
+  const assetDisplay = (formattedData: assetdata[], evidenceId: any, gpsSensorData: any, sensorsDataJson: any, apiKey: any) => {
     let availableAssets = formattedData.filter((x: any) => x.status == "Available");
-    if (availableAssets.length > 0) {
+    let currentAssetAvailable = availableAssets?.some(x =>  x.id == assetId);
+    let anyAssetAvialable = availableAssets.filter((x)=> x.files.some(y=> y.downloadUri.length > 0)).length > 0;
+    if ((availableAssets.length > 0) && currentAssetAvailable && metaData.retention != "Expired" && anyAssetAvialable ) {
       let {videos, images, docs, audios, otherdocs} = dataOfCategories(availableAssets);
       
       
       
       return <>
         {/* New Tabs start */}
-        <div  className="MainTabsPanel">
+        <div  className="MainTabsPanel" ref={assetTabContainerRef}>
         <div className="tabsHeaderControl">
-        {isPrimaryAsset && <CRXTooltip iconName="fas fa-certificate" arrow={false} title="primary asset" placement="left" className="crxTooltipNotificationIcon" />}
           {typeOfAssetTabs.map(x => 
           
             {
@@ -140,27 +170,30 @@ const AssetsDisplayTabs = (props: any) => {
               categoryAssets = x.index == 3 ? docs : categoryAssets;
               categoryAssets = x.index == 0 ? audios : categoryAssets;
               categoryAssets = x.index == 4 ? otherdocs : categoryAssets;
-              
-              return <AssetsDisplayTabsHeaders setTypeOfAssetCurrentTab={setTypeOfAssetCurrentTab} typeOfAssetTab={x} updatePrimaryAsset={(id: any) => {setBlock(true); updatePrimaryAsset(id); setTimeout(() => {setBlock(false)}, 3000)}} availableAssets={availableAssets} categoryAssets={categoryAssets} isSelected={typeOfAssetCurrentTab == x.index} assetId={assetId}/> })}
+              categoryAssets = categoryAssets.filter((x:assetdata)=> x.evidenceId == evidenceId);
+              return <AssetsDisplayTabsHeaders setTypeOfAssetCurrentTab={setTypeOfAssetCurrentTab1} typeOfAssetTab={x} updatePrimaryAsset={(id: any) => {setBlock(true); updatePrimaryAsset(id); setTimeout(() => {setBlock(false)}, 3000)}} availableAssets={availableAssets} categoryAssets={categoryAssets} isSelected={typeOfAssetCurrentTab == x.index} assetId={assetId}/> })}
         </div>
         <div className="tabsBodyControl">
         <div style={{display: typeOfAssetCurrentTab == 0 ? "block" : "none"}}>
-          {audios.length > 0 && !block && <AudioPlayerBase data={audios} evidenceId={evidenceId} />}
-        </div>
-        <div style={{display: typeOfAssetCurrentTab == 1 ? "block" : "none"}}>
-          {videos.length > 0 && <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} guestView={false} />}
-        </div>
-        <div style={{display: typeOfAssetCurrentTab == 2 ? "block" : "none"}}>
-          {images.length > 0 && <ImageViewer data={images} />}
-        </div>
-        <div style={{display: typeOfAssetCurrentTab == 3 ? "block" : "none"}}>
-          {docs.length > 0 && <PDFViewer data={docs} />}
-        </div>
-        <div style={{display: typeOfAssetCurrentTab == 4 ? "block" : "none"}}>
-          {otherdocs.length > 0 && <DocViewer data={otherdocs[0]} />}
-        </div>
-      </div>
-    </div>
+            {audios.length > 0 && !block && <AudioPlayerBase data={audios} evidenceId={evidenceId}/>}
+          </div>
+          <div style={{display: typeOfAssetCurrentTab == 1 ? "block" : "none"}}>
+            {videos.length > 0 && <VideoPlayerBase data={videos} evidenceId={evidenceId} sensorsDataJson={sensorsDataJson} apiKey={apiKey} guestView={false} setIsAudioActive={setIsAudioActive} gpsSensorData={gpsSensorData} />}
+          </div>
+          <div style={{display: typeOfAssetCurrentTab == 2 ? "block" : "none"}}>
+            {images.length > 0 && <ImageViewer data={images} masterAssetId={masterAssetId} setAssetId={setAssetId} />}
+          </div>
+          <div style={{display: typeOfAssetCurrentTab == 3 ? "block" : "none"}}>
+          {docs.length > 0 && <PDFViewer 
+            data={docs}
+            // updatePrimaryAsset={(id: any) => {setBlock(true); updatePrimaryAsset(id); setTimeout(() => {setBlock(false)}, 3000)}}
+            setAssetId={setAssetId} />}
+          </div>
+          <div className="otherDoc" style={{display: typeOfAssetCurrentTab == 4 ? "flex" : "none"}}>
+            {otherdocs.length > 0 && <DocViewer data={otherdocs[0]} />}
+          </div>
+      </div>{/* tabsBodyControl */}
+    </div>{/* MainTabsPanel */}
   
         {/* New Tabs end */}
 
@@ -169,7 +202,7 @@ const AssetsDisplayTabs = (props: any) => {
     else { return <>{noAvailableAssetFound()}</> }
   }
 
-  return <>{assetDisplay(formattedData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}</>
+  return <>{assetDisplay(formattedData, evidenceId, gpsSensorData, sensorsDataJson, apiKey)}</>
 };
 
 export default AssetsDisplayTabs;

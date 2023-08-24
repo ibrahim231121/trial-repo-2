@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { SelectedCategoryModel } from "./FormContainerModel";
+import { SelectedCategoryModel } from "./CategoryFormContainerModel";
 
 export type CancelConfirmFormProps = {
     isCategoryEmpty: boolean;

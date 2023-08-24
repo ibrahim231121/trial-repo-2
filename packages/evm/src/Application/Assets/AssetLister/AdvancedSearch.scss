@@ -227,6 +227,8 @@
   }
 }
 .advanceSerachContainer {
+  position: relative;
+  z-index: 100;
   &.CRXAdvanceSearchBox {
     padding: 21px 21px 23px 19px;
     .dateTimeLabel {

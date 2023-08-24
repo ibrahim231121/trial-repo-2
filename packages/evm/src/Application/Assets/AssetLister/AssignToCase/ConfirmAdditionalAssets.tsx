@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CRXCheckBox, CRXTruncation, CRXTooltip, CRXAlert, CRXButton } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import "./ConfirmAdditionalAssets.scss";
@@ -15,9 +15,26 @@ type ConfirmAdditionalAssetsPropTypes = {
 }
 
 const ConfirmAdditionalAssets : FC<ConfirmAdditionalAssetsPropTypes> = (props) => {
-    const [additionalAssets, setAdditionalAssets] = useState(props.selectedItems);
+    const [additionalAssets, setAdditionalAssets] = useState<any[]>([]);
 
     const { t } = useTranslation<string>();
+
+    useEffect(() => {
+        if(Array.isArray(props.selectedItems)) {
+            const changedProps: any[] = props.selectedItems.map((x: any) => {
+                if(x.isDisabled === true) {
+                    x.isSelected = false
+                }
+                else
+                    x.isSelected = true;
+                return x;
+            });
+            console.log(changedProps.sort((a, b) => {
+                return (a.isDisabled === b.isDisabled) ? 0 : a.isDisabled? -1 : 1;
+            }))
+            setAdditionalAssets(Array.isArray(changedProps) ? changedProps : []);
+        }
+    }, [props.selectedItems]);
 
     const onAssetSelectionChange = (e: any, item: any) => {
         const stateCopy = additionalAssets.map(item => ({...item}));
@@ -29,7 +46,7 @@ const ConfirmAdditionalAssets : FC<ConfirmAdditionalAssetsPropTypes> = (props) =
     }
 
     const onAddToCaseClick = () => {
-        console.log("Add to case click")
+        console.log(additionalAssets.filter(x => x.isSelected === true && x.isDisabled !== true));
     }
 
     const onCancelClick = () => {
@@ -46,7 +63,7 @@ const ConfirmAdditionalAssets : FC<ConfirmAdditionalAssetsPropTypes> = (props) =
                         <div className="additionalAssetSubContainer">
                         <div className="additionalAssetCheckbox">
                             <CRXCheckBox
-                                checked={!(item.isSelected === false) && item.isDisabled != true}
+                                checked={item.isSelected === true && item.isDisabled != true}
                                 onChange={(e: any) => onAssetSelectionChange(e, item)}
                                 name={item.assetId}
                                 lightMode={true}

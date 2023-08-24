@@ -473,8 +473,8 @@ const HotListDataSource = () => {
             //Please dont miss this block.
             offsetY={119}
             stickyToolbar={130}
-            searchHeaderPosition={224}
-            dragableHeaderPosition={188}
+            searchHeaderPosition={222}
+            dragableHeaderPosition={186}
             //End here
 
             showExpandViewOption={true}

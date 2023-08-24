@@ -9,13 +9,14 @@ const FieldCheckedBoxType: React.FC<FieldCheckedBoxType> = ({ formikProps, setFi
     const { field, form } = formikProps;
     const [isChecked, setIsChecked] = React.useState<boolean>(false);
     React.useEffect(() => {
-        if (field.value != "") {
-            const boolOutput = (field.value === "true");
+        if (field.value != '') {
+            const boolOutput = (field.value === 'true');
             setIsChecked(boolOutput);
         }
     }, []);
     const handleChange = (e: any) => {
         form.setFieldValue(field.name, e.target.checked.toString(), true);
+        form.setFieldTouched(field.name, true, false);
         setFieldsFunction({ name: field.name, value: e.target.checked.toString() });
     }
     return (

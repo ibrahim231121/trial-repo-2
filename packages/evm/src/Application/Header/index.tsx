@@ -45,15 +45,39 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
        
     },[])
 
-    let viewUrl = window.location.href;
+    
+
+    
+  useEffect(() => {
+    
+    let viewUrl = window.location.pathname;
     let pathBody = document.querySelector("body");
     let htmlTag = document.querySelector('html')
     
-    if(viewUrl !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+    if(viewUrl != urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+      
       pathBody?.classList.remove("pathAssetDetail");
-      htmlTag && (htmlTag.style.overflowY = "auto")
+      htmlTag && (htmlTag.style.overflow = "auto")
     }
 
+
+    let path = window.location.pathname;
+    let htmlElement: any = document.querySelector("html");
+    
+    if (path == urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url) {
+      pathBody?.classList.add("pathVideoPlayer");
+      htmlElement.style.overflow = "hidden";
+    } else if (path == urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+      pathBody?.classList.add("pathAssetDetail");
+      htmlElement.style.overflow = "hidden";
+    } else {
+      pathBody?.classList.remove("pathVideoPlayer");
+      pathBody?.classList.remove("pathAssetDetail");
+      htmlElement.style.overflow = "auto";
+
+    }
+   
+  })
     return (
         <div className="CRXAppHeader">
             <CRXRows
@@ -95,7 +119,7 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                             <li><CRXHelp /></li>
                         </ul>
                         <div className="panelContent">
-                            <CRXAssetsBucketPanel isOpenBucket={bucketIsOpen}/>
+                            <CRXAssetsBucketPanel isOpenBucket={bucketIsOpen} isGuestUser={isguestUser} />
                             <CRXNotficationPanel otherPanel={(e : any) => setBucketIsOpen(e)}/>
                             {/* <CRXGlobalSearchPanel /> */}
                         </div>

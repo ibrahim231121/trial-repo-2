@@ -212,7 +212,7 @@
     .centerGeneralTab {
       // padding: 70px 0 0 91px;
       .itemIndicator {
-        position: fixed;
+        position: absolute;
         top: 229px;
         background: white;
         z-index: 1;
@@ -259,7 +259,7 @@
         width: 244px ;
       }
        .itemIndicator {
-        position: fixed;
+        position: absolute;
         left: 206px;
         top: 229px;
       }
@@ -301,6 +301,24 @@
     }
     .passErrorStyle {
       bottom: -39px !important;
+  }
+  .itemIndicator {
+    position: absolute !important;
+  }
+  .indicatorMessage_unitTemplate {
+    position: absolute !important;
+  }
+  .cbxTabsContent  {
+    &::before {
+      position: fixed;
+      content: "";
+      top: 130px;
+      left: 0px;
+      background-color: white;
+      height: 11px;
+      width: 100%;
+      z-index: 9;
+    }
   }
 }
 // Sation Detail page end

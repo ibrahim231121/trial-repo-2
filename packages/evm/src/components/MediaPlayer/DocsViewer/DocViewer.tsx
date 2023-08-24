@@ -3,6 +3,7 @@ import { CRXButton } from '@cb/shared';
 import axios from 'axios';
 import { assetdata } from '../../../Application/Assets/Detail/AssetDetailsTemplateModel';
 import Restricted from '../../../ApplicationPermission/Restricted';
+import "./DocViewer.scss";
 interface DocViewerProps {
   data: assetdata;
 }
@@ -21,7 +22,7 @@ const DocViewer: React.FC<DocViewerProps> = ({data}) => {
                 return <i className="fas fa-file-word tumbFontIcon"></i>;
                 default:
                 return <div className="Unspecified-file-type">
-                    <i className="fas fa-solid fa-file"></i>
+                    <i className="fa-solid fa-file"></i>
                 </div>;
             }
         }
@@ -34,12 +35,15 @@ const DocViewer: React.FC<DocViewerProps> = ({data}) => {
     };
 
     return (
-    <div style={{display:"flex",margin:"auto",placeContent:"center"}}>
-        <div style={{fontSize:"70px"}}>{ThumbnailIcon()}</div>
-    
-    <div className='pdfActionButton' style={{marginLeft:"10px",display:"flex",alignItems:"center"}}>
+    <div className="otherMainDoc">
+        <div className='otherIcon'>
+            {ThumbnailIcon()}
+            <div className='docName'>{data.name}</div>
+        </div>
+        
+    <div className="docActionButton">
         <Restricted moduleId={60}>
-        <CRXButton color="primary btnPdfDownload" onClick={()=>downloadDoc()} variant="contained"> Download </CRXButton>
+        <CRXButton color="primary btnPdfDownload" onClick={()=>downloadDoc()} variant="contained"><i className="far fa-download"/> Download </CRXButton>
         </Restricted>
     </div>
     </div>

@@ -10,7 +10,8 @@ interface propsType {
   content: React.ReactNode;
   menuClass?: string;
   stateStatus:(v:boolean)=>void,
-  openState: boolean;
+  openState: boolean,
+  disableScrollLock:boolean
 }
 const useStyles = makeStyles(() => ({
   root: {
@@ -56,6 +57,20 @@ const CRXDropContainer: React.FC<propsType> = ({
     setOpen(true);
   };
 
+  const handleCloseKeyPress = (e : any) => {
+    if(e.key == "Enter" && openState == true)  {
+        setOpen(false);
+    }
+  }
+  React.useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      handleCloseKeyPress(e)
+    })
+    return () => {
+      document.removeEventListener("keydown", handleCloseKeyPress)
+    }
+
+  },[openState])
   return (
     <div className="iconContent">
       <IconButton
@@ -71,6 +86,7 @@ const CRXDropContainer: React.FC<propsType> = ({
         <Dialog
           open={open}
           onClose={handleClose}
+          disableScrollLock={true}
           BackdropProps={{
             classes: {
               root: classes.root,

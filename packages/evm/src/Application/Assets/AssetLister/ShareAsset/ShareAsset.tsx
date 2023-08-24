@@ -1,13 +1,16 @@
 import React, { useContext } from "react";
 import { Formik, Form } from "formik";
-import { CRXCheckBox, CRXSelectBox, CRXButton, CRXRadio, CRXInput } from "@cb/shared";
-import { useDispatch } from "react-redux";
-import Cookies from "universal-cookie";
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { CRXCheckBox, CRXSelectBox, CRXButton } from "@cb/shared";
+import { EvidenceAgent, getUserId } from "../../../../utils/Api/ApiAgent";
 import { AssetSharingModel, AssetShareLink } from "../../../../utils/Api/models/EvidenceModels";
 import { useTranslation } from "react-i18next";
 import "./ShareAsset.scss";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import { ActionMenuPlacement } from "../ActionMenu/types";
+import truncateMiddle from "truncate-middle";
+import { clearAllGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../Redux/rootReducer";
 
 type ShareAssetProps = {
   items: any[];
@@ -18,14 +21,13 @@ type ShareAssetProps = {
   setOnClose: () => void;
   setRemovedOption: (param: any) => void;
   showToastMsg: (obj: any) => any;
+  actionPlacement: any;
 };
-
-const cookies = new Cookies();
 
 const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const { t } = useTranslation<string>();
-  const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(true);
+  const [groupedAssetsIncluded,setGroupedAssetsIncluded] = React.useState<boolean>(false);
   const [metaDataCheck, setMetaDataCheck] = React.useState<boolean>(false);
   const [downloadable, setDownloadable] = React.useState<boolean>(false);
 
@@ -45,11 +47,9 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const [alert, setAlert] = React.useState<boolean>(false);
   const [emailError, setEmailError] = React.useState<string>("");
   const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
-  const [showReasonError, setShowReasonError] = React.useState<boolean>(false);
   const [linkExpireDisableState, setLinkExpireDisableState] = React.useState<boolean>(false);
 
 
-  const [radioCheck, setRadioCheck] = React.useState<string>("");
   const [reasonCheck, setreasonCheck] = React.useState<string>("");
   const [commentCheck, setcommentCheck] = React.useState<string>("");
 
@@ -64,30 +64,29 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const [meteDataErrMsg, setMetaDataErrMsg] = React.useState({
     required: "",
   });
-  const regex =
-    /^(\s?[^\s,]+@[^\s,]+\.[^\s,]+\s?,)*(\s?[^\s,]+@[^\s,]+\.[^\s,]+)$/;
-
+  const regexEmail = /^(?:\s?[^\s,]+@[^\s,]+\.[^\s,]+\s?,)*\s?[^\s,]+@[^\s,]+\.[^\s,]+$/;
+  const regexSpecialChar = /^[^*|\":<>[\]{}`\\()';%/?@!#&$]+$/;
+  const regexEmailDot = /^(?!\.)(?!.*\.$)(?!.*\.\.)/;
+  const regexAttherate = /^(?!.*@.*@).*@.*$/;
+  const regexAlpha = /^[A-Za-z]+$/;
   const linkExpireOptions = [
     { value: 1, displayText: t("Hour(s)") },
     { value: 2, displayText: t("Day(s)") },
     { value: 3, displayText: t("No_Expiration") },
   ];
-
-  const [currentRetention, setCurrentRetention] = React.useState<string>("-");
+  const dispatch = useDispatch();
   const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel[]>();
   const { getTenantId } = useContext(ApplicationPermissionContext);
-  const [error, setError] = React.useState({
-    emailErr: "",
-
-  });
-
-
+  const groupedSelectedAssets: any = useSelector(
+	  (state: RootState) => state.groupedSelectedAssetsReducer.groupedSelectedAssets
+	);
   React.useEffect(() => {
     if (assetSharing != null && emailError == "W") {
       sendData();
     }
   }, [assetSharing]);
   React.useEffect(() => {
+    
     if (linkExpireType == "1")//hour
     {
       setLinkExpireDisableState(false);
@@ -99,23 +98,23 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setLinkExpireDuration(tmpExpireTime + "");
     } else if (linkExpireType == "3") {
       //infinite
+      setShowLinkExpirationError(false);
       setLinkExpireDisableState(true);
+      setlinkExpireCheck("");
       setLinkExpire('');
       setLinkExpireDuration(linkExpire);
     }
+    validateFields();
   }, [linkExpireType]);
+
+  React.useEffect(() => {
+    validateFields();
+  }, [showLinkExpirationError]);
 
 
   React.useEffect(() => {
-    if (email == "" || regex.test(email) == true) {
-      setEmailError("");
-      setButtonState(false);
-      setShowEmailError(false);
-    } else if (regex.test(email) == false) {
-      setEmailError("Invalid format");
-      setButtonState(true);
-      setShowEmailError(true);
-    }
+    validateEmail(false);
+    
   }, [email]);
 
   React.useEffect(() => {
@@ -133,6 +132,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setButtonState(true);
       setShowreasonCheckError(true);
     }
+    validateFields();
   }, [reasonForView]);
   React.useEffect(() => {
     if (comment.length > 1000) {
@@ -145,84 +145,170 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setButtonState(false);
       setShowcommentCheckError(false);
     }
+    validateFields();
   }, [comment]);
   React.useEffect(() => {
-    if (linkExpire == "") {
+    
+    if (linkExpire == "" && linkExpireType != "3") {
       setlinkExpireCheck("Link Expiration is required");
       setButtonState(false);
       setShowLinkExpirationError(false);
     }
-    else if (linkExpire.length >= 1) {
+    else if (linkExpire.length >= 1 && linkExpire.length < 5) {
       setlinkExpireCheck("");
       setButtonState(false);
       setShowLinkExpirationError(false);
+      
     }
-    // else {
-    //   setlinkExpireCheck("Invalid format");
-    //   setShowLinkExpirationError(true);
-    // }
-  }, [linkExpire]);
+    else if (linkExpire.length >= 5) {
+      setlinkExpireCheck("The value is too large");
+      setButtonState(false);
+      setShowLinkExpirationError(false);
+    }
+    
+    if (linkExpireType == "1")//hour
+    {
+      setLinkExpireDisableState(false);
+      setLinkExpireDuration(linkExpire);
+    } else if (linkExpireType == "2") {
+      //day
+      setLinkExpireDisableState(false);
+      let tmpExpireTime = parseInt(linkExpire) * 24;
+      setLinkExpireDuration(tmpExpireTime + "");
+    } else if (linkExpireType == "3") {
+      //infinite
+      setLinkExpireDisableState(true);
+      setLinkExpire('');
+      setLinkExpireDuration(linkExpire);
+    }
 
-  const checkEmail = () => {
-    if (email == "") {
+    validateFields();
+  }, [linkExpire]);
+  const validateEmail = (isFieldLeft:boolean = true) => {
+    let isNotValid = 0;
+    if (email == "" && isFieldLeft == true) {
       setEmailError("Email is required");
       setButtonState(true);
       setShowEmailError(true);
     }
-    else if (regex.test(email) == false) {
+    else if (regexEmail.test(email) == false && email.length > 0) {
       setEmailError("Invalid format");
       setButtonState(true);
       setShowEmailError(true);
     } 
-    else {
-      setEmailError("W");
-      setButtonState(false);
-      setShowEmailError(false);
+    else if (regexEmail.test(email) == true) {
+      var emailList = email.split(",");
+      
+      emailList.forEach(e => {
+        var attherate = e.split("@");
+        var dotSeperated = attherate[1].split(".");
+        var unique = Array.from(new Set(dotSeperated));
+        if(regexSpecialChar.test(attherate[0]) == false || regexSpecialChar.test(attherate[1]) == false 
+        || regexAttherate.test(e) == false || regexEmailDot.test(attherate[0]) == false
+        || regexEmailDot.test(attherate[1]) == false)
+        {
+          isNotValid++;
+        }
+        if(dotSeperated.length > unique.length)
+        {
+          isNotValid++;
+        }
+
+        else
+        {
+          dotSeperated.forEach(e => {
+            if(e.length < 2 || regexAlpha.test(e) == false)
+            {
+              isNotValid++;
+            }
+          });
+        }
+        
+      });
+      if(isNotValid == 0)
+      {
+        setEmailError("W");
+        setButtonState(false);
+        setShowEmailError(false);
+      }
+      else
+      {
+        setEmailError("Invalid format");
+        setButtonState(true);
+        setShowEmailError(true);
+      }
+      validateFields();
     }
+
+  }
+  const checkEmail = () => {
+    validateEmail();
+   
   };
+  const validateFields =() => {
+    
+    if(showLinkExpirationError == false && reasonForView.length > 0 && showEmailError == false && comment.length <= 1000 
+      && email.length > 0 && ((linkExpire == "" && linkExpireType == "3") || (linkExpire != "" && linkExpireType != "3")) && linkExpire != "0" && linkExpire.length < 5 )
+    {
+      setButtonState(false);
+    }
+    else
+    {
+      setButtonState(true);
+    }
+  }
   const checkSharingReason = () => {
     if (reasonForView == "") {
       setreasonCheck("Reason of sharing is required");
-      //setShowReasonError(true);
       setButtonState(true);
       setShowreasonCheckError(true);
     } else {
       setreasonCheck("W");
-      //setShowReasonError(false);
       setButtonState(false);
       setShowreasonCheckError(false);
     }
+    validateFields();
   };
   const checkComment = () => {
     if (comment.length > 1000) {
       setcommentCheck("Characters must be less than or equal to 1000");
-      //setShowReasonError(true);
       setButtonState(true);
       setShowcommentCheckError(true);
     } else {
       setcommentCheck("W");
-      //setShowReasonError(false);
       setButtonState(false);
       setShowcommentCheckError(false);
     }
+    validateFields();
   };
   const checkExpirationLink = () => {
-    if (linkExpire == "" || linkExpire == "0") {
+    
+    if ((linkExpire == "" || linkExpire == "0") && linkExpireType != "3") {
       setlinkExpireCheck("Link Expiration is required");
-      //setShowReasonError(true);
+      //setShowReasonError(true)
       setButtonState(true);
       setShowLinkExpirationError(true);
-    } else {
+    } 
+    else if (linkExpire.length >= 5) {
+      setlinkExpireCheck("The value is too large");
+      setButtonState(true);
+      setShowLinkExpirationError(true);
+    }
+    else {
       setlinkExpireCheck("W");
-      //setShowReasonError(false);
+      //setShowReasonError(false)
       setButtonState(false);
       setShowLinkExpirationError(false);
     }
+    validateFields();
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMetaDataCheck(e.target.checked);
   };
+  const handlegroupedAssetsCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGroupedAssetsIncluded(e.target.checked);
+  }
   const handleDownloadCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDownloadable(e.target.checked);
   };
@@ -238,18 +324,33 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const onSubmitForm = async () => {
     let tId = getTenantId();
     let rowObject: AssetShareLink[] = [];
-
-    //var tempAsset = props.items.find(x => x.assetId == rowObject.assetId)
+    setButtonState(true);
+    if(groupedAssetsIncluded == true) //Share all assets from assetDetail page
+    {
+      props.rowData.evidence?.asset?.forEach((x:any) => 
+      {
+      rowObject.push({
+        masterId: props.rowData.assetId,
+        assetId: x.assetId,
+        evidenceId: (props.rowData.id == undefined) ? props.rowData.evidence.id : props.rowData.id,
+        assetName: x.assetName,
+        fileType: x.files[0].type,
+        assetType: x.assetType,
+      })
+    })
+    }
+    else
+    {
     if (props.items.length > 0) {
 
       props.items.forEach((x) => {
         rowObject.push({
           masterId: x.evidence.masterAsset.assetId,
           assetId: x.assetId,
-          evidenceId: x.id,
-          assetName: x.assetName,
-          fileType: x.evidence.asset[0].files[0].type,
-          assetType: x.assetType,
+          evidenceId: x.id == undefined ? x.evidence.id : x.id,
+          assetName: x.evidence.asset.find((asset:any) => asset.assetId == x.assetId).assetName,
+          fileType: x.evidence.asset.find((asset:any) => asset.assetId == x.assetId).files[0].type,
+          assetType: x.evidence.asset.find((asset:any) => asset.assetId == x.assetId).assetType,
 
         })
       });
@@ -259,13 +360,15 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         masterId: props.rowData.assetId,
         assetId: props.rowData.assetId,
         evidenceId: (props.rowData.id == undefined) ? props.rowData.evidence.id : props.rowData.id,
-        assetName: props.rowData.assetName,
-        fileType: props.rowData.evidence.asset[0].files[0].type,
-        assetType: props.rowData.assetType,
+        assetName: props.rowData.evidence.asset.find((x:any) => x.assetId == props.rowData.assetId).assetName,
+        fileType: props.rowData.evidence.asset.find((x:any) => x.assetId == props.rowData.assetId).files[0].type,
+        assetType: props.rowData.evidence.asset.find((x:any) => x.assetId == props.rowData.assetId).assetType,
       })
     }
-    if (props.childAssets.length > 0) {
+    if (props.childAssets.length > 0 && props.actionPlacement != ActionMenuPlacement.AssetDetail) {
       props.childAssets.forEach((c) => {
+        if(rowObject.filter(x => x.assetName == c.assetName).length == 0)
+        {
         rowObject.push({
           masterId: c.masterId,
           assetId: c.assetId,
@@ -273,44 +376,17 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
           assetName: c.assetName,
           fileType: c.fileType,
           assetType: c.assetType,
-
         });
+      }
       });
     }
-    // if (tempAsset == undefined) {
+  }
 
-    //   props.items.push(rowObject)
-    // }
-    // let temp: AssetSharingModel = {
-    //   assetGroup: rowObject,//props.items,
-    //   tenantId: tId,
-    //   message: comment,
-    //   email: email,
-    //   permissons: {
-    //     isOneTimeViewable: viewableOnce,
-    //     isDownloadable: downloadable,
-    //     isAvailable: true,
-    //     isViewable: true,
-    //     isMetadataOnly: metaDataCheck,
-    //   },
-    //   shared: {
-    //     expiryDuration: parseInt(linkExpireDuration), //linkExpireDuration
-    //     by: 1,
-    //     on: new Date(),
-    //     status: "InProgress",
-    //     type: "Email",
-    //   },
-    //   revoked: {
-    //     by: 1,
-    //     on: undefined,
-    //   },
-    //   version: "",
-    // }
     let temp: AssetSharingModel[] = [];
+    var userId = parseInt(getUserId());
+
     rowObject.forEach((x) => {
       temp.push({
-        //assetGroup: rowObject,//props.items,
-
         assetId: x.assetId,
         masterId: x.masterId,
         evidenceId: x.evidenceId,
@@ -330,7 +406,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         },
         shared: {
           expiryDuration: parseInt(linkExpireDuration), //linkExpireDuration
-          by: 1,
+          by: userId,
           on: new Date(),
           status: "InProgress",
           type: "Email",
@@ -340,9 +416,10 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
           on: undefined,
         },
         version: "",
+        sharingReason: reasonForView,
       });
     })
-
+    dispatch(clearAllGroupedSelectedAssets());
     setAssetSharing(temp);
   };
   const sendData = async () => {
@@ -490,10 +567,28 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                   <div
                     className="__CRX__CheckBox__Share__Align"
                     style={{
-                      display: `${props.rowData.evidence.asset.length > 0 ? "" : "none"
+                      // display: `${props.rowData.evidence.asset.length > 0 ? "" : "none"
+                      display: `${props.rowData != undefined ? 
+                                  props.rowData.evidence.asset.length > 0 ? "" : "none" 
+                                  : 
+                                  props.items.length > 0 ? "" : "none" 
                         }`,
                     }}
                   >
+                    {(props.actionPlacement == ActionMenuPlacement.AssetDetail || props.actionPlacement == ActionMenuPlacement.AssetLister) ? (
+                    <div>
+                      <CRXCheckBox
+                        inputProps={"groupedAssetsIncluded"}
+                        className="relatedAssetsCheckbox"
+                        lightMode={true}
+                        checked={groupedAssetsIncluded}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handlegroupedAssetsCheck(e)
+                        }
+                      />
+                      {t("Include_AllGroupedAssets")}
+                    </div>
+                    ) : null}
                     <div>
                       <CRXCheckBox
                         inputProps={"metaDataCheck"}

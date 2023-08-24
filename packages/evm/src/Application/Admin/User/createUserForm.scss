@@ -100,36 +100,6 @@
   }
 }
 .crxManageUsers {
-  // margin-top: 118px;
-  // margin-left: 65px;
-
-  // table {
-  //   tr {
-  //     th {
-  //       &.MuiTableCell-sizeSmall {
-  //         &:nth-child(4) {
-  //           width: 187px;
-  //         }
-  //         &:nth-child(5) {
-  //           width: 191px;
-  //         }
-  //         &:nth-child(6) {
-  //           width: 191px;
-  //         }
-  //         &:nth-child(7) {
-  //           width: 286px;
-  //         }
-  //         &:nth-child(8) {
-  //           width: 141px;
-  //         }
-  //         &:nth-child(9) {
-  //           width: 186px;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
   .Autocomplete_multi {
     width: 100%;
   }
@@ -151,28 +121,9 @@
     tr {
       height: 50px;
 
-      // &:hover {
-      // td {
-      //   &:nth-child(2) {
-      //     background-color: #333 !important;
-      //     .rc-menu-button {
-      //       color: #d1d2d4 !important;
-      //     }
-      //   }
-      // }
-      // .CRXCheckBox {
-      //   span {
-      //     span {
-      //       color: #d1d2d4;
-      //       &::after {
-      //         color: transparent !important;
-      //       }
-      //     }
-      //   }
-      // }
-      //   }
+      
       td {
-        // vertical-align: middle !important;
+
         &:first-child {
           &:hover {
             border: 0 solid transparent !important;
@@ -328,18 +279,7 @@
           }
          
         }
-        // &:hover {
-        //   .CRXCheckBox {
-        //     span {
-        //       span {
-        //         color: #d1d2d4;
-        //         &::after {
-        //           color: transparent !important;
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
+       
       }
   
       .rc-menu-button {
@@ -353,13 +293,42 @@
     font-size: 23px;
   }
 }
+.drawerOff {
+  .dataTableExpandView {
+    .TableWithCheck {
+      .CRXDataTableCustom {
+        .drag_header,
+        .searchable_header {
+          tr {
+            th.dataTableActionColumn {
+              left: 0px !important;
+            }
+            th:nth-child(2) {
+              left: 0px !important;
+            }
+          }
+        }
+        .table_body_{
+          tr{
+            td.dataTableActionColumn {
+              left: 0px !important;
+            }
+            td.dataTableCheckBoxColumn {
+              left: 0px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .CreateUserUi {
   margin-left: 62px;
   .grid_spacer {
     width: 92px;
   }
   .modalEditCrx {
-    margin-top: 40px;
+    margin-top: 80px;
     padding: 0 130px 0 130px;
   }
   .gridFilterTextBox {
@@ -441,12 +410,12 @@
     label {
       font-size: 14px;
       margin-right: 0px !important;
-      width: 241px !important;
+      width: 250px !important;
     }
   }
   .crxFooterEditFormBtn {
     padding: 0 28px 0 89px !important;
-    bottom: 55px;
+    bottom: 0;
     position: fixed;
     border: none;
     place-content: space-between;
@@ -567,7 +536,7 @@
     padding: 6px 0;
     font-family: var(--Arial-font-family);
     text-align: center;
-    height: 30px;
+    
     text-decoration: none;
     &:hover {
       border: 1px solid #333333 !important;
@@ -584,16 +553,21 @@
   .crxCreateEditDate {
     margin-top: 23px !important;
     label {
-      width: 220px !important;
+      width: 228px !important;
       font-size: 14px;
     }
   }
   .CrxEditForm {
     h6 {
-      width: 220.66px !important;
+      width: 228px !important;
     }
     ._create_user_pin_field {
       margin-top: 30px;
+    }
+    .firstColumn {
+      // h6 {
+      //   width: 150px !important;
+      // }
     }
   }
   .inputLabelNoReq {
@@ -791,3 +765,38 @@
   margin-right: 15px !important;
 }
 
+
+
+.CrxCreateUser {
+  .CrxEditForm {
+    .CRXValidateLoginID {
+      display: flex;
+      .crxCheckBoxCreateBtn {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        margin-top: -19px;
+        margin-bottom: 19px;
+        .crxCheckBoxCreateBtnHeading {
+          width: 220px !important;
+          h6 {
+            font-size: 14px;
+            padding-left: 6px;
+            margin: 0;
+            width: fit-content !important;
+            visibility: hidden;
+          }
+        }
+        .crxCheckBoxCreateBtnCheckBox {
+          width: 100%;
+          label {
+            font-size: 14px;
+            color: var(--color-333333);
+            margin-left: 6px;
+          }
+        }
+      }
+    }
+  }
+}

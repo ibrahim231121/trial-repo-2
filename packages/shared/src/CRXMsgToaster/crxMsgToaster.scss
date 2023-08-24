@@ -1,23 +1,21 @@
 .toasterMsg {
-    padding: 8px 0px !important;
+    padding: 0px 0px !important;
     border: 1px solid var(--color-646464);
     background: var(--color-White-1) !important;
     /* height: 35px; */
     padding-left: 13px !important;
-    top: 47px;
     position: relative;
     right: 3px;
     box-shadow: var(--Box-shadow-2) !important;
-    width: 432px;
+    width: max-content;
     #notistack-snackbar {
-        padding: 0px !important;
-        width: 98%;
+        padding-right: 28px;
     }
     .toasterContent {
         font-size: 12px;
         color:var(--color-666666);
         line-height: 14px;
-        max-width: 80%;
+        max-width: 100%;
         padding-left: 8px;
         span {
             padding: 0px 2px 0px 0px;
@@ -84,7 +82,10 @@
       }
 }
 
-div[class^="SnackbarItem-wrappedRoot-"] {
+[class^=SnackbarItem-root-] {
     top: 49px;
     left: -6px;
+}
+.globalToasterMsg {
+    top: 60px !important;
 }

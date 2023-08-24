@@ -9,49 +9,60 @@ import { useTranslation } from 'react-i18next';
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
-import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
-
-type CategoryFormsTemplate = {
-  id: number;
-  name: string;
-  description: string;
-}
+import DeletePrompt from "../CategoryFormsAndFields/DeletePrompt";
 
 type Props = {
-  selectedItems?: CategoryFormsTemplate[];
+  selectedItems?: any;
   row?: any;
-  pageiGrid: any;
   toasterRef : any;
+  updateSelectedItems: () => void;
 };
 
-
-
-const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, pageiGrid, toasterRef }) => {
+const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, toasterRef, updateSelectedItems }) => {
   const history = useHistory();
   const { t } = useTranslation<string>();
-  const dispatch = useDispatch();
+  const [categoryFormIds, setCategoryFormIds] = React.useState<string>('');
+  const [categoryFormNames, setCategoryFormNames] = React.useState<string>('');
+  const [openCategoryFormDeleteModal, setOpenCategoryFormDeleteModal] = React.useState(false);
   const editFormFields = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url}`;
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id);
   };
 
   const deleteCategoryForms = () => {
-    let categoryFormIds: string = row?.id;
-    if (selectedItems && selectedItems?.length > 0) {
-      categoryFormIds = selectedItems?.map(({ id }) => id).join(', ')
+    let categoryFormsIds: string = "";
+    if(row && !selectedItems.includes(row)) {
+      categoryFormsIds = row.id
     }
+    else if(Array.isArray(selectedItems) && selectedItems.length > 0) {
+      categoryFormsIds = selectedItems?.map((item:any) => item.id).join(', ')
+      let categoryForms = selectedItems?.map((item:any) => item.name).join(', ')
+      setCategoryFormNames(categoryForms);
+    }
+    setCategoryFormIds(categoryFormsIds);
+    setOpenCategoryFormDeleteModal(true);
+  }
 
+  React.useEffect(() => {
+    setOpenCategoryFormDeleteModal(false);
+    setCategoryFormIds('');
+    setCategoryFormNames('');
+  }, []);
+
+  const DeleteForms = () => {
     let headers = [{ key: 'formsIds', value: categoryFormIds }]
     SetupConfigurationAgent.deleteCategoryForms(headers).then(() => {
-      dispatch(getAllCategyFormsFilter(pageiGrid));
+      updateSelectedItems();
       onMessageShow(true, t("Category_Form_Deleted_Successfully"));
+      setOpenCategoryFormDeleteModal(false);
+      setCategoryFormIds('');
+      setCategoryFormNames('');
     })
       .catch((e: any) => {
         onMessageShow(false, e?.response?.data);
         return e;
-      })
+    })
   }
 
   const CategoryFormFormMessages = (obj: any) => {
@@ -72,6 +83,7 @@ const onMessageShow = (isSuccess: boolean, message: string) => {
 }
 
   return (
+    <>
     <div className="table_Inner_Action">
       <Menu
         key="right"
@@ -90,7 +102,7 @@ const onMessageShow = (isSuccess: boolean, message: string) => {
         }
       >
 
-        {selectedItems && selectedItems?.length <= 1 ? (
+        {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1)  ? (
           <MenuItem onClick={editFormFields}>
             <Restricted moduleId={74}>
               <div className="crx-meu-content groupingMenu  crx-spac"  >
@@ -121,6 +133,24 @@ const onMessageShow = (isSuccess: boolean, message: string) => {
         </MenuItem>
       </Menu>
     </div>
+    <DeletePrompt
+          names={categoryFormIds.split(',').length > 1 ? categoryFormNames : ''}
+          formName={categoryFormIds.split(',').length > 1 ? t('Category_forms') :  t('Category_form')}
+          openOrCloseModal={openCategoryFormDeleteModal}
+          setOpenOrCloseModal={(e) => {
+            setOpenCategoryFormDeleteModal(e)
+          }
+          }
+          onConfirmBtnHandler={() => {
+            setOpenCategoryFormDeleteModal(false)
+            DeleteForms();
+          }
+          }
+          isError={false}
+          errorMessage={""}
+          confirmationMessage = {t("Are_you_sure_you_would_like_to_delete_category_form")}
+        />
+    </>
   );
 };
 export default CategoryFormsTemplateActionMenu;

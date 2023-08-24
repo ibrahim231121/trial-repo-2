@@ -17,14 +17,12 @@ const FieldCheckedBoxListType: React.FC<FieldCheckedBoxListType> = ({ formikProp
         if (field.value !== "") {
             const values = [...checkBoxSelected];
             let results: any = [];
-            if (field.value.includes(',')) {
+            if (field.value.includes(','))
                 results = field.value.split(',');
-            }
-            else {
-                results.push(field.value)
-            }
+            else
+                results.push(field.value);
             for (const i of results) {
-                let index = values.findIndex(x => x.value === i);
+                const index = values.findIndex(x => x.value === i);
                 values[index].isChecked = true;
             }
             setCheckBoxSelected(values);
@@ -33,7 +31,6 @@ const FieldCheckedBoxListType: React.FC<FieldCheckedBoxListType> = ({ formikProp
 
     const handleChange = (e: any, index: number) => {
         const { id, value, checked } = e.target;
-
         const values = [...checkBoxSelected];
         values[index].isChecked = checked;
         let valueToStore = '';
@@ -44,6 +41,7 @@ const FieldCheckedBoxListType: React.FC<FieldCheckedBoxListType> = ({ formikProp
         const removeComma = valueToStore.slice(0, -1);
         setFieldsFunction({ name: field.name, value: removeComma });
         form.setFieldValue(field.name, removeComma, true);
+        form.setFieldTouched(field.name, true, false);
     }
 
     return (

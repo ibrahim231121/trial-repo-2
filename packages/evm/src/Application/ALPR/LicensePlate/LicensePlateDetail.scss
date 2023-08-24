@@ -1,10 +1,11 @@
 .LicensePlate_ModalEditCrx {
   padding-right: 11px;
+  margin: 39px 0 58px;
 }
 
 .LicensePlate_SearchComponents {
-  padding: 0 4px 50px 65px;
-  padding-top: 101px;
+  // padding: 0 4px 50px 65px;
+  // padding-top: 101px;
   transition: 0.5s padding ease-out;
 }
 
@@ -62,7 +63,7 @@
 
   .LicensePlateCrxIndicates {
     margin-top: 2px;
-    padding-bottom: 33px;
+    padding-bottom: 13px;
     padding-left: 0px;
     font-style: italic;
     position: sticky;
@@ -71,6 +72,7 @@
     z-index: 1;
     font-size: 14px;
 
+    border-bottom: 1px solid #dedede;
     sup {
       line-height: 17px;
       /* margin-right: 5px; */
@@ -83,6 +85,16 @@
   }
 }
 
+.LicensePlateCrxIndicatsdes {
+  position: fixed !important;
+  top: 87px !important;
+  height: 58px;
+  background-color: #ffffff !important;
+  padding-top: 19px;
+  width: calc(100% - 241px);
+  padding-bottom: 13px;
+  border-bottom: 1px solid #dedede;
+}
 .LicensePlate_CreatUI {
   margin-left: 62px;
 
@@ -116,8 +128,9 @@
     flex-direction: column;
   }
 
-  .CrxUserEditForm {
+  .ALpr_CrxLicensePlateEditForm {
     width: 100% !important;
+    height: 32px !important;
   }
 
   .requiredLable {
@@ -642,14 +655,14 @@
 
 .LicensePlate_CrxEditFilter {
   flex-direction: column;
-  margin-bottom: 30px;
+  margin-bottom: 34px;
 }
 
 .LicensePlate_EditFilterUi {
-  padding: 0 5px 0 5px;
+  padding: 3px 5px 0 5px;
   flex-direction: row;
   display: flex;
-
+  
   .requiredLable {
     margin-bottom: 8px;
     font-size: 14px;

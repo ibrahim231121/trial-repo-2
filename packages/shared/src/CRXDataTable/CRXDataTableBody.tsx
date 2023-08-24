@@ -6,6 +6,9 @@ import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
+import CRXTooltip from "../controls/CRXTooltip/CRXTooltip";
+import { useTranslation } from "react-i18next";
+
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
   rowsPerPage,
@@ -26,6 +29,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   totalRecords
   
 }) => {
+  const { t } = useTranslation<string>();
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
     return findIndex === -1 ? false : true;
@@ -108,6 +112,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   }
  
   let containerRows = selfPaging ? container.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : container.rows
+
+  const DisabledAction = headCells.filter((n) => n.isDisabledActionFunction?.key === true).map((v) => v)[0];
   
   return (
     <>
@@ -128,7 +134,6 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `checkbox with default color-${index}`;
-                 
                   return (
                     <React.Fragment key={index}>
                       <TableRow
@@ -139,6 +144,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         selected={isItemSelected}
+                        data-qa={"table-row" + "-" + index}
                       >
                        
                         {showCheckBoxesCol === true ||
@@ -150,6 +156,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             }}
                             className="DataTableBodyCell CellCheckBox col-two dataTableActionColumn"
                             scope="row"
+                            data-qa="action-col"
                           >
                              {dragVisibility === true ||
                         dragVisibility === undefined ? (
@@ -200,15 +207,38 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                           <TableCell
                             style={{
                               left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "150px" : "89px"}`,
-                              zIndex : "1"
+                              zIndex : "2"
                             }}
                             className="DataTableBodyCell col-three dataTableCheckBoxColumn"
                             scope="row"
                             ref={node}
                           >
-                            <a className="row_anchor_point" onClick={() => getRowOnActionClick(row)}>
-                              {actionComponent}
-                            </a>
+                            {
+                              DisabledAction && row[DisabledAction.id].toString() == DisabledAction.isDisabledActionFunction?.value ?
+                              <CRXTooltip
+                                content={
+                                  <a 
+                                    className="row_anchor_point row_disabled"
+                                    onClick={() => getRowOnActionClick(row)} 
+                                    data-qa="col-anchor" 
+                                  >
+                                    {actionComponent}
+                                  </a>}
+                                arrow={true}
+                                title={t(`${DisabledAction &&  DisabledAction.isDisabledActionFunction?.Message}`)}
+                                placement="top-start"
+                              />
+                            :
+                              <a 
+                                className="row_anchor_point "
+                                onClick={() => getRowOnActionClick(row)} 
+                                data-qa="col-anchor" 
+                              >
+                                {actionComponent}
+                              </a>
+
+                            }
+                            
                           </TableCell>
                         ) : null}
                         {orderColumn.map((colIdx, i) => (

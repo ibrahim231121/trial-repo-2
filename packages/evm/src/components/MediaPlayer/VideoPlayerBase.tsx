@@ -13,7 +13,7 @@ import { setTimeout } from "timers";
 import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
-import { AssetLogType, TimelinesSync } from "../../utils/Api/models/EvidenceModels";
+import { AssetLog, AssetLogType, TimelinesSync } from "../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent, SetupConfigurationAgent } from "../../utils/Api/ApiAgent";
 import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
@@ -34,8 +34,10 @@ import "./overRide_video_player_style.scss"
 import { urlList, urlNames } from "../../utils/urlList";
 import { addAssetLog } from "../../Redux/AssetLogReducer";
 import { setAssetDetailBottomTabs } from "../../Redux/VideoPlayerSettingsReducer";
-
-type Timeline = {
+import { setAssetSeeMore } from "../../Redux/AssetSeeMoreReducer";
+import { typeOfVideoAssetToInclude } from "../../Application/Assets/Detail/AssetDetailsTemplate";
+import { GPSAndSensors, GpsSensorData } from "../../utils/Api/models/GpsModel";
+export type Timeline = {
   assetName: string;
   recording_started: any;
   recording_start_point: number;
@@ -55,7 +57,10 @@ type Timeline = {
   indexNumberToDisplay: number,
   camera: string,
   timeOffset: number,
-  assetbuffering: any
+  assetbuffering: any,
+  previousSegmentsDurationInMilliSeconds: number,
+  evidenceId?: number
+  unitName?: string
 }
 
 type TimelineSyncHistory = {
@@ -78,6 +83,7 @@ type DurationFinderModel = {
   setfinalduration: any
   settimelineduration: any
   setmaxminendpoint: any
+  setTimelineStartEndDate: any
   updateVideoSelection: boolean
   timelinedetail: Timeline[]
   timelineSyncHistory: TimelineSyncHistoryMain[]
@@ -153,7 +159,7 @@ const videoSpeed = [
   }
 ]
 
-function secondsToHms(d: number) {
+export function secondsToHms(d: number) {
   d = Number(d);
   let h = Math.floor(d / 3600);
   let m = Math.floor(d % 3600 / 60);
@@ -170,6 +176,8 @@ function padTo2Digits(num: number) {
 const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
+
+
 async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
   const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, screenChangeVideoId, setscreenChangeVideoId } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
@@ -211,7 +219,10 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
           indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
           camera: temptimelinedetail.camera,
           timeOffset: temptimelinedetail.timeOffset,
-          assetbuffering: temptimelinedetail.assetbuffering
+          assetbuffering: temptimelinedetail.assetbuffering,
+          previousSegmentsDurationInMilliSeconds: temptimelinedetail.previousSegmentsDurationInMilliSeconds,
+          evidenceId: temptimelinedetail.evidenceId,
+          unitName: temptimelinedetail.unitName,
         }
         rowdetail.push(myData);
       }
@@ -239,7 +250,10 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         indexNumberToDisplay: x == 0 ? 1 : 0,
         camera: data[x].camera,
         timeOffset: timeOffset,
-        assetbuffering: assetbuffering
+        assetbuffering: assetbuffering,
+        previousSegmentsDurationInMilliSeconds: 0,
+        evidenceId: data[x].evidenceId,
+        unitName: data[x].unitName,
       }
       bufferingArr.push({ id: myData.id, buffering: false })
       rowdetail.push(myData);
@@ -271,14 +285,16 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   if (screenChangeVideoId) {
     rowdetail.filter((y: any) => y.enableDisplay && y.id == screenChangeVideoId).forEach((x: any) => {
       let videoElement : any = document.querySelector("#" + x.id);
+      let thumbnailElement : any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
       videoElement?.load();
+      thumbnailElement?.load();
     })
     setscreenChangeVideoId(null);
   }
   setupdateVideoSelection(false);
 }
 async function Durationfinder(DurationFinderModel: DurationFinderModel) {
-  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, screenChangeVideoId, setscreenChangeVideoId } = DurationFinderModel
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, setTimelineStartEndDate, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, screenChangeVideoId, setscreenChangeVideoId } = DurationFinderModel
 
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -304,6 +320,12 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
   //first entity is max second is min
   let maxminarray: MaxMinEndpoint = { Min_Start_point: minimum_startpont, Max_end_point: maximum_endpoint }
   setmaxminendpoint(maxminarray);
+  setTimelineStartEndDate({
+    timelineStartDateFormatted: new Date(minimum_startpont).toLocaleDateString('en-US')  + " at " + new Date(minimum_startpont).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+    timelineEndDateFormatted: new Date(maximum_endpoint).toLocaleDateString('en-US')  + " at " + new Date(Math.round((new Date(maximum_endpoint).getTime()) / 1000) * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+    timelineStartDate: new Date(minimum_startpont),
+    timelineEndDate: new Date(maximum_endpoint),
+  });
   await TimelineData_generator({
     data,
     minstartpoint: minimum_startpont,
@@ -323,7 +345,7 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
   });
 }
 
-const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?: number, removeIndex?: boolean) => {
+const MaxTimelineCalculation = (tempTimelines: Timeline[], timelineStartEndDate: any, setTimelineStartEndDate: any, newTimelineDuration?: number, removeIndex?: boolean) => {
   let recording_end_points = [...tempTimelines.map((x: any) => {
     let recording_end_point = x.recording_end_point;
     if (removeIndex) {
@@ -349,6 +371,10 @@ const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?:
 
   let maxTimelineDuration = Math.abs(minTimelinesDuration - maxTimelinesDuration) < maxTimelinesDuration ? maxTimelinesDuration : Math.abs(minTimelinesDuration - maxTimelinesDuration);
   let negativeHandler = Math.abs(minTimelinesDuration < 0 ? minTimelinesDuration : 0);
+  setTimelineStartEndDate({
+    timelineStartDate: new Date(minTimelinesDuration).toLocaleDateString('en-US')  + " at " + new Date(minTimelinesDuration).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }),
+    timelineEndDate: new Date(maxTimelinesDuration).toLocaleDateString('en-US')  + " at " + new Date(Math.round((new Date(maxTimelinesDuration).getTime()) / 1000) * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })
+  });
   return {
     maxTimelineDuration: maxTimelineDuration,
     negativeHandler: negativeHandler
@@ -411,10 +437,12 @@ const VideoPlayerBase = (props: any) => {
     },
   ];
 
-  const assetLog : AssetLogType = { evidenceId : props.evidenceId, assetId : props.data[0].id, action : "Update", notes : ""};
+  const assetLog : AssetLog = { action : "Update", notes : ""};
+  const assetLogType : AssetLogType = { evidenceId : props.evidenceId, assetId : props.data[0].id, assetLog : assetLog};
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const isGuestView : boolean = props.guestView;
+  let isAudtioActive : any = props.setIsAudioActive;
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
   const [bufferingArrayFwRw, setBufferingArrayFwRw] = React.useState<any[]>([]);
   const [visibleThumbnail, setVisibleThumbnail] = useState<number[]>([]);
@@ -476,7 +504,7 @@ const VideoPlayerBase = (props: any) => {
   const [controllerBar, setControllerBar] = useState(true);
 
   const [loading, setLoading] = useState(false);
-  const [speed, setSpeed] = useState<number>(1000); 
+  const [speed, setSpeed] = useState<number>(1000);
   const [speedFwRw, setSpeedFwRw] = useState<number>(1000);
   const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
   const [mouseovertype, setmouseovertype] = useState("");
@@ -502,8 +530,6 @@ const VideoPlayerBase = (props: any) => {
   const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(!isGuestView ? true : false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
-  const [updatedGpsDataOverlay, setUpdatedGpsDataOverlay] = React.useState<any>();
-  const [updatedSensorsDataOverlay, setUpdatedSensorsDataOverlay] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
   const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
@@ -520,8 +546,8 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const [isAudioGraphAnimate, setIsAudioGraphAnimate] = useState<boolean>(false);  
-  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(false);  
+  const [isAudioGraphAnimate, setIsAudioGraphAnimate] = useState<boolean>(false);
+  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(false);
   const volumeIcon = useRef<any>(null);
   const last_media_time = useRef(0);
   const last_frame_num = useRef(0);
@@ -531,16 +557,30 @@ const VideoPlayerBase = (props: any) => {
   const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
-  const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
+  const [overlayDataJson, setOverlayDataJson] = React.useState<any[]>([]);
+  const [overlayDuration, setOverlayDuration] = React.useState<number>(0);
   const addingSnapshot = useRef(false);
- const [seeMoreClass, setSeeMoreClass] = useState<string>("MultiBottomSeeMore");
- const [containerHeightFlex,setContainerHeightFlex] = useState<string>("")
+  const [seeMoreClass, setSeeMoreClass] = useState<string>("MultiBottomSeeMore");
+  const [containerHeightFlex,setContainerHeightFlex] = useState<string>("")
   const [showControlConatiner , setShowControlConatiner] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [screenChangeVideoId, setscreenChangeVideoId] = useState<any>();
+  const [timelineStartEndDate, setTimelineStartEndDate] = useState<any>({
+    timelineStartDate: new Date(),
+    timelineEndDate: new Date(),
+    timelineStartDateFormatted: new Date(),
+    timelineEndDateFormatted: new Date(),
+  });
+  const [thumbnailAddPip,setThumbnailAddPip] = useState(false);
   const assetViewed = useRef(false);
   const layoutRef = useRef(null);
   const settingRef = useRef(null);
+  const [gpsSensorData, setGpsSensorData] = React.useState<any>([]);
+
+  const assetGpsSensorData: GpsSensorData[] = useSelector((state: RootState) => state.GPSAndSensorsReducerSlice.assetGpsSensorData);
+  const gpsSensorDataAllEvidence: GpsSensorData[] = useSelector((state: RootState) => state.GPSAndSensorsReducerSlice.GpsSensorData);
+  const isMapPresent: boolean = useSelector((state: RootState) => state.GPSAndSensorsReducerSlice.isMapPresent);
+
   let htmlElement: any = document.querySelector("html");
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
@@ -550,7 +590,7 @@ const VideoPlayerBase = (props: any) => {
       if (!ismodeFwdisable && shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
       if (!ismodeRwdisable && shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
       if (!disabledModeRight && shiftKey && code == "Period") {
-        event.preventDefault(); 
+        event.preventDefault();
         modeSet(mode < 0 ? 2 : (mode + 2))
       } //Shift + .>
       if (!disabledModeLeft && shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
@@ -559,18 +599,24 @@ const VideoPlayerBase = (props: any) => {
       if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
       if (code == "ArrowDown") {
-        event.preventDefault(); 
+        event.preventDefault();
         if(volume > 0)
         {
+          setIsMute(false);
+          setMuteHandle(false);
           setVolume(volume - 10);
           setVolumeHandle(volume - 10);
         }
         else{
+          setIsMute(true);
+          setMuteHandle(true);
           setVolumeHandle(volume);
         }
       } //down arrows
       if (code == "ArrowUp") {
-        event.preventDefault(); 
+        event.preventDefault();
+        setIsMute(false);
+        setMuteHandle(false);
         if(volume < 100)
         {
           setVolume(volume + 10);
@@ -588,6 +634,12 @@ const VideoPlayerBase = (props: any) => {
     }
 
   };
+
+  React.useEffect(() => {
+    if(isMultiViewEnable){
+      setOverlayCheckedItems(overlayCheckedItems.filter((x: any) => x !== "Speed" && x !== "GPS (location + speed)"))
+    }
+  },[isMultiViewEnable])
 
   React.useEffect(() => {
     if(fps && videoHandlers.length>0){
@@ -636,16 +688,6 @@ const VideoPlayerBase = (props: any) => {
   }, [onMarkerClickTimeData]);
 
   React.useEffect(() => {
-    if (props.gpsJson && props.gpsJson.length > 0) {
-      setGpsJson(props.gpsJson);
-    }
-    if (props.sensorsDataJson && props.sensorsDataJson.length > 0) {
-      setSensorsDataJson(props.sensorsDataJson);
-    }
-  }, [props.gpsJson, props.sensorsDataJson]);
-
-
-  React.useEffect(() => {
     let propdata;
     if (props.history !== undefined) {
       propdata = props.history.location.state?.data;
@@ -669,7 +711,7 @@ const VideoPlayerBase = (props: any) => {
       setdata(propdata);
     }
 
-    setMapEnabled(((props.guestView && props.openMap) || !isGuestView) ? true : false); // Guest View Work
+    setMapEnabled(((props.guestView && isMapPresent) || !isGuestView) ? true : false); // Guest View Work
 
   }, []);
 
@@ -692,7 +734,7 @@ const VideoPlayerBase = (props: any) => {
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
-  
+
   React.useEffect(() => {
     if (data.length > 0) {
       Durationfinder({
@@ -700,6 +742,7 @@ const VideoPlayerBase = (props: any) => {
         setfinalduration,
         settimelineduration,
         setmaxminendpoint,
+        setTimelineStartEndDate,
         updateVideoSelection,
         timelinedetail,
         timelineSyncHistory,
@@ -720,6 +763,32 @@ const VideoPlayerBase = (props: any) => {
   const timelinedetail: Timeline[] = useSelector(
     (state: RootState) => state.timelineDetailReducer.data
   );
+
+  const seeMoreStatus = useSelector((state: RootState) => state.assetSeeMoreSlice.status);
+
+  React.useEffect(() => {
+    if (assetGpsSensorData.length > 0) {
+      let tempAssetGpsSensorData : GpsSensorData[] = JSON.parse(JSON.stringify(assetGpsSensorData));
+      tempAssetGpsSensorData.sort((a:any, b:any) => Number(a.sequence) - Number(b.sequence));
+      let GpsData :any[]= [];
+      for (let index = 0; index < tempAssetGpsSensorData.length; index++) {
+        let currentGpsData = tempAssetGpsSensorData[index].gps
+        if(currentGpsData){
+          GpsData.push(...currentGpsData);
+        }
+      }
+      setGpsJson(GpsData);
+      setOverlayDataJson([assetGpsSensorData[0]]);
+    }
+  }, [assetGpsSensorData]);
+
+  React.useEffect(() => {
+    if (gpsSensorDataAllEvidence.length > 0 ) {
+      let assetIds = timelinedetail.map((x:Timeline) => Number(x.dataId));
+      let gpsSensorDatas = gpsSensorDataAllEvidence.filter((x:GpsSensorData)=> assetIds.includes(Number(x.assetId)));
+      setGpsSensorData(gpsSensorDatas);
+    }
+  }, [gpsSensorDataAllEvidence]);
 
   React.useEffect(() => {
     if (editBookmarkForm) {
@@ -794,7 +863,7 @@ const VideoPlayerBase = (props: any) => {
       if(!isGuestView)
       {
         var tempbookmarksnotesarray: any[] = [];
-        timelinedetail.forEach((x:Timeline) => 
+        timelinedetail.forEach((x:Timeline) =>
           {x.enableDisplay && x.bookmarks.forEach((y:any)=>
             {
               let tempData: any = JSON.parse(JSON.stringify(y));
@@ -803,7 +872,7 @@ const VideoPlayerBase = (props: any) => {
               tempbookmarksnotesarray.push(tempData);
             }
           )
-          x.enableDisplay && x.notes.forEach((y:any)=> 
+          x.enableDisplay && x.notes.forEach((y:any)=>
             {
               let tempData: any = JSON.parse(JSON.stringify(y));
               tempData.timerValue = x.recording_start_point + (y.position/1000);
@@ -819,12 +888,12 @@ const VideoPlayerBase = (props: any) => {
 
   React.useEffect(() => {
     if (bookmarkNotePopupArrObj.length>0) { // work for BookmarkNotePopup Component
-      
+
       setIsBookmarkNotePopup(true);
     }
     else{
       setIsBookmarkNotePopup(false);
-      
+
     }
   }, [bookmarkNotePopupArrObj]);
 
@@ -858,6 +927,8 @@ const VideoPlayerBase = (props: any) => {
                     }
                   }
                   else if(obj){
+                    assetViewed.current = true
+                    saveLogs(props.data[0].id, "Asset Viewed");
                     setViewReasonControlsDisabled(false);
                     setViewReasonRequired(false);
                   }
@@ -872,6 +943,14 @@ const VideoPlayerBase = (props: any) => {
         }
   }, []);
 
+  const saveLogs = (assetId: any, notes: any) => {
+    if(!isGuestView){
+      assetLogType.assetId = assetId;
+      assetLogType.assetLog.notes = notes;
+      dispatch(addAssetLog(assetLogType));
+    }
+  };
+
   const handleVoumeClick = () => {
     setIsMute(!isMute);
     setMuteHandle(!isMute);
@@ -882,14 +961,10 @@ const VideoPlayerBase = (props: any) => {
 
     if(isMute)
     {
-      assetLog.assetId = props.data[0].id;
-      assetLog.notes = "Volume UnMuted";
-      dispatch(addAssetLog(assetLog));
+      saveLogs(props.data[0].id, "Volume UnMuted");
     }
     else{
-      assetLog.assetId = props.data[0].id;
-      assetLog.notes = "Volume Muted";
-      dispatch(addAssetLog(assetLog));
+      saveLogs(props.data[0].id, "Volume Muted");
     }
   }
 
@@ -909,7 +984,7 @@ const VideoPlayerBase = (props: any) => {
     let fps;
     let vid = videoHandlers[0];
     const fps_rounder1 = fps_rounder.current;
-    
+
     const media_time_diff = Math.abs(metadata.mediaTime - last_media_time.current);
     const frame_num_diff = Math.abs(metadata.presentedFrames - last_frame_num.current);
     const diff = media_time_diff / frame_num_diff;
@@ -956,7 +1031,7 @@ const VideoPlayerBase = (props: any) => {
 
     if(viewNumber < view){
       var max = Math.max(...tempTimelines.map((x:any) => x.indexNumberToDisplay));
-      
+
       enableTimline.forEach((x: any) => {
         if(x.indexNumberToDisplay == 0){
           x.indexNumberToDisplay = max + 1;
@@ -981,7 +1056,7 @@ const VideoPlayerBase = (props: any) => {
         setupdateVideoSelection(true);
       }
     }
-    
+
     return setViewNumber(view);
   }
 
@@ -992,7 +1067,7 @@ const VideoPlayerBase = (props: any) => {
         return true;
       }
     }
-    
+
     if(isPlayingFwRw){
       var video: any = timelinedetail[0];
       let event: any = document.querySelector("#vid-2");
@@ -1031,9 +1106,7 @@ const VideoPlayerBase = (props: any) => {
       hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
     if(timer > 0){
-      assetLog.assetId = props.data[0].id;
-      assetLog.notes = "Back Frame By Frame";
-      dispatch(addAssetLog(assetLog))
+      saveLogs(props.data[0].id, "Back Frame By Frame");
       handleControlBarChange(null, timer - (1/fps));
     }
     setFrameReverse(true);
@@ -1053,9 +1126,7 @@ const VideoPlayerBase = (props: any) => {
       hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
     if(timer < timelineduration){
-      assetLog.assetId = props.data[0].id;
-      assetLog.notes = "Forward Frame By Frame";
-      dispatch(addAssetLog(assetLog));
+      saveLogs(props.data[0].id, "Forward Frame By Frame");
       handleControlBarChange(null, timer + (1/fps));
     }
     setFrameForward(true);
@@ -1074,13 +1145,13 @@ const VideoPlayerBase = (props: any) => {
     let enddiff = new Date(data[0].recording.ended).getTime() + timeOffset - (maxminendpoint?.Min_Start_point ?? 0);
     if (playerCurrentTime >= startdiff && playerCurrentTime <= enddiff) {
       const BKMTime = playerCurrentTime - startdiff;
-      let isOccur = onAddCheckDuplicate(BKMTime, action); // prevent to add bookmark on same position
-      if (!isOccur && action == "bookmark") {
+      let isExist = onAddCheckDuplicate(BKMTime, action); // edit bookmark/note on same position
+      if (!isExist && action == "bookmark") {
         setbookmarktime(BKMTime);
         setPlaying(false);
         setopenBookmarkForm(true);
       }
-      else if (!isOccur && action == "note") {
+      else if (!isExist && action == "note") {
         setbookmarktime(BKMTime);
         setPlaying(false);
         setopenNoteForm(true);
@@ -1102,30 +1173,34 @@ const VideoPlayerBase = (props: any) => {
   };
 
   const onAddCheckDuplicate = (BKMTime: number, action: any) => {
-    const minBKMTime = BKMTime - 1000;
-    const mixBKMTime = BKMTime + 1000;
-    let error = false;
+    const minBKMTime = BKMTime - 999;
+    const mixBKMTime = BKMTime + 999;
+    let isExist = false;
     if (action == "bookmark") {
-      data[0].bookmarks?.forEach((y: any) => {
+      timelinedetail[0].bookmarks?.forEach((y: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
-          error = true;
-          toasterMsgRef.current.showToaster({
-            message: "Unable To Add Duplicate Bookmark", variant: "error", duration: 5000, clearButtton: true
-          });
+          isExist = true;
+          setbookmark(y);
+          setbookmarktime(y.position);
+          setPlaying(false);
+          setbookmarkAssetId(y.assetId);
+          seteditBookmarkForm(true);
         }
       })
     }
     else if (action == "note") {
-      data[0].notes?.forEach((y: any) => {
+      timelinedetail[0].notes?.forEach((y: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
-          error = true;
-          toasterMsgRef.current.showToaster({
-            message: "Unable To Add Duplicate Note", variant: "error", duration: 5000, clearButtton: true
-          });
+          isExist = true;
+          setnote(y);
+          setbookmarktime(y.position);
+          setPlaying(false);
+          setnoteAssetId(y.assetId);
+          seteditNoteForm(true);
         }
       })
     }
-    return error;
+    return isExist;
   }
 
   useEffect(() => {
@@ -1189,13 +1264,135 @@ const VideoPlayerBase = (props: any) => {
     setBufferingArrayFwRw(bufferingArr)
   }
 
+  const segmentedVideosHandling = (videoTag: string, isThumbnail: boolean, timer: number, indexNumberToDisplay: number) => {
+    var tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    var video : any = tempTimelines.find((x: any) => x.id == videoTag);
+    let asset = data.find((asset: any) => asset.id == video.dataId);
+    let videoFiles = asset.files.filter((x: any) => typeOfVideoAssetToInclude.includes(x.typeOfAsset));
+
+    let previousSegmentsDurationInMilliSeconds = 0;
+    let previousSegmentsDuration = 0;
+    let fileIsBeingPlay = videoFiles[0];
+    if(videoFiles.length > 0)
+    {
+      for (let index = 0; index < videoFiles.length; index++) {
+        const file = videoFiles[index];
+        let fileRecording = file.recording;
+        let fileRecordingStartTime = Math.round((new Date(fileRecording.started).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+        let fileRecordingEndTime = Math.round((new Date(fileRecording.ended).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+        let timerAndOffsetInSeconds = (video.recording_start_point + timer);
+        if(timerAndOffsetInSeconds >= fileRecordingStartTime && timerAndOffsetInSeconds <= fileRecordingEndTime)
+        {
+          fileIsBeingPlay = file;
+          break;
+        }
+        previousSegmentsDurationInMilliSeconds += file.fileduration
+      }
+      if(fileIsBeingPlay)
+      {
+        previousSegmentsDuration = Math.round(previousSegmentsDurationInMilliSeconds / 1000);
+        if((isThumbnail ? video.thumbnailSrc : video.src) != fileIsBeingPlay.downloadUri)
+        {
+          if(isThumbnail){
+            video.thumbnailSrc = fileIsBeingPlay.downloadUri;
+            let Thumbnail : any = document.querySelector('#Thumbnail' + videoTag);
+            let ThumbnailSRC : any = document.querySelector('#srcThumbnail' + videoTag);
+            ThumbnailSRC?.setAttribute("src", fileIsBeingPlay.downloadUri);
+            Thumbnail?.load();
+          }
+          else{
+            video.src = fileIsBeingPlay.downloadUri;
+            let bufferingArrayTemp = [...bufferingArray];
+            let buffer = bufferingArrayTemp.find(x => x.id == videoTag);
+            buffer.buffering = true;
+            setBufferingArray(bufferingArrayTemp)
+            setscreenChangeVideoId(videoTag);
+            video.previousSegmentsDurationInMilliSeconds = previousSegmentsDurationInMilliSeconds;
+            dispatch(addTimelineDetailActionCreator(tempTimelines));
+          }
+        }
+      }
+    }
+    return {
+      isSegmentedVideo: videoFiles.length > 0,
+      previousSegmentsDuration: fileIsBeingPlay?.downloadUri != videoFiles[0]?.downloadUri ? previousSegmentsDuration : 0,
+      newSegmentUrl: fileIsBeingPlay?.downloadUri,
+    }
+  }
+  const segmentedGpsSensorsHandling = (timer: number) => {
+    var tempTimelines : Timeline[] = JSON.parse(JSON.stringify(timelinedetail));
+    tempTimelines = tempTimelines.filter((x: any) => {if(x.enableDisplay){return x}});
+    let GpsSensorFiles = JSON.parse(JSON.stringify(gpsSensorData));
+
+    if(GpsSensorFiles.length > 0)
+    {
+      if(tempTimelines.length > 1){
+        let fileIsBeingPlay = JSON.parse(JSON.stringify(overlayDataJson));
+        for (let index = 0; index < tempTimelines.length; index++) {
+          let tempTimeline = tempTimelines[index];
+          let files = GpsSensorFiles.filter((x: any) => x.assetId == tempTimelines[index].dataId);
+          for (let index1 = 0; index1 < files.length; index1++) {
+            let file = files[index1];
+            let fileRecording = file.recording;
+            let fileRecordingStartTime = Math.round((new Date(fileRecording.started).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+            let fileRecordingEndTime = Math.round((new Date(fileRecording.ended).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+            let timerAndOffsetInSeconds = (tempTimeline.recording_start_point + timer);
+            if(timerAndOffsetInSeconds >= fileRecordingStartTime && timerAndOffsetInSeconds <= fileRecordingEndTime)
+            {
+              var isExist = fileIsBeingPlay.some((a:any) => a.filesId == file.filesId);
+              if(!isExist){
+                fileIsBeingPlay = fileIsBeingPlay.filter((x: any) => x.assetId != file.assetId);
+                fileIsBeingPlay.push(file);
+              }
+              break;
+            }
+          }
+        }
+        if(JSON.stringify(fileIsBeingPlay) != JSON.stringify(overlayDataJson)){
+          setOverlayDataJson(fileIsBeingPlay)
+        }
+      }
+      else{
+        let fileIsBeingPlay = JSON.parse(JSON.stringify(overlayDataJson));
+        let tempTimeline = tempTimelines[0];
+        let files = GpsSensorFiles.filter((x: any) => x.assetId == tempTimeline.dataId);
+        for (let index = 0; index < files.length; index++) {
+          let file = files[index];
+          let fileRecording = file.recording;
+          let fileRecordingStartTime = Math.round((new Date(fileRecording.started).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+          let fileRecordingEndTime = Math.round((new Date(fileRecording.ended).getTime() - (maxminendpoint?.Min_Start_point ?? 0)) / 1000);
+          let timerAndOffsetInSeconds = (tempTimeline.recording_start_point + timer);
+          if(timerAndOffsetInSeconds >= fileRecordingStartTime && timerAndOffsetInSeconds <= fileRecordingEndTime)
+          {
+            var isExist = fileIsBeingPlay.some((a:any) => a.filesId == file.filesId);
+            if(!isExist){
+              fileIsBeingPlay = [];
+              fileIsBeingPlay.push(file);
+            }
+            break;
+          }
+        }
+        if(JSON.stringify(fileIsBeingPlay) != JSON.stringify(overlayDataJson)){
+          setOverlayDataJson(fileIsBeingPlay)
+        }
+      }
+    }
+  }
+
   const hanldeVideoStartStop = (timer: number, videoHandle: any, applyAction: boolean) => {
-    var video: any = timelinedetail.find((x: any) => x.id == videoHandle.id);
+    var tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    var video : any = tempTimelines.find((x: any) => x.id == videoHandle.id);
+
+    let segmentedVideos = segmentedVideosHandling(videoHandle.id, false, timer, video.indexNumberToDisplay)
+
     var difference = timer - (video.recording_start_point);
     var endPointDifference = (video.recording_end_point) - timer;
-    let currenttime = difference > 0 && endPointDifference > 0 ? difference : 0;
+    let currenttime = difference > 0 && endPointDifference > 0 ? (difference - segmentedVideos.previousSegmentsDuration) : 0;
+    if(videoHandle.currentTime == 0 && currenttime == 0 && difference >= 0 && endPointDifference >= 0)
+    {
+      videoHandle.currentTime = 0.001;
+    }
     let currenttimediff = Math.abs(videoHandle.currentTime - currenttime);
-
     if(currenttimediff >= 0.5){
       videoHandle.currentTime = currenttime;
     }
@@ -1292,8 +1489,8 @@ const VideoPlayerBase = (props: any) => {
             {
               setTimerFwRw(timerValue);
             }
-            
-            
+
+
             videoHandlersFwRw.forEach((videoHandle: any, index: number) => {
               hanldeVideoStartStopFwRw(timerValue[index], videoHandle, true, index);
             });
@@ -1346,7 +1543,7 @@ const VideoPlayerBase = (props: any) => {
     volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("fontSizeIn"));
 
     setTimeout(() => {
-      
+
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
@@ -1373,17 +1570,13 @@ const VideoPlayerBase = (props: any) => {
   const viewScreenEnter = () => {
     handleScreenView.enter();
     setViewScreen(false);
-    assetLog.assetId = props.data[0].id;
-    assetLog.notes = "Enter Full Screen Mode";
-    dispatch(addAssetLog(assetLog));
+    saveLogs(props.data[0].id, "Enter Full Screen Mode");
   }
 
   const viewScreenExit = () => {
     handleScreenView.exit();
     setViewScreen(true);
-    assetLog.assetId = props.data[0].id;
-    assetLog.notes = "Exit Full Screen Mode";
-    dispatch(addAssetLog(assetLog));
+    saveLogs(props.data[0].id, "Exit Full Screen Mode");
   }
 
   const handleScreenShow = () => {
@@ -1533,6 +1726,7 @@ const VideoPlayerBase = (props: any) => {
 
   const mouseOut = () => {
     setopenThumbnail(false);
+    setThumbnailAddPip(false);
   }
 
   const mouseOverBookmark = (event: any, y: any, x: any) => {
@@ -1542,6 +1736,7 @@ const VideoPlayerBase = (props: any) => {
     settimelinedetail1(x);
     setEvent(event);
     setopenThumbnail(true);
+    setThumbnailAddPip(true);
   }
 
   const mouseOverNote = (event: any, y: any, x: any) => {
@@ -1550,6 +1745,7 @@ const VideoPlayerBase = (props: any) => {
     settimelinedetail1(x);
     setEvent(event);
     setopenThumbnail(true);
+    setThumbnailAddPip(true);
   }
 
   const mouseOverRecordingStart = (event: any, y: any, x: any) => {
@@ -1565,9 +1761,9 @@ const VideoPlayerBase = (props: any) => {
     setopenThumbnail(true);
   }
 
-  const getbookmarklocation = (position: any, startdiff: any) => {
-    var timeLineHover: any = document.querySelector("#SliderControlBar");
-    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+  const getbookmarklocation = (position: any, startdiff: any, timeline?: any) => {
+    var timeLineHover: any = timeline ? document.querySelector(".multiTimelineNumber" + timeline.indexNumberToDisplay) : document.querySelector("#SliderControlBar");
+    var timelineWidth = timeLineHover?.clientWidth < 0 ? 0 : timeLineHover?.clientWidth;
     let timelineposition = position + ((startdiff) * 1000);
     let timelinepositionpercentage = (timelineWidth / timelineduration) * (timelineposition / 1000)  // Math.round((Math.round(timelineposition / 1000) / timelineWidth))
     return timelinepositionpercentage;
@@ -1588,15 +1784,11 @@ const VideoPlayerBase = (props: any) => {
       if (Currmode >= 6) {
         switch (CaseNo) {
           case 1: //Forward
-            assetLog.assetId = props.data[0].id;
-            assetLog.notes = "Fast Forward";
-            dispatch(addAssetLog(assetLog));
+            saveLogs(props.data[0].id, "Fast Forward");
             setismodeFwdisable(true);
             break;
           case 2: //Rewind
-            assetLog.assetId = props.data[0].id;
-            assetLog.notes = "Fast Rewind";
-            dispatch(addAssetLog(assetLog));
+            saveLogs(props.data[0].id, "Fast Rewind");
             setisModeRwdisable(true);
             break;
           default:
@@ -1626,43 +1818,64 @@ const VideoPlayerBase = (props: any) => {
   }
 
 
-  const displayThumbnail = (event: any, x: any, displayAll: boolean, withdescription?: string) => {
-    var timeLineHover: any = !isMultiViewEnable ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + x.indexNumberToDisplay);
-    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+  const displayThumbnail = (event: any, x: any, displayAll: boolean, withdescription?: string, mainTimelineThumbnail: boolean = true) => {
+    let timeLineHover: any = (displayAll || mainTimelineThumbnail) ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + x.indexNumberToDisplay);
+    let timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
 
-    var leftPadding = timeLineHover.getBoundingClientRect().left;
+    let leftPadding = timeLineHover.getBoundingClientRect().left;
 
-    var lenghtDeduct: number = 0;
-    var totalLenght = document.querySelector("#SliderControlBar")?.getBoundingClientRect().right ?? 0;
-    var totalThumbnailsLenght = timelinedetail.filter((x: any) => x.enableDisplay).length * 128;
-    var totalLenghtPlusThumbnails = event.pageX + totalThumbnailsLenght;
+    let lenghtDeduct: number = 0;
+    let totalLenght = document.querySelector("#SliderControlBar")?.getBoundingClientRect().right ?? 0;
+    let totalThumbnailsLenght = timelinedetail.filter((x: any) => x.enableDisplay).length * 128;
+    let totalLenghtPlusThumbnails = event.pageX + totalThumbnailsLenght;
     if (totalLenghtPlusThumbnails > totalLenght) {
       lenghtDeduct = totalLenghtPlusThumbnails - totalLenght;
     }
 
+    let pos = (event.pageX - leftPadding) / timelineWidth;
+    let ttt = 0;
+    if((displayAll || mainTimelineThumbnail))
+    {
+      ttt = Math.round(pos * timelineduration);
+      if(!(ttt >= x.recording_start_point && ttt <= x.recording_end_point))
+      {
+        ttt = 0;
+      }
+    }
+    else{
+      ttt = Math.round(pos * x.video_duration_in_second);
+      ttt = ttt > x.video_duration_in_second ? x.video_duration_in_second : ttt;
+    }
+    let segmentedVideos = segmentedVideosHandling(x.id, true, ttt, x.indexNumberToDisplay);
 
-    var pos = (event.pageX - leftPadding) / timelineWidth;
-    var ttt = Math.round(pos * x.video_duration_in_second);
-    var Thumbnail: any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
-    var ThumbnailContainer: any = document.querySelector("#video_player_hover_thumb" + x.indexNumberToDisplay);
-    var TimeLinePipe: any = document.querySelector("#_hover_timeLine_pipeGray");
-    var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + x.indexNumberToDisplay);
-    //var ThumbnailCameraDesc: any = document.querySelector("#Thumbnail-CameraDesc" + x.indexNumberToDisplay);
-    var ThumbnailDesc: any = document.querySelector("#Thumbnail-Desc");
+    let Thumbnail: any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
+    let ThumbnailContainer: any = document.querySelector("#video_player_hover_thumb" + x.indexNumberToDisplay);
+    let TimeLinePipe: any = document.querySelector("#_hover_timeLine_pipeGray");
+    let ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + x.indexNumberToDisplay);
 
-    var SliderControlBar: any = document.querySelector("#SliderControlBar");
-    var SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
-
+    let SliderControlBar: any = document.querySelector("#SliderControlBar");
+    let SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
 
     if (Thumbnail) {
-      
       TimeLinePipe.style.left = (event.pageX - leftPadding) + "px";
-      Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
-       ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 128)) : 0) + "px";
-      ThumbnailTime.innerHTML = secondsToHms(ttt)
-      //ThumbnailCameraDesc.innerHTML = x.camera;
+      Thumbnail.currentTime = (ttt > x.video_duration_in_second ? 0 : ttt) - segmentedVideos.previousSegmentsDuration;
+      let thumbnailRightSpacing = ((event.pageX + ((viewNumber / 2) * 128)) - totalLenght);
+      let thumbnailLeftSpacing = (((viewNumber / 2) * 128) - event.pageX + SliderControlBarOffset);
+      let thumbnailRightBlocker = thumbnailRightSpacing > 0 ? thumbnailRightSpacing : 0 ;
+      let thumbnailLeftBlocker = thumbnailLeftSpacing > 0 ? thumbnailLeftSpacing : 0 ;
+      let multiHoverRight = !multiTimelineHover ? thumbnailRightBlocker : 0;
+      let multiHoverLeft = !multiTimelineHover ? thumbnailLeftBlocker : 0;
+
+      ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset - multiHoverRight  + multiHoverLeft ) + (displayAll ? (((x.indexNumberToDisplay - 1) * 128)) : 0) + "px";
+      let secToMinTemp = ttt;
+      if((displayAll || mainTimelineThumbnail))
+      {
+        secToMinTemp = ttt == 0 ? 0 : (ttt - x.recording_start_point);
+      }
+      ThumbnailTime.innerHTML = secondsToHms(secToMinTemp)
       if (withdescription) {
-        var ThumbnailIcon: any = document.querySelector("#Thumbnail-Icon" + x.indexNumberToDisplay);
+        let ThumbnailIcon: any = document.querySelector("#Thumbnail-Icon" + x.indexNumberToDisplay);
+        let ThumbnailDesc: any = document.querySelector("#Thumbnail-Desc" + x.indexNumberToDisplay);
         if (mouseovertype == "bookmark") {
           ThumbnailIcon.classList = ('fas fa-bookmark');
         }
@@ -1680,8 +1893,7 @@ const VideoPlayerBase = (props: any) => {
 
   const AdjustTimeline = async (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
-
-    let timeLineHover: any = document.querySelector("#SliderControlBar");
+    let timeLineHover: any = document.querySelector(".multiTimelineNumber" + timeline.indexNumberToDisplay);
     let timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
     let leftPadding = timeLineHover.getBoundingClientRect().left;
 
@@ -1711,7 +1923,7 @@ const VideoPlayerBase = (props: any) => {
       tempTimeline.recording_start_point = recording_start_point;
       tempTimeline.recording_end_point = recording_end_point;
 
-      let maxTimelineDuration = MaxTimelineCalculation(tempTimelines, newTimelineDuration)?.maxTimelineDuration;
+      let maxTimelineDuration = MaxTimelineCalculation(tempTimelines, timelineStartEndDate, setTimelineStartEndDate, newTimelineDuration)?.maxTimelineDuration;
 
       let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
       let recording_end_point_ratio = 100 - ((recording_end_point / maxTimelineDuration) * 100)
@@ -1752,7 +1964,7 @@ const VideoPlayerBase = (props: any) => {
 
   const RevertToOriginal = async () => {
     let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
-    let maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
+    let maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, timelineStartEndDate, setmaxminendpoint, undefined, true)
     let maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
     let negativeHandler = maxTimelineCalculationResponse?.negativeHandler;
     let durationinformat = secondsToHms(maxTimelineDuration);
@@ -1844,14 +2056,14 @@ const VideoPlayerBase = (props: any) => {
     let body: TimelinesSync[] = timelinedetail.map((x: any) => {
       timelineHistoryArray.push({
         assetId: x.dataId,
-        timeOffset: x.timeOffset,
+        timeOffset: Math.floor(x.timeOffset),
         recording_start_point: x.recording_start_point,
         recording_end_point: x.recording_end_point,
       })
 
-      let obj: TimelinesSync = { 
+      let obj: TimelinesSync = {
         assetId: x.dataId,
-        timeOffset: x.timeOffset
+        timeOffset: Math.floor(x.timeOffset)
       }
       return obj;
     })
@@ -1892,35 +2104,25 @@ const VideoPlayerBase = (props: any) => {
 
   const renderOnSeek = (timerValue: number) => {
     if (gpsJson && gpsJson.length > 0) {
-      renderMarkerOnSeek(timerValue, data[0])
-      if (sensorsDataJson && sensorsDataJson.length > 0 && overlayEnabled) {
-        renderOverlayOnSeek(timerValue, data[0])
+      renderMarkerOnSeek(timerValue);
+      if (overlayDataJson && overlayDataJson.length > 0 && overlayEnabled) {
+        segmentedGpsSensorsHandling(timerValue);
       }
     }
+    renderOverlayOnSeek(timerValue);
   }
 
-  const renderMarkerOnSeek = (timerValue: number, firstdataobj: any) => {
-    let timeOffset = firstdataobj.recording.timeOffset;
-    let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
-    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + video_time);
+  const renderMarkerOnSeek = (timerValue: number) => {
+    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + (maxminendpoint?.Min_Start_point ?? 0));
     let ObjLatLog = gpsJson.filter((x:any)=> x.logTime == duration);
     if (ObjLatLog.length > 0) {
       setUpdateSeekMarker(ObjLatLog);
     }
   }
 
-  const renderOverlayOnSeek = (timerValue: number, firstdataobj: any) => {
-    let timeOffset = firstdataobj.recording.timeOffset;
-    let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
-    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + video_time);
-    let ObjLatLog = gpsJson.filter((x:any)=> x.logTime == duration);
-    let Objsensor = sensorsDataJson.filter((x:any)=> x.logTime == duration);
-    if (ObjLatLog && ObjLatLog.length > 0) {
-      setUpdatedGpsDataOverlay(ObjLatLog[0]);
-    }
-    if (Objsensor && Objsensor.length > 0) {
-      setUpdatedSensorsDataOverlay(Objsensor[0]);
-    }
+  const renderOverlayOnSeek = (timerValue: number,) => {
+    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + (maxminendpoint?.Min_Start_point ?? 0));
+    setOverlayDuration(duration);
   }
 
   const getUnixTimewithZeroinMillisecond = (time: number) => {
@@ -1962,7 +2164,7 @@ const VideoPlayerBase = (props: any) => {
     else{
       tempbookmarksNotesPopup = bookmarksNotesPopup;
     }
-    tempbookmarksNotesPopup.forEach((x:any)=> 
+    tempbookmarksNotesPopup.forEach((x:any)=>
       {
         if(timerValue==x.timerValue)
         {
@@ -2016,11 +2218,11 @@ const VideoPlayerBase = (props: any) => {
     if(event.target.checked) {
       setOverLayClass("defaultWidth")
       setMapEnabled(true)
-      
+
     } else {
       setOverLayClass("fullWidthOverLay")
       setMapEnabled(false)
-      
+
     }
   }
 
@@ -2041,12 +2243,12 @@ const VideoPlayerBase = (props: any) => {
       document.documentElement.style.scrollBehavior = "smooth" ;
     } else {
       document.documentElement.style.overflow = guestView == true ? "scroll":"hidden";
-      document.body.scrollTop = 0; 
+      document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     }
     if(!multiTimelineEnabled) {
-      setSyncButton(false); 
-      setOpenTimelineSyncInstructions(false); 
+      setSyncButton(false);
+      setOpenTimelineSyncInstructions(false);
       setStartTimelineSync(false)
     }
   },[multiTimelineEnabled,layoutMenuEnabled])
@@ -2066,7 +2268,7 @@ useEffect(()=>{
     timelineElement.style.display = "none";
     setSeeMoreClass("MultiAudioBottomSeeMore");
   } else {
-    timelineElement.style.display = "block";
+    if(timelineElement) timelineElement.style.display = "block" ;
     setSeeMoreClass("MultiAudioBottomSeeLess");
   }
 },[detailContent,isAudioGraph,multiTimelineEnabled])
@@ -2085,17 +2287,17 @@ useEffect(()=>{
     const _videoPlayerId: undefined | any = document.querySelector("#crx_video_player");
     const _video_Multiview_Grid : undefined | any = document.querySelector("._Multiview_Grid")
     if(targetId === "detail_view" && isAudioGraph == false  ) {
-      
-      MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "115px";
+
+      // MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
+      // MainLayoutElement.style.top = "115px";
       _video_player_main_containers.style.background = "#fff"
       _videoPlayerId.style.background = "#fff"
       _video_Multiview_Grid.style.background = "#fff"
       _video_player_screens.classList.add("removeEXHeight")
     }
     else if(targetId === "detail_view" && isAudioGraph == true ) {
-      MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "0px";
+      // MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
+      // MainLayoutElement.style.top = "0px";
       _video_player_main_containers.style.background = "#fff"
       _videoPlayerId.style.background = "#fff"
       _video_Multiview_Grid.style.background = "#fff"
@@ -2103,10 +2305,10 @@ useEffect(()=>{
       _video_player_screens.classList.add("audioEnabled_seeLess")
 
     } else {
-      MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
+      //MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
       _videoPlayerId.style.background = "#000"
       _video_Multiview_Grid.style.background = "#000"
-      MainLayoutElement.style.top = "-16px";
+      //MainLayoutElement.style.top = "-16px";
       _video_player_screens.classList.remove("removeEXHeight")
       _video_player_screens.classList.remove("audioEnabled_seeLess")
     }
@@ -2173,7 +2375,8 @@ useEffect(()=>{
         _video_player_main_container.style.background = "#fff"
       }
     },300)
-    
+
+    isAudtioActive = isAudioGraph;
   },[isAudioGraph])
 
 
@@ -2183,25 +2386,23 @@ useEffect(()=>{
 
   setTimeout(()=>{
     setShowControlConatiner(false);
-    
+
   },3000)
- 
+
 
 
   const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
   const mapEnabled_Bookmark_Notes  = mapEnabled ? "mapEnabled_Bookmark_Notes" : "mapDisabled_Bookmark_Notes";
 
-  const multiVideoEnabled_Status = !singleVideoLoad && isMultiViewEnable ? "multiVideoEnabled_ON" : "multiVideoEnabled_OFF"; 
+  const multiVideoEnabled_Status = !singleVideoLoad && isMultiViewEnable ? "multiVideoEnabled_ON" : "multiVideoEnabled_OFF";
 
   useLayoutEffect(() => {
     const playBtn = document.getElementById("_video_play");
     const pauseBtn = document.getElementById("_video_pause");
     const videoFrontLayer = document.getElementById("videoFrontLayer")
     if (isPlaying === true) {
-      assetLog.assetId = props.data[0].id;
-      assetLog.notes = "Video Played";
-      dispatch(addAssetLog(assetLog));
+      saveLogs(props.data[0].id, "Video Played");
       playBtn?.classList.remove("zoomOut");
       playBtn?.classList.add("zoomIn");
       videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
@@ -2212,14 +2413,7 @@ useEffect(()=>{
       }, 1200);
     } else {
       if(assetViewed.current){
-        assetLog.assetId = props.data[0].id;
-        assetLog.notes = "Video Paused";
-        dispatch(addAssetLog(assetLog));
-      }else{
-        assetViewed.current = true
-        assetLog.assetId = props.data[0].id;
-        assetLog.notes = "Asset Viewed";
-        dispatch(addAssetLog(assetLog));
+        saveLogs(props.data[0].id, "Video Paused");
       }
       pauseBtn?.classList.remove("zoomOut");
       pauseBtn?.classList.add("zoomIn");
@@ -2240,25 +2434,36 @@ useEffect(()=>{
     </div>
     )
   }
- 
+
   const [syncButton,setSyncButton] = useState(false);
-  
+
 useEffect(()=>{
 if(!ViewScreen) {
   setMultiTimelineEnabled(false);
 }
 },[ViewScreen])
 
-  return (
-    
-      <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
+const mainTimeLineEnter = () => {
+  document?.getElementById("crx_video_player")?.classList.add("mainTimeLineHover");
+}
+
+const mainTimeLineLeave = () => {
+  document?.getElementById("crx_video_player")?.classList.remove("mainTimeLineHover");
+}
+
+  const multiTimelineHover: any = useSelector((state: RootState) => state.assetBucketBasketSlice.isMulti);
+
+const  scrollViewClass: any = seeMoreStatus ? `_scrollView_audio${isAudioGraph}_multi${multiTimelineEnabled}_view${viewNumber}` : "_seeLessEnabled"
+return (
+
+      <div className={`_video_player_layout_main ${scrollViewClass}`} onKeyDown={keydownListener} tabIndex={-1}  >
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}    >
 
-      <div className="searchComponents" >
+
         <div className="_video_player_container" id="_asset_detail_view_idx" ref={layoutRef}>
-        <div id="crx_video_player"  ref={settingRef}>
+        <div id="crx_video_player" className="crx_video_player"  ref={settingRef}>
         {viewReasonRequired && <VideoPlayerViewRequirement
-        
+
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
         setReasonForViewing={setReasonForViewing}
@@ -2274,22 +2479,18 @@ if(!ViewScreen) {
         setOnRefreshViewReasonOpen={setOnRefreshViewReasonOpen}
         setOpenViewRequirement={setOpenViewRequirement}
         reasons={reasons}
+        saveLogs={saveLogs}
+        assetViewed={assetViewed}
       />}
-      
- 
-      <div className="searchComponents">
-        <div className={`_video_player_container _thumbnailPosition_audio${isAudioGraph}_multi${multiTimelineEnabled}_view${viewNumber}`}>
+
+
+      <div className="">
+        <div className={`_video_player_container  _thumbnailPosition_audio${isAudioGraph}_multi${multiTimelineEnabled}_view${viewNumber}`}>
         <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
-         
+
           <CRXToaster ref={toasterMsgRef} />
-          
-            <div id="screens">
-              <VideoPlayerOverlayMenu
-                overlayEnabled={overlayEnabled}
-                overlayCheckedItems={overlayCheckedItems}
-                updatedSensorsDataOverlay={updatedSensorsDataOverlay}
-                updatedGpsDataOverlay={updatedGpsDataOverlay}
-              />
+
+            <div id="screens" className={mapEnabled ? "sidePanelEnabled" : "sidePanelDisabled"}>
                   <div id="videoFrontLayer" className={"videoFrontLayer " + `${overlayClass}`}>
                   {isPlaying ? (
                     <div
@@ -2326,17 +2527,24 @@ if(!ViewScreen) {
                 updateSeekMarker={updateSeekMarker}
                 gMapApiKey={props.apiKey}
                 gpsJson={gpsJson}
-                openMap={props.openMap}
+                openMap={isMapPresent}
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
                 toasterMsgRef={toasterMsgRef}
                 isAudioGraph={isAudioGraph}
                 ffScreenIcon = {fwfScreenIcon}
                 setscreenChangeVideoId={setscreenChangeVideoId}
                 isGuestView={isGuestView}
-                assetLog={assetLog}
+                saveLogs={saveLogs}
+                ViewScreen={ViewScreen}
+                overlayEnabled={overlayEnabled}
+                overlayCheckedItems={overlayCheckedItems}
+                overlayDuration={overlayDuration}
+                overlayDataJson={overlayDataJson}
+                isMultiViewEnable={isMultiViewEnable}
+                timer={timer}
               />
 
-             
+
               <div className="modeButton">
 
                 {modePrev && mode == 2 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
@@ -2357,14 +2565,14 @@ if(!ViewScreen) {
                 </div>
               </div>
             </div>
-            
+
             <div>
             </div>
-         
+
             <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}    onMouseMove={fullViewScreenOn}    >
              <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
              <div className={`player_controls_inner `}>
-                <div className="main-control-bar">
+                <div className="main-control-bar" onMouseEnter={() => mainTimeLineEnter()} onMouseLeave={() => mainTimeLineLeave()}>
                   <div id="SliderBookmarkNote" style={{ position: "relative" }}>
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
                       return (
@@ -2373,7 +2581,7 @@ if(!ViewScreen) {
                             if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording started")) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
-                                  <span className="pip_icon" aria-hidden="true"
+                                  <span className="pip_icon mainTimelinePipIcons" aria-hidden="true"
                                     onMouseOut={() =>
                                       mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
                                   </span>
@@ -2383,7 +2591,7 @@ if(!ViewScreen) {
                             else if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording stopped")) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_end_point * 1000) - x.assetbuffering?.post), x.recording_start_point) }}>
-                                  <span className="pip_icon" aria-hidden="true"
+                                  <span className="pip_icon mainTimelinePipIcons" aria-hidden="true"
                                     onMouseOut={() =>
                                       mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
                                   </span>
@@ -2393,7 +2601,7 @@ if(!ViewScreen) {
                             else if (multiTimelineEnabled ? y.madeBy == "User" : true) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                                  <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
+                                  <span className="pip_icon mainTimelinePipIcons" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
                                     onMouseOut={() =>
                                       mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
                                   </span>
@@ -2404,7 +2612,7 @@ if(!ViewScreen) {
                           )}
                           {!isGuestView && notesEnabled && x.enableDisplay && x.notes.map((y: any) =>
                             <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                              <span className="pip_icon" style={{ backgroundColor: "#7D03D7" }} aria-hidden="true"
+                              <span className="pip_icon mainTimelinePipIcons" style={{ backgroundColor: "#7D03D7" }} aria-hidden="true"
                                 onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
                               </span>
                             </div>
@@ -2431,25 +2639,25 @@ if(!ViewScreen) {
                   <div className="V_timeline_end_time">
                     <div id="counter">{finalduration}</div>
                   </div>
-                  
+
                 </div>
-              {isShowAudioGraph && <div id="_audio_graph_container" className="_audio_graph_container">
+              {(isShowAudioGraph  && seeMoreStatus ) &&  <div id="_audio_graph_container" className="_audio_graph_container">
               <div className={`dummy_audio_image animated ${isAudioGraph == true ? "slideInUp" : "slideOutDown"}`}>
                     <img src={AduioImage} />
                 </div>
-              
+
               <div className={`dummy_audio_zoomIn_zoomOut animated  ${isAudioGraph == true ? "slideInUp" : "slideOutDown"} `}>
               <img src={AduioImageZoomInZoomOut} />
               </div>
-              
+
               </div>
               }
               </div>
-              
+
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
                 <div className="playerViewLeft">
-                
+
                     <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
                       <CRXTooltip
                         content={<SVGImage
@@ -2556,11 +2764,11 @@ if(!ViewScreen) {
                     />
                   </CRXButton>
                 </div>}
-                <div 
+                <div
                 className={` playerViewRight ${isShowPanel ? 'clickViewRightBtn' : ""}`}
                 style={isShowPanel == true ? iconChanger ? { display:'flex' } : {display:'none'} : undefined}
                 >
-                  <div className="SettingGrid">
+                  <div className="SettingGrid" style={{display: !isGuestView ? "block" : "none"}}>
                     <div onClick={(e: React.MouseEvent<HTMLElement>) => { openSettingMenu(e) }}>
                       <CRXTooltip
                         iconName={`fas fa-cog faCogIcon ${settingMenuEnabled}`}
@@ -2569,7 +2777,7 @@ if(!ViewScreen) {
                         arrow={false}
                         disablePortal={!ViewScreen ? true : false}
                       /></div>
-                    <VideoPlayerSettingMenu
+                     {!isGuestView &&<VideoPlayerSettingMenu
                       timelinedetail={timelinedetail}
 
                       fullScreenControl={viewControlEnabler}
@@ -2590,7 +2798,7 @@ if(!ViewScreen) {
                       ViewScreen={ViewScreen}
                       isGuestView={isGuestView}
                       settingRef={settingRef}
-                    />
+                    />}
                   </div>
                   {!isGuestView && notesEnabled && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
@@ -2631,7 +2839,7 @@ if(!ViewScreen) {
                     >
 
                       <MaterialMenuItem className="layoutHeader">
-                        <span>Layouts</span> 
+                        <span>Layouts</span>
                       </MaterialMenuItem>
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
@@ -2657,7 +2865,7 @@ if(!ViewScreen) {
                             <span></span>
                             <span></span>
                           </div>
-                       
+
                         </div>
                       </MaterialMenuItem>}
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
@@ -2692,8 +2900,8 @@ if(!ViewScreen) {
                           </div>
                         </div>
                       </MaterialMenuItem>}
-                      {(isGuestView && props.openMap) || (!isGuestView) ? <MaterialMenuItem className="_Side_panel_menu_">
-                
+                      {(isGuestView && isMapPresent) || (!isGuestView) ? <MaterialMenuItem className="_Side_panel_menu_">
+
                         <span className="_layout_text_content_">Side Data Panel</span>
                         <div className="_side_panel_grid_">
                           <div></div>
@@ -2729,9 +2937,10 @@ if(!ViewScreen) {
 
                 </div>
               </div>
+              {multiTimelineEnabled && <div className="_scroll_see_multiLines_">Scroll to see multiple timelines</div>}
              </div>
             </div>
-            {multiTimelineEnabled == false ? 
+            {/* {multiTimelineEnabled == false ?
             <div className="_bottom_arrow_seeMore">
               {detailContent == false ?
                     <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
@@ -2743,8 +2952,8 @@ if(!ViewScreen) {
                     </button>
                   }
               </div>
-            : ""}         
-            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+            : ""}          */}
+           {seeMoreStatus && <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
               {/* TIME LINES BAR HERE */}
               {loading ? (
                 <Timelines
@@ -2767,19 +2976,47 @@ if(!ViewScreen) {
                   multiTimelineEnabled={multiTimelineEnabled}
                   notesEnabled={notesEnabled}
                   syncButton={startTimelineSync}
+                  thumbnailAddPip={thumbnailAddPip}
+                  viewNumber={viewNumber}
+                  mouseOverRecordingStart={mouseOverRecordingStart}
+                  mouseOverRecordingEnd={mouseOverRecordingEnd}
                 />
               ) : (<></>)}
-              <div className="timeLineSyncActions">
-                <div className="SplitButton_action">
-                  {syncButton && (startTimelineSync && <CRXSplitButton  buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />)}
-                </div>
-                <div className="SplitButton_close">
-                 {syncButton && (startTimelineSync && <CRXButton  onClick={() => UndoRedo(0)} >Cancel</CRXButton>)}
-                </div>
-              </div>
-              {!syncButton && (multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setSyncButton(true); setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i><span>Sync timeline start</span></button>)}
-            </div>
-            {multiTimelineEnabled == true ? 
+
+                      <>
+                      {multiTimelineEnabled && <div className="timelinesDateTime">
+                          <div >
+                             <div className="date">
+                                {timelineStartEndDate?.timelineStartDateFormatted}
+                              </div>
+                              <div className="time">
+                                 Timeline start
+                              </div>
+                          </div>
+                          <div>
+                             <div className="date">
+                                {timelineStartEndDate?.timelineEndDateFormatted}
+                              </div>
+                              <div className="time timeRightAlign">
+                                   Timeline end
+                              </div>
+                          </div>
+                      </div> }
+                      <div className="timeLineSyncActions">
+                      <div className="SplitButton_action">
+                      {syncButton && (startTimelineSync && <CRXSplitButton  buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />)}
+                      </div>
+                      <div className="SplitButton_close">
+                      {syncButton && (startTimelineSync && <CRXButton  onClick={() => UndoRedo(0)} >Cancel</CRXButton>)}
+                      </div>
+                      </div>
+                      {!syncButton && (multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setSyncButton(true); setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i><span>Sync timeline start</span></button>)}
+                      </>
+
+
+
+            </div> }
+            {/* {multiTimelineEnabled == true ?
             <div className={`_bottom_arrow_seeMore ${seeMoreClass}_${viewNumber}`}>
               {detailContent == false ?
                     <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
@@ -2791,9 +3028,9 @@ if(!ViewScreen) {
                     </button>
                   }
               </div>
-            : ""} 
-           
-          
+            : ""}  */}
+
+
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
             seteditBookmarkForm={seteditBookmarkForm}
@@ -2808,7 +3045,7 @@ if(!ViewScreen) {
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
             addingSnapshot={addingSnapshot}
-            assetLog={assetLog}
+            saveLogs={saveLogs}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
@@ -2822,7 +3059,7 @@ if(!ViewScreen) {
             noteAssetId={noteAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
-            assetLog={assetLog}
+            saveLogs={saveLogs}
           />}
 
           <TimelineSyncInstructionsModal
@@ -2839,13 +3076,13 @@ if(!ViewScreen) {
                 return (
                 <BookmarkNotePopup
                 bookmarkNotePopupObj={bookmarkNotePopupObj}
-                bookmarkNotePopupArrObj={bookmarkNotePopupArrObj} 
+                bookmarkNotePopupArrObj={bookmarkNotePopupArrObj}
                 setBookmarkNotePopupArrObj={setBookmarkNotePopupArrObj}
                 EvidenceId={EvidenceId}
                 timelinedetail={timelinedetail}
                 toasterMsgRef={toasterMsgRef}
                 setIsEditBookmarkNotePopup={setIsEditBookmarkNotePopup}
-                assetLog={assetLog}
+                saveLogs={saveLogs}
                 />
                 )
               }
@@ -2853,14 +3090,14 @@ if(!ViewScreen) {
           </div>
 
         </div>
-       
-        
+
+
         </div>{/** Video player container close div */}
       </div>
-      
+
       </div>
       </div>
-      </div>
+
       </FullScreen>
       </div>
     );

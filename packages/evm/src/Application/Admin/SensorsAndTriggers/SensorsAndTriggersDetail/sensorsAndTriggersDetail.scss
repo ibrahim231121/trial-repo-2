@@ -2,7 +2,7 @@
     
     .settingsContent {
         margin-top: 25px;
-        padding: 0 130px 0 130px;
+        padding: 0 130px 45px 130px;
         .titlePage{
             font-size: 50px !important;
             margin-bottom: 35px;
@@ -20,9 +20,12 @@
             display: flex;
             align-items: center;
             width: 100%;
+            padding-left: 0;
             h6 {
-                width: 305px ;
+                width: 203px;
                 align-items: baseline;
+                max-width: 203px;
+                min-width: 203px;
             }
 
             .gridFilterSpanUi {
@@ -33,7 +36,13 @@
                     content: none;
                 }
             }
-            
+            .selectInner_content_autoComplete{
+                width: 100%;
+                .crx_MultiSelectBoxLight{
+                    width: 100%;
+                }
+
+            }
         }
         .setting_para {
             position: absolute;
@@ -62,7 +71,8 @@
         }
         .email_checkBox_ui{
             span{
-            margin-left: 9px;
+            margin-left: 0;
+            padding-left: 0;
             }
         }
         .inputLabelNoReq{
@@ -71,18 +81,23 @@
         .sensorsRightCol{
             .gridFilterTextBox
                 h6{
-                    width: 107px;
+                    width: 203px;
+                    align-items: baseline;
+                    max-width: 203px;
+                    min-width: 203px;
                 }
             .select-box{
-                width: 400px;
+                width: 100%;
             }    
             .gridFilterTextBox{
                 .gridFilterSpanUi{
-                    width: 400px;
+                    width: 100%;
                 }
             }
         }
-        
+        .grid_spacer {
+            width: 95px;
+        }
     }
 
     
@@ -173,9 +188,16 @@
                             position: relative;
                         }
                     }
-                    .input-field {
-                        width: 100%;
+                    .input-number-snt {
+                        .input-field {
+                            width: 100%;
+                        }
+                        .number_field_textBox {
+                            margin-top: 0;
+                        }
+                        width: 90%;
                     }
+                    
                 }
                 .adVSelectBox {
                     width: 100%;
@@ -273,10 +295,14 @@
 
 
     .email_checkBox_ui {
-        margin-left: 4px;
+        margin-left: 0;
+        margin-bottom: 11px;
+     
         label {
             font-size: 14px;
-            margin-left: 4px;
+            margin-left: 0;
+            width: 202px;
+            display: inline-flex;
             span {
                 font-size: 20px;
                 color: black;
@@ -371,4 +397,23 @@
 
     }
 }
+
+.crx-message-alert {
+    .sensorTriggerMsg {
+        .MuiAlert-icon {top: 0;}
+        .MuiPaper-root {
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+        }
+    }
+    .sensorinlineError {
+        .MuiAlert-icon {top: 0;}
+        &.MuiAlert-root {
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            margin: 16px 0;
+        }
+    }
+} 
+
 

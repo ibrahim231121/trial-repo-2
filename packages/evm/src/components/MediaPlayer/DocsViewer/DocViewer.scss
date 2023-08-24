@@ -1,0 +1,60 @@
+.otherDoc {
+    justify-content: center;
+    padding-top: 93px;
+  .otherMainDoc {
+    display: flex;
+    place-items: center;
+    flex-direction: row;
+    background: var(--color-333333);
+    padding: 60px 97px 64px 95px;
+    .otherIcon {
+      font-size: 150px;
+      text-align: center;
+      i {
+        color: var(--color-d1d2d4);
+      }
+      .docName {
+        font-size: 14px;
+        color: var(--color-d1d2d4);
+        display: flex;
+        place-content: center;
+        width: 183px;
+        text-align: center;
+        place-items: center;
+        place-self: center;
+        margin: auto;
+        word-break: break-all;
+        text-transform: capitalize;
+      }
+    }
+    .docActionButton {
+        display: flex;
+        align-self: self-start;
+        margin-top: 67px;
+        button {
+            background: var(--color-e7e7e7) !important;
+            color: var(--color-333333) !important;
+            border: 1px solid transparent !important ;
+            .MuiButton-label {
+                line-height: 16px;
+                font-family: var(--Arial-font-family);
+                i {
+                    margin-right: 16px;
+                    font-size: 20px;
+                }
+            }
+            &:hover {
+                border: 1px solid var(--color-d74b00) !important ;
+            }
+            &:focus {
+                outline: 2px solid var(--color-d74b00) !important;
+                border: 1px solid transparent !important ;
+            }
+            &.Mui-disabled {
+                background:var(--color-Black) !important;
+                color: var(--color-6a6a6a) !important;
+            }
+        }
+    }
+  }
+}

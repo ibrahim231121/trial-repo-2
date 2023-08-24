@@ -1,138 +1,428 @@
-#slide {
-    width: auto;
-    height: auto;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-    margin: 1px;
-    .activeSlider {
-      border: 2px solid black;
-    }
-    .slider{
-      display: inline-block;
-      width: 200px;
-      padding: 6px 6px;
-      img {
-        width: 100%;
-      }
-    }
-    
-}
-.mainImage{
-  width: 50%;
-  margin: auto;
-  height: 58vh;
-}
-
-.image {
-  width: "100%";
-  height: "100%";
-  border-radius: 20;
-}
-
 .carousel {
   margin-top: 18;
   width: "93%";
 }
 
-  .banner_corusel {
-    position: relative;
-    padding: 0 28px;
-    .leftSliderBtn {
-      position: absolute;
-      bottom: 77px;
-     left: 27px;
-     font-size: 30px;
-     background: transparent;
-     border: none;
+.banner_corusel {
+  position: relative;
+  padding: 0 28px;
+  .leftSliderBtn {
+    position: absolute;
+    bottom: 77px;
+    left: 27px;
+    border: none;
+  }
+  .rightSliderBtn {
+    position: absolute;
+    bottom: 77px;
+    right: 36px;
+    border: none;
+  }
+}
+
+#image_viewer_slide {
+  //display: -webkit-inline-box;
+  justify-content: center;
+  height: auto;
+  //padding-bottom: 16px;
+  width: 100%;
+  // overflow-x: auto;
+  overscroll-behavior: smooth;
+  overscroll-behavior-x: smooth;
+  .image_bottom_slider_tabs {
+    .image_bottom_slider_items {
+      width: 264px;
+      height: 151px;
+      padding: 0 0px 0 0;
+      margin-right: 14px;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      &.Mui-selected {
+        border: 4px solid #fff;
+      }
     }
-    .rightSliderBtn {
-      position: absolute;
-      bottom: 77px;
-      right: 36px;
-      font-size: 30px;
-      background: transparent;
-      border: none;
+    .tooltipBottomSlider {
+      &:hover {
+        color: var(--color-d1d2d4);
+      }
     }
   }
-
-  .main_silder_shop {
-    height: 50vh;
-    display: flex;
+  .slider {
+    width: 264px;
+    height: 151px;
+    padding: 0 0px 0 0;
+    margin-right: 14px;
+    border: 4px solid transparent;
+    &.activeSlider {
+      border: 4px solid #fff;
+    }
     img {
       width: 100%;
-      height: 400px;
+      height: 100%;
+      object-fit: cover;
     }
+  }
 }
 
-#scrollable-auto-tabpanel-1,#scrollable-auto-tabpanel-2 {
-  height: 77vh;
-  .banner_corusel {
-    .react-transform-wrapper {
+.banner_corusel {
+  background: var(--color-Black);
+  height: 100%; //calc(100vh - 176px);
+  .crx_image_viewer {
+    position: relative;
+    width: 50%;
+    margin: auto;
+    height: calc(100vh - 434px);
+    padding-top: 17px;
+    .carousel_button_container {
+      .carousel_button {
+        width: 40px;
+        height: 40px;
+        border-radius: 100px;
+        background: #333333;
+        border: 0px;
+        line-height: 40px;
+        i {
+          color: #d1d2d4;
+          font-size: 14px;
+        }
+        &:hover {
+          transform: scale(1.2);
+          cursor: pointer;
+        }
+        &.disabledBtn {
+          background: #e5e5e5;
+          i {
+            color: #979797;
+          }
+          &:hover {
+            transform: none;
+            cursor: pointer;
+          }
+        }
+        .privoius-left {
+        }
+      }
+      &.prev-button-tabs {
+        position: absolute;
+        left: -73px;
+        top: 46%;
+      }
+      &.next-button-tabs {
+        position: absolute;
+        right: -71px;
+        top: 46%;
+      }
+    }
+    .carousel_tabs {
+      height: calc(100vh - 467px)!important;
       margin: auto;
+      width: 100%;
+      align-items: baseline;
+      display: flex;
+      .img_silder_items_viewer {
+        height: 100%;
+        pointer-events: none;
+        .react-transform-wrapper {
+          width: 100%;
+          height: 100%;
+          .react-transform-component {
+            width: 100%;
+            height: 100%;
+            img {
+              width: 100%;
+              height: calc(100vh - 464px);
+              object-fit: contain;
+            }
+          }
+        }
+      }
     }
-    .leftSliderBtn{
-      bottom: 32px;
-      left: 0;
-      height: 160px;
-    }
-    .rightSliderBtn{
-      position: absolute;
-      bottom: 32px;
-      right: 0;
-      height: 160px;
-    }
   }
-  .mainImage {
-    height: 52vh;
-  }  
-  .carousel_tabs  {
-    > div {
-      height: 50vh !important;
-    }
-  }
-  
-  
-.pdfImageDiv {
-  width: 100%;
-}
-  .mainPdfScroll {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-.pdfActionButton {
-  display: flex;
-}
-.pdfActionButton {
-  display: flex;
-  flex-direction: column;
-  margin-left: 46px;
-  .btnPdfView  {
-    margin-bottom: 20px;
-  }
-  }
-  .pdfImageDiv {
-    background: #8080807d;
-}
-    .InnerPdfScroll {
-      overflow: hidden;
-      text-align: center;
-  }
-} 
 
-#slide {
-  // display: flex;
-  display: -webkit-inline-box;
-  justify-content: center;
-  // padding-bottom: 24px;
-  width: 100%;
-  overflow-x: auto;
-  .slider{
-    width: 23%;
-    img{
-      height: 150px;
+  .bottom_image_viewer {
+    position: relative;
+    .image_viewer_left_btn {
+      left: 0;
+    }
+    .image_viewer_right_btn {
+      right: 0px;
+    }
+    .image_viewer_bt_btn {
+      background: var(--color-333333);
+      height: 151px;
+      width: 40px;
+      min-width: 40px;
+      position: absolute;
+      border: 0px;
+      top: 0px;
+      z-index: 9;
+      border-radius: 0px;
+      i {
+        color: var(--color-d1d2d4);
+        font-size: 14px;
+      }
+      &:hover {
+        background: #231f20;
+        color: var(--color-d1d2d4);
+        i {
+          color: var(--color-d1d2d4);
+        }
+      }
+    }
+    .MuiTooltip-tooltip {
+      text-transform: lowercase;
+      margin-top: 67px;
+      min-width: 100px !important;
+    }
+    .MuiTabs-scroller {    
+      padding-left: 0 !important;
+      padding-bottom: 16px !important;}
+      .image_bottom_slider_tabs {
+        width: 100%;
+        margin: 0 ;
+        padding: 0 ;
+        max-width: 100% !important;
+        background: transparent;
+        min-width: 100%;
+      button {
+        &[direction="left"],&[direction="right"] {
+            width: 40px !important;
+            padding: 0;
+            margin-top: 0 !important;
+        }
+      }
+    }
+  }
+  &.whiteBackground {
+    background: white;
+  }
+}
+
+.mainFullView {
+  width: 90% !important;
+}
+.fullHeight {
+  height: 100%;
+}
+.fullscreen-enabled {
+  width: 100% !important;
+  .fullHeight {
+    padding: 0;
+    .bottom_image_viewer {
+      position: absolute;
+      bottom: 59px;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      padding-left: 24px;
+      padding-right: 24px;
+      .image_bottom_slider_tabs {
+        .image_bottom_slider_items {
+          &.Mui-selected {
+            border: 4px solid var(--color-d1d2d4) !important;
+            height: 149px !important;
+          }
+        }
+        .MuiTabs-scroller {
+          padding-top: 16px;
+          padding-bottom: 31px;
+          &.css-1nxb7b9-MuiTabs-scroller{
+            overflow-x: overlay;
+            .image_bottom_slider_items {
+              height: 149px !important;
+            }
+          }
+          .MuiTabs-indicator {
+            background-color: transparent;
+          }
+          &::-webkit-scrollbar {
+            width: 1em;
+            height: 15px;
+            margin-top: 10px;
+          }
+
+          &::-webkit-scrollbar-track {
+            border-radius: 0px;
+            margin-left: 0px;
+            border-right: 0px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 0px;
+            background-color: var(--color-c8c8c8);
+            outline: 0px solid var(--color-slategrey);
+            border: 2px solid var(--color-black-3);
+            background-clip: content-box;
+          }
+
+          &::-webkit-scrollbar-track-piece {
+            background-color: var(--color-f1f1f1);
+            border: 1px solid var(--color-d1d2d4);
+            border-right: 0px;
+            border-left: 0px;
+            padding-right: 50px;
+          }
+
+          &::-webkit-scrollbar-button:horizontal:decrement {
+            width: 14px;
+            height: 30px;
+            border: 0px solid var(--color-transparent);
+            background: url("../../../Assets/Images/scrollLeft22.jpg") no-repeat
+              top right;
+            background-size: contain;
+            background-position: 0;
+            background-clip: border-box;
+            position: relative;
+            left: 240px;
+            margin-left: 180px;
+          }
+
+          &::-webkit-scrollbar-button:horizontal:increment {
+            width: 30px;
+            height: 12px;
+            border: 1px solid var(--color-d1d2d4);
+            border-left: 0;
+            background: url("../../../Assets/Images/scrollIconRight22.png")
+              no-repeat center center var(--color-f1f1f1);
+            position: relative;
+             background-position: 5px;
+            z-index: 9999;
+            left: 180px;
+          }
+
+          &::-webkit-scrollbar:vertical {
+            display: none;
+          }
+        }
+        button {
+          i {
+            bottom: 0;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            margin: auto;
+          }
+          &[direction="left"] {
+            margin: auto;
+          //  bottom: 0;
+            display: flex;
+            align-items: center;
+            place-content: center;
+            height: calc(100% - 47px);
+            left: 24px;
+            top: 16px;
+          }
+          &[direction="right"] {
+            margin: auto;
+           // bottom: 0;
+            display: flex;
+            align-items: center;
+            place-content: center;
+            height: calc(100% - 47px);
+            right: 24px;
+            top: 16px;
+          }
+        }
+      }
+    }
+    &.banner_corusel {
+      .crx_image_viewer {
+        .carousel_button_container {
+          button {
+            width: 56px;
+            height: 56px;
+            i {
+              display: flex;
+              font-size: 28px;
+              bottom: 0;
+              place-content: center;
+              align-items: center;
+            }
+          }
+          &.prev-button-tabs {
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+            height: 80px;
+            margin: auto;
+            button {
+              &.activeBtn {
+                &:hover {
+                  transform: scale(1.2);
+                  cursor: pointer;
+                }
+              }
+            }
+            .privoius-left {
+              &.CRXImageViewLeft {
+                &.MuiTooltip-popper {
+                  margin-left: -10px !important;
+                }
+                .crxTooltipAll {
+                  margin-top: 23px;
+                }
+              }
+            }
+          }
+          &.next-button-tabs {
+            position: absolute;
+            right: 16px;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+            height: 80px;
+            margin: auto;
+            button {
+              &.activeBtn {
+                &:hover {
+                  transform: scale(1.2);
+                  cursor: pointer;
+                }
+              }
+            }
+            .privoius-left {
+              &.CRXImageViewRight {
+                &.MuiTooltip-popper {
+                  margin-left: -2px !important;
+                }
+                .crxTooltipAll {
+                  margin-top: 23px;
+                }
+              }
+            }
+          }
+        }
+        &.mainFullView {
+          height: 100vh;
+          padding: 0;
+          width: 100% !important;
+
+          .carousel {
+            height: calc(100vh - 90px) !important;
+            width: 100%;
+            padding: 0;
+            .img_silder_items_viewer {
+              .react-transform-wrapper {
+                .react-transform-component {
+                  img {
+                    height: 100vh;
+                    object-fit: cover;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

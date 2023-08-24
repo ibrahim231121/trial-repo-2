@@ -1,8 +1,10 @@
 @use './Assets/css/library' as lib;
 
-
+*{
+  box-sizing: border-box;
+}
 .language_selector_app {
-    position: absolute;
+    position: fixed;
     top: 0;
     z-index: 1;
     right: 0;
@@ -178,7 +180,7 @@ iframe {
   }
 
   .map-container__map {
-    height: 57vh;
+    height: calc(100vh - 297px);
     width: 100%;
 }
 
@@ -417,6 +419,16 @@ html {
           .searchType {
             padding-left: 4px;
           }
+          .advance-type {
+            .CRXComma {
+              padding: 0;
+            }
+            &:last-child {
+              .CRXComma {
+                display: none;
+              }
+            }
+          }
         }
     }
   }
@@ -449,6 +461,7 @@ html {
             th{
               &.dataTableActionColumn {
                 left: 25px !important;
+                
               }
               &.dataTableCheckBoxColumn {
                 left: 84px !important;
@@ -496,12 +509,17 @@ html {
     position: sticky;
     padding: 33px 0px;
   }
+  .dataTableExpandView {
+    .overlaySticky-content {
+      padding: 0px 0px;
+    }
+  }
 
   .CRXAppHeader {
     .CRXPageTitle  {
       h2 {
         white-space: nowrap; 
-        max-width: 55%; 
+        max-width: 100%; 
         overflow: hidden;
         text-overflow: ellipsis; 
       }
@@ -545,3 +563,124 @@ html {
     }
 
   }
+
+
+  //responsive query for bradcrums title start
+  @media screen and (max-width:1920px) {
+    .CRXAppHeader{
+      .assetDetail_Title {
+        .CRXPageTitle  {
+        max-width: 62%; 
+          h2 {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width:1530px) {
+    .CRXAppHeader{
+      .assetDetail_Title {
+        .CRXPageTitle  {
+        max-width: 49%; 
+          h2 {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width:1260px) {
+    .CRXAppHeader {
+      .assetDetail_Title {
+        .CRXPageTitle  {
+          max-width: 44%; 
+          h2 {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+          }
+        }
+      }
+    }
+  }
+
+    //responsive query for bradcrums title end
+  @media screen and (max-width:1140px) {
+    .CRXAppHeader {
+      .assetDetail_Title {
+        .CRXPageTitle  {
+          max-width: 36%; 
+          h2 {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width:1080px) {
+    .CRXAppHeader  {
+      .assetDetail_Title {
+        .CRXPageTitle  {
+          max-width: 30%; 
+          h2 {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+          }
+        }
+      }
+    }
+  }
+  
+  .upload_file_success{
+    width: 432px;
+  } 
+
+    // for primary button
+.titlePrimaryBtn {
+  display: flex;
+  align-items: center;
+  .assetDetailPrimaryBtn {
+    margin-left: 20px;
+    margin-top: -7px;
+  }
+}
+.assetDetailPrimaryBtn {
+  border:1px solid  rgba(51,51,51,0.5);
+  padding: 5px 6px 3px 6px;
+  color: #333333;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  margin-right: 24px;
+
+  .MuiTooltip-popper {
+    text-transform: lowercase;
+  }
+}
+.arrow_up_icon_position {
+  margin-left: auto;
+}
+
+.fullscreen-enabled {
+  .map-container__map {
+    height: calc(100vh - 120px);
+    width: 100%;
+  }
+}
+
+.dataTableCheckBoxColumn, .dataTableActionColumn {
+  transition-property: left;
+  transition-duration: 900ms;
+  transition-timing-function: ease-in-out;
+}

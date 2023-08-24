@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js";
-import { AUTHENTICATION_CODEVERIFIER_URL, AUTHENTICATION_LOGIN_URL } from '../../../evm/src/utils/Api/url'
+import { AUTHENTICATION_CODEVERIFIER_URL } from '../../../evm/src/utils/Api/url'
 import { REACT_APP_CLIENT_ID } from '../utils/Api/url'
+import randomNumberGenerator from "../Application/Assets/utils/numberGenerator";
 
 const code_challenge_Method = "SHA256";
 
@@ -20,13 +21,25 @@ export function getVerificationURL(y: string) {
 }
 
 export function utils(culture:string) {
-  const code_challenge_string = Math.random().toString(36).substring(7);
+  const randomNumGenerated = randomNumberGenerator();
+  const code_challenge_string = randomNumGenerated.toString(36).substring(7);
   const code_challenge = CryptoJS.SHA256(code_challenge_string).toString();
   sessionStorage.setItem("code_challenge_string", code_challenge_string);
   return `?culture=${culture}&client_id=${REACT_APP_CLIENT_ID}&code_challenge=${code_challenge}&code_challenge_Method=${code_challenge_Method}`;
 }
 
-
+export const getDomainName = () => {
+  try {
+    const hostname = window.location.hostname;
+    if(hostname.match(/[a-z]/) != null) {
+      return hostname.split('.').slice(-2).join('.');
+    }
+    return undefined;
+  }
+  catch(ex) {
+    return undefined;
+  }
+}
 
 
 

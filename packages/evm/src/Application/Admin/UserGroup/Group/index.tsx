@@ -5,6 +5,7 @@ import {
   CRXButton,
   CRXAlert,
   CRXToaster,
+  CRXConfirmDialog
 } from "@cb/shared";
 import User from "./GroupTabs/User";
 import "./index.scss";
@@ -15,26 +16,24 @@ import GroupInfo from "./GroupTabs/GroupInfo";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import {
   APPLICATION_PERMISSION_URL,
-  GROUP_GET_BY_ID_URL,
   CONTAINERMAPPING_INFO_GET_URL,
   SAVE_USER_GROUP_URL,
   UPSERT_CONTAINER_MAPPING_URL,
 } from "../../../../utils/Api/url";
-import { CRXConfirmDialog } from "@cb/shared";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
-import { GroupSubModules, Module, UserGroups, MemberId } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
+import { GroupSubModules, Module, UserGroups } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
 import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { PermissionData } from "./GroupTabs/TypeConstant/types";
+import { CRXModalDialog } from "@cb/shared";
 
 export type GroupInfoModel = {
   name: string;
@@ -74,16 +73,14 @@ const Group = () => {
     permissionValue: { value: 0, label: "" },
     type : {value : 0, label : ""}
   });
-  const [userIds, setUserIds] = React.useState<Number[]>([]);
+  const [userIds, setUserIds] = React.useState<number[]>([]);
 
   //const [resAppPermission, setresAppPermission] = useState<any>();
-  const [subModulesIds, setSubModulesIds] = React.useState<Number[]>([]);
+  const [subModulesIds, setSubModulesIds] = React.useState<number[]>([]);
   const [showGroupScroll, setShowGroupScroll] = React.useState(false);
-  const [messagesadd, setMessagesadd] = useState<string>("crxScrollGroupTop");
-  const [showMessageCls, setShowMessageCls] = useState<string>("");
-  const [deletedDataPermissions, setDeletedDataPermissions] = React.useState<
-    number[]
-  >([]);
+  const [, setMessagesadd] = useState<string>("crxScrollGroupTop");
+  const [, setShowMessageCls] = useState<string>("");
+  const [deletedDataPermissions, setDeletedDataPermissions] = React.useState<number[]>([]);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const [isAppPermissionsChange, setIsAppPermissionsChange] =
@@ -122,7 +119,7 @@ const Group = () => {
   const [res,setRes] = React.useState<UserGroups>() 
   const [resAppPermission,setResponseAppPermission] = React.useState<Module>()
   const groupMsgRef = useRef<typeof CRXToaster>(null);
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+  const [pageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
       filters: []
@@ -134,6 +131,7 @@ const Group = () => {
       dir: "asc"
     }
   })
+  const [modal, setModal] = React.useState<boolean>(false);
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -160,22 +158,12 @@ const Group = () => {
 
   const { id } = useParams<{ id: string }>();
   const [ids, setIds] = useState<string>(id);
-
-  // const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + ids, {
-  //   "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}`
-  // });
-
   const [getContainerMappingRes, ContainerMappingRes] = useGetFetch<any>(
     CONTAINERMAPPING_INFO_GET_URL + "?groupId=" + id,
     { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` }
   );
   const [errorMessage, setErrorMessage]= React.useState<string>("");
   const [isDataPermissionSave, setIsDataPermissionSave]= React.useState<boolean>(false);
-
-  // const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
-  //   APPLICATION_PERMISSION_URL,
-  //   { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${getToken()}` }
-  // );
 
   React.useEffect(() => {
     functionInitialized();
@@ -204,11 +192,10 @@ const Group = () => {
     await UsersAndIdentitiesServiceAgent.getResponseAppPermission(APPLICATION_PERMISSION_URL).then((response:Module ) => {
       setResponseAppPermission(response)
    });
-    //getResponseAppPermission();
     await dispatch(getUsersInfoAsync(pageiGrid));
   };
 
-  const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
+  const moduleAllCheck = (response: any, subModulesIdes: number[]) => {
     let count: number = 0;
     if (response.subModules && response.subModules.length > 0) {
       response.subModules.map((subModule: any) => {
@@ -220,7 +207,7 @@ const Group = () => {
     } else return false;
   };
 
-  const getPermissions = (AppPermissions: any, subModulesIdes: Number[]) => {
+  const getPermissions = (AppPermissions: any, subModulesIdes: number[]) => {
     if (AppPermissions !== undefined) {
       let appPermission = AppPermissions.map((response: any) => {
         let x: ApplicationPermission = {
@@ -381,8 +368,8 @@ const Group = () => {
 
   const redirectPage = () => {
     let groupInfo_temp: GroupInfoModel = {
-      name: res === undefined ? "" : res.name,
-      description: res === undefined ? "" : res.description,
+      name: res?.name ?? "",
+      description: res?.description ?? "",
     };
 
     let dataPermissionString = dataPermissions.sort(
@@ -454,9 +441,10 @@ const Group = () => {
 
       setIsSaveButtonDisabled(true);
     }
-  };
+  }; 
 
   function ValidationCheck(condition = false) {
+    
     if (errorMessage.length !== 0) {
       setIsSaveButtonDisabled(true);
     }
@@ -470,6 +458,15 @@ const Group = () => {
       setIsSaveButtonDisabled(false);
     }
     else if (JSON.stringify(applicationPermissions.sort()) !== JSON.stringify(applicationPermissionsActual.sort())) {
+      setIsSaveButtonDisabled(false);
+      if(isPermissionApplied() == 0) {
+        setModal(true)
+        setIsSaveButtonDisabled(true)
+      }
+        
+    }
+    else if(res !== undefined && dataPermissions.filter(x => x.fieldType === 0 && x.mappingId === 0 && x.permission === 0).length > 0)
+    {
       setIsSaveButtonDisabled(false);
     }
     else if(dataPermissions.filter(x => x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length > 0)
@@ -494,6 +491,20 @@ const Group = () => {
       }
     }
     
+  }
+
+  const isPermissionApplied = () => {
+    let count: number = 0
+    applicationPermissions.map((item: any) => {
+      if(item.children !== null && item.children.length > 0) {
+        item.children.map((x: any) => {
+          if(x.selected === true) {
+            count = count + 1
+          }
+        })
+      }
+    })
+    return count
   }
 
   const closeDialog = () => {
@@ -531,7 +542,7 @@ const Group = () => {
     }
  };
 
-  const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {
+  const onSave = () => {
     let editCase = !isNaN(+id);
     var groupURL = SAVE_USER_GROUP_URL;
 
@@ -562,7 +573,6 @@ const Group = () => {
     };
     
     let groupId = 0;
-    let status = 0;
     if (editCase) {
       
       groupURL = groupURL + "/" + id;
@@ -781,7 +791,7 @@ const Group = () => {
     RemoveSidePanelClass()
   },[])
   return (
-    <div className="App crxTabsPermission switchLeftComponents" style={{}}>
+    <div className="crxTabsPermission" style={{}}>
       {showSuccess && showSuccess ? <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}
@@ -899,6 +909,30 @@ const Group = () => {
             </div>
           </div>
         </CRXConfirmDialog>
+        <CRXModalDialog
+          className='createTracking CrxCreateTracking'
+          style={{ minWidth: '680px' }}
+          maxWidth='xl'
+          title={<b>Attention !</b>}
+          modelOpen={modal}
+          onClose={(e: React.MouseEvent<HTMLElement>) => setModal(false)}
+        >
+          <br></br>
+          <div>All the permissions are 'Unchecked'</div>
+          <div className="modalFooter CRXFooter">
+          <div className="cancelBtn">
+            <CRXButton
+              className="secondary"
+              color="secondary"
+              variant="outlined"
+              onClick={() => setModal(false)}
+            >
+              {t("Close")}
+            </CRXButton>
+          </div>
+            </div>
+
+        </CRXModalDialog>
 
     </div>
   );

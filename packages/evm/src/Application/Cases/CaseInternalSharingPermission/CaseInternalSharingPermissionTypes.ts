@@ -1,10 +1,11 @@
 export type TCaseSharing = {
     id: string;
     caseId:number;
-    requestTrackId:number;
+    caseTitle : string;
+    requestTrackId:number | null;
     userId: number;
-    startTime: string;
-    endTime: string;
+    startTime: string | null;
+    endTime: string | null;
     status: number;
     type: number;
     allowAssetsViewing: boolean;
@@ -13,14 +14,14 @@ export type TCaseSharing = {
     contribute: boolean;
     isHighlight: boolean;
     endTimeInfinite: boolean;
-    caseInternalSharingPermission: TCaseInternalSharingPermission[];
+    caseInternalSharingPermission: TCaseInternalSharingPermission;
 }
 
 export type TCaseInternalSharingPermission = {
     id: string;
     caseSharingId: number;
-    userId : AutoCompleteOptionType[] | null;
-    groupId : AutoCompleteOptionType[] | null;
+    userId : AutoCompleteOptionType[] | null | number;
+    groupId : AutoCompleteOptionType[] | null | number;
 }
 
 export interface AutoCompleteOptionType {

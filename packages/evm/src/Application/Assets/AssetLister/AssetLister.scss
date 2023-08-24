@@ -66,6 +66,7 @@
       padding: 0 4px 0px 65px;
       padding-top: 96px;
       transition: 0.5s padding ease-out;
+      width: 100%;
     }
 
     .switchLeftComponents {
@@ -97,11 +98,13 @@
     .searchComponents {
       padding: 0 4px 0px 65px;
       padding-top: 96px;
+      width: 100%;
     }
     .switchLeftComponents {
       padding: 0 4px 0px 65px;
       padding-top: 96px;
       transition: 1s padding ease-out;
+      width: 100%;
     }
   }
 }
@@ -244,6 +247,12 @@
 .asset_lister_search_panel {
   &.panel_hide {
     display: none;
+    .modal-title_cs{
+      .close-icon-modal{
+        display: none;
+      }
+      
+    }
   }
   &.panel_show {
     display: block;
@@ -346,6 +355,7 @@
   .close-icon-modal {
     margin-top: -7px;
     margin-right: -18px;
+    display: block !important;
     i {
       color: var(--color-d1d2d4);
     }
@@ -451,5 +461,22 @@
     margin-bottom: 19px;
   }
 }
+.crx-message-alert{
+  .Asset_Alert_Msg{
+    padding-top: 6px;
+    padding-bottom: 6px;
+    .MuiAlert-icon{
+      top: 0px;
+    }
+    .MuiAlert-action{
+      margin-top: 0px;
+    }
+  }
+}
 
 //Advanced Seach Asset Popup end
+.searchComponents {
+    .close-icon-modal {
+      display: none;
+    }
+}

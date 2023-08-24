@@ -1,0 +1,253 @@
+.caseTimeline-main {
+    height: 100%;
+    width: 100%;
+    .subHeading {
+      width: 100%;
+      height: 30px;
+      border-bottom: 1px solid var(--color-979797);
+    }
+    .caseTimeline-content{
+      width: 100%;
+      // padding-top: 20px;
+      .caseTimeline-searchArea {
+        display: flex;
+        padding: 10px 25px 20px 25px;
+        justify-content: space-between;
+        .gridFilterTextBox {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0;
+          h6 {
+            min-width: 100px;
+          }
+          .gridFilterSpanUi {
+            width: 300px;
+            min-width: 300px;
+            margin-left: 20px;
+          }
+        }
+        .filterIconButton {
+          font-size: 18px;
+          color: var(--color-333333);
+          padding: 0;
+        }
+      }
+      .caseTimeline-highlightsArea {
+        padding: 20px 20px;
+        min-height: auto;
+        max-height: 400px;
+        overflow-y: auto;
+        position: relative;
+        .highlightsArea-subHeading {
+          font-weight: bold;
+        }
+      }
+      .caseTimelineButtonContainer {
+        width: 100%;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        height: 50px;
+        .caseTimelineAddNoteButton {
+          margin-left: 215px;
+        }
+        .caseTimelineSortbyContainer {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          h6 {
+            padding-right: 30px;
+          }
+          .caseTimelineSortByRadioBtn {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+          }
+        }
+      }
+      .caseTimeline-sectionSeparator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 10px;
+        border-top: 1px solid var(--color-c8c8c8);
+        border-bottom: 1px solid var(--color-Black);
+        width: 100%;
+      }
+      .caseTimeline-detail {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 20px;
+        min-height: 100px;
+        max-height: 300px;
+        overflow: auto;
+      }
+      .caseTimeline-item {
+        display: flex;
+        // flex-wrap: wrap;
+        margin-top: 15px;
+        &.--temporaryHeight {
+          margin-bottom: 10px;
+        }
+        &:first-child {
+          margin-top: 0px;
+        }
+        .caseTimeline-item-timestamp {
+          width: 180px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .case-Timeline-item-sequenceNumber-container {
+          width: 40px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          span {
+            height: 30px;
+            width: 30px;
+            border-radius: 100%;
+            background-color: var(--color-ffd000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-self: center;
+          }
+        }
+        .case-Timeline-item-sequenceNumber-container + .caseTimeline-item-detailContainer {
+          margin-left: 0px;
+        }
+        .caseTimeline-item-detailContainer {
+          display: flex;
+          align-items: center;
+          width: calc(100% - 200px);
+          border: 1px solid var(--color-979797);
+          box-shadow: 2px 2px 5px var(--color-00000029);
+          border-radius: 5px;
+          padding: 6px 10px;
+          position: relative;
+          height: 70px;
+          margin-left: 40px;
+          .caseTimeline-item-thumbnail {
+            height: 100%;
+            width: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img {
+              height: 100%;
+              width: 100%;
+            }
+            i {
+              font-size: 40px;
+            }
+            .caseTimeline-assetThumbnail {
+              width: 100%;
+              height: 100%;
+              background: #333;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 31pt;
+              color: #d1d2d4;
+              position: relative;
+              border: 1px solid #333;
+              &:hover {
+                ._video_play_icon {
+                  display: block;
+                }
+              }
+              ._video_play_icon {
+                display: none;
+                position: absolute;
+                span{
+                  color: var(--color-White);
+                  font-size: 30pt;
+                  cursor: pointer;
+                  &:hover {
+                    font-size: 30pt;
+                  }
+                }
+              }
+              .Unspecified-file-type {
+                font-size: 40px;
+              }
+            }
+          }
+          .caseTimeline-item-detail {
+            width: calc(100% - 70px);
+            padding: 0px 15px;
+            display: flex;
+            align-items: center;
+            .gridFilterTextBox {
+              display: flex;
+              flex-wrap: wrap;
+              padding: 0;
+              width: 100%;
+              h6 {
+                width: 50px;
+                margin-bottom: 5px;
+                font-family: var(--base-font-family);
+                font-size: 1em;
+              }
+              .gridFilterSpanUi {
+                width: calc(100% - 60px);
+              }
+              .MuiOutlinedInput-multiline {
+                padding: 0;
+                border-radius: 0;
+                fieldset {
+                  border: 0px;
+                }
+                &.Mui-focused {
+                  fieldset {
+                    border: 0px;
+                  }
+                }
+              }
+              textarea {
+                min-height: 30px;
+                padding: 5px 5px 0px 5px;
+                text-indent: 0;
+              }
+            }
+            .caseTimeline-assetText {
+              margin-right: 5px;
+            }
+            .caseTimeline-assetName {
+              display: block;
+              width: 300px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+          .caseTimeline-item-noteButtonContainer {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: 35px;
+            right: 80px;
+            width: 155px;
+          }
+        }
+        .rc-menu-button {
+          background: none;
+          border: none;
+          border-left: 1px solid var(--color-979797);
+          font-size: 23px;
+          color: var(--color-333333);
+          width: 40px;
+          height: 80%;
+          cursor: pointer;
+          align-self: center;
+          float: right;
+          margin-left: auto;
+        } 
+        .caseTimeline-itemHeader {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 5px;
+        }
+      }
+    }
+}

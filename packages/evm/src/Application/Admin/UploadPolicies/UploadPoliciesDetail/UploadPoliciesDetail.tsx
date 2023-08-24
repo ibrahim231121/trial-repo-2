@@ -288,7 +288,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     }
 
     const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
-        const chracterRegx = /^^[a-zA-Z]+[a-zA-Z0-9-_ \b]*$/.test(String(name).toLowerCase());
+        const chracterRegx = /^[a-zA-Z][a-zA-Z0-9-_ \b]*$/.test(String(name).toLowerCase());
         if (!chracterRegx) {
           return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
         } else if (name.length < 3) {
@@ -621,7 +621,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
       },[])
     return (
         
-        <div className="upload-policies upload-policies-ui switchLeftComponents ">
+        <div className="upload-policies upload-policies-ui ">
             <CRXToaster ref={uploadMsgFormRef} />
 
             <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />

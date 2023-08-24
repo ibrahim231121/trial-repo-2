@@ -30,7 +30,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
     const categoriesFormRef = useRef<typeof CRXToaster>(null);
-    //const [id, setId] = useState<number>(props?.id);
     const retentionPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllRetentionPolicies);
     const uploadPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllUploadPolicies);
     const categoryFormsList: any = useSelector((state: RootState) => state.CategoryFormSlice.getAllCategoryForms);
@@ -53,6 +52,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     const [evidenceRetentionPoliciesOptions, setEvidenceRetentionPoliciesOptions] = React.useState<any[]>([]);
     const [categoryFormsOptions, setCategoryFormsOptions] = React.useState<DropdownModel[]>([]);
     const [uploadPolicesOptions, setUploadPolicesOptions] = React.useState<any[]>([]);
+    const [audioURL, setAudioURL] = React.useState<any>("");
+    const [audioIsDirty, setAudioIsDirty] = React.useState<boolean>(false);
+
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
       gridFilter: {
         logic: "and",
@@ -76,7 +78,17 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       setEvidenceRetentionPoliciesOptions(RetentionPoliciesTemplateRows);
     }
 
-    
+    function dataURLtoFile(dataurl: string, filename: string) {
+      var arr: string[] = dataurl.split(','),
+          mime = arr[0].match(/:(.*?);/)![1],
+          bstr = atob(arr[arr.length - 1]), 
+          n = bstr.length, 
+          u8arr = new Uint8Array(n);
+      while(n--){
+          u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, {type:mime});
+  }
   
     const setCategoryForms = () => {
       let CategoryFormsTemplateRows: DropdownModel[] = [];
@@ -140,8 +152,11 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
           url += "/ChangeCategory/" + id;
           SetupConfigurationAgent.putCategories(url, body).then(() => {
             onMessageShow(true, t("Category_Edited_Successfully"));
-            dispatch(getAllCategoriesFilter(pageiGrid));
-            setTimeout(() => { handleClose() }, 500);
+            dispatch(getAllCategoriesFilter({
+              pageiGrid: pageiGrid, 
+              search: "deep"
+            }));
+            setTimeout(() => window.location.reload(), 1000);
             setRequestCategoryModel({
               Name: "",
               Description: "",
@@ -164,10 +179,14 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
             })
         }
         else {
-          SetupConfigurationAgent.postCategories(url, body).then(() => {
+          SetupConfigurationAgent.postCategories(url, body).then((categoryId : number) => {
             onMessageShow(true, t("Category_Saved_Successfully"));
-            dispatch(getAllCategoriesFilter(pageiGrid));
-            setTimeout(() => { handleClose() }, 500);
+            dispatch(getAllCategoriesFilter({
+              pageiGrid: pageiGrid, 
+              search: "deep"
+            }));
+            const path = `${urlList.filter((item: any) => item.name === urlNames.categoryEdit)[0].url}`;
+            history.push(path.substring(0, path.lastIndexOf("/")) + "/" + categoryId, t("Edit_Category"));
             setRequestCategoryModel({
               Name: "",
               Description: "",
@@ -193,7 +212,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     }
   
     const onSave = async (payload: CategoryModel) => {
-      if (payload.audioprompt != "" && payload.audioprompt != null) {
+      if (payload.audioprompt != "No Category Audio is attached" && payload.audioprompt != "" && payload.audioprompt != null) {
         await getBase64(payload)
       }
       else {
@@ -273,16 +292,22 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       if (categoriesId != undefined && categoriesId != null) {
         SetupConfigurationAgent.getSingleCategory(Number.parseInt(categoriesId)).then((response: any) => {
           if (response !== undefined && response != null) {
+            let prefix = 'data:audio/wav;base64,';
+            let suffix = response.audioPrompt;
+            let dataURL = prefix + suffix;
+            setAudioURL(dataURL);
+            if (suffix != "") {
+              response.audioPrompt = dataURLtoFile(dataURL,'dummy.wav');}
             let category: CategoryModel = {
               name: response.name,
               evidenceRetentionPolicy: response.policies.retentionPolicyId,
               uploadPolicy: response.policies.uploadPolicyId,
               description: response.description,
               categoryForms: response.forms.map((x: any) => { return { id: x.id, label: x.name } }),
-              audioprompt: ""
+              audioprompt: response.audioPrompt
             };
             setCategoryPayLoad(category);
-            dispatch(enterPathActionCreator({ val: `${response.name}`}));
+            dispatch(enterPathActionCreator({ val: `Category: ${response.name}`}));
           }
         })
           .catch((err: any) => {
@@ -315,9 +340,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   
     const categoriesFromValidationSchema = Yup.object().shape({
       name: Yup.string().min(3, "Category Name should at least have 3 characters")
-      .max(128, "Category Name should not exceed 128 character limit")
-      .matches(/^^[a-zA-Z]+[a-zA-Z0-9-_ \b]*$/, "Invalid Category Name")
-      .required("Category Name is required"),
+        .max(128, "Category Name should not exceed 128 character limit")
+        .matches(/^((\d+\/){0,3}?([a-zA-Z]([^\W]|\s|-|\.|,+){2,}))$/, "Invalid Category Name")
+        .required("Category Name is required"),
+      description: Yup.string().max(1024, t("Maximum_1024_length_allowed_in_description_field")),
       evidenceRetentionPolicy: Yup.number().min(1, "Evidence Retention Policy is required"),
       uploadPolicy: Yup.number().min(1, "Upload Policy is required"),
       audioprompt: Yup.mixed()
@@ -335,7 +361,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const audioRefs = React.useRef<any>(null)  
 
   return (
-    <div className="searchComponents">
+    <div className="categoryDetail">
       <>
         <Formik
           enableReinitialize={true}
@@ -400,6 +426,15 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                       type="text"
                       multiline={true}
                     />
+
+                    {(errors?.description?.length !== undefined && errors?.description?.length > 0) ? (
+                      <div className="errorTenantStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {errors.description}
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
 
 
@@ -419,6 +454,11 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                         e: React.SyntheticEvent,
                         value: any
                       ) => {
+                        handleBlur(e);
+                        setTouched({
+                          ...touched,
+                          ["evidenceRetentionPolicy"]: true,
+                        });
                         setFieldValue("evidenceRetentionPolicy", value === null ? -1 : Number.parseInt(value?.id))
                       }
                       }
@@ -451,6 +491,11 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                         e: React.SyntheticEvent,
                         value: any
                       ) => {
+                        handleBlur(e);
+                        setTouched({
+                          ...touched,
+                          ["uploadPolicy"]: true,
+                        });
                         setFieldValue("uploadPolicy", value === null ? -1 : Number.parseInt(value?.id))
                       }
                       }
@@ -484,17 +529,22 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                   <div className="category_form_fields">
                   <TextField
                       id="audioprompt"
-                      required={true}
-                      value={values.audioprompt != null? values.audioprompt.name : ""}
+                      required={false}
+                      value={(values.audioprompt != null && values.audioprompt != undefined && values.audioprompt != "") ? "Category Audio is attached, click Play to Listen" : "No Category Audio is attached"}
                       label={t("Audio")}
                       className={`categories-input`}
-                      disabled={false}
+                      disabled={true}
                       type="text"
                       multiline={false}
                       errorMsg={errors.audioprompt}
                       error={errors.audioprompt !== undefined ? true : false}
                     />
-                    <button className="audio-clear" onClick={(e,) => { setFieldValue("audioprompt", null, true); audioRefs.current.value = null }}>
+                    <button className="audio-play" onClick={(e) => { 
+                      if (audioURL != "data:audio/wav;base64,") {
+                        let audioElement = new Audio(audioURL); audioElement.play();}}}>
+                    <i className="fa-solid fa-circle-play"></i>
+                    </button>
+                    <button className="audio-clear" onClick={(e) => { setFieldValue("audioprompt", null, false); audioRefs.current.value = null }}>
                     <i className="fa-solid fa-circle-minus"></i>
                     </button>
                   </div>
@@ -507,7 +557,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                       id=""
                       name="audioprompt"
                       className="audio_file_upload"
-                      onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
+                      onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null);
+                      setAudioIsDirty(true);
+                     }}
                     />
                     <CRXButton
                       variant="contained"
@@ -526,7 +578,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                       className="groupInfoTabButtons"
                       color="primary"
                       onClick={() => { onSave(values) }}
-                      disabled={!isValid || !dirty}
+                      disabled={!isValid || (!dirty && !audioIsDirty)}
                     >
                       {t("Save")}
                     </CRXButton>

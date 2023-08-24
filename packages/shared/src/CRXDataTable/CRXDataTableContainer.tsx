@@ -43,7 +43,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   topSpaceDrag,
   viewName,
   expanViews,
-  totalRecords
+  totalRecords,
+  selfSorting
 }) => {
 
   const classes : any = useStyles();
@@ -58,6 +59,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
     >
      
       <Table
+        data-qa="table"
         className={"CRXDataTableCustom  tableHeaderVisibility " + classes.table}
         style={{
           width: `${allColHide === undefined || allColHide ? "140px" : "auto"}`,
@@ -97,6 +99,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
           topSpaceDrag={topSpaceDrag}
           viewName={viewName}
           expanViews={expanViews}
+          selfSorting={selfSorting}
         />
 
         <DataTableBody

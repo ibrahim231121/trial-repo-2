@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CRXDataTable, CRXSelectBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import useGetFetch from '../../../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
-import { getGroupAsync, getGroupUserCountAsync } from "../../../Redux/GroupReducer";
+import { getGroupAsync } from "../../../Redux/GroupReducer";
 import { RootState } from "../../../Redux/rootReducer";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import anchorDisplay from "../../../GlobalComponents/Display/AnchorDisplay";
@@ -19,8 +18,6 @@ import {
   HeadCellProps,
   onResizeRow,
   Order,
-  onTextCompare,
-  onMultiToMultiCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
   onClearAll,
@@ -31,7 +28,6 @@ import UserGroupActionMenu from "./UserGroupActionMenu";
 import NumberSearch from "../../../GlobalComponents/DataTableSearch/NumberSearch";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
-import { CRXModalDialog } from "@cb/shared";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
@@ -54,7 +50,6 @@ const UserGroup: React.FC = () => {
 
 
   const groups: any = useSelector((state: RootState) => state.groupReducer.groups);
-  //const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
   const [rows, setRows] = React.useState<GroupUser[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("Name");
@@ -82,8 +77,6 @@ const UserGroup: React.FC = () => {
     getModuleIds
   } = useContext(ApplicationPermissionContext);
   
-
-
   const setData = () => {
     let groupRows: GroupUser[] = []
     if (groups.data && groups.data.length > 0) {
@@ -147,6 +140,19 @@ const UserGroup: React.FC = () => {
 
     const onChange = (valuesObject: ValueString[]) => {
       headCells[colIdx].headerArray = valuesObject;
+      if (valuesObject[0]?.value) {
+        let value = valuesObject[0]?.value;
+        if (parseInt(value) > 0) {
+          if (valuesObject[0]?.value?.length > 6) {
+            let val = value.substring(0, 6);
+            valuesObject[0].value = val;
+          }
+        }
+        else {
+          valuesObject[0].value = '0';
+        }
+      }
+
       onSelection(valuesObject, colIdx);
     };
 
@@ -154,13 +160,6 @@ const UserGroup: React.FC = () => {
       <NumberSearch headCells={headCells} colIdx={colIdx} onChange={onChange} className="userGroupSearchBox" />
     );
   };
-
-  const [selectOptions, setSelectOption] = useState<any>([
-    {id : "", value : ""}
-  ])
-  const onSelectInputChange = (e : any) => {
-   
-  }
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -179,24 +178,6 @@ const UserGroup: React.FC = () => {
       );
     }
   };
-
-  const simpleFilter = (data : any) => {
-    
-    const option = data.map((x : any, i:any) => {
-        return {id: x.id, value : x.description}
-    })
-    return (
-       <CRXSelectBox 
-        id="descriptionOption"
-        options={option}
-        className="adVSelectBox"
-        // value={selectedOpt ? selectedOpt.value : "Please Select"}
-        onChange={(e: any) => onSelectInputChange(e)}
-        defaultValue={t("Please_Select")}
-       />
-     
-    )
-  }
 
   const AnchorDisplay = (e: string) => {
     if(getModuleIds().includes(7)) {
@@ -231,7 +212,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "280",
+      minWidth: "300",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -244,7 +225,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
-      minWidth: "415",
+      minWidth: "450",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -257,7 +238,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchNumber,
-      minWidth: "244",
+      minWidth: "300",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -270,7 +251,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchNumber,
-      minWidth: "232",
+      minWidth: "235",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -291,21 +272,9 @@ const UserGroup: React.FC = () => {
   ]);
 
   useEffect(() => {
-    //dataArrayBuilder();
     if(searchData.length > 0)
       setIsSearchable(true)
   }, [searchData]);
-
-  const dataArrayBuilder = () => {
-    if (reformattedRows !== undefined) {
-      let dataRows: GroupUser[] = reformattedRows;
-      searchData.forEach((el: SearchObject) => {
-        if (el.columnName === "name" || el.columnName === "description" || el.columnName === "userCount")
-          dataRows = onTextCompare(dataRows, headCells, el);
-      });
-      setRows(dataRows);
-    }
-  };
 
   const resizeRowGroupUser = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -376,7 +345,7 @@ const UserGroup: React.FC = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="managePermissionTable switchLeftComponents" onKeyDown={handleKeyDown}>
+    <div className="managePermissionTable ExpandViewOverlay" onKeyDown={handleKeyDown}>
      
       {
         rows && (
@@ -404,7 +373,7 @@ const UserGroup: React.FC = () => {
             orderByParam={orderBy}
             searchHeader={true}
             columnVisibilityBar={true}
-            className="crxTableHeight crxTableDataUi manageUserGroupsDataTable"
+            className="crxTableHeight crxTableDataUi manageUserGroupsDataTable TableWithOutCheck"
             onClearAll={clearAll}
             getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
             onResizeRow={resizeRowGroupUser}
@@ -426,10 +395,11 @@ const UserGroup: React.FC = () => {
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={119}
-            stickyToolbar={129}
-            searchHeaderPosition={221}
-            dragableHeaderPosition={186}
+            stickyToolbar={130}
+            searchHeaderPosition={223}
+            dragableHeaderPosition={188}
             showExpandViewOption={true}
+            overlay={true}
             //End here
    
           />

@@ -67,7 +67,7 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
                 let position = new google.maps.LatLng(pnt.latitude, pnt.longitude);
                 map?.panTo(position);
             }
-            coordinateToAddress(new google.maps.LatLng(pnt.latitude, pnt.longitude), gpsInfo, Case);
+            coordinateToAddress(new google.maps.LatLng(pnt.latitude, pnt.longitude), gpsInfo, Case, index, gpsInfos.length);
         }
     };
     const errorhandle = () => {
@@ -152,7 +152,7 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
 
     useEffect(startMap, [map]);
 
-    const coordinateToAddress = async (coordinate: GoogleLatLng, gpsInfoData: any, Case: string) => {
+    const coordinateToAddress = async (coordinate: GoogleLatLng, gpsInfoData: any, Case: string, index: number, lengthGpsData: number) => {
         let objmarker : any = {
             position: coordinate,
             draggable: false,
@@ -161,12 +161,29 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
         }
         if(Case == "Add")
         {
-            objmarker.icon = window.location.origin + '/assets/images/mymarker1.png';
+            if(index == 0){
+                objmarker.icon = window.location.origin + '/assets/images/marker_purple.png';
+            }
+            else if(index == lengthGpsData-1){
+                objmarker.icon = window.location.origin + '/assets/images/marker_checkers.png';
+            }
+            else{
+                if(gpsInfoData.speed <= 20){
+                    objmarker.icon = window.location.origin + '/assets/images/marker_green.png';
+                }
+                else if(gpsInfoData.speed <= 60){
+                    objmarker.icon = window.location.origin + '/assets/images/marker_yellow.png';
+                }
+                else{
+                    objmarker.icon = window.location.origin + '/assets/images/marker_red.png';
+                }
+            }
+            
             addMarker(objmarker)
         }
         else if(Case == "Update")
         {
-            objmarker.icon = window.location.origin + '/assets/images/mymarker2.png';
+            objmarker.icon = window.location.origin + '/assets/images/marker_blue.png';
             addMarkerOnSeek(objmarker);
         }
     };

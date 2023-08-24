@@ -1,4 +1,4 @@
-import { CRXNestedMenu, CRXTooltip } from "@cb/shared";
+import { CBXMastHeadMenu } from "@cb/shared";
 import { RemoveSharp } from "@material-ui/icons";
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -10,17 +10,26 @@ import { urlList, urlNames } from "./../../../utils/urlList"
 import "./index.scss";
 
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from "react-redux";
+import { navigationUpdate } from "../../../Redux/NavigationStateReducer";
+import { RootState } from "../../../Redux/rootReducer";
 
 const CRXLefNavigation = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const activeLeftNavigation = useSelector((state: RootState) => state.NavigationStateReducer.value);
+
+  const setActiveLeftNavigation = (item: any) => {
+    dispatch(navigationUpdate(item));
+  };
   const navigateToPage = (path: string) => {
     history.push(path);
     
-    let pathBody = document.querySelector("body");
+    let pathHtml = document.querySelector("html")
+    pathHtml && (pathHtml.style.overflow = "auto")
 
     if(path !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
-        pathBody?.classList.remove("pathAssetDetail");
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
   }
@@ -43,7 +52,7 @@ const CRXLefNavigation = () => {
 
     },
     {
-      moduleId: 0,
+      moduleId: 78,
       label: t("Cases"),
       icon: "fas fa-briefcase NaveIcon",
       command: () => {
@@ -83,6 +92,15 @@ const CRXLefNavigation = () => {
       // ],
     },
     {
+      moduleId: 0,
+      label: t('Tracking_And_Sharing'),
+      icon: 'fas fa-square-share-nodes NaveIcon',  
+
+      command: () => {
+        navigateToPage(urlList.filter((item: any) => item.name === urlNames.trackingAndSharing)[0].url);
+      },
+    },
+    {
       moduleId: 13,
       label: t('Units_&_Devices'),
       icon: 'fas fa-laptop-code NaveIcon',
@@ -96,16 +114,14 @@ const CRXLefNavigation = () => {
       label: "Live Video",
       icon: "fas fa-video NaveIcon",
       classes: "liveVideoTab",
-      url: urlList.filter((item: any) => item.name === urlNames.liveVideo)[0].url,
-      target: "_blank"
+      command : () => { window.open(urlList.filter((item: any) => item.name === urlNames.liveVideo)[0].url, "_blank")}
     },
     {
       moduleId: 57,
       label: "AVL Map",
       icon: "icon icon-compass5 NaveIcon",
       classes: "mapsTab",
-      url: urlList.filter((item: any) => item.name === urlNames.avlMap)[0].url,
-      target: "_blank"
+      command : () => { window.open(urlList.filter((item: any) => item.name === urlNames.avlMap)[0].url, "_blank")}
     },
     // {
     //   moduleId: 0,
@@ -197,7 +213,7 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.tenantSettings)[0].url) },
         },
         {
-          moduleIds: 69,
+          moduleIds: 0,
           label: 'AD Groups Mapping',
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.ADGroupsMapping)[0].url) },
         },
@@ -209,7 +225,7 @@ const CRXLefNavigation = () => {
           },
         },
         {
-          moduleIds: 0,
+          moduleIds: 91,
           label: 'Manage Default Unit Templates',
           command: () => {
             navigateToPage(urlList.filter((item: any) => item.name === urlNames.defaultUnitTemplate)[0].url);
@@ -236,7 +252,7 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.categoryForms)[0].url) },
         },
         {
-          moduleIds: 0,
+          moduleIds: 93,
           label: t('FOTA_Version_Management'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.updateVersion)[0].url) },
         }
@@ -295,7 +311,7 @@ const CRXLefNavigation = () => {
     }
   })
 
-  return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
+  return (<> <CBXMastHeadMenu model={SubModulePermission}  activeSelection={activeLeftNavigation} setActiveSelection={setActiveLeftNavigation} /></>);
 };
 
 export default CRXLefNavigation;

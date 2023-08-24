@@ -66,7 +66,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded,
                 "asset.unit",
                 "asset.owners",
                 "formData.key",
-                "formData.value"
+                "formData.value",
+                "evidenceRelations.valueDisplayName"
               ],
             },
           },

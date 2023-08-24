@@ -185,6 +185,15 @@
 
 .combo-box-Search {
   position: relative;
+  .CRXAISearchFiltere {
+    .getac-simple-select {
+      .MuiAutocomplete-endAdornment {
+        top: 1px;
+        right: 21px !important;
+        bottom: 0;
+       }
+    }
+  }
   .customIcon {
     position: absolute;
     left: 11px;

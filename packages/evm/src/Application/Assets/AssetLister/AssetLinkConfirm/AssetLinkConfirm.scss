@@ -1,3 +1,36 @@
-.invalidAsset{
-    background: 4px solid red;;
+.linkAsset{
+    .invalidAsset{
+        background: 4px solid red;;
+    }
+    ._asset_group_list_row{
+        display: flex;
+        padding: 22px 0px;
+    }
+    ._asset_group_list_row_primary{
+        margin-top: 35px;
+    }
+    ._asset_group_list_detail{
+        margin-left: 15px;
+    }
+    ._asset_group_list_link{
+        color: var(--color-c34400);
+        font-size: 14px;
+        line-height: 23px;
+        text-align: left;
+        font-style: normal;
+    }
+    
+    .modalContent{
+        .CrxIndicates{
+            position: inherit;
+            margin-top: 60px;
+            .crx-message-alert{
+                margin-bottom: 20px;
+                .MuiAlert-icon{
+                    top: 0px;
+                }
+            }
+            
+        }
+    }
 }

@@ -33,7 +33,7 @@ import {
   RemoveSidePanelClass,
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+import {dateDisplayFormat} from "../../../GlobalFunctions/DateFormat";
 import UserActionMenu from "./UserActionMenu";
 import { dateOptionsTypes } from "../../../utils/constant";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
@@ -421,7 +421,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "250",
+      minWidth: "270",
       visible: true,
       attributeName: "Email",
       attributeType: "String",
@@ -435,7 +435,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
-      minWidth: "112",
+      minWidth: "200",
       visible: true,
       attributeName: "Status",
       attributeType: "List",
@@ -447,7 +447,7 @@ const User: React.FC = () => {
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      minWidth: "250",
+      minWidth: "270",
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,
@@ -558,15 +558,10 @@ const User: React.FC = () => {
       getFilteredUserData()
   }, [searchData]);
 
-  // useEffect(() => {
-    
-  //   let lastLoginColIdx = searchData.filter(x => x.columnName == "lastLogin").map(x => x.colIdx)[0]
-  //   console.log("lastLoginColIdx ", lastLoginColIdx)
-  //   if(lastLoginColIdx && isSearchable && headCells[lastLoginColIdx].id == "lastLogin"){
-  //     getFilteredUserData()
-  //   }
-
-  // },[isSearchable])
+  useEffect(() => {
+    if(selectedItems.length > 0)
+      setSelectedActionRow(undefined)
+  },[selectedItems])
 
   useEffect(() => {
     if (dateTime.colIdx !== 0) {
@@ -734,7 +729,7 @@ const User: React.FC = () => {
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}> 
+    <div className="crxManageUsers manageUsersIndex ExpandViewOverlay" onKeyDown={handleKeyDown}> 
 			<CRXToaster ref={toasterRef}/>
       {rows && (
         <CRXDataTable
@@ -771,7 +766,7 @@ const User: React.FC = () => {
           searchHeader={true}
           columnVisibilityBar={true}
           allowDragableToList={false}
-          className="ManageUsersDataTable"
+          className="ManageUsersDataTable TableWithCheck"
           onClearAll={clearAll}
           getSelectedItems={(v: User[]) => setSelectedItems(v)}
           onResizeRow={resizeRowUsers}
@@ -795,8 +790,9 @@ const User: React.FC = () => {
           //Please dont miss this block.
           offsetY={119}
           stickyToolbar={130}
-          searchHeaderPosition={224}
-          dragableHeaderPosition={189}
+          searchHeaderPosition={223}
+          dragableHeaderPosition={188}
+          overlay={true}
           //End here
           showExpandViewOption={true}
           presetPerUser={userId}

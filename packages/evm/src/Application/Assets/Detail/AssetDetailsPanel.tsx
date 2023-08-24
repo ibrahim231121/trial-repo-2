@@ -26,7 +26,8 @@ type propsObject = {
   setOnMarkerClickTimeData: any
   toasterMsgRef: any
   isGuestView: boolean,
-  assetLog: AssetLogType
+  saveLogs: any,
+  ViewScreen: boolean
 }
 type Timeline = {
   recording_start_point: number;
@@ -45,10 +46,11 @@ type Timeline = {
   enableDisplay: boolean,
   indexNumberToDisplay: number,
   camera: string,
-  timeOffset: number
+  timeOffset: number,
+  isRelatedAsset?: boolean
 }
 
-const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, isGuestView, toasterMsgRef, assetLog }: propsObject) => {
+const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, isGuestView, toasterMsgRef, saveLogs, ViewScreen }: propsObject) => {
   const { t } = useTranslation<string>();
   const [selectDropDown, setSelectDropDown] = React.useState(openMap ? "Map" : "Bookmarks");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -148,6 +150,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
           className="video_right_panel_dropDown"
           onChange={(e: any) => handleChangeDropDown(e)}
           icon={true}
+          disablePortal={!ViewScreen ? true : false}
           defaultOptionText={openMap ? "Map" : "Bookmarks"}
           popover="video_right_panel_dropDown_menu"
           value={assetDetailSelectValue}
@@ -173,7 +176,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
             <List>
               <div className="_video_right_panel_item_heading">{selectDropDown == "Bookmarks" ? t("Search Bookmarks") : t("Search Notes")}</div>
               <div className="_BN_Search_field">
-
+                
                 <TextField
                   type="text"
                   placeholder={t("Search_by_Name_keyword_etc.")}
@@ -196,8 +199,9 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                           selectDropDown={selectDropDown}
                           onClickBookmarkNote={onClickBookmarkNote}
                           toasterMsgRef={toasterMsgRef}
-                          assetLog={assetLog}
+                          saveLogs={saveLogs}
                           searchTerm={searchTerm}
+                          ViewScreen={ViewScreen}
                         />
                       )
                     }
@@ -214,8 +218,9 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                           selectDropDown={selectDropDown}
                           onClickBookmarkNote={onClickBookmarkNote}
                           toasterMsgRef={toasterMsgRef}
-                          assetLog={assetLog}
+                          saveLogs={saveLogs}
                           searchTerm={searchTerm}
+                          ViewScreen={ViewScreen}
                         />
                       )
                     }

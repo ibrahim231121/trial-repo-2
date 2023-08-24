@@ -11,7 +11,7 @@ const CheckEvidenceExpire = (evidence?: any) => {
 
         if (moment(date).format('DD-MM-YYYY') == "31-12-9999")
             return false;
-        if (AssetRetentionFormat(date) == "Expired")
+        if (AssetRetentionFormat(date,evidence.evidenceRelations?.length>0) == "Expired")
             return true;
     }
     return false;

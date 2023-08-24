@@ -23,6 +23,8 @@ export type assetdata = {
     notes: any;
     camera: string;
     status: string;
+    evidenceId?: number;
+    unitName?: string
 };
 export type AuditTrail = {
     sequenceNumber: string;

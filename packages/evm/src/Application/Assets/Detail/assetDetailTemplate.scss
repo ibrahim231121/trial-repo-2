@@ -1,4 +1,8 @@
 #_asset_detail_view_idx {
+  margin-top: 6px;
+  .crxMainTab {
+    z-index: 0 ;
+  }
   .CRXAssetDetail {
     display: flex;
     padding: 0 24px;
@@ -7,6 +11,9 @@
     right: 0;
     top: 96.4px;
     z-index: 9999;
+    .asset_detail_action_menu{
+      margin-left: 20px;
+    }
     .rc-menu-button {
       background: transparent;
       color: var(--color-333333);
@@ -68,12 +75,13 @@
     margin-top: 70px;
   }
   .topBorderForDetail {
-    height: 1px;
-    width: 100%;
-    background: var(--color-d1d2d4);
+    border-top: 1px solid var(--color-d1d2d4);
+    width: 98%;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px var(--color-d1d2d4);
     margin-top: 9px;
     position: relative;
-    z-index: 99999;
+    z-index: 999;
   }
 
   .asset_detail_tabs {
@@ -82,8 +90,9 @@
     margin-bottom: 20px;
     .list_data_main {
       div[id*="crx-tabpanel-"] {
-        height: calc(100vh - 320px);
-        min-height: calc(100vh - 281px);
+        height: calc(100vh - 290px);
+        max-height: calc(100vh - 290px);
+        min-height: unset;
         margin-top: -1px;
         border-top: 1px solid #878787;
       }
@@ -96,14 +105,14 @@
   // Tabs Panel start
   .MainTabsPanel {
     position: relative;
-    background: white;
+    background: var(--color-Black);
     width: 100%;
+    height: calc(100vh - 150px);
     .tabsHeaderControl {
-      width: 30%;
       position: absolute;
       z-index: 999;
-      top: -58px;
-      right: 110px;
+      top: -32px;
+      right: 124px;
       display: flex;
       align-items: baseline;
       // button {
@@ -114,10 +123,27 @@
       }
       .TabsMenuHead {
         display: flex;
-        margin: 0 10px;
+        margin: 0 6px;
         button {
           background: transparent;
           border: none;
+          color: var(--color-333333);
+          font-size: 14px;
+          line-height: 16px;
+          font-family: var(--Arial-font-family);
+          font-weight: 400;
+          &:hover {
+            cursor: inherit !important;
+          }
+        }
+        .split_btn_disabled {
+          color: var(--color-979797);
+          &:disabled {
+            cursor: inherit !important;
+          }
+        }
+        .split_btn_disabled_arrow  {
+          display: none;
         }
         .MuiButtonGroup-root {
           box-shadow: none;
@@ -127,6 +153,10 @@
             min-width: 12px;
             width: 12px;
           }
+        }
+        i {
+          font-size: 21px;
+          margin-left: 5px;
         }
       }
     }
@@ -138,11 +168,38 @@
     .MuiTabs-indicator {
       background-color: black;
     }
+    &.removeEXHeight {
+      display: none;
+    }
   }
 
   //panel second
 
 // Tabs Panel End
+#split-button-menu-main {
+  background-color: var(--color-404041);
+  color: var(--color-d1d2d4);
+  border-radius: 0px;
+  margin-top: -3px;
+  margin-right: -6px;
+  .Mui-selected {
+    background-color: var(--color-404041);
+    color: var(--color-d1d2d4) !important;
+  }
+  li {
+    height: 33px;
+    min-height: 33px;
+    padding: 0 17px;
+    font-size: 14px;
+    &:hover {
+      background-color: var(--color-231F20);
+      color: var(--color-d1d2d4);
+    }
+    &:active {
+      background-color: var(--color-6e6e6e);
+    }
+  }
+}
 
 
 }
@@ -152,7 +209,7 @@
   height: 30px;
   text-align: center;
   position: relative;
-  top: -16px;
+  top: -7px;
   width: 100%;
   margin: 00px;
 
@@ -189,18 +246,18 @@
 
 .lessMoreDetailView_arrow {
   background: transparent;
-  border-top: 1px solid #d1d2d4;
   width: 98%;
   margin: 0 auto;
-  &::before {
-    position: absolute;
-    width: 100%;
-    content: "";
-    top: 0px;
-    left: 0px;
-    box-shadow: 0px 2px 5px #d1d2d4;
-    height: 1px;
-  }
+  margin-bottom: 47px;
+  // &::before {
+  //   position: absolute;
+  //   width: 100%;
+  //   content: "";
+  //   top: 0px;
+  //   left: 0px;
+  //   box-shadow: 0px 2px 5px #d1d2d4;
+  //   height: 1px;
+  // }
 }
 
 .makeStyles-content-9.makeStyles-contentShift-10,
@@ -210,6 +267,7 @@
       padding-left: 62px;
       padding-right: 0px;
       padding-top: 122px;
+      width: 100%;
     }
   }
 }
@@ -222,6 +280,7 @@
       padding-left: 0px;
       padding-right: 0px;
       padding-top: 122px;
+      width: 100%;
     }
   }
 }
@@ -275,26 +334,33 @@
   }
 }
 
-.cbxTabsContent {
-  .asset_detail_AT_table {
-    .asset_detail_AT_dataTable {
-      position: sticky !important;
+.actionBucketIndex {
+  z-index: 999 !important;
+}
 
-      .CRXDataTableCustom {
-        thead {
-          &:nth-child(1) {
-            top: 0px !important;
-          }
-
-          &:nth-child(2) {
-            top: 35px !important;
-          }
+.asset_detail_AT_table {
+  padding: 0 8px 0 11px;
+  .crxClearfilter  {
+    width: calc(100vw - 176px);
+    margin: 0 -2px;
+    height: 86px;
+  }
+  .crxTooltipFilter  {
+    margin-top: -21px;
+  }
+  .AssetsDataGrid {
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+    display: block !important;
+  }  
+  table {
+    margin-top: 26px;
+    tbody {
+      tr {
+        &:hover {
+          background-color: #333 !important;
         }
       }
     }
   }
 }
-
-.actionBucketIndex {
-  z-index: 999 !important;
-} 

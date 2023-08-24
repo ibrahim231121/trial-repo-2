@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState, useRef } from "react";
 import {
   CRXModalDialog,
   CRXButton,
-  CRXCheckBox,
   CRXConfirmDialog,
   CRXAlert,
   CRXSelectBox,
@@ -238,8 +237,10 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
   }, [id]);
 
   const formFieldsValidationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string().required("Name is required")
+      .matches(/^((\d+\/){0,3}?([a-zA-Z]([^\W]|\s|-|\.|,+){2,}))$/, t("Only_alphabets_digits_and_underscore_are_allowed_Must_start_with_an_alphabet_only")),
     type: Yup.string().required("Control Type is required"),
+    displayName : Yup.string().required("Field Display Name is required"),
     defaultFieldValue: Yup.string().when("type", {
       is: (key: any) => controlTypesForValidation.some((x => x.value === key)),
       then: Yup.string().required("Field Values is required")
@@ -311,6 +312,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                     </CRXColumn>
                     <CRXColumn item={true} xs={7}>
                       <CRXSelectBox
+                        
                         name="type"
                         id="type"
                         className="controle_type_select"
@@ -338,6 +340,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         }
                         error={!((errors.type?.length ?? 0) > 0)}
                         errorMsg={errors.type}
+                        disablePortal
                       />
                     </CRXColumn>
                   </CRXRows>
@@ -380,7 +383,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                   >
                     <CRXColumn item={true} xs={5}>
                       <label htmlFor="displayName" className="cc_form_label">
-                        {t("Field_Display_Name")}
+                        {t("Field_Display_Name")} <span>*</span>
                       </label>
                     </CRXColumn>
                     <CRXColumn item={true} xs={7}>
@@ -390,6 +393,14 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (
                         name="displayName"
                         className={`crx_formik_field`}
                       />
+                      {errors.displayName !== undefined && touched.displayName ? (
+                        <div className="errorTenantStyle">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {errors.displayName}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </CRXColumn>
                   </CRXRows>
                  

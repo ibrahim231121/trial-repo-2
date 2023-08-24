@@ -1,11 +1,9 @@
-import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
 import { useHistory, useParams } from "react-router";
 import {
-  CRXModalDialog,
   CRXRadio,
   CRXButton,
   CRXConfirmDialog,
-  CRXAlert,
   CRXCheckBox,
   TextField,
   CRXHeading,
@@ -13,7 +11,7 @@ import {
   CRXToaster,
 } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { DetailExpand, RetentionPoliciesModel } from "../TypeConstant/types";
+import { RetentionPoliciesModel } from "../TypeConstant/types";
 import {
   retentionTypeTimePeriod,
   retentionTypeDiskSpace,
@@ -21,24 +19,14 @@ import {
 import "./retentionPoliciesDetail.scss";
 import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAllRetentionPoliciesInfoAsync } from "../../../../Redux/RetentionPolicies";
-
-import { PageiGrid, RemoveSidePanelClass } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { urlList, urlNames } from "../../../../utils/urlList";
-
-type RetentionPoliciesDetail = {
-  id: number;
-  title: string;
-  pageiGrid: PageiGrid;
-  openModel: React.Dispatch<React.SetStateAction<any>>;
-};
+import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { RetentionPoliciesDetailModel } from "./RetentionPoliciesDetailModel";
 
 const DataRetention = "DataRetention";
 
-const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
-  props: RetentionPoliciesDetail
-) => {
+const RetentionPoliciesDetail: FC<RetentionPoliciesDetailModel> = (props) => {
   const defaultRetentionPolicies: RetentionPoliciesModel = {
     id: 0,
     type: DataRetention,
@@ -56,6 +44,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   };
  
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation<string>();
   const [name, setName] = useState<string>("");
   const [retentionType, setRetentionType] = useState<string>(
     retentionTypeTimePeriod
@@ -67,26 +56,22 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   const [retentionTotalHours, setRetentionTotalHours] = useState<number>(0);
   const [softDeleteTimeDays, setSoftDeleteTimeDays] = useState<number>(0);
   const [gracePeriodHours, setGracePeriodHours] = useState<number>(0);
-
   const [graceTotalPeriodHours, setGraceTotalPeriodHours] = useState<number>(0);
   const [retentionSize, setRetentionSize] = useState<number>(0);
   const [historyVersion, setHistoryVersion] = useState<string>("");
   const [unlimitedRetention, setUnlimitedRetention] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
-
   const [disableRetentionTimeDays, setDisableRetentionTimeDays] = useState(false);
   const [disableHours, setDisableHours] = useState(false);
   const [disableSoftDeleteTimeDays, setDisableSoftDeleteTimeDays] = useState(false);
   const [disableGracePeriodHours, setDisableGracePeriodHours] = useState(false);
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const history = useHistory();
-
   const [isDeleted, setIsDeleted] = React.useState<boolean>(false);
   const [retentionPolicy, setRetentionPolicies] = useState<RetentionPoliciesModel>(defaultRetentionPolicies);
   const [isOpen, setIsOpen] = React.useState(false);
   const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
   const isFirstRenderRef = useRef<boolean>(true);
-  const deletedParamValuesIdRef = useRef<number[]>([]);
   const dataToEdit = useRef<RetentionPoliciesModel>(null);
   const dispatch = useDispatch();
   const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
@@ -94,7 +79,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     retentionTimeDaysErr: "",
     retentionSizeErr: "",
   });
-  
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -104,14 +88,93 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     size: 25
   })
   const regexForNumberOnly = new RegExp("^[0-9]+$");
+  const RadioTimePeriodBtnValues = [
+    {
+      id: 1,
+      value: "TimePeriod",
+      isDisabled: false,
+      label: "Time Period",
+      Comp: () => {},
+      Name: "Age",
+    },
+  ];
 
-  const { t } = useTranslation<string>();
-  
+  const RadioDiskSpaceBtnValues = [
+    {
+      id: 2,
+      value: "DiskSpace",
+      isDisabled: false,
+      label: "Disk Space",
+      Comp: () => {},
+      Name: "Space",
+    },
+  ];
+
+  useEffect(() => {
+    isFirstRenderRef.current = false;
+    if (id != undefined && id != null && parseInt(id) > 0) {
+      SetupConfigurationAgent.getRetentionPolicies(parseInt(id))
+        .then((response: any) => {
+          let retentionPoliciesObj = { ...retentionPolicy };
+          setName(response.name);
+          setDescription(response.description);
+          onRetentionTypeChange(response.detail.type);
+          setRetentionTimeSpaceValue(response.detail.limit.hours);
+          setSoftDeleteTimeValue(response.detail.limit.gracePeriodInHours);
+          setUnlimitedRetention(response.detail.limit.isInfinite);
+          setRetentionSize(response.detail.space);
+          setRetentionPolicies(response);
+          dispatch(enterPathActionCreator({  val: `Retention Policy:  ${response?.name }` }));
+
+          const temp = {
+            retentionPolicies: { ...retentionPoliciesObj },
+          };
+          EditCloseHandler(dataToEdit, temp);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+    }
+    setAddPayload();
+    dispatch(enterPathActionCreator({ val: "" }));
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+      retentionMsgFormRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isFirstRenderRef.current) {
+      if (
+          (name.length > 2 &&
+            ( (radioTimePeriod && (retentionTimeDays > 0 || retentionHours > 0)) || 
+              (radioDiskSpace && retentionSize > 0)
+            )
+          )
+        ) 
+      {
+        setIsSaveDisable(false);
+      } else {
+        setIsSaveDisable(true);
+      }
+    }
+  }, [name, retentionTimeDays, retentionHours, retentionSize]);
+
+  useEffect(() =>{
+    if(unlimitedRetention){
+      setDisableGracePeriodHours(true)
+      setDisableHours(true)
+      setDisableRetentionTimeDays(true)
+      setDisableSoftDeleteTimeDays(true)
+    }
+  },[unlimitedRetention]);
+
   const onRetentionTypeChange = (type: string) => {
     let isDiskSpace = type == "Space";
     onSetDiskSpace(isDiskSpace);
     onSetTimePeriod(!isDiskSpace);
   };
+
   const onChangeRetentionType = (isDiskSpace: boolean) => {
     if (isDiskSpace) {
       setRetentionType(retentionTypeDiskSpace);
@@ -134,6 +197,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     setRadioTimePeriod(isSelect);
     onChangeRetentionType(!isSelect);
   };
+
   const onSetDiskSpace = (isSelect: boolean) => {
     setRadioDiskSpace(isSelect);
     onChangeRetentionType(isSelect);
@@ -146,6 +210,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     setRetentionTimeDays(days);
     onRetentionHoursChange(remainingHours, days);
   };
+
   const setSoftDeleteTimeValue = (hours: number) => {
     let days = parseInt(String(hours / 24));
     let remainingHours = hours - days * 24;
@@ -160,11 +225,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
 
     setRetentionTotalHours(totalHours);
   };
+
   const setGraceTotalPeriodHoursValue = (hours: number, days: number) => {
     let totalHours = Number(hours) + Number(days * 24);
 
     setGraceTotalPeriodHours(totalHours);
   };
+
   const EditCloseHandler = (dataToEdit: any, temp: any) => {
     if (dataToEdit.current == null) {
       dataToEdit.current = { ...temp };
@@ -175,6 +242,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     if (days < 0 || !regexForNumberOnly.test(days.toString())) {
       days = 0;
     }
+    if(days.toString().length > 7)
+      days = days.toString().substring(0, days.toString().length - 1);
 
     setRetentionTimeDays(days);
     setRetentionTotalHourValue(hours, days);
@@ -192,6 +261,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     if (days < 0 || !regexForNumberOnly.test(days.toString())) {
       days = 0;
     }
+    if(days.toString().length > 7)
+      days = days.toString().substring(0, days.toString().length - 1);
+
     setSoftDeleteTimeDays(days);
     setGraceTotalPeriodHoursValue(hours, days);
   };
@@ -233,6 +305,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
 
     return isDataChanged;
   };
+
   const redirectPage = () => {
     if (dataToEdit.current != null) {
       let isDataChanged = false;
@@ -278,7 +351,14 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
         ...UploadPolicyDetailErr,
         retentionTimeDaysErr: t("Retention_time_is_required"),
       });
-    } else {
+    } 
+    else if(!maxTextLenghtValidation(retentionTimeDays)){
+      setUploadPolicyDetailErr({
+        ...UploadPolicyDetailErr,
+        retentionTimeDaysErr: t("Retention_time_is_not_valid"),
+      });
+    }
+    else {
       setUploadPolicyDetailErr({
         ...UploadPolicyDetailErr,
         retentionTimeDaysErr: "",
@@ -304,74 +384,15 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     }
     return isDisable;
   };
-
-  useEffect(() => {
-    if (!isFirstRenderRef.current) {
-      if (!checkNameValidation() && !checkRententionValidation() && 
-      (name.length > 0 &&
-        ((radioTimePeriod && (retentionTimeDays > 0 || retentionHours > 0)) ||
-          (radioDiskSpace && retentionSize > 0)))) {
-        setIsSaveDisable(false);
-      } else {
-        setIsSaveDisable(true);
-      }
-    }
-  }, [name,retentionTimeDays,retentionHours, retentionSize]);
-
-  useEffect(() => {
-    if (!isFirstRenderRef.current) {
-      if (!checkRetentionSizeValidation()) {
-        setIsSaveDisable(false);
-      } else {
-        setIsSaveDisable(true);
-      }
-    }
-  }, [retentionSize]);
-
-  useEffect(() => {
-    
-    dispatch(enterPathActionCreator({ val: "" }));
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
-      retentionMsgFormRef.current = null;
-    };
-  }, []);
-
-  const ChangData = () => {
-    
+  
+  const maxTextLenghtValidation = (arg: number) => {
+    if(arg.toString().length > 7)
+      return false;
+    return true;
   }
 
-  useEffect(() => {
-    isFirstRenderRef.current = false;
-    if (id != undefined && id != null && parseInt(id) > 0) {
-      SetupConfigurationAgent.getRetentionPolicies(parseInt(id))
-        .then((response: any) => {
-          let retentionPoliciesObj = { ...retentionPolicy };
-          setName(response.name);
-          setDescription(response.description);
-          onRetentionTypeChange(response.detail.type);
-
-          setRetentionTimeSpaceValue(response.detail.limit.hours);
-          setSoftDeleteTimeValue(response.detail.limit.gracePeriodInHours);
-          setUnlimitedRetention(response.detail.limit.isInfinite);
-          setRetentionSize(response.detail.space);
-
-          setRetentionPolicies(response);
-          dispatch(enterPathActionCreator({  val: `Retention Policy:  ${response?.name }` }));
-
-          const temp = {
-            retentionPolicies: { ...retentionPoliciesObj },
-          };
-          EditCloseHandler(dataToEdit, temp);
-        })
-        .catch((err: any) => {
-          console.error(err);
-        });
-    }
-  }, []);
-
   const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
-    const chracterRegx = /^^[a-zA-Z]+[a-zA-Z0-9-_ \b]*$/.test(String(name).toLowerCase());
+    const chracterRegx = /^[a-zA-Z][a-zA-Z0-9-_ \b]*$/.test(String(name).toLowerCase());
     if (!chracterRegx) {
       return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
     } else if (name.length < 3) {
@@ -408,7 +429,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
   };
 
   const setAddPayload: any = () => {
-   
     const limit = {
       isInfinite: unlimitedRetention,
       hours: Number(retentionHours) + Number(retentionTimeDays * 24),
@@ -437,20 +457,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     return retention;
   };
 
-  useEffect(() => {
-    setAddPayload()
-  },[])
-
-  
   const onSave = async () => {
     const payload = setAddPayload();
-
     if (parseInt(id) > 0) {
       const urlEditRetentionPolicies = "Policies/" + id;
       SetupConfigurationAgent.putRetentionPoliciesTemplate(
         urlEditRetentionPolicies,
-        payload
-      )
+        payload)
         .then(() => {
           setRetentionPolicies(defaultRetentionPolicies);
           onMessageShow(true, t("Success_You_have_saved_the_Retention_Policy"));
@@ -517,27 +530,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
       </span>
     );
   };
-  const RadioTimePeriodBtnValues = [
-    {
-      id: 1,
-      value: "TimePeriod",
-      isDisabled: false,
-      label: "Time Period",
-      Comp: () => {},
-      Name: "Age",
-    },
-  ];
-
-  const RadioDiskSpaceBtnValues = [
-    {
-      id: 2,
-      value: "DiskSpace",
-      isDisabled: false,
-      label: "Disk Space",
-      Comp: () => {},
-      Name: "Space",
-    },
-  ];
 
   const RetentionFormMessages = (obj: any) => {
     retentionMsgFormRef?.current?.showToaster({
@@ -556,18 +548,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetail> = (
     });
   };
 
-  useEffect(() =>{
-    if(unlimitedRetention){
-      setDisableGracePeriodHours(true)
-      setDisableHours(true)
-      setDisableRetentionTimeDays(true)
-      setDisableSoftDeleteTimeDays(true)
-    }
-  },[unlimitedRetention])
-
-
   return (
-    <div className="searchComponents retention-policies">
+    <div className="retention-policies">
       <CRXToaster ref={retentionMsgFormRef} />
       <div className="indicatestext tp15"><b>*</b> Indicates required field</div> 
       <div className="CRXRetentionPolicies">

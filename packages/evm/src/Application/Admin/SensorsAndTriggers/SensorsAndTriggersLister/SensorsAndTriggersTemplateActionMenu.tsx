@@ -14,9 +14,6 @@ import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import { getAllSensorsEvents } from "../../../../Redux/SensorEvents";
 import { useDispatch } from "react-redux";
 
-
-
-
 type Props = {
   selectedItems?: any;
   row?: any;
@@ -32,9 +29,21 @@ const dispatch = useDispatch();
 
 const [nondefault, setnondefault] = useState(false);
 
-
 const deleteSensorAndTrigger = () => {
-  if(Array.isArray(selectedItems) && selectedItems.length > 0) {
+
+  if(row && !selectedItems.includes(row)) {
+    SetupConfigurationAgent.deleteSensorsAndTriggersTemplate(row.id)
+    .then(() => {
+      getRowData();
+      getSelectedData();
+      onMessageShow(true,t("SensorsAndTriggers_Deleted_Sucessfully"));
+    })
+    .catch(function(error) {     
+        onMessageShow(false,error?.response?.data?.toString());
+        return error;
+    });
+  }
+  else if(Array.isArray(selectedItems) && selectedItems.length > 0) {
     const eventIds: number[] = selectedItems.map((data: any) => {
       return data.id;
     });
@@ -49,21 +58,9 @@ const deleteSensorAndTrigger = () => {
         return error;
     });
   }
-  if(!selectedItems.includes(row)) {
-    SetupConfigurationAgent.deleteSensorsAndTriggersTemplate(row.id)
-    .then(() => {
-      getRowData();
-      getSelectedData();
-      onMessageShow(true,t("SensorsAndTriggers_Deleted_Sucessfully"));
-    })
-    .catch(function(error) {      
-        onMessageShow(false,error?.response?.data?.toString());
-        return error;
-    });
-  }
 }
 
-const deleteConfirm = () => {
+const deleteConfirm = () => { 
       setnondefault(true);  
 }
 
@@ -85,7 +82,7 @@ const openCreateSensorsAndTriggersForm = () => {
     <Menu
       key="right"
       align="center"
-      viewScroll="auto"
+      viewScroll="close"
       direction="right"
       position="auto"
       offsetX={-20}
@@ -99,7 +96,7 @@ const openCreateSensorsAndTriggersForm = () => {
       }
     
     >
-        {selectedItems.length <=1 ? (
+      {(row && !selectedItems.includes(row)) || (selectedItems.length <= 1)  ? (
       <MenuItem onClick={openCreateSensorsAndTriggersForm}>
       <Restricted moduleId={51}>
           <div className="crx-meu-content groupingMenu crx-spac"  >
@@ -112,10 +109,10 @@ const openCreateSensorsAndTriggersForm = () => {
           </div>
           </Restricted>
         </MenuItem>
-        ) : (
-          <div></div>
-          )}  
-    
+     ) : (
+      <div></div>
+      )}  
+      
       <MenuItem >
       <Restricted moduleId={50}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >

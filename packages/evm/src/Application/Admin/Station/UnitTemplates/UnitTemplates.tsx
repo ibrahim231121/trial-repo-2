@@ -76,24 +76,27 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
   }
 
   const filterOptionValuesOnTheBaseOfDeviceId = (deviceId: number) => {
-    if (Object.keys(configurationTemplatesFromStore).length > 0) {
-      let filteredCollection: any;
-      if (!isAddCase) {
-        filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
-          if ((parseInt(obj.typeOfDevice.id) === deviceId)) {
-            return obj;
-          }
-        });
-      } else {
-        filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
-          if (parseInt(obj.typeOfDevice.id) === deviceId) {
-            return obj;
-          }
-        });
+    if(configurationTemplatesFromStore)
+    {
+      if (Object.keys(configurationTemplatesFromStore).length > 0) {
+        let filteredCollection: any;
+        if (!isAddCase) {
+          filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
+            if ((parseInt(obj.typeOfDevice.id) === deviceId)) {
+              return obj;
+            }
+          });
+        } else {
+          filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
+            if (parseInt(obj.typeOfDevice.id) === deviceId) {
+              return obj;
+            }
+          });
+        }
+        console.log(filteredCollection)
+        filteredCollection.push({ id: 0, name: "None" })
+        return formatConfigurationTemplatesToMapCRXSelectBox(filteredCollection);
       }
-      console.log(filteredCollection)
-      filteredCollection.push({ id: 0, name: "None" })
-      return formatConfigurationTemplatesToMapCRXSelectBox(filteredCollection);
     }
     return [];
   }
@@ -155,7 +158,8 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
                 container="container"
                 item="item"
                 lg={6}
-                xs={6}
+                md={12}
+                xs={12}
                 spacing={0}
                 key={deviceTypeObj.id}
               >
@@ -187,7 +191,8 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
                 container="container"
                 item="item"
                 lg={6}
-                xs={6}
+                md={12}
+                xs={12}
                 spacing={0}
                 key={deviceTypeObj.id}
               >

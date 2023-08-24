@@ -3,19 +3,23 @@ import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from 'react-i18next';
 import moment from "moment";
-import { AutoCompleteOptionType, Case, CASE_STATE, CASE_CLOSED_TYPE, CASE_CREATION_TYPE, TCaseAsset, TCaseFormType, CASE_ASSET_TYPE } from "../CaseTypes";
+import { AutoCompleteOptionType, Case, CASE_STATE, CASE_CLOSED_TYPE, CASE_CREATION_TYPE, TCaseAsset, TCaseFormType, CASE_ASSET_TYPE, CaseSearchEvidenceData, CASE_SEARCH_BY } from "../CaseTypes";
 import { CasesAgent } from "../../../utils/Api/ApiAgent";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
-import { CRXButton, CRXToaster, CRXCheckBox, CRXTabs, CrxTabPanel, CRXRows, CRXColumn, CRXHeading, CRXRadio, CRXMultiSelectBoxLight,
-  CRXInputDatePicker, CrxAccordion } from "@cb/shared";
+import { CRXButton, CRXToaster, CRXCheckBox, CRXTabs, CrxTabPanel, CRXContainer } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
 import { loadFromLocalStorage } from "../../../Redux/AssetActionReducer";
-import { AssetThumbnail } from "../../Assets/AssetLister/AssetDataTable/AssetThumbnail";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import CreateCase from "./CreateCase";
 import './CreateCaseWizard.scss';
+import randomNumberGenerator from "../../Assets/utils/numberGenerator";
+import CaseSearchEvidence from './CaseSearchEvidence';
+import { SearchModel } from "../../../utils/Api/models/SearchModel";
+import CaseAsset from "./CaseAsset";
+import { getAssetTypeEnumValue, getChildAssetsSequenceNumber } from "../utils/globalFunctions";
+import { CheckEvidenceExpire } from "../../../GlobalFunctions/CheckEvidenceExpire";
 interface AssetBucket {
   id: number;
   assetId: number;
@@ -23,6 +27,7 @@ interface AssetBucket {
   assetType: string;
   recordingStarted: string;
   categories: string[];
+  evidence: any;
 }
 
 const userPagerData = {
@@ -31,21 +36,42 @@ const userPagerData = {
     filters: []
   },
   page: 0,
-  size: 100,
+  size: 10000,
   gridSort: {
     field: "LoginId",
     dir: "asc"
   }
 }
 
+const caseInitialState: TCaseFormType = {
+  RecId:0,
+  CaseId: "",
+  CMT_CAD_RecId: 0,
+  CADCsv: [],
+  RMSId: "",
+  State: { id: 0, label: "" },
+  CaseLead: { id: 0, label: "" },
+  Status:  { id: 0, label: "" },
+  CreationType: { id: 0, label: "" },
+  DescriptionPlainText: "",
+  DescriptionJson: "",
+  ClosedType: { id: 0, label: "" }
+};
+
+enum CASE_WIZARD_TAB {
+  searchEvidence = 0,
+  assetBucket = 1,
+  caseInfomation = 2
+}
+
 const CreateCaseWizard = () => {
 
     const [isFormButtonDisabled, setIsFormButtonDisabled] = useState<boolean>(true);
-    const [tabValue, setTabValue] = useState<number>(0);
+    const [tabValue, setTabValue] = useState<number>(CASE_WIZARD_TAB.searchEvidence);
 
     const [caseLeadAutoCompleteOptions, setCaseLeadAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
     const [statusAutoCompleteOptions, setStatusAutoCompleteOptions] =  useState<AutoCompleteOptionType[]>([]);
-    const [selectedAssets, setSelectedAssets] = useState<AssetBucket[]>([]);
+    const [, setUpdateState] = useState<boolean>(true);
 
     const { t } = useTranslation<string>();
     const history = useHistory();
@@ -53,12 +79,35 @@ const CreateCaseWizard = () => {
 
     const toasterRef = useRef<typeof CRXToaster>(null);
     const stepperButtonContainerRef = useRef<HTMLDivElement | null>(null);
-    const formValuesRef = useRef<TCaseFormType | undefined>(undefined); 
+    const formValuesRef = useRef<TCaseFormType>(caseInitialState);
     const isFirstRenderRef = useRef<boolean>(true);
     const createCaseComponentRef = useRef<any>(null);
+    const caseSearchEvidenceDataRef = useRef<CaseSearchEvidenceData>({
+      searchBy: CASE_SEARCH_BY.userAndDate,
+      cadId: {id: 0, label: ""},
+      users: [],
+      startDate: "",
+      endDate: "",
+    });
+    const selectedAssetsFromSearchRef = useRef<SearchModel.Evidence[]>([]);
+    const selectedAssetsFromBucketRef = useRef<AssetBucket[]>([]);
 
-    const assetBucketList: AssetBucket[] = useSelector((state: RootState) => state.assetBucket.assetBucketData);
     const userList: any = useSelector((state: RootState) => state.userReducer.usersInfo);
+
+    useEffect(() => {
+      if(!isFirstRenderRef.current) {
+        const statusValue = statusAutoCompleteOptions.find(x => x.label?.toLocaleLowerCase() === "new");
+        if(statusValue != null && formValuesRef.current != null) {
+          formValuesRef.current.Status = statusValue;
+        }
+        const currentUserId = parseInt(localStorage.getItem('User Id') ?? "0");
+        const caseLead = caseLeadAutoCompleteOptions.find(x => x.id === currentUserId);
+        if(caseLead != null) {
+          formValuesRef.current.CaseLead = caseLead;
+        }
+        setUpdateState(prevState => !prevState);
+      }
+    }, [caseLeadAutoCompleteOptions, statusAutoCompleteOptions])
 
     useEffect(() => {
       if(!isFirstRenderRef.current && userList && Array.isArray(userList.data) ) {
@@ -72,6 +121,7 @@ const CreateCaseWizard = () => {
   
     useEffect(() => {
       isFirstRenderRef.current = false;
+      formValuesRef.current.CaseId = generateUniqueCaseId();
       fetchAllDropDownsData();
       dispatch(loadFromLocalStorage()); // on load check asset bucket exists in local storage
       dispatch(getUsersInfoAsync(userPagerData));
@@ -80,8 +130,22 @@ const CreateCaseWizard = () => {
     const fetchAllDropDownsData = async () => {
       await CasesAgent.getAllDropDownValues('/Case/GetAllDropDownValues')
       .then((response: any) => {
-        if(response != null && Array.isArray(response.caseStatus))
-          setStatusAutoCompleteOptions(response.caseStatus);
+        if(response != null && Array.isArray(response.caseStatus)) {
+          const statusAutoComplete = response.caseStatus.map((item: any) => ({
+            id: item.id,
+            label: item.label
+          }));
+          if(Array.isArray(statusAutoComplete)) {
+            const itemToRemoveIndex = statusAutoComplete.findIndex(function(item) {
+              return item.label === "Closed";
+            });
+            
+            if(itemToRemoveIndex > -1){
+              statusAutoComplete.splice(itemToRemoveIndex, 1);
+            }
+            setStatusAutoCompleteOptions(statusAutoComplete);
+          }
+        }
       })
       .catch(() => {});
     }
@@ -94,23 +158,76 @@ const CreateCaseWizard = () => {
   
     const getCaseAssets = () => {
       const caseAssetsList: TCaseAsset[] = [];
-      selectedAssets.forEach((item, idx) => {
-        caseAssetsList.push({
-          id: '0',
-          caseId: 0,
-          assetId: item.assetId,
-          evidenceId: item.id,
-          notes: '',
-          sequenceNumber: `${item.assetId}-${idx}`,
-          assetName: item.assetName,
-          assetType: getAssetTypeEnumValue(item.assetType) ?? CASE_ASSET_TYPE.Others,
-        })
-      });
+      let sequenceNumber = 0;
+      sequenceNumber = getAssetsFromSearch(sequenceNumber, caseAssetsList);
+      getAssetsFromBucket(sequenceNumber, caseAssetsList);
       return caseAssetsList;
     }
 
-    const getAssetTypeEnumValue = (assetType: string) => {
-      return CASE_ASSET_TYPE[assetType as keyof typeof CASE_ASSET_TYPE];
+    const getAssetsFromSearch = (sequenceNumber: number, caseAssetsList: TCaseAsset[]) => {
+      Array.isArray(selectedAssetsFromSearchRef.current) && selectedAssetsFromSearchRef.current.length > 0 &&
+      selectedAssetsFromSearchRef.current.forEach((item) => {
+        if(caseAssetsList.findIndex(x => x.assetId === item.masterAsset.assetId) === -1 && !CheckEvidenceExpire(item)) {
+          sequenceNumber++;
+          addAssetToCaseAssetList(item.id, item.masterAsset, sequenceNumber.toString(), caseAssetsList);
+          const childAssets = item.asset.filter(x => x.assetId != item.masterAsset.assetId);
+          if(Array.isArray(childAssets)) {
+            childAssets.forEach((obj, idx) => {
+              const formattedSequence = getChildAssetsSequenceNumber((idx + 1).toString(), 3);
+              addAssetToCaseAssetList(item.id, obj, sequenceNumber + '_' + formattedSequence, caseAssetsList);
+            });
+          }
+        }
+      });
+      return sequenceNumber;
+    }
+
+    const getAssetsFromBucket = (sequenceNumber: number, caseAssetsList: TCaseAsset[]) => {
+      Array.isArray(selectedAssetsFromBucketRef.current) && selectedAssetsFromBucketRef.current.length > 0 &&
+      selectedAssetsFromBucketRef.current.forEach((item) => {
+        if(caseAssetsList.findIndex(x => x.assetId === item.assetId) === -1 && !CheckEvidenceExpire(item.evidence)) {
+          sequenceNumber++;
+          let masterAsset: SearchModel.Asset | null = null;
+          const childAssets: SearchModel.Asset[] = [];
+
+          if(item.evidence && Array.isArray(item.evidence.asset)) {
+            const assets = item.evidence.asset;
+            for(let i = 0; i < assets.length; i++) {
+              if(assets[i].assetId === item.assetId) {
+                masterAsset = assets[i];
+              }
+              else {
+                childAssets.push(assets[i]);
+              }
+            }
+          }
+
+          if(masterAsset != null)
+            addAssetToCaseAssetList(item.evidence.id, masterAsset, sequenceNumber.toString(), caseAssetsList);
+          if(Array.isArray(childAssets) && childAssets.length > 0) {
+            childAssets.forEach((obj, idx) => {
+              const formattedSequence = getChildAssetsSequenceNumber((idx + 1).toString(), 3);
+              addAssetToCaseAssetList(item.id, obj, sequenceNumber + '_' + formattedSequence, caseAssetsList);
+            });
+          }
+        }
+      });
+    }
+
+    const addAssetToCaseAssetList = (evidenceId: number, asset: SearchModel.Asset, sequenceNumber: string, caseAssetList: TCaseAsset[]) => {
+      caseAssetList.push({
+        id: '0',
+        caseId: 0,
+        assetId: asset.assetId,
+        evidenceId: evidenceId,
+        notes: '',
+        sequenceNumber: sequenceNumber.toString(),
+        assetName: asset.assetName,
+        assetType: getAssetTypeEnumValue(asset.assetType) ?? CASE_ASSET_TYPE.Others,
+        fileId: asset?.files[0]?.filesId,
+        fileName: asset?.files[0]?.fileName ?? "",
+        fileType: asset?.files[0]?.type,
+      });
     }
   
     const onSubmit= (values: TCaseFormType, setSubmitting: (isSubmitting: boolean) => void) => {
@@ -177,81 +294,12 @@ const CreateCaseWizard = () => {
       };
       dispatch(addNotificationMessages(notificationMessage));
     };
+
+    const generateUniqueCaseId = () => {
+      const randomNumGenerated = randomNumberGenerator();
+      return `${new Date().getUTCFullYear()}-${Math.floor(100000 + randomNumGenerated * 900000)}`
+    }
   
-    const onSelectAllAssetsClick = (e: any) => {
-      const isChecked = e.target.checked == true ? true : false;
-      if(isChecked) {
-        setSelectedAssets(assetBucketList);
-      }
-      else {
-        setSelectedAssets([]);
-      }
-    }
-
-    const onSelectAssetClick = (e: any, item: AssetBucket) => {
-      const assetsCopy = [...selectedAssets];
-      const selectedItem = assetsCopy.find(a => a.assetId === item.assetId);
-      if(e.target.checked) {
-        if(selectedItem === undefined)
-          assetsCopy.push(item);
-        setSelectedAssets(assetsCopy);
-      }
-      else {
-        if(selectedItem != undefined) {
-          setSelectedAssets(assetsCopy.filter(a => a.assetId !== selectedItem.assetId));
-        }
-      }
-    }
-
-    const getAssetBucketContent = () => {
-      return assetBucketList.length > 0 ? (
-          <>
-            <div className="assetBucketSelectAllContainer">
-              <CRXCheckBox
-                checked={selectedAssets.length === assetBucketList.length}
-                onChange={(e: any) => onSelectAllAssetsClick(e)}
-                name="selectAll"
-                className="bucketListCheckedAll"
-                lightMode={true}
-              />
-              <span className="selectAllText">
-                {t("Select_All")}
-              </span>
-              {/* {t("View_on_assets_bucket_page")}{" "}
-              <i className="icon icon-arrow-up-right2"></i>{" "} */}
-              {/* <div className="bucketActionMenuAll"> */}
-                {/* <div className={selectedAssets.length > 1 ? "" : " disableHeaderActionMenu"}> */}
-                {/* <ActionMenu
-                  row={undefined}
-                  className=""
-                  selectedItems={selectedItems}
-                  setSelectedItems={setSelectedItems}
-                  actionMenuPlacement={
-                    ActionMenuPlacement.AssetBucket
-                  }
-                /> */}
-                {/* </div>  */}
-              {/* </div> */}
-            </div>
-            <div className="assetBucketListerScroll">
-              <div className="assetBucketLister">
-                {assetBucketList.map((item) => {
-                  const asset = selectedAssets.find(a => a.assetId === item.assetId)
-                  return (
-                    <CaseAssetItem item={item} hasCheckbox={true} onSelectAssetClick={onSelectAssetClick}
-                      isChecked={(asset != null && item.assetId === asset.assetId) || (selectedAssets.length === assetBucketList.length)}/>
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="bucketContent">
-            {t("Your_Asset_Bucket_is_empty.")}
-          </div>
-        )
-    }
-
     const updateFormValues = (values: any) => {
       if(values != null)
         formValuesRef.current = values; 
@@ -266,16 +314,21 @@ const CreateCaseWizard = () => {
     }
 
     const onBackClick = () => {
-      setTabValue((prevState) => prevState - 1 > 0 ? prevState - 1 : 0);
+      setTabValue((prevState) => prevState - 1 > 0 ? prevState - 1 : CASE_WIZARD_TAB.searchEvidence);
     }
 
     const onSkipClick = () => {
-      setSelectedAssets([]);
-      setTabValue(2);
+      const users = [...caseSearchEvidenceDataRef.current.users];
+      for(let i = 0; i < users.length; i++) {
+        users[i].selectedAssets = [];
+      }
+      selectedAssetsFromSearchRef.current = [];
+      selectedAssetsFromBucketRef.current = [];
+      setTabValue(CASE_WIZARD_TAB.caseInfomation);
     }
 
     const onNextClick = () => {
-      setTabValue((prevActiveStep) => (prevActiveStep + 1) <= 2 ? (prevActiveStep + 1) : 2);
+      setTabValue((prevActiveStep) => (prevActiveStep + 1) <= 2 ? (prevActiveStep + 1) : CASE_WIZARD_TAB.caseInfomation);
     }
 
     const onCreateCaseClick = () => {
@@ -284,26 +337,77 @@ const CreateCaseWizard = () => {
       }
     }
 
+    const handleTabChange = (event: any, newValue: number) => setTabValue(newValue);
+
+    const updateCaseSearchEvidenceData = <TKey extends keyof CaseSearchEvidenceData>(field: TKey, value: CaseSearchEvidenceData[TKey]) => {
+      caseSearchEvidenceDataRef.current[field] = value;
+      console.log(caseSearchEvidenceDataRef.current);
+      if(field === "users") {
+        updateSelectedAssets();
+      }
+    }
+
+    const updateSelectedAssets = () => {
+      let selectedAssets: any[] = [];
+      const users = [...caseSearchEvidenceDataRef.current.users];
+      for(let i = 0; i < users.length; i++) {
+        const userSelectedAssets = [...users[i].selectedAssets];
+        for(let j = 0; j < userSelectedAssets.length; j++) {
+          if(selectedAssets.findIndex(x => x.id === userSelectedAssets[j]) === -1) {
+            selectedAssets.push(userSelectedAssets[j]);
+          }
+        }
+      }
+      selectedAssetsFromSearchRef.current = selectedAssets;
+    }
+
+    const updateSelectedAssetsFromBucket = (assets: AssetBucket[]) => {
+      if(Array.isArray(assets)) {
+        selectedAssetsFromBucketRef.current = assets;
+      }
+      else {
+        selectedAssetsFromBucketRef.current = [];
+      }
+    }
 
     return (
       <div className="createCaseStepperContent">
-          <CRXTabs value={tabValue} onChange={() => {}} tabitems={tabs} stickyTab={142} />
-          <CrxTabPanel value={tabValue} index={0}>
-           <SearchEvidence />
+          <CRXTabs value={tabValue} onChange={handleTabChange} tabitems={tabs} stickyTab={142} />
+          <CrxTabPanel value={tabValue} index={CASE_WIZARD_TAB.searchEvidence}>
+           <CaseSearchEvidence data={caseSearchEvidenceDataRef.current} storeData={updateCaseSearchEvidenceData}
+            cadAutoCompleteOptions={[]}/>
           </CrxTabPanel>
-          <CrxTabPanel value={tabValue} index={1}>
-            { getAssetBucketContent() }
+          <CrxTabPanel value={tabValue} index={CASE_WIZARD_TAB.assetBucket}>
+            <CaseAssetBucket alreadySelectedAssets={selectedAssetsFromBucketRef.current} updateSelectedAssets={updateSelectedAssetsFromBucket}/>
           </CrxTabPanel>
-          <CrxTabPanel value={tabValue} index={2}>
+          <CrxTabPanel value={tabValue} index={CASE_WIZARD_TAB.caseInfomation}>
             <CRXToaster ref={toasterRef} className="createCaseToster" />
             <CreateCase ref={createCaseComponentRef} isEdit={false} formValues={formValuesRef.current}
               caseLeadAutoCompleteOptions={caseLeadAutoCompleteOptions} statusAutoCompleteOptions={statusAutoCompleteOptions} 
-              cadCsvAutoCompleteOptions={[]} updateFormValues={updateFormValues} onSubmit={onSubmit} validationCallback={isFormValid}/>
+              cadCsvAutoCompleteOptions={[]} updateFormValues={updateFormValues} onSubmit={onSubmit} validationCallback={isFormValid}
+              />
+            <CRXContainer className="createCaseSelectedAssetsContainer">
+              <label className="selectedAssetsHeading">
+                {t('Selected_Evidence')} [{selectedAssetsFromSearchRef.current.length + selectedAssetsFromBucketRef.current.length}]
+              </label>
+              <div className="selectedAssetsMatrix">
+                {
+                  selectedAssetsFromSearchRef.current.map((item) => {
+                    return <CaseAsset item={item} isThumbnailOnly={true}/>
+                  })
+                }
+                {
+                  selectedAssetsFromBucketRef.current.map((item) => {
+                    return <CaseAsset item={item} isThumbnailOnly={true}/>
+                  })
+                }
+              </div>
+            </CRXContainer>
           </CrxTabPanel>
           <div className="createCaseStepperButtonsContainer" ref={stepperButtonContainerRef}>
             <div className="createCaseStepperButtonsChildContainer">
               {
-                tabValue === 1 ?
+                tabValue === CASE_WIZARD_TAB.assetBucket || tabValue === CASE_WIZARD_TAB.caseInfomation ?
                 <CRXButton
                   className="createCaseFormButtons secondary"
                   color="secondary"
@@ -325,7 +429,7 @@ const CreateCaseWizard = () => {
             </div>
             <div className="createCaseStepperButtonsChildContainer">
               {
-                tabValue === 2 ?
+                tabValue === CASE_WIZARD_TAB.caseInfomation ?
                 <CRXButton
                   id="createCaseSubmitButton"
                   disabled={isFormButtonDisabled}
@@ -338,7 +442,7 @@ const CreateCaseWizard = () => {
                 :
                 <>
                  {
-                  tabValue === 0 ?
+                  tabValue === CASE_WIZARD_TAB.searchEvidence ?
                     <CRXButton
                       className="createCaseFormButtons secondary"
                       color="secondary"
@@ -354,7 +458,7 @@ const CreateCaseWizard = () => {
                     color="secondary"
                     variant="outlined"
                     onClick={onNextClick}
-                    disabled={ (!(assetBucketList.length > 0) && tabValue === 0) || (!(selectedAssets.length > 0) && tabValue === 1) }
+                    // disabled={ (!(assetBucketList.length > 0) && tabValue === 0) || tabValue === 1}
                   >
                     {t("Next")}
                   </CRXButton>
@@ -365,261 +469,110 @@ const CreateCaseWizard = () => {
         </div>
     )
   }
-  
-export default CreateCaseWizard;
 
-type CaseAssetItemType = {
-  item: any,
-  isChecked?: boolean,
-  hasCheckbox?: boolean,
-  onSelectAssetClick?: (e: any, item: any) => void
+type CaseAssetBucketPropType = {
+  alreadySelectedAssets: AssetBucket[],
+  updateSelectedAssets: (assets: AssetBucket[]) => void,
 }
 
-const CaseAssetItem : FC<CaseAssetItemType> = ({item, isChecked = false, hasCheckbox = false, onSelectAssetClick}) => {
-  return (
-    <div className="bucketLister">
-      {
-        hasCheckbox === true ?
-        <div className="assetCheck">
-          <CRXCheckBox
-            checked={isChecked}
-            onChange={(e: any) => typeof onSelectAssetClick === "function" ? onSelectAssetClick(e, item) : {}}
-            name={item.assetId}
-            lightMode={true}
-          />
-        </div>
-        : null
-      }
-      
-      <div className="bucketThumb">
-        <AssetThumbnail
-          assetName={item.assetName}
-          assetType={item.assetType}
-          fileType={item?.evidence?.masterAsset?.files[0]?.type}
-          accessCode={item?.evidence?.masterAsset?.files[0]?.accessCode}
-          fontSize="61pt"
-        />
-      </div>
-      <div className="bucketListTextData">
-        {/* <div className="bucketListAssetName">
-          { assetNameTemplate(item.assetName, item.evidence) }
-        </div>
-        <div className="bucketListRec">
-          {item.assetType}
-        </div> */}
-        {/* : ( */}
-        <div className="bucketListAssetName">
-          {item.assetName.length > 25
-            ? item.assetName.substr(0, 25) + "..."
-            : item.assetName}
-            {/* assetNameTemplate(item.assetName,item.evidence) */}
-        </div>
-        <div className="bucketListRec">
-          {item.assetType}
-        </div>
-        {/* )} */}
-        {/* {assetBucketItem.evidence.categories &&
-          assetBucketItem.evidence.categories.length > 0 && (
-            <div className="bucketListRec">
-              {assetBucketItem.evidence.categories
-                .map((item: any) => item)
-                .join(", ")}
-            </div>
-          )} */}
-      </div>
-      {/* <div className="bucketActionMenu">
-        {
-          <ActionMenu
-            row={x}
-            selectedItems={selectedItems}
-            actionMenuPlacement={
-              ActionMenuPlacement.AssetBucket
-            }
-          />
-        }
-      </div> */}
-    </div>
-  )
-}
+const CaseAssetBucket: FC<CaseAssetBucketPropType> = ({ alreadySelectedAssets, updateSelectedAssets }) => {
 
-const SearchEvidence: FC<any> = (props) => {
-  const [searchBy, setSearchBy] = useState("1");
-  const [isRelatedAssetsExpanded, setIsRelatedAssetExpanded] = useState<string>("");
+  const [selectedAssets, setSelectedAssets] = useState<AssetBucket[]>(Array.isArray(alreadySelectedAssets) ? alreadySelectedAssets : []);
+  const [availableAssetsFromBucket, setAvailableAssetsFromBucket] = useState<AssetBucket[]>([]);
 
+  const isFirstRenderRef = useRef<boolean>(true);
+
+  const assetBucketList: AssetBucket[] = useSelector((state: RootState) => state.assetBucket.assetBucketData);
   const { t } = useTranslation<string>();
 
-  const searchByRadioOptionsRef = useRef<any>([
-    {
-      value: "1", label: `${t("CAD_ID")}`, Comp: () => { }
-    },
-    {
-      value: "2", label: `${t("User_and_Date")}`, Comp: () => { }
+  useEffect(() => {
+    if(!isFirstRenderRef.current) {
+      updateSelectedAssets(selectedAssets);
     }
-  ]);
+  }, [selectedAssets]);
+
+  useEffect(() => {
+    isFirstRenderRef.current = false;
+    const availableAssets = assetBucketList.filter(item => !CheckEvidenceExpire(item.evidence));
+    if(Array.isArray(availableAssets))
+      setAvailableAssetsFromBucket(availableAssets);
+    else
+      setAvailableAssetsFromBucket([]);
+  }, [assetBucketList]);
+
+  const onSelectAllAssetsClick = (e: any) => {
+    const isChecked = e.target.checked == true ? true : false;
+    if(isChecked) {
+      setSelectedAssets(assetBucketList);
+    }
+    else {
+      setSelectedAssets([]);
+    }
+  }
+
+  const onSelectAssetClick = (e: any, item: AssetBucket) => {
+    const assetsCopy = [...selectedAssets];
+    const selectedItem = assetsCopy.find(a => a.assetId === item.assetId);
+    if(e.target.checked) {
+      if(selectedItem === undefined)
+        assetsCopy.push(item);
+      setSelectedAssets(assetsCopy);
+    }
+    else {
+      if(selectedItem != undefined) {
+        setSelectedAssets(assetsCopy.filter(a => a.assetId !== selectedItem.assetId));
+      }
+    }
+  }
 
   return (
-    <div className="createCaseWizardSearchEvidence">
-      <CRXRows
-        className=""
-        container="container"
-        spacing={0}
-      >
-        <CRXColumn
-          className=""
-          container="container"
-          item="item"
-          lg={2}
-          xs={4}
-          spacing={0}
-        >
-          <label className="searchByHeading">Search By</label>
-        </CRXColumn>
-        <CRXColumn 
-          className=""
-          container="container"
-          item="item"
-          lg={8}
-          xs={12}
-          spacing={0}
-        >
-          <div className="createCaseWizardSearchByContainer">
-            <CRXRadio
-                className='searchByRadioBtn'
-                disableRipple={true}
-                content={searchByRadioOptionsRef.current}
-                value={searchBy}
-                setValue={(value: string) => { value === "2" ? setSearchBy(value) : setSearchBy("1") }}
-            />
-            {
-              searchBy === "2" ?
-                <div className="searchByUserAndDateContainer">
-                  <div className="searchByUserContainer">
-                    <CRXMultiSelectBoxLight
-                      id="UserName"
-                      className="searchByAutoComplete"
-                      label= "User Name"
-                      multiple={false}
-                      value={ null }
-                      options={Array.isArray(props.userAutoCompleteOptions) ? props.userAutoCompleteOptions : []}
-                      onChange={(e: any, value: AutoCompleteOptionType) => {}}
-                      onOpen={(e: any) => {}}
-                      CheckBox={true}
-                      checkSign={false}
-                      required={false}
-                    />
-                  </div>
-                  <div className="searchByDateContainer">
-                    <div className="datePickerContainer">
-                      <label>{t("Start_Date")}</label>
-                      <CRXInputDatePicker
-                        value={null}
-                        type="date"
-                        onChange={(e: any) => { }}
-                      />
-                    </div>
-                    <div className="datePickerContainer">
-                      <label>{t("End_Date")}</label>
-                      <CRXInputDatePicker
-                        value={null}
-                        type="date"
-                        onChange={(e: any) => { }}
-                      />
-                    </div>
-                  </div>
-                </div> 
-              :
-                <CRXMultiSelectBoxLight
-                  id="CADId"
-                  className="searchByAutoComplete"
-                  label= ""
-                  multiple={false}
-                  value={null}
-                  options={Array.isArray(props.cadAutoCompleteOptions) ? props.cadAutoCompleteOptions : []}
-                  onChange={( e: any, value: AutoCompleteOptionType) => {} }
-                  onOpen ={() => {}}
-                  CheckBox={true}
-                  checkSign={false}
-                  required={false}
-                />
-
-            }
-            <div className="searchButtonContainer">
-              <CRXButton
-                className="createCaseFormButtons secondary"
-                color="secondary"
-                variant="outlined"
-                onClick={() => {}}
-              >
-                { t("Search") }
-              </CRXButton>
-            </div>
+    availableAssetsFromBucket.length > 0 ? (
+      <>
+        <div className="assetBucketSelectAllContainer">
+          <CRXCheckBox
+            checked={selectedAssets.length === availableAssetsFromBucket.length}
+            onChange={(e: any) => onSelectAllAssetsClick(e)}
+            name="selectAll"
+            className="bucketListCheckedAll"
+            lightMode={true}
+          />
+          <span className="selectAllText">
+            {t("Select_All")}
+          </span>
+          {/* {t("View_on_assets_bucket_page")}{" "}
+          <i className="icon icon-arrow-up-right2"></i>{" "} */}
+          {/* <div className="bucketActionMenuAll"> */}
+            {/* <div className={selectedAssets.length > 1 ? "" : " disableHeaderActionMenu"}> */}
+            {/* <ActionMenu
+              row={undefined}
+              className=""
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+              actionMenuPlacement={
+                ActionMenuPlacement.AssetBucket
+              }
+            /> */}
+            {/* </div>  */}
+          {/* </div> */}
+        </div>
+        <div className="assetBucketListerScroll">
+          <div className="assetBucketLister">
+            {availableAssetsFromBucket.map((item) => {
+                const asset = selectedAssets.find(a => a.assetId === item.assetId)
+                return (
+                  <CaseAsset item={item} hasCheckbox={true} onSelectAssetClick={onSelectAssetClick}
+                    isChecked={(asset != null && item.assetId === asset.assetId) || (selectedAssets.length === assetBucketList.length)}/>
+                );
+            })}
           </div>
-        </CRXColumn>
-      </CRXRows>
-      <CRXRows
-        className=""
-        container="container"
-        spacing={0}
-      >
-        <CRXColumn
-          className=""
-          container="container"
-          item="item"
-          lg={2}
-          xs={4}
-          spacing={0}
-        />
-        <CRXColumn
-          className=""
-          container="container"
-          item="item"
-          lg={8}
-          xs={4}
-          spacing={0}
-        >
-          <div className="createCaseWizardMatchingResultContainer">
-            <label className="matchingResultHeading">Matching Result</label>
-            <div className="matchingResultContent">
-
-            </div>
-          </div>
-        </CRXColumn>
-      </CRXRows>
-      <CRXRows
-        className=""
-        container="container"
-        spacing={0}
-      >
-        <CRXColumn
-          className=""
-          container="container"
-          item="item"
-          lg={2}
-          xs={4}
-          spacing={0}
-        />
-        <CRXColumn
-          className=""
-          container="container"
-          item="item"
-          lg={8}
-          xs={4}
-          spacing={0}
-        >
-          <div className="createCaseWizardRelatedAssetsContainer">
-            <CrxAccordion
-              title={t("RELATED_ASSETS")}
-              id="relatedAssetsPanel"
-              className="relatedAssetsAccordion"
-              ariaControls="Content1"
-              name="relatedAssetsPanel"
-              isExpanedChange={setIsRelatedAssetExpanded}
-              expanded={isRelatedAssetsExpanded === "relatedAssetsPanel"}
-            >
-            </CrxAccordion>
-          </div>
-        </CRXColumn>
-      </CRXRows>
-    </div>
+        </div>
+      </>
+    ) : (
+      <div className="bucketContent">
+        {t("Your_Asset_Bucket_is_empty.")}
+      </div>
+    )
   )
 }
+  
+export default CreateCaseWizard;

@@ -1,7 +1,13 @@
 import { CRXButton, CRXTooltip, CRXToaster } from "@cb/shared";
+import React from "react";
 import { useRef } from "react";
-
-const AudioUpload = (props: any) => {
+interface Props {
+    audioData: any,
+    uploadedFileData: (fileUpdatedData: any, audioFlag: boolean)=>void,
+    setData: (audioData:any)=>void,
+  }
+const AudioUpload: React.FC<Props> =(
+    {audioData,uploadedFileData,setData})=> {
     const hiddenFileInput = useRef<HTMLInputElement>(null);
 
     const handleFileUpload = () => {
@@ -9,58 +15,60 @@ const AudioUpload = (props: any) => {
             hiddenFileInput.current.click();
 
     }
-    const getDuration = (file: any) => {
+    const getDuration = (file: any,auidData:any) => {
         const reader = new FileReader();
-        let audioDataTemp = props.audioData;
-        reader.readAsArrayBuffer(file);
-        reader.onloadend = (e: any) => {
-            const ctx = new AudioContext();
-            const audioArrayBuffer = e.target.result;
-            ctx.decodeAudioData(audioArrayBuffer, data => {
-                // this is the success callback
-                const duration = data.duration;
-                let fileStartDate = new Date();
-                let fileEndDate = new Date();
-                fileEndDate.setMinutes(fileEndDate.getMinutes() + (duration / 60));
-                let recordingData = {
-                    started: new Date(fileStartDate).toISOString(),
-                    ended: new Date(fileEndDate).toISOString(),
-                    // ended: '2023-05-09T07:55:29.487Z',
-                    timeOffset: 0,
-                }
-                audioDataTemp[0].recording = recordingData;
+        // if(props.fileUpdatedData!==undefined && props.fileUpdatedData!==null)
+        // {
+          let audioDataTemp =audioData;
+          reader.readAsArrayBuffer(file);
+          reader.onloadend = (e: any) => {
+              const ctx = new AudioContext();
+              const audioArrayBuffer = e.target.result;
+              ctx.decodeAudioData(audioArrayBuffer, data => {
+                  // this is the success callback
+                  const duration = data.duration;
+                  let fileStartDate         = new Date();
+                  let fileEndDate           = new Date(fileStartDate);
+                  // fileEndDate.setMinutes(fileEndDate.getMinutes() + (fileDurationInMinutes));
+                  fileEndDate.setSeconds(fileEndDate.getSeconds() + (duration));
+                  let recordingData = {
+                      started: new Date(fileStartDate).toISOString(),
+                      ended: new Date(fileEndDate).toISOString(),
+                      timeOffset: 0,
+                  }
+                  audioDataTemp[0].recording = recordingData;
+                  audioDataTemp[0].assetduration = file.size;
+                  let audioPayload: any =[
+                  {
+                      filename: file.name.split('.').slice(0, -1).join('.'),
+                      fileurl: auidData?.toString(),
+                      fileduration: file.size,
+                      downloadUri: auidData?.toString(),
+                      typeOfAsset: 'Audio'
+                  }]
+                audioDataTemp[0].typeOfAsset = "Audio";
                 audioDataTemp[0].assetduration = file.size;
-                //from parents
-                // setAudioData(audioDataTemp);
-                // setOpenAudioPlayer(true)
-                // setAudioFlag(1)
-            }, error => {
-                // this is the error callback
-                console.error(error);
-            });
-        };
+                audioDataTemp[0].name = file.name.split('.').slice(0, -1).join('.');
+                audioDataTemp[0].files=audioPayload
+                uploadedFileData(audioDataTemp,true)
+                setData(audioDataTemp);
+              }, error => {
+                  // this is the error callback
+                  console.error(error);
+              });
+          };
+        // }
     };
     const afterFileUpload = (event: any) => {
-        
-        let reader = new FileReader();
-        let audioDataTemp = props.audioData
-        reader.readAsDataURL(event[0]);
-        getDuration(event[0])
-        reader.onloadend = () => {
-            let srcData = reader.result;
-            let audioPayload: any =
-            {
-                filename: event[0].name.split('.').slice(0, -1).join('.'),
-                fileurl: srcData?.toString(),
-                fileduration: event[0].size,
-                downloadUri: srcData?.toString(),
-                typeOfAsset: 'Audio'
-            }
-            audioDataTemp[0].assetduration = event[0].size;
-            audioDataTemp[0].name = event[0].name.split('.').slice(0, -1).join('.');
-            audioDataTemp[0].files.push(audioPayload)
-            // setAudioData(audioDataTemp);
-        }
+        // if(props.fileUploadData!==undefined && props.fileUploadData!==null)
+        // {
+          let reader = new FileReader();
+          reader.readAsDataURL(event[0]);
+          
+          reader.onloadend = () => {
+              getDuration(event[0],reader.result);
+          }
+      // }
     }
     return (
         <div>
@@ -69,9 +77,10 @@ const AudioUpload = (props: any) => {
                 variant="contained"
                 className={""}
             >
-                Upload File
+                
                 <CRXTooltip
                     // iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
+                    iconName={"fas fa-upload" }
                     placement="top"
                     title={<> <span className="">Upload File</span></>}
                     arrow={false}

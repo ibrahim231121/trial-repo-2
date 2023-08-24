@@ -320,6 +320,7 @@ const AdvancedSearch: React.FC<Props> = ({
     setFieldsNumber(i)
     return (
       <div className="advRow" key={i}>
+        {console.log("select", select)}
         <CRXRows container spacing={2}>
           <CRXColumn item xs={6}>
             <CRXSelectBox
@@ -327,12 +328,13 @@ const AdvancedSearch: React.FC<Props> = ({
               className="adVSelectBox"
               id={"select_" + i.toString()}
               value={
-                select.isUsed === true ? select.value : t("Please_Select")
+                select.isUsed === true ? select.value : "Please Select"
               }
               onChange={(e: any) => onSelectInputChange(e, i)}
               options={newOptions}
               defaultValue={t("Please_Select")}
-              defaultOption={false}
+              defaultOption={true}
+              defaultOptionText="Please Select"
               popover={"CRXDaySelection"}
             />
           </CRXColumn>

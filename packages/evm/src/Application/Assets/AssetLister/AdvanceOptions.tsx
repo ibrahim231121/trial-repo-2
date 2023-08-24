@@ -121,15 +121,16 @@ const AdvancedSearch: React.FC<Props> = ({
         <div className="advRow" key={i}>
           <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
+              {console.log("selectedOpt", selectedOpt)}
               <span ref={selectRef} id={i.toString()}>
                 <CRXSelectBox
                 
                   className="adVSelectBox"
                   id={i.toString()}
-                  value={selectedOpt ? selectedOpt.value : t("Please_Select")}
+                  value={selectedOpt ? selectedOpt.value : "Select a search"}
                   onChange={(e: any) => onSelectInputChange(e)}
                   options={newOptions}
-                  defaultValue={t("Please_Select")}
+                  
                 />
               </span>
             </CRXColumn>

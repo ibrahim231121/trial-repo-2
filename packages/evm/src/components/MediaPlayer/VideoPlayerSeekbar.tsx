@@ -17,9 +17,8 @@ const VideoPlayerSeekbar = (props:any)  => {
     setVisibleThumbnail(Indexes);
   }
   const removeSeekBarThumbail = () => {
-    setVisibleThumbnail([]);
+     setVisibleThumbnail([]);
   }
-  
   return (
     <>
     <Slider

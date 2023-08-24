@@ -35,7 +35,8 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   showSearchPanel,
   searchResultText,
   advanceSearchText,
-  presetPerUser
+  presetPerUser,
+  title
 }) => {
   const classes = useToolbarStyles();
   const { t } = useTranslation<string>();
@@ -55,14 +56,14 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
         }
         
         handle = setTimeout(callback, timeout || 100); 
-        if(offsetY && element.pageYOffset >= offsetY) {
+        if(offsetY && element.pageYOffset >= offsetY && ToolBarRefs.current != null) {
          
-          ToolBarRefs && (ToolBarRefs.current.style.position = "fixed")
-          ToolBarRefs && (ToolBarRefs.current.style.width = "calc(100% - 115px)");
+          ToolBarRefs.current.style.position = "fixed"
+          ToolBarRefs.current.style.width = "calc(100% - 115px)";
           setPaddingRight(0)
         }
        
-        else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1 ) {
+        else if (offsetY && element.pageYOffset <= offsetY && element.pageXOffset > 1 && ToolBarRefs.current != null) {
           window.pageXOffset = 1;
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "calc(100% - 115px)";
@@ -78,7 +79,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   
   useEffect(() => {
     createScrollStopListener(window, function() {
-      if(offsetY && window.pageYOffset < offsetY && window.pageXOffset < 1) {
+      if(offsetY && window.pageYOffset < offsetY && window.pageXOffset < 1 && ToolBarRefs.current != null) {
           ToolBarRefs.current.style.position = "fixed",
           ToolBarRefs.current.style.width = "-webkit-fill-available";
           setPaddingRight(25)
@@ -86,10 +87,19 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
     },50);
 
   },[])
-  
+
+  const ui: any = document.querySelectorAll(".advance-type-count")
+  useEffect(()=>{
+    
+  },[advanceSearchText])
+
+
+  let spanstyle = {
+    padding: "0px 2px"
+  }
   return (
     <>
-    <Toolbar ref={ToolBarRefs} style={{"top" : stickyToolbar + "px", position : "fixed", paddingRight : paddingRightWebkit + "px"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
+    <Toolbar key={ToolBarRefs} ref={ToolBarRefs} style={{"top" : stickyToolbar + "px", position : "fixed", paddingRight : paddingRightWebkit + "px"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
       
       <div className='toolbar-button'>
         
@@ -99,14 +109,14 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
       {
         (showCountText || showCountText === undefined) ?
           <Typography className={classes.title + " toolbar_counter_text"} color="inherit" variant="subtitle1" component="div">
-            {<><b>{rowCount}</b> { t(id)} {searchResultText?.type && <div className='searchResultText'>
+            {<><b>{rowCount}</b><span style={spanstyle}></span> {title == undefined ? t(id) : title} {(searchResultText?.type && advanceSearchText.length == 0)   && <div className='searchResultText'>
             [<span className='s-type'>{searchResultText?.type}</span>
             <span className='s-name'>{searchResultText?.name}</span>]
             </div>}
-              {advanceSearchText && advanceSearchText.length > 0 && <div className='searchResultText'>[<div className='searchType'>Advance Search Terms:</div>
+              {advanceSearchText && advanceSearchText.length > 0 && <div className='searchResultText'>[<div className='searchType'>{ui.length == 1 ? "Advanced Search Term" : "Advanced Search Term(s)"}:</div>
               {advanceSearchText.map((x : any,_: any) => {
                 if(x.isUsed == true) {
-                    return <div className='advance-type'><div className='valueName'>{x.value}</div> : <div className='valueData'>{x.inputValue}</div>,</div>
+                    return <div className='advance-type advance-type-count'><div className='valueName'>{x.value}</div> : <div className='valueData'>{x.inputValue}</div><span className="CRXComma">,</span></div>
                   }else {
                     return false
                   }
@@ -117,11 +127,15 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           </Typography> : <></>
       }
       {
-        (showTotalSelectedText || showTotalSelectedText === undefined) ?
+        
+        (showTotalSelectedText || showTotalSelectedText === undefined) && numSelected > 0 ?
           <Typography className={classes.title + " toolbar_counter_text"} color="inherit" variant="subtitle1" component="div">
-            {<>{numSelected} {t("total_users_in_group")} </>}
+            {<><b>{numSelected}</b><span style={spanstyle}></span> {t("selected")} {title && title == undefined ? id : title } </>}
           </Typography> : <></>
       }
+
+    {/* <><b>{rowCount}</b> { t(id)} </>
+    <>{numSelected} {t(id)} </> */}
 
       {headCells.length > 0 ?
       <div className='expandViewButton'>
@@ -163,7 +177,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
       }
 
     </Toolbar>
-    <div className='overlaySticky-content'></div>
+    
     </>
   );
 };

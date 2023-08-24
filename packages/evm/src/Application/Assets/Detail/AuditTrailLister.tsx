@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+import textDisplayStatus from "../../../GlobalComponents/Display/textDisplayStatus";
+import {dateDisplayFormat} from "../../../GlobalFunctions/DateFormat";
 import { RootState } from "../../../Redux/rootReducer";
 import { dateOptionsTypes } from '../../../utils/constant';
 import "./AssetDetailTabsMenu.scss";
@@ -13,12 +14,15 @@ import "./assetDetailTemplate.scss";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import {
-  HeadCellProps, onClearAll, onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, Order, SearchObject, ValueString
+  HeadCellProps, onClearAll, onDateCompare, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, SearchObject, ValueString
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { AuditTrail, DateTimeObject, DateTimeProps } from "./AssetDetailsTemplateModel";
+import auditTrailPDFDownload, { convertDateTime, toDataURL } from "../utils/auditTrailPDF";
+import { formatBytes, milliSecondsToTimeFormat, retentionSpanText } from "../AssetLister/ActionMenu";
+import { FileAgent } from "../../../utils/Api/ApiAgent";
 
 const AuditTrailLister = (props: any) => {
-  const {metaData, uploadedOn} = props;
+  const {evidence, assetId, metaData, uploadedOn} = props;
   const assetDetailBottomTabs: boolean = useSelector(
     (state: RootState) => state.videoPlayerSettingsSlice.assetDetailBottomTabs
   );
@@ -33,11 +37,51 @@ const AuditTrailLister = (props: any) => {
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [order] = React.useState<Order>("asc");
+  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+    dateTimeObj: {
+      startDate: "",
+      endDate: "",
+      value: "",
+      displayText: "",
+    },
+    colIdx: 0,
+  });
 
 
   const AssetTrail: any = useSelector((state: RootState) => state.assetDetailReducer.assetTrailInfo);
+
   useEffect(() => {
+    dataArrayBuilder();
+  }, [searchData]);
+  const dataArrayBuilder = () => {
+    let dataRows : any[] = reformattedRows ?? [];
+    searchData.forEach((el: SearchObject) => {
+      if (el.columnName === "userName" || el.columnName === "notes")
+        dataRows = onTextCompare(dataRows, headCells, el);
+      if (el.columnName === "performedOn") {
+        dataRows = onDateCompare(dataRows, headCells, el);
+      }
+    });
+    setRows(dataRows);
+  };
+
+  const resizeRowAssetsDataTable = (e: { colIdx: number; deltaX: number }) => {
+    let headCellReset = onResizeRow(e, headCells);
+    setHeadCells(headCellReset);
+  };
+
+
+  useEffect(() => {
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "assetDataTable");
+  }, []);
+
+
+  useEffect(() => {
+ 
     setRows(AssetTrail)
+    setReformattedRows(AssetTrail)
   }, [AssetTrail]);
 
   const searchText = (
@@ -77,18 +121,55 @@ const AuditTrailLister = (props: any) => {
     );
   };
 
-  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
-    dateTimeObj: {
-      startDate: "",
-      endDate: "",
-      value: "",
-      displayText: "",
-    },
-    colIdx: 0,
-  });
+  useEffect(() => {
+    if (dateTime.colIdx !== 0) {
+      if (
+        dateTime.dateTimeObj.startDate !== "" &&
+        dateTime.dateTimeObj.startDate !== undefined &&
+        dateTime.dateTimeObj.startDate != null &&
+        dateTime.dateTimeObj.endDate !== "" &&
+        dateTime.dateTimeObj.endDate !== undefined &&
+        dateTime.dateTimeObj.endDate != null
+      ) {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate],
+        };
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, newItem]);
+      } else
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+    }
+  }, [dateTime]);
+
+  const getuploadCompletedOn = async (files: any) => {
+    if (files) {
+      let uploadCompletedOn;
+      for (const file of files) {
+        if (file.type == "Video") {
+          let url = "/Files/"+file.filesId +"/"+ file.accessCode;
+          await FileAgent.getFile(url).then((response) => {
+            uploadCompletedOn = response.history.uploadCompletedOn;
+          });
+          break;
+        }
+      }
+      return uploadCompletedOn;
+    }
+  };
+  
 
   const searchDate = (
-    rowsParam: AuditTrail[],
+    rowsParam: any[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
@@ -119,8 +200,8 @@ const AuditTrailLister = (props: any) => {
         dateTimeObj: {
           startDate: reformattedRows !== undefined ? reformattedRows[0].captured : "",
           endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].captured : "",
-          value: "custom",
-          displayText: "custom range",
+          value: "anytime",
+          displayText: t("anytime"),
         },
         colIdx: 0,
       };
@@ -168,8 +249,8 @@ const AuditTrailLister = (props: any) => {
       searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
-      minWidth: '211',
-      maxWidth: '300'
+      minWidth: '130',
+  
     },
     {
       label: `${t("Captured")}`,
@@ -179,12 +260,13 @@ const AuditTrailLister = (props: any) => {
       //  dataComponent: (e: string) => textDisplay(e, " "),
       searchFilter: true,
       searchComponent: searchDate,
-      sort: false,
-      minWidth: '313',
-      maxWidth: '485'
+      sort: true,
+      minWidth: '175',
+    
+  
     },
     {
-      label: `${t("Username")}`,
+      label: `${t("User_Name")}`,
       id: "userName",
       align: "right",
       searchFilter: true,
@@ -192,7 +274,7 @@ const AuditTrailLister = (props: any) => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
       minWidth: '314',
-      maxWidth: '485'
+ 
     },
     {
       label: `${t("Activity")}`,
@@ -200,10 +282,9 @@ const AuditTrailLister = (props: any) => {
       align: "right",
       searchFilter: true,
       searchComponent: searchText,
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: string) => textDisplayStatus(e, " "),
       sort: true,
-      minWidth: '415',
-      maxWidth: '485'
+      minWidth: '1100',
     }
   ]);
 
@@ -215,6 +296,7 @@ const AuditTrailLister = (props: any) => {
     setOpen(false);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
+    setSearchData([]);
   };
 
   const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
@@ -227,107 +309,83 @@ const AuditTrailLister = (props: any) => {
     setHeadCells(headCellsArray);
   }
 
-  const downloadAuditTrail = () => {
-    if (rows && metaData) {
-      const head = [[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
-      let data: any[] = [];
-      let arrS: any[] = [];
-      rows.forEach((x: any) => {
-        arrS.push(x.seqNo);
-        arrS.push((new Date(x.performedOn)).toLocaleString());
-        arrS.push(x.userName);
-        arrS.push(x.notes);
-        data.push(arrS);
-        arrS = [];
-      }
-      );
-
-      let CheckSum = metaData.checksum ? metaData.checksum.toString() : "";
-      let assetId = metaData.id ? metaData.id.toString() : "";
-
-
-      const doc = new jsPDF()
-      doc.setFontSize(11)
-      doc.setTextColor(100)
-      let yaxis1 = 14;
-      let yaxis2 = 70;
-      let xaxis = 25;
-
-      doc.text(t("CheckSum") + ":", yaxis1, xaxis)
-      doc.text(CheckSum, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Asset Id") + ":", yaxis1, xaxis)
-      doc.text(assetId, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Asset Type") + ":", yaxis1, xaxis)
-      doc.text(metaData.typeOfAsset, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Asset Status") + ":", yaxis1, xaxis)
-      doc.text(metaData.status, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Username") + ":", yaxis1, xaxis)
-      doc.text(metaData.owners.join(", "), yaxis2, xaxis)
-      xaxis += 5;
-
-      let categoriesString = "";
-      let tempxaxis = 0;
-      metaData.categories.forEach((x: any, index: number) => {
-        let formData = x.formDatas.map((y: any, index1: number) => {
-          if (index1 > 0) {
-            tempxaxis += 5
-          }
-          return y.key + ": " + y.value + "\n";
-        })
-        categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
-        if (index > 0) {
-          tempxaxis += 5
-        }
-      }
-      )
-      doc.text(t("Categories") + ":", yaxis1, xaxis)
-      doc.text(categoriesString, yaxis2, xaxis)
-      xaxis += tempxaxis + 5;
-
-      doc.text(t("Camera Name") + ":", yaxis1, xaxis)
-      doc.text(metaData.camera, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Captured") + ":", yaxis1, xaxis)
-      doc.text(metaData.capturedDate, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Uploaded") + ":", yaxis1, xaxis)
-      doc.text(uploadedOn, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Duration") + ":", yaxis1, xaxis)
-      doc.text(metaData.duration, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Size") + ":", yaxis1, xaxis)
-      doc.text(metaData.size, yaxis2, xaxis)
-      xaxis += 5;
-
-      doc.text(t("Retention") + ":", yaxis1, xaxis)
-      doc.text(metaData?.retention, yaxis2, xaxis)
-      xaxis += 5;
-
-      autoTable(doc, {
-        startY: xaxis,
-        head: head,
-        body: data,
-        didDrawCell: (data: any) => {
-          console.log(data.column.index)
-        },
+  const downloadAuditTrail = async () => {
+    if (rows) {
+      let image = await toDataURL(window.location.origin + '/assets/images/Getac_logo_orange.jpg').then(dataUrl => {
+        return dataUrl;
       })
-      doc.save('ASSET ID_Audit_Trail.pdf');
+      image = image ? image : "";
+      let getAssetData = JSON.parse(JSON.stringify(evidence))
+      let AllAssetData = [getAssetData.assets.master, ...getAssetData.assets.children];
+      let currentAssetData = AllAssetData.find((x:any)=> x.id == assetId);
+      let assetInfo;
+      if(currentAssetData){
+        if (getAssetData) {
+          let categories: any[] = getAssetData.categories.map((x: any) => {
+              return x.name;
+          });
+
+          let owners: any[] = currentAssetData.owners.map(
+            (x: any) =>
+              x.record.find((y: any) => y.key == "UserName")?.value ?? ""
+          );
+
+          let unit  = currentAssetData.unitId <= 0 ? "N/A" : currentAssetData.unit?.record.find((y: any) => y.key == "Name")?.value ?? "N/A"
+            
+          let checksum: number[] = [];
+          currentAssetData.files.forEach((x: any) => {
+            checksum.push(x.checksum.checksum);
+          });
+
+          let size = currentAssetData.files.reduce(
+            (a: any, b: any) => a + b.size,
+            0
+          );
+
+          let categoriesForm: string[] = [];
+          getAssetData.categories.forEach((x: any) => {
+            categoriesForm.push(x.record.cmtFieldName);
+          });
+
+          assetInfo = {
+            owners: owners.join(", "),
+            unit: unit.toString(),
+            capturedDate: convertDateTime(getAssetData.createdOn).join(" "),
+            checksum: checksum,
+            duration: milliSecondsToTimeFormat(
+              new Date(currentAssetData.duration)
+            ),
+            size: formatBytes(size, 2),
+            retention:
+              retentionSpanText(
+                getAssetData.holdUntil,
+                getAssetData.expireOn
+              ) ?? "",
+            categories: categories.join(", "),
+            categoriesForm: categoriesForm,
+            id: currentAssetData.id,
+            assetName: currentAssetData.name,
+            typeOfAsset: currentAssetData.typeOfAsset,
+            status: currentAssetData.status,
+            camera: currentAssetData.camera ?? "",
+            recordedBy: currentAssetData?.recordedByCSV ?? "",
+          };
+        }
+        
+      }
+      let uploadCompletedOn = await getuploadCompletedOn(
+        currentAssetData?.files
+      );
+      let uploadCompletedOnFormatted = uploadCompletedOn
+          ? convertDateTime(uploadCompletedOn).join(" ")
+          : "";
+
+      //download
+      if (rows && assetInfo) {
+        auditTrailPDFDownload(rows, assetInfo, uploadCompletedOnFormatted,image)
+      }
     }
   }
-
 
 
   
@@ -372,13 +430,17 @@ const AuditTrailLister = (props: any) => {
                   onHeadCellChange={onSetHeadCells}
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
-                  offsetY={51}
+                  offsetY={0}
                   page={page}
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={rows.length}
                   selfPaging={true}
+                  stickyToolbar={242}
+                  searchHeaderPosition={63}
+                  dragableHeaderPosition={29}
+                  selfSorting={true}
                 />
               )}
             </div>

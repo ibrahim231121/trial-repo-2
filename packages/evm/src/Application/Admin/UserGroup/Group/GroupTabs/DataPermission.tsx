@@ -8,20 +8,13 @@ import {
     permissionTypes,
     permissionLevels
 } from './TypeConstant/constants'
-import { PermissionData, PermissionValue, Category, Station, StationResponse } from './TypeConstant/types'
+import { PermissionData, PermissionValue, Category, StationResponse } from './TypeConstant/types'
 import "./dataPermission.scss"
 import { DataPermissionModel } from "..";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import { MAX_REQUEST_SIZE_FOR } from '../../../../../utils/constant'
-import { debug } from "console";
 import { getCategoryAsync } from "../../../../../Redux/categoryReducer";
 import { getStationsInfoAllAsync } from "../../../../../Redux/StationReducer";
-import { SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../../../utils/Api/ApiAgent";
-import { CATEGORY_INFO_GET_URL } from "../../../../../utils/Api/url";
-import { object } from "yup";
-import { ConsoleLogger } from "@microsoft/signalr/dist/esm/Utils";
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
@@ -30,7 +23,6 @@ type infoProps = {
     AssignToSelfPermission: any,
     setassignToSelfPermission: any,
 }
-
 
 const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeDataPermission, onDeletePermission, AssignToSelfPermission, setassignToSelfPermission }) => {
     let [dataPermissions, setDataPermissions] = useState<PermissionData[]>([])
@@ -376,13 +368,12 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
     const filterPermissionValuesBasedonType = (permissionType: number) => {
         if (permissionType > 0) {
+            let selectedOptions = dataPermissions.filter(x => x.type.value === permissionType).map(x => x.permissionValue.value.toString());
             if (permissionType === 2) {
-                let selectedCategories = dataPermissions.filter(x => x.type.value === permissionType).map(x => x.permissionValue.value);
-                return categories?.filter(x => selectedCategories.indexOf(x.value) === -1)
+                return categories?.filter(x => !selectedOptions.includes(x.value.toString()))
 
             } else if (permissionType === 1) {
-                let selectedStations = dataPermissions.filter(x => x.type.value === permissionType).map(x => x.permissionValue.value);
-                return stations?.filter(x => selectedStations.indexOf(x.value) === -1)
+                return stations?.filter(x => !selectedOptions.includes(x.value.toString()))
             } else
                 return []
         } else
@@ -413,6 +404,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 onChange={(e: any) => onPermissionTypeChange(e, i)}
                                                 options={(dataPermissions.filter((x: any) => x.type?.value === 3).length > 0 && permission.type.value != 3) ? permissionTypes.filter((x: any) => x.value != 3) : permissionTypes}
                                                 icon={true}
+                                                disablePortal={true}
                                                 popover={"crxSelectPermissionGroup"}
                                                 defaultOptionText={t(defaultPermissionType)}
                                                 defaultValue={t(defaultPermissionType)} />
@@ -442,6 +434,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onPermissionLevelChange(e, i)}
                                                 options={permissionLevels}
                                                 icon={true}
+                                                disablePortal={true}
                                                 popover={"crxSelectPermissionGroup"}
                                                 defaultOptionText={defaultPermissionLevel}
                                                 defaultValue={defaultPermissionLevel}

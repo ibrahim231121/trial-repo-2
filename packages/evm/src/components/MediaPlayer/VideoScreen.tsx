@@ -9,6 +9,8 @@ import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineD
 import VideoColumn from "./VideoColumn";
 import { CRXTooltip, CBXSwitcher } from "@cb/shared";
 import { AssetLogType } from "../../utils/Api/models/EvidenceModels";
+import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
+import { Timeline, secondsToHms } from "./VideoPlayerBase";
 
 interface VideoScreenProp {
   viewNumber?: number;
@@ -36,7 +38,14 @@ interface VideoScreenProp {
   ffScreenIcon ? : any;
   setscreenChangeVideoId : any
   isGuestView: boolean
-  assetLog: AssetLogType
+  saveLogs: any
+  ViewScreen: boolean
+  overlayEnabled: any
+  overlayCheckedItems: any
+  overlayDuration: any
+  overlayDataJson: any
+  isMultiViewEnable: boolean
+  timer: number
 }
 
 const VideoScreen = ({
@@ -65,7 +74,14 @@ const VideoScreen = ({
   ffScreenIcon,
   setscreenChangeVideoId,
   isGuestView,
-  assetLog
+  saveLogs,
+  ViewScreen,
+  overlayEnabled,
+  overlayCheckedItems,
+  overlayDuration,
+  overlayDataJson,
+  isMultiViewEnable,
+  timer
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -77,23 +93,32 @@ const VideoScreen = ({
     useState<string>("");
   const dispatch = useDispatch();
   const anchorRef = React.useRef<any>(null);
-  const getVideo = (camIndexVideoData: any) => {
+  const getVideo = (camIndexVideoData: Timeline) => {
    
     if (camIndexVideoData !== undefined) {
 
       return (
         
         <>
+          {overlayEnabled && <VideoPlayerOverlayMenu
+            overlayCheckedItems={overlayCheckedItems}
+            overlayDuration={overlayDuration}
+            overlayDataJson={overlayDataJson}
+            assetId={camIndexVideoData.dataId}
+            isMultiViewEnable={isMultiViewEnable}
+          />}
           <video
             id={camIndexVideoData.id}
             width="100%"
             height="100%"
             preload="auto"
             crossOrigin="anonymous"
+            style={{visibility: (timer > camIndexVideoData.recording_end_point ? "hidden" : "visible")}}
           >
-            <source src={camIndexVideoData.src} type="video/mp4" />
+            <source id={"src"+camIndexVideoData.id} src={camIndexVideoData.src} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
+          <div className="cameraNameVideo">{camIndexVideoData.evidenceId == evidenceId ? camIndexVideoData.camera : camIndexVideoData.unitName + "    " + camIndexVideoData.camera}</div>
 
           {/* { isMultiTimelineEnabled && <div style={{backgroundColor:"black", color:"white", paddingLeft:"45%"}}>{camIndexVideoData.camera}</div> } */}
         </>
@@ -135,7 +160,7 @@ const VideoScreen = ({
     //poster="https://i.ibb.co/C0PqYN4/Media-Not-Available.png"
 
     let camIndex = CameraCount;
-    var camIndexVideoData = timelinedetail.find(
+    var camIndexVideoData: Timeline = timelinedetail.find(
       (x: any) => x.indexNumberToDisplay == camIndex && x.enableDisplay
     );
     
@@ -144,15 +169,19 @@ const VideoScreen = ({
     }
     return (
       <div className="videoContainer">
-       
+        {camIndexVideoData?.recording_start_point > timer && <div className="_video_waiting_line_">
+           {"This video start at " + secondsToHms(camIndexVideoData?.recording_start_point) }
+        </div>}
+
         {getVideo(camIndexVideoData)}
         <div
           className={`videoMenuCss CRXVideoMultiView ${
             indexAnchorE1 == CameraCount ? "CRXCheckPopper" : ""
           }`}
-          style={{ display: camIndex == 1 ? "none" : "block" }}
+          // style={{ display: camIndex == 1 ? "none" : "block" }}
         >
-          <Menu
+         {!overlayEnabled && 
+           <Menu
             align="center"
             viewScroll="initial"
             direction="left"
@@ -221,7 +250,8 @@ const VideoScreen = ({
                 </div>
               </div>
             </MenuItem>
-          </Menu>
+          </Menu> } 
+     
           {indexAnchorE1 > 0 && <VideosSelection
           timelinedetail={timelinedetail}
           anchorEl={anchorEl}
@@ -370,7 +400,8 @@ const VideoScreen = ({
             setOnMarkerClickTimeData={setOnMarkerClickTimeData}
             isGuestView={isGuestView}
             toasterMsgRef={toasterMsgRef}
-            assetLog={assetLog}
+            saveLogs={saveLogs}
+            ViewScreen={ViewScreen}
           />
         </div>
       ) : ""}
