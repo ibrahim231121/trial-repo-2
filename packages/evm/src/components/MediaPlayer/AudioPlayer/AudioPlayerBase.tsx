@@ -991,11 +991,14 @@ const AudioPlayerBase = (props: any) => {
                 </div>
                 <div className={` playerViewRight`}>
                 <div>
+                  { props.viewAudioUpload ?
                   <AudioUpload
                     audioData={props.data}
                     setData={setdata}
                     uploadedFileData={props.uploadedFileData}
-                /></div>
+                  />
+                  :<div/>}
+                </div>
                   <div className="playerView"> 
                   
                     {ViewScreen ?

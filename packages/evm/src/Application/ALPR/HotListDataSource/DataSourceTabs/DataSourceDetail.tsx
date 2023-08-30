@@ -8,6 +8,7 @@ import './DataSourceDetail.scss';
 import { useParams } from "react-router-dom";
 import {SourceTypeDropDown,ConnectionTypeDropDown} from '../../GlobalDropdown'
 import { CRXSelectBox } from "@cb/shared";
+import { nullValidationHandling } from "../../AlprGlobal";
 
 const DataSourceInitialData: HotListDataSourceTemplate = {
     recId: 0,
@@ -286,22 +287,6 @@ const DataSourceDetail = (props: any) => {
                                     </div>
                                     <div >
                                         <TextField
-                                            required={false}
-                                            disabled={true}
-                                            label={t("Confirm_Password") + ':'}
-                                            id='DataSourceConfirmPassword'
-                                            value={props.dataSourceTabValues?.dataSourceData?.confirmPassword}
-                                            type='password'
-                                            onChange={(e: any) => {
-                                                props.setFieldTouched('confirmPassword',true)
-                                                updateSourceDataInParent('ConfirmPassword',e.target.value)}}
-
-                                            error={props.touched.confirmPassword && (props.formValidationError?.dataSourceData?.confirmPassword??"").length>0}
-                                            errorMsg={props.formValidationError?.dataSourceData?.confirmPassword}
-                                        />
-                                    </div>
-                                    <div >
-                                        <TextField
                                             id='DataSourcePort'
                                             disabled={true}
                                             required={false}
@@ -348,37 +333,38 @@ const DataSourceDetail = (props: any) => {
                                         errorMsg={props.formValidationError?.dataSourceData?.userId}
                                         />
                                     </div>
-                                    
+                                    {nullValidationHandling(id) ? 
                                     <div >
-                                        <TextField
-                                            id='DataSourcePassword'
-                                            required={true}
-                                            label={t("Password") + ':'}
-                                            value={props.dataSourceTabValues?.dataSourceData.password}
-                                            type='password'
-                                            onChange={(e: any) => {
-                                                props.setFieldTouched('password',true)
-                                                updateSourceDataInParent('Password',e.target.value)}}
+                                            <TextField
+                                                id='DataSourcePassword'
+                                                required={false}
+                                                label={t("Password") + ':'}
+                                                value={props.dataSourceTabValues?.dataSourceData.password}
+                                                type='password'
+                                                onChange={(e: any) => {
+                                                    props.setFieldTouched('password',true)
+                                                    updateSourceDataInParent('Password',e.target.value)}}
 
-                                            error={props.touched.password && (props.formValidationError?.dataSourceData?.password ??"").length>0}
-                                            errorMsg={props.formValidationError?.dataSourceData?.password}
-                                        />
-                                    </div>
+                                                error={props.touched.password && (props.formValidationError?.dataSourceData?.password ??"").length>0}
+                                                errorMsg={props.formValidationError?.dataSourceData?.password}
+                                            />
+                                    </div>:
                                     <div >
-                                        <TextField
-                                            required={true}
-                                            label={t("Confirm_Password") + ':'}
-                                            id='DataSourceConfirmPassword'
-                                            value={props.dataSourceTabValues?.dataSourceData?.confirmPassword}
-                                            type='password'
-                                            onChange={(e: any) => {
-                                                props.setFieldTouched('confirmPassword',true)
-                                                updateSourceDataInParent('ConfirmPassword',e.target.value)}}
+                                    <TextField
+                                        id='DataSourcePassword'
+                                        required={true}
+                                        label={t("Password") + ':'}
+                                        value={props.dataSourceTabValues?.dataSourceData.password}
+                                        type='password'
+                                        onChange={(e: any) => {
+                                            props.setFieldTouched('password',true)
+                                            updateSourceDataInParent('Password',e.target.value)}}
 
-                                            error={props.touched.confirmPassword && (props.formValidationError?.dataSourceData?.confirmPassword??"").length>0}
-                                            errorMsg={props.formValidationError?.dataSourceData?.confirmPassword}
-                                        />
+                                        error={props.touched.password && (props.formValidationError?.dataSourceData?.password ??"").length>0}
+                                        errorMsg={props.formValidationError?.dataSourceData?.password}
+                                    />
                                     </div>
+                                    }
                                     <div >
                                         <TextField
                                             id='DataSourcePort'

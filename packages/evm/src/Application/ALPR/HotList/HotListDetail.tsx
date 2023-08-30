@@ -327,7 +327,7 @@ const HotListDetail = () => {
           {/* {<CRXTooltip iconName="fas fa-certificate" arrow={false} title="primary asset" placement="left" className="crxTooltipNotificationIcon" />} */}
           <div className="tabsBodyControl">
             <div style={{ display: false ? "block" : "none" }}>
-              {!openAudioPlayer.current ? <AudioPlayerBase data={audioDataState} evidenceId={evidenceId} uploadedFileData={uploadFileData} /> : ''}
+              {!openAudioPlayer.current ? <AudioPlayerBase data={audioDataState} evidenceId={evidenceId} uploadedFileData={uploadFileData} viewAudioUpload={true}/> : ''}
             </div>
           </div>
 

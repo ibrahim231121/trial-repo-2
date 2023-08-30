@@ -284,15 +284,8 @@ const DataSourceFormsAndFields = () => {
       
       password:Yup.string().max(VALIDATION_MAXLENGTH, t("Password_char_limit"))
       .test({name:'passwordRequired',message: t('Password_is_required_while_selecting_FTP_connection'),test: function(value){
-        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
+        return !(id==null && this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
       }}),
-      confirmPassword: Yup.string()
-      .test({name:'confirmPasswordRequired',message: t('Confirm_Password_is_required_while_selecting_FTP_connection'),test: function(value){
-        return !(this.parent.connectionType === 'FTP' && ( !nullValidationHandling(value) ) )
-      }})
-      .test({name:'passwords-match',message: t('Passwords_must_match'),test: function(value){
-      return this.parent.password === value
-    }})
     }),
 
     dataSourceMappingData: Yup.object().shape({
@@ -309,21 +302,21 @@ const DataSourceFormsAndFields = () => {
           then :Yup.string().required(t("Date_of_Interest_field_required"))
         }).max(VALIDATION_MAXLENGTH, t("Date_of_Interest_char_limit")),
       
-        LicenseType: Yup.string().max(VALIDATION_MAXLENGTH, t("License_Type_char_limit")),
-        Agency: Yup.string().max(VALIDATION_MAXLENGTH, t("Agency_char_limit")),
-        State: Yup.string().max(VALIDATION_MAXLENGTH, t("State_char_limit")),
-        FirstName: Yup.string().max(VALIDATION_MAXLENGTH, t("First_Name_char_limit")),
-        LastName: Yup.string().max(VALIDATION_MAXLENGTH, t("Last_Name_char_limit")),
-        Alias: Yup.string().max(VALIDATION_MAXLENGTH, t("Alias_char_limit")),
-        VehicleYear: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Year_char_limit")),
-        VehicleMake: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Make_char_limit")),
-        VehicleModel: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Model_char_limit")),
-        VehicleColor: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Color_char_limit")),
-        VehicleStyle: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Style_char_limit")),
-        Notes: Yup.string().max(VALIDATION_MAXLENGTH, t("Notes_char_limit")),
-        NCICNumber: Yup.string().max(VALIDATION_MAXLENGTH, t("NCIC_Number_char_limit")),
-        ImportSerial: Yup.string().max(VALIDATION_MAXLENGTH, t("Import_Serial_char_limit")),
-        ViolationInfo: Yup.string().max(VALIDATION_MAXLENGTH, t("Violation_Info_char_limit")),
+        LicenseType: Yup.string().max(VALIDATION_MAXLENGTH, t("License_Type_char_limit")).nullable(),
+        Agency: Yup.string().max(VALIDATION_MAXLENGTH, t("Agency_char_limit")).nullable(),
+        State: Yup.string().max(VALIDATION_MAXLENGTH, t("State_char_limit")).nullable(),
+        FirstName: Yup.string().max(VALIDATION_MAXLENGTH, t("First_Name_char_limit")).nullable(),
+        LastName: Yup.string().max(VALIDATION_MAXLENGTH, t("Last_Name_char_limit")).nullable(),
+        Alias: Yup.string().max(VALIDATION_MAXLENGTH, t("Alias_char_limit")).nullable(),
+        VehicleYear: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Year_char_limit")).nullable(),
+        VehicleMake: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Make_char_limit")).nullable(),
+        VehicleModel: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Model_char_limit")).nullable(),
+        VehicleColor: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Color_char_limit")).nullable(),
+        VehicleStyle: Yup.string().max(VALIDATION_MAXLENGTH, t("Vehicle_Style_char_limit")).nullable(),
+        Notes: Yup.string().max(VALIDATION_MAXLENGTH, t("Notes_char_limit")).nullable(),
+        NCICNumber: Yup.string().max(VALIDATION_MAXLENGTH, t("NCIC_Number_char_limit")).nullable(),
+        ImportSerial: Yup.string().max(VALIDATION_MAXLENGTH, t("Import_Serial_char_limit")).nullable(),
+        ViolationInfo: Yup.string().max(VALIDATION_MAXLENGTH, t("Violation_Info_char_limit")).nullable(),
     }
     )
 

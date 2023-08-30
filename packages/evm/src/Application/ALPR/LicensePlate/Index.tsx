@@ -311,7 +311,7 @@ const LicensePlate = () => {
       visible: true
     },
     {
-      label: `${t("List")}`,
+      label: `${t("Hot_List")}`,
       id: "hotList",
       align: gridAlignment("string"),
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText", "top"),
