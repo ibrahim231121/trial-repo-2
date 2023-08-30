@@ -65,3 +65,4 @@ export { default as NumberField } from "./controls/CRXInputNumberField/CRXNumber
 export { default as CRXTruncation } from "./controls/CRXTextPopover/CRXTruncation"
 export { default as CRXRichTextBox } from "./CRXRichTextBox/CRXRichTextBox"
 export { default as CBXMastHeadMenu } from "./CBXMastHeadMenu/Index"
+export { default as CRXColorPicker } from "./controls/CRXColorPicker/CRXColorPicker"

@@ -12,7 +12,7 @@ import {
   TextField,
   CRXToaster,
   CRXMultiSelectBoxLight,
-  CRXConfirmDialog
+  CRXConfirmDialog,CRXColorPicker
 } from '@cb/shared';
 import { useParams, useHistory } from "react-router-dom";
 import * as Yup from "yup";
@@ -29,7 +29,8 @@ import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { GetAlprDataSourceList } from "../../../Redux/AlprDataSourceReducer";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
-import { AlprGlobalConstants, alprToasterMessages } from "../AlprGlobal";
+import { AlprGlobalConstants, alprToasterMessages, nullValidationHandling } from "../AlprGlobal";
+import { Color } from "material-ui-color";
 
 
 const HotListPayload:HotListTemplate= {
@@ -430,35 +431,17 @@ const HotListDetail = () => {
                       <div className='grid_spacer'>
                       </div>
                       <Grid item xs={12} sm={12} md={12} lg={5} >
-
-                        <div className="createHotlistColorContainer">
-                        <h6 className="MuiTypography-root label MuiTypography-subtitle1">
-                                    <span className="inputLabelNoReq">{t("Color") + ':'}</span>
-                                    </h6>
-                          <div className="createHotlistColorInput ">
-                            <Field
-                              id="color"
-                              key="color"
-                              name="color"
-                              onChange={(e: any) => {
-                                e.preventDefault();
+                        <CRXColorPicker 
+                        label="Color:"
+                        required={false}
+                        defaultValue="#000000"
+                        value={values.color}
+                        onChange={(e:Color)=>{ 
                                 setFieldTouched("color", true);
-                                setFieldValue("color", e.target.value, true);
-                              }}
-                              className={(touched?.color && (errors.color ?? "").length > 0) ? "error" : ""}
-                            />
-                            { touched?.color && (errors.color ?? "").length > 0 ? (
-                            <div className="MuiTypography-root errorStateContent MuiTypography-caption MuiTypography-gutterBottom MuiTypography-displayBlock">
-                                <i className="fas fa-exclamation-circle">
-                                  <span className="crxErrorMsg"> {errors.color}</span>
-                                </i>                                
-                            </div>
-                            ) : null }
-                          </div>
-                          <input type="color" id="hotlistcolor" name="color" value={values.color} className="createHotlistColorPicker" onChange={(e:any)=>{
-                            setFieldValue("color", e.target.value);
-                            }}></input>                          
-                        </div>
+                                setFieldValue("color", nullValidationHandling(e?.css?.backgroundColor) ? e.css.backgroundColor : e, true);}}
+                        error={touched?.color && (errors.color ?? "").length > 0}
+                        errorMsg={errors.color}
+                        />
                         <div >
                           <TextField
                             required={false}
