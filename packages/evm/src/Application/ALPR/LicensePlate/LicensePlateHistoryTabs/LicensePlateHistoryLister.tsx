@@ -19,7 +19,7 @@ import { AlprPlateHistoryInfo } from '../../../../utils/Api/models/AlprPlateHist
 import { dateOptionsTypes } from '../../../../utils/constant';
 import { DateTimeObject } from '../../../Cases/CaseTypes';
 import { GetAlprPlateHistoryPayload } from '../../ALPRTypes';
-import defaultNumberPlateImage from "../../../../Assets/Images/numberPlate.jpg";
+import defaultNumberPlateImage from "../../../../Assets/Images/AlprDefaultImages/numberPlate.jpg";
 import emptyThumbnail from "../../../../Assets/Images/thumbb.png";
 import jwt_decode from "jwt-decode";
 import "./LicensePlateHistoryLister.scss"

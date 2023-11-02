@@ -60,3 +60,38 @@
         top: -42px;
     }
 }
+
+
+.alpr_Image_container
+{
+    #streetImage
+    {
+        border: 2px rgb(216,216,216) solid;
+        max-width: 500px;
+        max-height: 253px;
+        margin-left: 5px;
+        min-width: 500px;
+        min-height: 253px;
+    }
+    #numberPlateImage
+    {
+        border: 2px rgb(216,216,216) solid;
+        max-width: 263px;
+        max-height: 159px;
+        min-height: 159px;
+        margin-left: 5px;
+    }
+    #image
+    {
+        border: 2px rgb(216,216,216) solid;
+        max-width: 217px;
+        max-height: 284px;
+        min-height: 247px;
+        margin-left: 24px;
+    }
+}
+
+.alpr_Map_Width
+{
+    width:100%;
+}

@@ -36,7 +36,7 @@ import AnchorDisplay from "../../../utils/AnchorDisplay";
 import { states } from "../GlobalDropdown";
 import { AlprGlobalConstants, gridAlignment, nullValidationHandling } from "../AlprGlobal";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import defaultNumberPlateImage from "../../../Assets/Images/numberPlate.jpg";
+import defaultNumberPlateImage from "../../../Assets/Images/AlprDefaultImages/numberPlate.jpg";
 import { dateDisplayFormat } from "../../../GlobalFunctions/DateFormat";
 
 

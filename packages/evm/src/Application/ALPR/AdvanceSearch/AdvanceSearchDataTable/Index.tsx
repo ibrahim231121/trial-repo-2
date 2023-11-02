@@ -47,7 +47,7 @@ import { AlprAdvanceSearchModel } from "../../../../utils/Api/models/AlprAdvance
 import './Index.scss'
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { DateTimeProps } from "../../../Cases/CaseTypes";
-import defaultNumberPlateImage from "../../../../Assets/Images/numberPlate.jpg";
+import defaultNumberPlateImage from "../../../../Assets/Images/AlprDefaultImages/numberPlate.jpg";
 
 export type AdvanceSearchListProps = {
     rowsData: any[];

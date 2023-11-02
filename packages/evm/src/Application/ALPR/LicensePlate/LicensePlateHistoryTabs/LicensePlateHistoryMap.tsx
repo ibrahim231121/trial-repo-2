@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { setLoaderValue } from '../../../../Redux/loaderSlice';
 import { dateDisplayFormat } from '../../../../GlobalFunctions/DateFormat';
-
+import defaultStreetImage from "../../../../Assets/Images/AlprDefaultImages/AlprStreetImage.png";
+import defaultCarImage from "../../../../Assets/Images/AlprDefaultImages/AlprCarImage.png";
+import defaultNumberPlateImage from "../../../../Assets/Images/AlprDefaultImages/numberPlate.jpg";
 
 type LicensePlateHistoryMapProp = {
   historyData: AlprPlateHistoryInfo[]
@@ -318,7 +320,16 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
   const displayThumbnail = (event: any, x: any, displayAll: boolean, withdescription?: string) => {  }
 
   return (
-    <>
+    <div style={{display:"flex"}}>
+      <div className='alpr_Image_container'>
+        <img id="streetImage" src={defaultStreetImage} alt="not found" className='alpr_StreetImage_container'/>
+        <div style={{display:"flex"}}>
+          <img id="numberPlateImage" src={defaultNumberPlateImage} alt="not found" style={{"width":"100%"}}/>
+          <img id="carImage" src={defaultCarImage} alt="not found" style={{"width":"100%"}}/>
+        </div>
+      </div>
+    <div className='alpr_Map_Width'>
+  
       <div style={{"border":"1px solid #878787"}}>
         <GoogleMap 
           apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : ""}
@@ -398,7 +409,9 @@ const LicensePlateHistoryMap = ({historyData}:LicensePlateHistoryMapProp) => {
 
       
       
-    </>
+    </div>
+      
+  </div>
   )
 }
 
