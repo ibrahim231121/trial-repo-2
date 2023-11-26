@@ -96,6 +96,9 @@ pipeline {
       }
     }
     stage('Quality Gate') {
+      when {
+        branch 'development'
+      }    
       steps {
         timeout(time: 1, unit: 'HOURS') {
           waitForQualityGate abortPipeline: true
@@ -103,6 +106,9 @@ pipeline {
       }
     }
     stage('Docker image') {
+      when {
+         expression { env.CHANGE_ID == null }
+      }    
       steps {
         dir('publish') {
           script {
