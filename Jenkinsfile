@@ -1,9 +1,7 @@
 GIT_COMMIT = ''
 
 pipeline {
-  agent {
-    label 'frontend'
-  }
+  agent any
 
   options {
     ansiColor('xterm')
