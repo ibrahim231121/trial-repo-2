@@ -25,7 +25,7 @@ pipeline {
             ],
             submoduleCfg: [],
             userRemoteConfigs: [
-              [credentialsId: 'ssh-jenkins', url: 'git@bitbucket.org:irsavideo/evm4-ui-alpr.git']
+              [url: 'https://github.com/ibrahim231121/trial-repo-2.git']
             ]
           ]).GIT_COMMIT
         }
