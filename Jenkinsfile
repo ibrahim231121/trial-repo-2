@@ -19,14 +19,12 @@ pipeline {
             doGenerateSubmoduleConfigurations: false,
             extensions: [
               [$class: 'CloneOption', noTags: false, reference: '/var/lib/git-mirror/evm4-ui-alpr', shallow: false],
-              [$class: 'LocalBranch', localBranch: scm.branches[0].name.replaceAll('^origin7/', '')],
+              [$class: 'LocalBranch', localBranch: scm.branches[0].name.replaceAll('^origin/', '')],
               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
               [$class: 'CleanCheckout']
             ],
             submoduleCfg: [],
-            userRemoteConfigs: [
-              [url: 'https://github.com/ibrahim231121/trial-repo-2.git']
-            ]
+            git 'https://github.com/kodekloudhub/go-webapp-sample.git'
           ]).GIT_COMMIT
         }
       }
