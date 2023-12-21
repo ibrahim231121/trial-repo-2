@@ -19,7 +19,7 @@ pipeline {
             doGenerateSubmoduleConfigurations: false,
             extensions: [
               [$class: 'CloneOption', noTags: false, reference: '/var/lib/git-mirror/evm4-ui-alpr', shallow: false],
-              [$class: 'LocalBranch', localBranch: scm.branches[0].name.replaceAll('^origin/', '')],
+              [$class: 'LocalBranch', localBranch: scm.branches[0].name.replaceAll('^origin7/', '')],
               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
               [$class: 'CleanCheckout']
             ],
