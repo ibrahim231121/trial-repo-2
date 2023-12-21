@@ -23,7 +23,6 @@ pipeline {
               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
               [$class: 'CleanCheckout']
             ],
-            git 'https://github.com/ibrahim231121/trial-repo-2.git'
             submoduleCfg: [],
           ]).GIT_COMMIT
         }
