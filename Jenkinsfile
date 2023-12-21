@@ -4,7 +4,7 @@ pipeline {
   agent any
 
   options {
-    ansiColor('xterm')
+    #ansiColor('xterm')
     buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '50')
     disableResume()
     skipDefaultCheckout true
