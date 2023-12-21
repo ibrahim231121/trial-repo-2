@@ -12,3 +12,12 @@
         }
      }
   }
+  stage('Build & Test') {
+      agent {
+        docker {
+          image 'node:14.17.1-alpine'
+          label 'frontend'
+          args '-v /var/lib/git-mirror:/var/lib/git-mirror'
+          reuseNode true
+        }
+      }
