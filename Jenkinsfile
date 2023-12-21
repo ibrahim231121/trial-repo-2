@@ -24,7 +24,7 @@ pipeline {
               [$class: 'CleanCheckout']
             ],
             submoduleCfg: [],
-            git 'https://github.com/kodekloudhub/go-webapp-sample.git'
+            git 'https://github.com/ibrahim231121/trial-repo-2.git'
           ]).GIT_COMMIT
         }
       }
